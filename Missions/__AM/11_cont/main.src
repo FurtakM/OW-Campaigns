@@ -110,7 +110,7 @@ end;
 // ukonceni mise + udelovani madaili
 
 // Added by Nefarem 14.12.2019
-Every 0$1 do
+{Every 0$1 do
 var i, pomauta, art;
 begin
 enable;
@@ -124,7 +124,8 @@ enable;
    konec_mise;
   end;
 
-end;
+end;}
+// CHECK Amici.src -> 139
 
 EXPORT function konec_mise;
 VAR pommedaile;
