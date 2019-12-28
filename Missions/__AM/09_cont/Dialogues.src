@@ -482,7 +482,7 @@ begin
                wait(0$1);
                ComMoveUnit([ara1, ara3], FilterAllUnits([[f_btype,b_armoury],[f_nation,nation_arabian]]));
 
-               while not ArmBuild do
+               while not ArmBuild and FilterAllUnits([[f_nation, nation_arabian], [f_type, unit_building]]) do
                   wait(0$1);
                SetAttitude(arabians, you, att_neutral, true);
 
@@ -510,7 +510,7 @@ begin
                   wait(0$1);
                   ComMoveUnit([ara1, ara3], FilterAllUnits([[f_btype,b_barracks],[f_nation,nation_arabian]]));
 
-                  while not ArmUpgraded do
+                  while not ArmUpgraded and FilterAllUnits([[f_nation, nation_arabian], [f_type, unit_building]]) do
                      wait(0$1);
                   SetAttitude(arabians, you, att_neutral, true);
 
