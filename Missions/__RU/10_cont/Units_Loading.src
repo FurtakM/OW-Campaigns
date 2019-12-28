@@ -1,0 +1,133 @@
+// loading present units
+export function LoadAllUnits;
+var list,others,un;
+begin
+  list:=[];
+
+  if TestCharacters('Belkov') and CheckCharacterSet('Belkov') and LoadVariable('BelkovRu10',false) then
+     begin
+      Belkov:=CreateCharacter('Belkov');
+      list:=list ^ Belkov;
+      DeleteVariable('BelkovRu10');
+    end;
+
+  if TestCharacters('Gnyevko') and CheckCharacterSet('Gnyevko') and LoadVariable('GnyevkoRu10',false) then
+     begin
+      Gnyevko:=CreateCharacter('Gnyevko');
+      list:=list ^ Gnyevko;
+      DeleteVariable('GnyevkoRu10');
+    end;
+
+  if TestCharacters('Kirilenkova') and CheckCharacterSet('Kirilenkova') and LoadVariable('KirilenkovaRu10',false) then
+    begin
+      Kirilenkova:=CreateCharacter('Kirilenkova');
+      list:=list ^ Kirilenkova;
+      DeleteVariable('KirilenkovaRu10');
+    end;
+
+  if TestCharacters('Kovalyuk') and CheckCharacterSet('Kovalyuk') and LoadVariable('KovalyukRu10',false) then
+    begin
+      Kovalyuk:=CreateCharacter('Kovalyuk');
+      list:=list ^ Kovalyuk;
+      DeleteVariable('KovalyukRu10');
+    end;
+
+  if TestCharacters('Scholtze') and CheckCharacterSet('Scholtze') and LoadVariable('ScholtzeRu10',false) then
+    begin
+      Scholtze:=CreateCharacter('Scholtze');
+      list:=list ^ Scholtze;
+      DeleteVariable('ScholtzeRu10');
+    end;
+
+  if TestCharacters('Kuzmov') and CheckCharacterSet('Kuzmov') and LoadVariable('KuzmovRu10',false) then
+    begin
+      Kuzmov:=CreateCharacter('Kuzmov');
+      list:=list ^ Kuzmov;
+      DeleteVariable('KuzmovRu10');
+    end;
+
+  if TestCharacters('Karamazov') and CheckCharacterSet('Karamazov') and LoadVariable('KaramazovRu10',false) then
+    begin
+      Karamazov:=CreateCharacter('Karamazov');
+      list:=list ^ Karamazov;
+      DeleteVariable('KaramazovRu10');
+    end;
+
+  if TestCharacters('Petrovova') and CheckCharacterSet('Petrovova') and LoadVariable('PetrovovaRu10',false) then
+    begin
+      Petrovova:=CreateCharacter('Petrovova');
+      list:=list ^ Petrovova;
+      DeleteVariable('PetrovovaRu10');
+    end;
+
+  if TestCharacters('Gleb') and CheckCharacterSet('Gleb') and LoadVariable('GlebRu10',false) then
+    begin
+      Gleb:=CreateCharacter('Gleb');
+      list:=list ^ Gleb;
+      DeleteVariable('GlebRu10');
+    end;
+
+  if TestCharacters('Petrosyan') and CheckCharacterSet('Petrosyan') and LoadVariable('PetrosyanRu10',false) then
+    begin
+      Petrosyan:=CreateCharacter('Petrosyan');
+      list:=list ^ Petrosyan;
+      DeleteVariable('PetrosyanRu10');
+    end;
+
+  if TestCharacters('Lipshchin') and CheckCharacterSet('Lipshchin') and LoadVariable('LipshchinRu10',false) then
+    begin
+      Lipshchin:=CreateCharacter('Lipshchin');
+      list:=list ^ Lipshchin;
+      DeleteVariable('LipshchinRu10');
+    end;
+
+  if TestCharacters('Titov') and CheckCharacterSet('Titov') and LoadVariable('TitovRu10',false) then
+    begin
+      Titov:=CreateCharacter('Titov');
+      list:=list ^ Titov;
+      DeleteVariable('TitovRu10');
+    end;
+
+  if TestCharacters('Dolgov') and CheckCharacterSet('Dolgov') and LoadVariable('DolgovRu10',false) then
+    begin
+      Dolgov:=CreateCharacter('Dolgov');
+      list:=list ^ Dolgov;
+      DeleteVariable('DolgovRu10');
+    end;
+
+  if TestCharacters('Xavier') and CheckCharacterSet('Xavier') and LoadVariable('XavierRu10',false) then
+    begin
+      Xavier:=CreateCharacter('Xavier');
+      list:=list ^ Xavier;
+      DeleteVariable('XavierRu10');
+    end;
+
+  if TestCharacters('Oblukov') and CheckCharacterSet('Oblukov') and LoadVariable('OblukovRu10',false) then
+    begin
+      Oblukov:=CreateCharacter('Oblukov');
+      list:=list ^ Oblukov;
+      DeleteVariable('OblukovRu10');
+    end;
+
+  if TestCharacters('Kozlov') and CheckCharacterSet('Kozlov') and LoadVariable('KozlovRu10',false) then
+    begin
+      Kozlov:=CreateCharacter('Kozlov');
+      list:=list ^ Kozlov;
+      DeleteVariable('KozlovRu10');
+    end;
+
+  if TestCharacters('Kapitsova') and CheckCharacterSet('Kapitsova') and LoadVariable('KapitsovaRu10',false) then
+    begin
+      Kapitsova:=CreateCharacter('Kapitsova');
+      list:=list ^ Kapitsova;
+      DeleteVariable('KapitsovaRu10');
+    end;
+
+  others:=CreateCharacterSet('Ru10trans');
+  for un in others do
+    list:=list ^ un;
+
+  result:=list;
+end;
+
+

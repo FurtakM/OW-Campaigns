@@ -1,0 +1,333 @@
+//bazookers
+export attackers;
+export att_began;
+
+function intro_att;
+begin
+  attackers=filterunitsinarea(brod2,[[f_side,am],[f_type,unit_vehicle]]);
+//  debug_strings=[attackers];
+  {if zdrhat then result=0
+  else} result=0+attackers;
+end;
+
+every 0$0.33 trigger achjo marked 2 do
+begin
+  enable;
+  if intro_att and not zdrhat then begin
+    if not att_began then att_began=true;
+    comtimeshift(baz3,getx(attackers[1]),gety(attackers[1]));
+    comattackunit([baz0,baz1,baz2,baz4,baz5],attackers[1]);
+  end
+  else begin
+    if att_began and attackers then comtimeshift([baz0,baz1,baz2,baz3,baz4,baz5],87,67);
+//    setattitude(am,rus,att_neutral,true);
+  end;
+  if unitfilter([scie0,baz0,baz1,baz2,baz3,baz4,baz5],[[f_alive]]) diff filterunitsinarea(bazukeri,[[f_side,rus]]) then comreturn([scie0,baz0,baz1,baz2,baz3,baz4,baz5]);
+end;
+
+
+//hlidac~i u mostu
+var uhlici;
+function guardsoutofrange;
+begin
+  uhlici=[];
+  if not isinarea(guard0,ar_guard0) then uhlici=[guard0];
+  if not isinarea(guard1,ar_guard1) then uhlici=uhlici^[guard1];
+  if not isinarea(guard2,ar_guard2) then uhlici=uhlici^[guard2];
+  if not isinarea(guard3,ar_guard3) then uhlici=uhlici^[guard3];
+  result=0+uhlici;
+//  debug_strings=[uhlici];
+end;
+
+every 0$0.6 trigger guardsoutofrange do
+var tmp;
+begin
+  for tmp in uhlici do
+    case tmp of
+{      guard0:comreturn(guard0);
+      guard1:comreturn(guard1);
+      guard2:comreturn(guard2);
+      guard3:comreturn(guard3);}
+      guard0:commovetoarea(guard0,ar_guard);
+      guard1:commovetoarea(guard1,ar_guard);
+      guard2:commovetoarea(guard2,ar_guard);
+      guard3:commovetoarea(guard3,ar_guard);
+    end;
+  enable;
+end;
+
+
+//base B defence
+var utocnici;
+export amattbf;
+function amattb;
+begin
+  utocnici=filterunitsinarea(prusmykb,[[f_side,am]]);
+  result=0+utocnici;
+end;
+
+every 0$1 trigger amattb and not amattbf do
+begin
+  amattbf=true;
+  comattackunit([def0,def1,def2],utocnici[1]);
+  enable;
+end;
+
+every 0$1+0$0.5 trigger filterunitsinarea(prusmykb,[[f_side,am]])=0 and amattbf do
+begin
+  comreturn([def0,def1,def2]);
+  amattbf=false;
+  enable;
+end;
+
+
+//teleportujici se rusaci
+var telep,trupka;
+
+//first group
+every 4$30 trigger secondPass = 1 do  //debugrem!!!!!!
+//every 0$30 do  //debug!!!
+begin
+  telep=[];
+  telepattno=1;
+  comconstruct(ru_fact,t1_1_ch,engine_siberite,control_computer,t1_1_wp);
+  addcomconstruct(ru_fact,t1_2_ch,engine_siberite,control_computer,t1_2_wp);
+  addcomconstruct(ru_fact,t1_3_ch,engine_siberite,control_computer,t1_3_wp);
+end;
+
+var tmp_eve;
+var telepattno;
+on vehicleconstructed(veh,fact) do
+  if fact=ru_fact then begin
+    telep=telep^[veh];
+    if telep=3 then begin
+      enable(100+telepattno);
+      for tmp_eve in telep do commoveunit(tmp_eve,ruteleprt);
+      addcomagressivemove(telep,102,97);
+      addcomagressivemove(telep,117,93);
+      addcomagressivemove(telep,137,107);
+    end;
+  end;
+
+every 0$0.3 trigger see(am,telep[1]) or see(am,telep[2]) or see(am,telep[3]) marked 101 do
+var tmp;
+begin
+  tmp=filterunitsinarea(ambase,[[f_side,am],[f_type,unit_human]]) diff john;
+  if not tmp then tmp=filterallunits([[f_side,am],[f_type,unit_human]]) diff john;
+  dialogueon;
+  if tmp then begin
+    if getsex(tmp[1])=sex_female then say(tmp[1],'DT1-FSol1-1')
+    else say(tmp[1],'DT1-Sol1-1');
+    say(john,'DT1-JMM-1');
+    trupka=tmp[1];
+  end
+  else begin
+    say(john,'DT1-Sol1-1');
+    say(john,'DT1-JMM-1');
+    trupka=john;
+  end;
+  dialogueoff;
+  enable(12);
+end;
+
+every 0$0.4 trigger (not isok(telep[1])) and (not isok(telep[2])) and (not isok(telep[3])) marked 12 do
+begin //dialog t1a
+  dialogueon;
+  dwait(0$2);
+  say(john,'DT1a-JMM-1');
+  if getsex(trupka)=sex_male then say(trupka,'DT1a-Sol1-1') else say(trupka,'DT1a-FSol1-1');
+  say(john,'DT1a-JMM-2');
+  dialogueoff;
+end;
+
+//second group
+every 9$30 trigger secondPass = 1 do  //debugrem!!!!!!
+//every 1$0 do  //debug!!!
+begin
+  telep=[];
+  telepattno=2;
+  comconstruct(ru_fact,t2_1_ch,engine_siberite,control_computer,t2_1_wp);
+  addcomconstruct(ru_fact,t2_2_ch,engine_siberite,control_computer,t2_2_wp);
+  addcomconstruct(ru_fact,t2_3_ch,engine_siberite,control_computer,t2_3_wp);
+end;
+
+every 0$0.3 trigger see(am,telep[1]) or see(am,telep[2]) or see(am,telep[3]) marked 102 do
+var tmp;
+begin
+  tmp=filterunitsinarea(ambase,[[f_side,am],[f_type,unit_human]]) diff john;
+  if not tmp then tmp=filterallunits([[f_side,am],[f_type,unit_human]]) diff john;
+  dialogueon;
+  if tmp then begin
+    if getsex(tmp[1])=sex_female then say(tmp[1],'DT2-FSol1-1')
+    else say(tmp[1],'DT2-Sol1-1');
+    trupka=tmp[1];
+  end
+  else begin
+    say(john,'DT2-Sol1-1');
+    trupka=john;
+  end;
+  dialogueoff;
+  enable(14);
+end;
+
+every 0$0.4 trigger (not isok(telep[1])) and (not isok(telep[2])) and (not isok(telep[3])) marked 14 do
+begin //dialog t2a
+  dialogueon;
+  dwait(0$2);
+  say(john,'DT2a-JMM-1');
+  if getsex(trupka)=sex_male then say(trupka,'DT2a-Sol1-1') else say(trupka,'DT2a-FSol1-1');
+  if isok(lucy) then say(lucy,'DT2a-Don-1');
+  dialogueoff;
+end;
+
+//third group
+every 14$00 trigger secondPass = 1 do
+var rmw,rhw,rmt,rht,rgg,r_g,rhg,rrl,r_r;
+begin
+  settech(tech_comp3,rus,state_researched);
+  telep=[];
+  telepattno=3;
+  fourthplus=0;
+  comconstruct(ru_fact,t3_1_ch,engine_siberite,control_computer,t3_1_wp);
+  addcomconstruct(ru_fact,t3_2_ch,engine_siberite,control_computer,t3_2_wp);
+  addcomconstruct(ru_fact,t3_3_ch,engine_siberite,control_computer,t3_3_wp);
+ //konstanty pro vetsi prehlednost
+  rmw=ru_medium_wheeled;rhw=ru_heavy_wheeled;rmt=ru_medium_tracked;rht=ru_heavy_tracked;
+  rgg=ru_gatling_gun;r_g=ru_gun;rhg=ru_heavy_gun;rrl=ru_rocket_launcher;r_r=ru_rocket;
+ //seznam sad pro 3 vlny utoku
+  chs=[ [[rmw,rmw,rmw],[rmw,rhw,rmw],[rmw,rhw,rmw]],
+        [[rmt,rhw,rmw],[rmw,rht,rmw],[rht,rhw,rmt]],
+        [[rmt,rhw,rmt],[rmt,rht,rmt],[rht,rht,rht]] ][difficulty];
+  wps=[ [[rgg,r_g,rgg],[rgg,rhg,rgg],[rgg,rhg,r_g]],
+        [[rgg,rhg,r_g],[rgg,rhg,rrl],[rhg,r_r,r_g]],
+        [[r_g,rhg,r_g],[r_g,r_r,r_g],[r_r,rhg,rhg]] ][difficulty];
+end;
+
+//fourth and other groups
+var fourthplus,chs,wps;
+every 1$0+15$0 trigger secondPass = 1 do
+var ch,wp,tmp,tmp1,tmp2;
+begin
+  fourthplus=fourthplus+1;
+  ch=0;
+  case fourthplus of //4 diff=3 is rta=[10,18,5,4,7]
+    1..rta[1]:
+      if not (fourthplus mod rta[3]) then begin
+        telep=[];
+        telepattno=telepattno+1;
+        ch=chs[1];
+        wp=wps[1];
+      end;
+    (rta[1]+1)..rta[2]:
+      if not ((fourthplus-rta[1]) mod rta[4]) then begin
+        telep=[];
+        telepattno=telepattno+1;
+        ch=chs[2];
+        wp=wps[2];
+      end;
+    else
+      if not ((fourthplus-rta[2]) mod rta[5]) then begin
+        telep=[];
+        telepattno=telepattno+1;
+        ch=chs[3];
+        wp=wps[3];
+      end;
+  end;
+  enable;
+  if not ch then exit;
+  tmp=costofvehicle(ch[1],engine_siberite,control_computer,wp[1]);//[cans,oil,sib]
+  tmp1=costofvehicle(ch[2],engine_siberite,control_computer,wp[2]);
+  tmp2=costofvehicle(ch[3],engine_siberite,control_computer,wp[3]);
+  addresourcetype(getbase(ru_fact),mat_cans,tmp[1]+tmp1[1]+tmp2[1]);
+  addresourcetype(getbase(ru_fact),mat_oil,tmp[2]+tmp1[2]+tmp2[2]);
+  addresourcetype(getbase(ru_fact),mat_siberit,tmp[3]+tmp1[3]+tmp2[3]);
+
+  comconstruct(ru_fact,ch[1],engine_siberite,control_computer,wp[1]);
+  addcomconstruct(ru_fact,ch[2],engine_siberite,control_computer,wp[2]);
+  addcomconstruct(ru_fact,ch[3],engine_siberite,control_computer,wp[3]);
+
+end;
+
+
+every 0$0.3 trigger see(am,ruteleprt) do
+var tmp,tmq,tmr;
+begin
+  telepmed=1; //uvidel teleport
+  tmp=filterallunits([[f_side,am],[f_type,unit_human],[f_placed]]) diff john;
+  tmq=[];
+  for tmr in tmp do tmq=tmq^[getdistunits(ruteleprt,tmr)];
+  tmr=worstfromlistbylist(tmp,tmq);
+  dialogueon;
+  if tmr then begin
+    if getsex(tmr)=sex_male then say(tmr,'DT3-Sol1-1')
+    else say(tmr,'DT3-FSol1-1');
+//  else say(john,'DT3-Sol1-1');
+    say(john,'DT3-JMM-1');
+  end;
+  changemissionobjectives('M2');
+  dialogueoff;
+  enable(15);
+end;
+
+on unitteleported(tel,un) marked 15 do
+var tmp,tmq,tmr;
+  if tel=ruteleprt and getside(un)=am then begin
+    wait(0$1);
+    telepmed=2; //otestil teleport
+    tmp=filterallunits([[f_side,am],[f_type,unit_human],[f_placed]]);
+    tmq=[];
+    for tmr in tmp do tmq=tmq^[getdistunits(ruteleprt,tmr)];
+    tmr=worstfromlistbylist(tmp,tmq);
+    dialogueon;
+    if tmp then
+      if getsex(tmr)=sex_male then say(tmr,'DT3a-Sol1-1')
+      else say(tmr,'DT3a-FSol1-1')
+    else say(john,'DT3a-Sol1-1');
+    say(john,'DT3a-JMM-1');
+    centernowonunits(un);
+    say(john,'DT3a-JMM-1a');
+    dialogueoff;
+    changemissionobjectives('M2a');
+    disable(15);
+  end;
+
+
+//utek ruskych vedcu
+export ru_scies_;
+every 0$0.5 do
+var tmp,tmq;
+begin
+  tmp=filterunitsinarea(vedci_zdrhaji,[[f_side,rus],[f_type,unit_human],[f_class,class_scientistic]]);
+  if tmp then
+    for tmq in tmp do if removeunit(tmq) then ru_scies_=ru_scies_+1;
+  if ru_scies_<5 then enable
+  else changemissionobjectives('M1b');
+end;
+
+
+//ruska obrana vyzk. zakl. jih
+every 0$1.13 do
+var tmp,tmq;
+begin
+  tmp=unitfilter([ruso0,ruso1,ruso2],[[f_ok]]) diff filterunitsinarea(southdef,[[f_side,rus],[f_ok]]);
+  if tmp then comagressivemove(tmp,95,42);
+  enable;
+end;
+
+//ruska obrana vyzk. zakl. sever a
+every 0$1.129 do
+var tmp,tmq;
+begin
+  if not isinarea(runo0,northdefa) then comagressivemove(runo0,72,19);
+  enable;
+end;
+
+//ruska obrana vyzk. zakl. sever b
+every 0$1.131 do
+var tmp,tmq;
+begin
+  if not isinarea(runo1,northdefb) then comagressivemove(runo1,71,3);
+  if not isinarea(runo2,northdefb) then comagressivemove(runo2,75,9);
+  enable;
+end;
+

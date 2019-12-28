@@ -1,0 +1,719 @@
+// var ru , am ; var burlak , gaydar , vsevol ; var popov , yashin , jmm ; var krovi , zakladna , tmp , tmp1 , x , y , r ; starting begin ru = 3 ;
+   0: LD_ADDR_LOC 1
+   4: PUSH
+   5: LD_INT 3
+   7: ST_TO_ADDR
+// am = 1 ;
+   8: LD_ADDR_LOC 2
+  12: PUSH
+  13: LD_INT 1
+  15: ST_TO_ADDR
+// revealfogarea ( ru , celamapa ) ;
+  16: LD_LOC 1
+  20: PPUSH
+  21: LD_INT 1
+  23: PPUSH
+  24: CALL_OW 332
+// uc_side = am ;
+  28: LD_ADDR_OWVAR 20
+  32: PUSH
+  33: LD_LOC 2
+  37: ST_TO_ADDR
+// jmm = newcharacter ( Macmillan ) ;
+  38: LD_ADDR_LOC 8
+  42: PUSH
+  43: LD_STRING Macmillan
+  45: PPUSH
+  46: CALL_OW 25
+  50: ST_TO_ADDR
+// if not jmm then
+  51: LD_LOC 8
+  55: NOT
+  56: IFFALSE 65
+// msg ( neny Macmillan ) ;
+  58: LD_STRING neny Macmillan
+  60: PPUSH
+  61: CALL_OW 100
+// uc_side = ru ;
+  65: LD_ADDR_OWVAR 20
+  69: PUSH
+  70: LD_LOC 1
+  74: ST_TO_ADDR
+// if testcharacters ( Burlak ) then
+  75: LD_STRING Burlak
+  77: PPUSH
+  78: CALL_OW 28
+  82: IFFALSE 120
+// if checkcharacterset ( Burlak ) then
+  84: LD_STRING Burlak
+  86: PPUSH
+  87: CALL_OW 29
+  91: IFFALSE 111
+// burlak = createcharacterwithclass ( Burlak , class_mechanic ) else
+  93: LD_ADDR_LOC 3
+  97: PUSH
+  98: LD_STRING Burlak
+ 100: PPUSH
+ 101: LD_INT 3
+ 103: PPUSH
+ 104: CALL_OW 35
+ 108: ST_TO_ADDR
+ 109: GO 118
+// msg ( jakto ze Burlak je chciplej?! ) else
+ 111: LD_STRING jakto ze Burlak je chciplej?!
+ 113: PPUSH
+ 114: CALL_OW 100
+ 118: GO 127
+// msg ( neny Burlak ) ;
+ 120: LD_STRING neny Burlak
+ 122: PPUSH
+ 123: CALL_OW 100
+// if testcharacters ( Vsevolod ) then
+ 127: LD_STRING Vsevolod
+ 129: PPUSH
+ 130: CALL_OW 28
+ 134: IFFALSE 189
+// if checkcharacterset ( Vsevolod ) then
+ 136: LD_STRING Vsevolod
+ 138: PPUSH
+ 139: CALL_OW 29
+ 143: IFFALSE 160
+// vsevol = createcharacter ( Vsevolod ) else
+ 145: LD_ADDR_LOC 5
+ 149: PUSH
+ 150: LD_STRING Vsevolod
+ 152: PPUSH
+ 153: CALL_OW 34
+ 157: ST_TO_ADDR
+ 158: GO 187
+// begin vsevol = newcharacter ( Stolypin ) ;
+ 160: LD_ADDR_LOC 5
+ 164: PUSH
+ 165: LD_STRING Stolypin
+ 167: PPUSH
+ 168: CALL_OW 25
+ 172: ST_TO_ADDR
+// if not vsevol then
+ 173: LD_LOC 5
+ 177: NOT
+ 178: IFFALSE 187
+// msg ( neny Stolypin ) ;
+ 180: LD_STRING neny Stolypin
+ 182: PPUSH
+ 183: CALL_OW 100
+// end else
+ 187: GO 196
+// msg ( neny Vsevolod ) ;
+ 189: LD_STRING neny Vsevolod
+ 191: PPUSH
+ 192: CALL_OW 100
+// popov = newcharacter ( Popov ) ;
+ 196: LD_ADDR_LOC 6
+ 200: PUSH
+ 201: LD_STRING Popov
+ 203: PPUSH
+ 204: CALL_OW 25
+ 208: ST_TO_ADDR
+// if not popov then
+ 209: LD_LOC 6
+ 213: NOT
+ 214: IFFALSE 223
+// msg ( neny Popov ) ;
+ 216: LD_STRING neny Popov
+ 218: PPUSH
+ 219: CALL_OW 100
+// if testcharacters ( Gaydar ) then
+ 223: LD_STRING Gaydar
+ 225: PPUSH
+ 226: CALL_OW 28
+ 230: IFFALSE 258
+// if checkcharacterset ( Gaydar ) then
+ 232: LD_STRING Gaydar
+ 234: PPUSH
+ 235: CALL_OW 29
+ 239: IFFALSE 256
+// gaydar = createcharacter ( Gaydar ) else
+ 241: LD_ADDR_LOC 4
+ 245: PUSH
+ 246: LD_STRING Gaydar
+ 248: PPUSH
+ 249: CALL_OW 34
+ 253: ST_TO_ADDR
+ 254: GO 256
+// else
+ 256: GO 265
+// msg ( neny Gaydar ) ;
+ 258: LD_STRING neny Gaydar
+ 260: PPUSH
+ 261: CALL_OW 100
+// yashin = newcharacter ( Yashin ) ;
+ 265: LD_ADDR_LOC 7
+ 269: PUSH
+ 270: LD_STRING Yashin
+ 272: PPUSH
+ 273: CALL_OW 25
+ 277: ST_TO_ADDR
+// if not yashin then
+ 278: LD_LOC 7
+ 282: NOT
+ 283: IFFALSE 292
+// msg ( neny Yashin ) ;
+ 285: LD_STRING neny Yashin
+ 287: PPUSH
+ 288: CALL_OW 100
+// if testvariable ( Environment ) then
+ 292: LD_STRING Environment
+ 294: PPUSH
+ 295: CALL_OW 27
+ 299: IFFALSE 318
+// krovi = loadvariable ( Environment , [ ] ) else
+ 301: LD_ADDR_LOC 9
+ 305: PUSH
+ 306: LD_STRING Environment
+ 308: PPUSH
+ 309: EMPTY
+ 310: PPUSH
+ 311: CALL_OW 30
+ 315: ST_TO_ADDR
+ 316: GO 325
+// msg ( neny Environment ) ;
+ 318: LD_STRING neny Environment
+ 320: PPUSH
+ 321: CALL_OW 100
+// placeenvironmentlist ( krovi ) ;
+ 325: LD_LOC 9
+ 329: PPUSH
+ 330: CALL_OW 354
+// if testvariable ( Trotskij ) then
+ 334: LD_STRING Trotskij
+ 336: PPUSH
+ 337: CALL_OW 27
+ 341: IFFALSE 360
+// zakladna = loadvariable ( Trotskij , [ ] ) else
+ 343: LD_ADDR_LOC 10
+ 347: PUSH
+ 348: LD_STRING Trotskij
+ 350: PPUSH
+ 351: EMPTY
+ 352: PPUSH
+ 353: CALL_OW 30
+ 357: ST_TO_ADDR
+ 358: GO 367
+// msg ( neny Trotskij ) ;
+ 360: LD_STRING neny Trotskij
+ 362: PPUSH
+ 363: CALL_OW 100
+// uc_nation = nation_russian ;
+ 367: LD_ADDR_OWVAR 21
+ 371: PUSH
+ 372: LD_INT 3
+ 374: ST_TO_ADDR
+// x = 0 ;
+ 375: LD_ADDR_LOC 13
+ 379: PUSH
+ 380: LD_INT 0
+ 382: ST_TO_ADDR
+// y = 0 ;
+ 383: LD_ADDR_LOC 14
+ 387: PUSH
+ 388: LD_INT 0
+ 390: ST_TO_ADDR
+// for tmp in zakladna do
+ 391: LD_ADDR_LOC 11
+ 395: PUSH
+ 396: LD_LOC 10
+ 400: PUSH
+ 401: FOR_IN
+ 402: IFFALSE 901
+// case tmp [ 1 ] of b_lab , b_lab_half , b_lab_full :
+ 404: LD_LOC 11
+ 408: PUSH
+ 409: LD_INT 1
+ 411: ARRAY
+ 412: PUSH
+ 413: LD_INT 6
+ 415: DOUBLE
+ 416: EQUAL
+ 417: IFTRUE 433
+ 419: LD_INT 7
+ 421: DOUBLE
+ 422: EQUAL
+ 423: IFTRUE 433
+ 425: LD_INT 8
+ 427: DOUBLE
+ 428: EQUAL
+ 429: IFTRUE 433
+ 431: GO 595
+ 433: POP
+// begin bc_type = tmp [ 1 ] ;
+ 434: LD_ADDR_OWVAR 42
+ 438: PUSH
+ 439: LD_LOC 11
+ 443: PUSH
+ 444: LD_INT 1
+ 446: ARRAY
+ 447: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+ 448: LD_ADDR_OWVAR 43
+ 452: PUSH
+ 453: LD_LOC 11
+ 457: PUSH
+ 458: LD_INT 5
+ 460: ARRAY
+ 461: ST_TO_ADDR
+// bc_kind1 = tmp [ 6 ] ;
+ 462: LD_ADDR_OWVAR 44
+ 466: PUSH
+ 467: LD_LOC 11
+ 471: PUSH
+ 472: LD_INT 6
+ 474: ARRAY
+ 475: ST_TO_ADDR
+// bc_kind2 = tmp [ 7 ] ;
+ 476: LD_ADDR_OWVAR 45
+ 480: PUSH
+ 481: LD_LOC 11
+ 485: PUSH
+ 486: LD_INT 7
+ 488: ARRAY
+ 489: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] , tmp [ 3 ] , tmp [ 4 ] ) ;
+ 490: LD_ADDR_LOC 12
+ 494: PUSH
+ 495: LD_LOC 11
+ 499: PUSH
+ 500: LD_INT 2
+ 502: ARRAY
+ 503: PPUSH
+ 504: LD_LOC 11
+ 508: PUSH
+ 509: LD_INT 3
+ 511: ARRAY
+ 512: PPUSH
+ 513: LD_LOC 11
+ 517: PUSH
+ 518: LD_INT 4
+ 520: ARRAY
+ 521: PPUSH
+ 522: CALL_OW 47
+ 526: ST_TO_ADDR
+// if tmp1 then
+ 527: LD_LOC 12
+ 531: IFFALSE 553
+// setlives ( tmp1 , rand ( 50 , 249 ) ) ;
+ 533: LD_LOC 12
+ 537: PPUSH
+ 538: LD_INT 50
+ 540: PPUSH
+ 541: LD_INT 249
+ 543: PPUSH
+ 544: CALL_OW 12
+ 548: PPUSH
+ 549: CALL_OW 234
+// x = x + tmp [ 2 ] ;
+ 553: LD_ADDR_LOC 13
+ 557: PUSH
+ 558: LD_LOC 13
+ 562: PUSH
+ 563: LD_LOC 11
+ 567: PUSH
+ 568: LD_INT 2
+ 570: ARRAY
+ 571: PLUS
+ 572: ST_TO_ADDR
+// y = y + tmp [ 3 ] ;
+ 573: LD_ADDR_LOC 14
+ 577: PUSH
+ 578: LD_LOC 14
+ 582: PUSH
+ 583: LD_LOC 11
+ 587: PUSH
+ 588: LD_INT 3
+ 590: ARRAY
+ 591: PLUS
+ 592: ST_TO_ADDR
+// end ; b_bunker , b_turret :
+ 593: GO 899
+ 595: LD_INT 32
+ 597: DOUBLE
+ 598: EQUAL
+ 599: IFTRUE 609
+ 601: LD_INT 33
+ 603: DOUBLE
+ 604: EQUAL
+ 605: IFTRUE 609
+ 607: GO 767
+ 609: POP
+// begin bc_type = tmp [ 1 ] ;
+ 610: LD_ADDR_OWVAR 42
+ 614: PUSH
+ 615: LD_LOC 11
+ 619: PUSH
+ 620: LD_INT 1
+ 622: ARRAY
+ 623: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+ 624: LD_ADDR_OWVAR 43
+ 628: PUSH
+ 629: LD_LOC 11
+ 633: PUSH
+ 634: LD_INT 5
+ 636: ARRAY
+ 637: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] , tmp [ 3 ] , tmp [ 4 ] ) ;
+ 638: LD_ADDR_LOC 12
+ 642: PUSH
+ 643: LD_LOC 11
+ 647: PUSH
+ 648: LD_INT 2
+ 650: ARRAY
+ 651: PPUSH
+ 652: LD_LOC 11
+ 656: PUSH
+ 657: LD_INT 3
+ 659: ARRAY
+ 660: PPUSH
+ 661: LD_LOC 11
+ 665: PUSH
+ 666: LD_INT 4
+ 668: ARRAY
+ 669: PPUSH
+ 670: CALL_OW 47
+ 674: ST_TO_ADDR
+// if tmp1 then
+ 675: LD_LOC 12
+ 679: IFFALSE 699
+// placeweaponturret ( tmp1 , tmp [ 7 ] ) ;
+ 681: LD_LOC 12
+ 685: PPUSH
+ 686: LD_LOC 11
+ 690: PUSH
+ 691: LD_INT 7
+ 693: ARRAY
+ 694: PPUSH
+ 695: CALL_OW 431
+// if tmp1 then
+ 699: LD_LOC 12
+ 703: IFFALSE 725
+// setlives ( tmp1 , rand ( 50 , 249 ) ) ;
+ 705: LD_LOC 12
+ 709: PPUSH
+ 710: LD_INT 50
+ 712: PPUSH
+ 713: LD_INT 249
+ 715: PPUSH
+ 716: CALL_OW 12
+ 720: PPUSH
+ 721: CALL_OW 234
+// x = x + tmp [ 2 ] ;
+ 725: LD_ADDR_LOC 13
+ 729: PUSH
+ 730: LD_LOC 13
+ 734: PUSH
+ 735: LD_LOC 11
+ 739: PUSH
+ 740: LD_INT 2
+ 742: ARRAY
+ 743: PLUS
+ 744: ST_TO_ADDR
+// y = y + tmp [ 3 ] ;
+ 745: LD_ADDR_LOC 14
+ 749: PUSH
+ 750: LD_LOC 14
+ 754: PUSH
+ 755: LD_LOC 11
+ 759: PUSH
+ 760: LD_INT 3
+ 762: ARRAY
+ 763: PLUS
+ 764: ST_TO_ADDR
+// end ; else
+ 765: GO 899
+ 767: POP
+// begin bc_type = tmp [ 1 ] ;
+ 768: LD_ADDR_OWVAR 42
+ 772: PUSH
+ 773: LD_LOC 11
+ 777: PUSH
+ 778: LD_INT 1
+ 780: ARRAY
+ 781: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+ 782: LD_ADDR_OWVAR 43
+ 786: PUSH
+ 787: LD_LOC 11
+ 791: PUSH
+ 792: LD_INT 5
+ 794: ARRAY
+ 795: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] , tmp [ 3 ] , tmp [ 4 ] ) ;
+ 796: LD_ADDR_LOC 12
+ 800: PUSH
+ 801: LD_LOC 11
+ 805: PUSH
+ 806: LD_INT 2
+ 808: ARRAY
+ 809: PPUSH
+ 810: LD_LOC 11
+ 814: PUSH
+ 815: LD_INT 3
+ 817: ARRAY
+ 818: PPUSH
+ 819: LD_LOC 11
+ 823: PUSH
+ 824: LD_INT 4
+ 826: ARRAY
+ 827: PPUSH
+ 828: CALL_OW 47
+ 832: ST_TO_ADDR
+// if tmp1 then
+ 833: LD_LOC 12
+ 837: IFFALSE 859
+// setlives ( tmp1 , rand ( 5 , 249 ) ) ;
+ 839: LD_LOC 12
+ 843: PPUSH
+ 844: LD_INT 5
+ 846: PPUSH
+ 847: LD_INT 249
+ 849: PPUSH
+ 850: CALL_OW 12
+ 854: PPUSH
+ 855: CALL_OW 234
+// x = x + tmp [ 2 ] ;
+ 859: LD_ADDR_LOC 13
+ 863: PUSH
+ 864: LD_LOC 13
+ 868: PUSH
+ 869: LD_LOC 11
+ 873: PUSH
+ 874: LD_INT 2
+ 876: ARRAY
+ 877: PLUS
+ 878: ST_TO_ADDR
+// y = y + tmp [ 3 ] ;
+ 879: LD_ADDR_LOC 14
+ 883: PUSH
+ 884: LD_LOC 14
+ 888: PUSH
+ 889: LD_LOC 11
+ 893: PUSH
+ 894: LD_INT 3
+ 896: ARRAY
+ 897: PLUS
+ 898: ST_TO_ADDR
+// end ; end ;
+ 899: GO 401
+ 901: POP
+ 902: POP
+// x = x / ( 0 + zakladna ) ;
+ 903: LD_ADDR_LOC 13
+ 907: PUSH
+ 908: LD_LOC 13
+ 912: PUSH
+ 913: LD_INT 0
+ 915: PUSH
+ 916: LD_LOC 10
+ 920: PLUS
+ 921: DIVREAL
+ 922: ST_TO_ADDR
+// y = y / ( 0 + zakladna ) ;
+ 923: LD_ADDR_LOC 14
+ 927: PUSH
+ 928: LD_LOC 14
+ 932: PUSH
+ 933: LD_INT 0
+ 935: PUSH
+ 936: LD_LOC 10
+ 940: PLUS
+ 941: DIVREAL
+ 942: ST_TO_ADDR
+// r = 5 ;
+ 943: LD_ADDR_LOC 15
+ 947: PUSH
+ 948: LD_INT 5
+ 950: ST_TO_ADDR
+// placeunitxyr ( burlak , x , y , r , false ) ;
+ 951: LD_LOC 3
+ 955: PPUSH
+ 956: LD_LOC 13
+ 960: PPUSH
+ 961: LD_LOC 14
+ 965: PPUSH
+ 966: LD_LOC 15
+ 970: PPUSH
+ 971: LD_INT 0
+ 973: PPUSH
+ 974: CALL_OW 50
+// placeunitxyr ( gaydar , x , y , r , false ) ;
+ 978: LD_LOC 4
+ 982: PPUSH
+ 983: LD_LOC 13
+ 987: PPUSH
+ 988: LD_LOC 14
+ 992: PPUSH
+ 993: LD_LOC 15
+ 997: PPUSH
+ 998: LD_INT 0
+1000: PPUSH
+1001: CALL_OW 50
+// placeunitxyr ( vsevol , x , y , r , false ) ;
+1005: LD_LOC 5
+1009: PPUSH
+1010: LD_LOC 13
+1014: PPUSH
+1015: LD_LOC 14
+1019: PPUSH
+1020: LD_LOC 15
+1024: PPUSH
+1025: LD_INT 0
+1027: PPUSH
+1028: CALL_OW 50
+// placeunitxyr ( yashin , x , y , r , false ) ;
+1032: LD_LOC 7
+1036: PPUSH
+1037: LD_LOC 13
+1041: PPUSH
+1042: LD_LOC 14
+1046: PPUSH
+1047: LD_LOC 15
+1051: PPUSH
+1052: LD_INT 0
+1054: PPUSH
+1055: CALL_OW 50
+// placeunitxyr ( popov , x , y , r , false ) ;
+1059: LD_LOC 6
+1063: PPUSH
+1064: LD_LOC 13
+1068: PPUSH
+1069: LD_LOC 14
+1073: PPUSH
+1074: LD_LOC 15
+1078: PPUSH
+1079: LD_INT 0
+1081: PPUSH
+1082: CALL_OW 50
+// centernowonunits ( [ burlak , gaydar , vsevol , yashin , popov ] ) ;
+1086: LD_LOC 3
+1090: PUSH
+1091: LD_LOC 4
+1095: PUSH
+1096: LD_LOC 5
+1100: PUSH
+1101: LD_LOC 7
+1105: PUSH
+1106: LD_LOC 6
+1110: PUSH
+1111: EMPTY
+1112: LIST
+1113: LIST
+1114: LIST
+1115: LIST
+1116: LIST
+1117: PPUSH
+1118: CALL_OW 87
+// dialogueon ;
+1122: CALL_OW 6
+// say ( burlak , DStart-Bur-1 ) ;
+1126: LD_LOC 3
+1130: PPUSH
+1131: LD_STRING DStart-Bur-1
+1133: PPUSH
+1134: CALL_OW 88
+// say ( vsevol , DStart-Vse-1 ) ;
+1138: LD_LOC 5
+1142: PPUSH
+1143: LD_STRING DStart-Vse-1
+1145: PPUSH
+1146: CALL_OW 88
+// sayradio ( jmm , DStart-JMM-1 ) ;
+1150: LD_LOC 8
+1154: PPUSH
+1155: LD_STRING DStart-JMM-1
+1157: PPUSH
+1158: CALL_OW 94
+// say ( burlak , DStart-Bur-2 ) ;
+1162: LD_LOC 3
+1166: PPUSH
+1167: LD_STRING DStart-Bur-2
+1169: PPUSH
+1170: CALL_OW 88
+// sayradio ( jmm , DStart-JMM-2 ) ;
+1174: LD_LOC 8
+1178: PPUSH
+1179: LD_STRING DStart-JMM-2
+1181: PPUSH
+1182: CALL_OW 94
+// say ( popov , DStart-Pop-2 ) ;
+1186: LD_LOC 6
+1190: PPUSH
+1191: LD_STRING DStart-Pop-2
+1193: PPUSH
+1194: CALL_OW 88
+// say ( gaydar , DStart-Gay-2 ) ;
+1198: LD_LOC 4
+1202: PPUSH
+1203: LD_STRING DStart-Gay-2
+1205: PPUSH
+1206: CALL_OW 88
+// say ( yashin , DStart-Yas-2 ) ;
+1210: LD_LOC 7
+1214: PPUSH
+1215: LD_STRING DStart-Yas-2
+1217: PPUSH
+1218: CALL_OW 88
+// say ( vsevol , DStart-Vse-2 ) ;
+1222: LD_LOC 5
+1226: PPUSH
+1227: LD_STRING DStart-Vse-2
+1229: PPUSH
+1230: CALL_OW 88
+// say ( popov , DStart-Pop-3 ) ;
+1234: LD_LOC 6
+1238: PPUSH
+1239: LD_STRING DStart-Pop-3
+1241: PPUSH
+1242: CALL_OW 88
+// say ( yashin , DStart-Yas-3 ) ;
+1246: LD_LOC 7
+1250: PPUSH
+1251: LD_STRING DStart-Yas-3
+1253: PPUSH
+1254: CALL_OW 88
+// say ( burlak , DStart-Bur-3 ) ;
+1258: LD_LOC 3
+1262: PPUSH
+1263: LD_STRING DStart-Bur-3
+1265: PPUSH
+1266: CALL_OW 88
+// say ( yashin , DStart-Yas-4 ) ;
+1270: LD_LOC 7
+1274: PPUSH
+1275: LD_STRING DStart-Yas-4
+1277: PPUSH
+1278: CALL_OW 88
+// say ( burlak , DStart-Bur-4 ) ;
+1282: LD_LOC 3
+1286: PPUSH
+1287: LD_STRING DStart-Bur-4
+1289: PPUSH
+1290: CALL_OW 88
+// say ( gaydar , DStart-Gay-4 ) ;
+1294: LD_LOC 4
+1298: PPUSH
+1299: LD_STRING DStart-Gay-4
+1301: PPUSH
+1302: CALL_OW 88
+// dwait ( 0 0$2 ) ;
+1306: LD_INT 70
+1308: PPUSH
+1309: CALL_OW 68
+// dialogueoff ;
+1313: CALL_OW 7
+// changemap ( 1 , %_cont ) ;
+1317: LD_STRING 1
+1319: PPUSH
+1320: LD_STRING %_cont
+1322: PPUSH
+1323: CALL_OW 340
+// end ;
+1327: END

@@ -1,0 +1,610 @@
+
+EXPORT Function StartAllianceBase;            // In Dialogues
+var i, Bunkers, Turrets, units_to_protect;
+ begin
+   SetResourceType(GetBase(AllDep), mat_siberit, 200);
+   SetResourceType(GetBase(AllDep), mat_cans, 400);
+
+   // Divide Scientists
+     Alliance_Doctors= Alliance_am_scientists[1];
+     Alliance_am_scientists= Alliance_am_scientists diff Alliance_am_scientists[1];
+     ComEnterUnit(Alliance_am_scientists, AllLabA);
+
+     Alliance_Doctors= Alliance_rus_scientists[1];
+     Alliance_rus_scientists= Alliance_rus_scientists diff Alliance_rus_scientists[1];
+     ComEnterUnit(Alliance_rus_scientists, AllLabR1);
+
+   // AllLabA
+   ComResearch(AllLabA, tech_Comp1);
+   AddComResearch(AllLabA, tech_Opto1);
+   AddComResearch(AllLabA, tech_Sib1);
+   AddComResearch(AllLabA, tech_Opto2);
+   AddComResearch(AllLabA, tech_Sib2);
+   AddComResearch(AllLabA, tech_Opto3);
+   AddComResearch(AllLabA, tech_Sib3);
+
+
+   // AllLabR1
+   ComResearch(AllLabR1, tech_ST1);
+   AddComResearch(AllLabR1, tech_ST2);
+   AddComResearch(AllLabR1, tech_ST3);
+
+   // AllLabR2
+   ComResearch(AllLabR2, tech_Comp1);
+   AddComResearch(AllLabR2, tech_Weap1);
+   AddComResearch(AllLabR2, tech_Comp2);
+   AddComResearch(AllLabR2, tech_Weap2);
+   AddComResearch(AllLabR2, tech_Comp3);
+   AddComResearch(AllLabR2, tech_Weap3);
+
+
+   // Divide Soldiers
+   ComEnterUnit(Alliance_am_soldiers, AllBarrA);
+   ComEnterUnit(Alliance_rus_soldiers, AllBarrR);
+
+
+   /////////////////////////////////////////////////
+   /////////////   Start McDefend   ////////////////
+   /////////////////////////////////////////////////
+
+   Bunkers= FilterAllUnits([[f_side, alliance], [f_type, unit_building], [f_btype, b_bunker]]);
+   Turrets= FilterAllUnits([[f_side, alliance], [f_type, unit_building], [f_btype, b_turret]]);
+   units_to_protect= Bunkers ^ Turrets ^ AllBarrA ^ AllBarrR;
+
+   // McRegistry
+   Alliance_reg_id= McRegistry(alliance, [[mc_reg_area_to_guard, Al_Base],
+                                           [mc_reg_refresh_time, 0$2],
+                                           [mc_reg_area_to_protect, Al_Base],
+                                           [mc_reg_units_to_protect, units_to_protect],
+                                           -mc_reg_only_important,
+                                           -mc_reg_ignore_fog]);
+
+   Alliance_wood_reg_id= McRegistry(alliance, [[mc_reg_area_to_guard, Ali_wood],
+                                               [mc_reg_refresh_time, 0$5],
+                                               -mc_reg_only_important,
+                                               -mc_reg_ignore_fog]);
+
+   // McDefend
+   McDefend(100, Alliance_reg_id,
+                 Alliance_am_soldiers ^ Alliance_rus_soldiers ^ units_to_protect,
+                                                    [[mc_area_dont_leave, Al_Base],
+                                                     [mc_retreat_area_people,Al_Heal],
+                                                     [mc_retreat_lives_people,550]]);
+
+ end;
+
+EXPORT Function AlliancePersonIsDead;
+ begin
+   if FilterAllUnits([[f_side, alliance], [f_alive], [f_type, unit_human]]) = 0 then
+     begin
+       KillMc(Alliance_reg_id);
+       KillMc(Alliance_def_id);
+       KillMc(Alliance_wood_reg_id);
+       Disable(Not_end_of_alliance);
+     end;
+ end;
+
+// Test for end of alliance
+EXPORT Function AllianceBuildingInRed;
+var All_Alliance_Units, Un;
+ begin
+   if not(IsOk(AllDep)) or GetSide(AllDep) <> alliance or
+      not(IsOk(AllLabA)) or GetSide(AllLabA) <> alliance then
+     begin
+       ComStop([Explorer1, Explorer2]);
+       Explorer1=0; Explorer2=0;
+     end;
+
+   if ((UnitFilter(Alliance_def_buildings, [[f_ok], [f_side, alliance]]) = 0)
+       or not(IsOk(AllDep)) or GetSide(AllDep) <> alliance) then
+     begin
+       If IsOk(Roth) and GetAttitude(alliance, americans) <> att_friend then
+         begin
+           Disable(Explorers_Can_Go);
+           Disable(Not_End_of_Alliance);
+           SetSide(FilterAllUnits([f_side, Explorers_Side]), alliance);
+           KillMc(Alliance_reg_id);
+           KillMc(Alliance_def_id);
+           KillMc(Alliance_wood_reg_id);
+
+           Roth_Captured= true;
+           SetAttitude(Alliance, Americans, att_friend, true);
+           All_Alliance_Units= FilterAllUnits([f_side, Alliance]);
+           ComExitBuilding(All_Alliance_Units);
+           ComStop(All_Alliance_Units);
+           ComStop(FilterUnitsInArea(Al_Base, [f_side, americans]));
+           Wait(0$1);
+
+           CenterNowOnXY(233, 181);
+           DialogueON;
+           Say(JMM, 'DAb-JMM-1');
+           if (True_Americans ^ []) = 1 then
+             Say(JMM, 'DAb-JMM-1a')
+           else if True_Americans > 1 then
+             Say(JMM, 'DAb-JMM-1b');
+           DialogueOFF;
+           ChangeMissionObjectives('M3a');
+
+           // Alliance captured
+           Captured_Units_of_Alliance= FilterAllUnits([[f_side, alliance],[f_type, unit_human], [f_alive]]);
+           ComMoveXY(Captured_Units_of_Alliance, 226, 197);
+           enable(Alliance_Captured);
+
+           // True americans comes
+           if IsOk(AllDep) then
+             begin
+               for Un in True_Americans do
+                 begin
+                   SetSide(Un, americans);
+                   PlaceHumanInUnit(Un, AllDep);
+                   ComExitBuilding(Un);
+                   Wait(1);
+                 end;
+             end
+           else if IsOk(AllLabR2) then
+             begin
+               for Un in True_Americans do
+                 begin
+                   SetSide(Un, americans);
+                   PlaceHumanInUnit(Un, AllLabR2);
+                   ComExitBuilding(Un);
+                   Wait(1);
+                 end;
+             end
+           else if IsOk(AllLabR1) then
+             begin
+               for Un in True_Americans do
+                 begin
+                   SetSide(Un, americans);
+                   PlaceHumanInUnit(Un, AllLabR1);
+                   ComExitBuilding(Un);
+                   Wait(1);
+                 end;
+             end
+          else
+            begin
+               for Un in True_Americans do
+                 begin
+                   SetSide(Un, americans);
+                   All_americans= All_americans ^ Un;
+                   PlaceUnitXYR(Un, 250, 195, 3, false);
+                 end;
+               All_americans= All_americans diff [0];
+            end;
+         end;
+     end;
+ end;
+
+Function SelectExplorer;
+var R, Un;
+ begin
+   R= 0;
+   for Un in Alliance_am_soldiers ^ Alliance_am_scientists do
+     if IsOk(Un) then
+       begin
+         if Un in Alliance_am_soldiers then
+           Alliance_am_soldiers= Alliance_am_soldiers diff Un
+         else Alliance_am_scientists= Alliance_am_scientists diff Un;
+
+         if GetClass(Un) <> class_soldier then
+           begin
+             ComEnterUnit(Un, AllBarrA);
+             AddComChangeProfession(Un, class_soldier);
+             AddComExitBuilding(Un);
+             WaitTask(Un, 0.5);
+           end;
+         SetSide(Un, Explorers_Side);
+         R= Un;
+         break;
+       end;
+   Result= R;
+ end;
+
+
+Function SelectExplorers;
+ begin
+   if not(IsLive(Explorer1)) then
+     Explorer1= SelectExplorer;
+
+   if not(IsLive(Explorer2)) then
+     Explorer2= SelectExplorer;
+ end;
+
+Function CaptureDialogue(Captured_american);
+var Join;
+ begin
+   Join= 0;
+   DialogueON;
+   case Captured_american of
+     JMM: ForceSay(JMM, 'DA1-JMM-1');
+     Joan: ForceSay(Joan, 'DA1-Joan-1');
+     Lisa: ForceSay(Lisa, 'DA1-Lisa-1');
+     Donaldson: ForceSay(Donaldson, 'DA1-Don-1');
+     Cornell: ForceSay(Cornell, 'DA1-Corn-1');
+     Denis: ForceSay(Denis, 'DA1-Den-1');
+     Bobby: ForceSay(Bobby, 'DA1-Bobby-1');
+     Gladstone: ForceSay(Gladstone, 'DA1-Glad-1');
+     Cyrus: ForceSay(Cyrus, 'DA1-Cyrus-1');
+     Stevens: ForceSay(Stevens, 'DA1-Huck-1');
+     Brown: ForceSay(Brown, 'DA1-Brown-1');
+     Gary: ForceSay(Gary, 'DA1-Gary-1');
+     Coonie: ForceSay(Coonie, 'DA1-Con-1');
+     Kurt: ForceSay(Kurt, 'DA1-Kurt-1');
+     Yamoko: ForceSay(Yamoko, 'DA1-Yam-1');
+     Frank: ForceSay(Frank, 'DA1-Frank-1');
+     else
+       begin
+         if GetSex(Captured_american) = sex_male then
+           ForceSay(Captured_american, 'DA1-Sol1-1')
+         else ForceSay(Captured_american, 'DA1-FSol1-1');
+       end;
+   end;
+
+   Say(Roth, 'DA-Roth-1');
+   if Number_of_captured_americans = 1 then
+     begin
+       Say(Simms, 'DA-Sim-1');
+       Say(Roth, 'DA-Roth-2');
+     end
+   else Say(Simms, 'DA-Sim-2');
+
+   case Captured_american of
+     JMM: ForceSay(JMM, 'DA1-JMM-1a');
+     Joan: ForceSay(Joan, 'DA1-Joan-1a');
+     Lisa: ForceSay(Lisa, 'DA1-Lisa-1a');
+     Donaldson: ForceSay(Donaldson, 'DA1-Don-1a');
+     Cornell: ForceSay(Cornell, 'DA1-Corn-1a');
+     Denis: ForceSay(Denis, 'DA1-Den-1a');
+     Bobby: ForceSay(Bobby, 'DA1-Bobby-1a');
+     Gladstone: ForceSay(Gladstone, 'DA1-Glad-1a');
+     Cyrus: ForceSay(Cyrus, 'DA1-Cyrus-1a');
+     Stevens: ForceSay(Stevens, 'DA1-Huck-1a');
+     Brown: ForceSay(Brown, 'DA1-Brown-1a');
+     Gary: ForceSay(Gary, 'DA1-Gary-1a');
+     Coonie: ForceSay(Coonie, 'DA1-Con-1a');
+     Kurt: ForceSay(Kurt, 'DA1-Kurt-1a');
+     Yamoko: ForceSay(Yamoko, 'DA1-Yam-1a');
+     Frank: ForceSay(Frank, 'DA1-Frank-1a');
+     else
+       begin
+         Join= Rand(0,1);
+         if Join then
+           begin
+             if GetSex(Captured_american) = sex_male then
+               ForceSay(Captured_american, 'DA1-Sol1-1b')
+             else ForceSay(Captured_american, 'DA1-FSol1-1b');
+           end
+         else
+           begin
+             if GetSex(Captured_american) = sex_male then
+               ForceSay(Captured_american, 'DA1-Sol1-1a')
+             else ForceSay(Captured_american, 'DA1-FSol1-1a');
+           end;
+       end;
+   end;
+
+   if (Captured_american in [Donaldson, Denis, Bobby, Stevens, Brown, Yamoko]) or Join then
+     begin
+       Say(Roth, 'DA-Roth-3');
+       SetSide(Captured_american, alliance);
+       Alliance_am_soldiers= Alliance_am_soldiers ^ Captured_american;
+       All_americans= All_americans diff Captured_american;
+     end
+   else
+     begin
+       Say(Roth, 'DA-Roth-3a');
+       RemoveUnit(Captured_american);
+       True_americans= True_americans ^ Captured_american;
+     end;
+   SetLives(Captured_american, 1000);
+
+   // The player lose the game if JMM is captured
+   if (Captured_american = JMM) then
+     enable(JMM_Captured);
+
+   DialogueOFF;
+ end;
+
+Function HealExplorers;
+ begin
+   If (IsLive(Explorer1) and not(See(americans, Explorer1))) then SetLives(Explorer1, 1000);
+   If (IsLive(Explorer2) and not(See(americans, Explorer2))) then SetLives(Explorer2, 1000);
+ end;
+
+
+Function SohwCaptureToPlayer(Captured_american, Explorer1, Explorer2);
+var AmToAr, ArToAm, Un, Units_to_stop;
+  begin
+     // Stop all attacking units
+     AmToAr= GetAttitude(americans, arabians);
+     ArToAm= GetAttitude(arabians, americans);
+     SetAttitude(americans, russians, att_friend, true);
+     SetAttitude(americans, russians1, att_friend, true);
+     SetAttitude(americans, arabians, att_friend, true);
+     Units_to_stop= FilterAllUnits([[f_or, [f_side, russians], [f_side, russians1], [f_side, arabians], [f_side, americans]],
+                                    [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]);
+     For Un in Units_to_stop do
+       begin
+         if Attacks(Un) <> 0 then
+           ComStop(Un);
+       end;
+
+     while IsInUnit(Captured_american) <> 0 do
+       begin
+         ComExitVehicle(IsInUnit(Captured_american));
+         Wait(1);
+       end;
+     SetSide(Captured_american, americans1);
+     ComStop(Captured_american);
+     DoNotAttack(alliance, Captured_american);
+     DoNotAttack(Explorers_side, Captured_american);
+     if (Explorer1 <> 0) and (Explorer2 <> 0) then
+       CenterNowOnUnits([Explorer1, Explorer2, Captured_american])
+     else CenterNowOnUnits(Captured_american);
+
+     ingame_video= true;
+     if Explorer1 <> 0 then TeleportUnit(Explorer1, 245, 186, 3, true);
+     if Explorer2 <> 0 then TeleportUnit(Explorer2, 245, 186, 3, true);
+//     msg([['teleport'], [Captured_american]]);
+     TeleportUnit(Captured_american, 245, 186, 3, true);
+     Wait(0$3);
+     CenterNowOnUnits(Captured_american);
+     Wait(0$1);
+     ingame_video= false;
+     CaptureDialogue(Captured_american);
+     HealExplorers;
+
+     // Set the attitudes back
+     SetAttitude(americans, russians, att_enemy, true);
+     SetAttitude(americans, russians1, att_enemy, true);
+     SetAttitude(americans, arabians, AmToAr, false);
+     SetAttitude(arabians, americans, ArToAm, false);
+     NormalAttack(alliance, Captured_american);
+     NormalAttack(Explorers_side, Captured_american);
+     if Captured_american <> JMM then
+       begin
+         DialogueOn;
+         Wait(0$2);
+         Say(JMM, 'DAa-JMM-1');
+         if tick > Alliance_broadcast then
+           Say(JMM, 'DAa-JMM-1a');
+         Say(JMM, 'DAa-JMM-1b');
+         DialogueOff;
+       end;
+  end;
+
+
+Function CapturewWithoutShow(Captured_american, Explorer1, Explorer2);
+  begin
+     while IsInUnit(Captured_american) <> 0 do
+       begin
+         ComExitVehicle(IsInUnit(Captured_american));
+         Wait(1);
+       end;
+     SetSide(Captured_american, americans1);
+     ComStop(Captured_american);
+     DoNotAttack(alliance, Captured_american);
+     DoNotAttack(Explorers_side, Captured_american);
+     if Explorer1 <> 0 then TeleportUnit(Explorer1, 245, 186, 3, true);
+     if Explorer2 <> 0 then TeleportUnit(Explorer2, 245, 186, 3, true);
+     TeleportUnit(Captured_american, 245, 186, 3, true);
+     Wait(0$3);
+     CaptureDialogue(Captured_american);
+     NormalAttack(alliance, Captured_american);
+     NormalAttack(Explorers_side, Captured_american);
+     HealExplorers;
+  end;
+
+Function SetExplorerWayNumber;
+var WayNumber;
+ begin
+   if GetAttitude(russians, Explorers_Side) = att_enemy then
+     begin
+       Explorer_Way_Number= Rand(1,4);
+       if Explorer_Way_Number > 1 then Explorer_Way_Number= 2;
+     end
+   else
+     Explorer_Way_Number= Rand(1,2);
+ end;
+
+
+
+// MARKED 17 - Explorers_Can_Go
+EVERY 0$0.5 MARKED 17 DO
+var Americans_to_capture, Captured_american,
+    AmToAr, ArToAm, Units_to_stop, Un, Uns;
+ begin
+   if not(Wood_registry) then
+     begin
+       Wood_registry= true;
+       Americans_to_capture= []; // We can not capture an american person
+       Captured_american= 0;
+
+       if IsOk(AllDep) then
+         begin
+           disable;
+           if IsLive(Explorer1) and IsLive(Explorer2) then
+             begin
+
+                // Teleport back
+               if ((GetLives(Explorer1) < 700) or (GetLives(Explorer2) < 700)) then
+                 begin
+                   if not(IsInArea(Explorer1, Al_Base)) then
+                     TeleportUnit(Explorer1, 245, 186, 3, true);
+
+                   if not(IsInArea(Explorer2, Al_Base)) then
+                     TeleportUnit(Explorer2, 245, 186, 3, true);
+                   HealExplorers;
+                   Step_On_The_Way= 1;
+                   SetExplorerWayNumber;
+                   Wait(0$3);
+
+                   // Do not follow the Explorers
+                   for Un in All_americans do
+                     if (Attacks(Un) in [Explorer1, Explorer2]) then
+                       ComStop(Un);
+                 end
+
+                // If explorers has no task
+               else
+                 begin
+
+                   // Chack if Explorer sees americans and capture them
+                   Uns= UnitFilter(All_americans, [f_or, [f_dist, Explorer1, 15], [f_dist, Explorer2, 15]]);
+                   for Un in Uns do
+                     Americans_to_capture= Americans_to_capture ^ Un;
+
+                   // Select an american to capture
+                   if Americans_to_capture > 0 then
+                     begin
+                       if (Americans_to_capture[1] <> JMM) or (Americans_to_capture ^ [] = 1) then
+                         Captured_american= Americans_to_capture[1]
+                       else if (Americans_to_capture ^ []) > 1 then
+                         Captured_american= Americans_to_capture[2];
+
+                       // CAPTURE HIM
+                       if (Captured_american <> JMM) or (Number_of_captured_americans <> 0) then
+                         begin
+                           Number_of_captured_americans= Number_of_captured_americans+1;
+
+                           // Show it to player
+                           if (Number_of_captured_americans = 1) or (Captured_american = JMM) then
+                             begin
+                               SohwCaptureToPlayer(Captured_american, Explorer1, Explorer2);
+                             end
+                           else // Capture without show
+                             begin
+                               CapturewWithoutShow(Captured_american, Explorer1, Explorer2);
+                             end;
+
+                           SetExplorerWayNumber;
+                           Step_On_The_Way= 1;
+
+                           Repeat
+                             Wait(0$1);
+                           Until (not(IsLive(Explorer1)) or not(IsLive(Explorer2)) or
+                                  (GetLives(Explorer1) = 1000 and GetLives(Explorer2) = 1000)
+                                  or Roth_Captured);
+                         end
+                       else Captured_american= 0;
+
+                     end
+
+                   // or continue the way
+                   else if not(HasTask(Explorer1)) and not(HasTask(Explorer2)) and
+                           (Step_On_The_Way < Way_of_Explorers[Explorer_Way_Number]) then
+                     begin
+                       Wait(0$2);
+                       if not(SeeXY(americans, Way_of_Explorers[Explorer_Way_Number][Step_On_The_Way][1],
+                                               Way_of_Explorers[Explorer_Way_Number][Step_On_The_Way][2]))
+                          or (Rand(1,20) = 1) then
+                         begin
+                           ComMoveXY(Explorer1, Way_of_Explorers[Explorer_Way_Number][Step_On_The_Way][1],
+                                                Way_of_Explorers[Explorer_Way_Number][Step_On_The_Way][2]);
+                           AddComHold(Explorer1);
+                           AddComForceInvisible(Explorer1);
+                           ComMoveXY(Explorer2, Way_of_Explorers[Explorer_Way_Number][Step_On_The_Way][1],
+                                                Way_of_Explorers[Explorer_Way_Number][Step_On_The_Way][2]);
+                           AddComHold(Explorer2);
+                           AddComForceInvisible(Explorer2);
+
+                           Step_On_The_Way= Step_On_The_Way+1;
+                         end;
+                     end;
+
+                 end;
+              end
+           else
+             begin
+                // Teleport back
+               if IsLive(Explorer1) and not(IsInArea(Explorer1, Al_Base)) then
+                 TeleportUnit(Explorer1, 245, 186, 3, true);
+
+               if IsLive(Explorer2) and not(IsInArea(Explorer2, Al_Base)) then
+                 TeleportUnit(Explorer2, 245, 186, 3, true);
+
+               HealExplorers;
+               SelectExplorers;  {Explorer1 is dead or Explorer2 is dead}
+
+               Step_On_The_Way= 1;
+               SetExplorerWayNumber;
+             end;
+
+           enable;
+         end
+       else disable; {If the depot is destroyed then end the task}
+       Wood_registry= false;
+     end
+   else
+     enable;
+ end;
+
+
+// Guard the Alliance wood
+EXPORT Function GuardAllianceWood;
+var Uns, Un, Americans_to_capture, Captured_american;
+  begin
+    if not(Wood_registry) then
+      begin
+        Wood_registry= true;
+         Americans_to_capture= [];
+         for Un in All_americans do
+         if IsInArea(Un, Ali_wood) then
+           begin
+//             msg([Un, GetType(Un)]);
+             if (GetType(Un) = unit_human) then
+               Americans_to_capture= Americans_to_capture ^ Un
+             else if (GetType(Un) = unit_vehicle) and (UnitsInside(Un) <> 0) then
+               Americans_to_capture= Americans_to_capture ^ UnitsInside(Un);
+           end;
+//         msg(Americans_to_capture);
+         for Captured_american in Americans_to_capture do
+           begin
+//             msg([Captured_american, Americans_to_capture]);
+             Number_of_captured_americans= Number_of_captured_americans+1;
+             if (Number_of_captured_americans= 1) or (Captured_american = JMM) then
+               begin
+                 SohwCaptureToPlayer(Captured_american, 0, 0);
+               end
+             else
+               begin
+                 CapturewWithoutShow(Captured_american, 0, 0);
+               end;
+           end;
+        Wood_registry= false;
+      end;
+  end;
+
+// MARKED 16 - Alliance_Captured
+// Alliance units go out of the map
+EVERY 0$1 MARKED 16 DO
+var Un;
+ begin
+   for Un in Captured_Units_of_Alliance do
+     if GetDistUnitXY(Un, 226, 197) < 2 then
+       begin
+         RemoveUnit(Un);
+         Captured_Units_of_Alliance= Captured_Units_of_Alliance diff Un;
+       end;
+   if Captured_Units_of_Alliance > 0 then
+     begin
+       enable;
+       for Un in Captured_Units_of_Alliance do
+         ComMoveXY(Un, 226, 197);
+     end;
+ end;
+
+
+EVERY 0$1 TRIGGER (Tick > Time_of_first_capture) MARKED 10 DO //and () DO
+ begin
+   enable(Explorers_Can_Go);
+ end;
+
+
+//EVERY 0$1 MARKED 17 DO
+//  begin
+//    debug_strings= [['Explorer1:'], [GetTaskList(Explorer1)], ['Explorer2'], [GetTaskList(Explorer2)]];
+//    enable;
+//  end;
+
+

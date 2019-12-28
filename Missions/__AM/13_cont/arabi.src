@@ -1,0 +1,404 @@
+ //arabi jdou kazit
+var arabatt,regid,attid,north_dep_cnt,south_dep_cnt;
+export arabsci,arsci_cipl;
+
+every 10$0 do
+//every 0$30 do  //debug!!!
+var tmp,tmp1;
+begin
+  wait(delay1);
+  uc_nation=nation_arabian;
+  uc_side=ar;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=arv0_ch;
+  vc_weapon=arv0_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,cestajih,false);
+  preparemechanic(sex_male,arv0_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp1=[tmp];
+  vc_chassis=arv1_ch;
+  vc_weapon=arv1_wp;
+  tmp=createvehicle;
+  setdir(tmp,0);
+  placeunitarea(tmp,cestajih,false);
+  preparemechanic(sex_male,arv1_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+  vc_chassis=arv2_ch;
+  vc_weapon=arv2_wp;
+  tmp=createvehicle;
+  setdir(tmp,0);
+  placeunitarea(tmp,cestajih,false);
+  preparemechanic(sex_male,arv2_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+//  comagressivemove(tmp1,76,99);
+  if debug then msg('prvni utok (kryci)');
+  regid=mcregistry(ar,[[mc_reg_area_to_guard,area4reg],[mc_reg_refresh_time,11],mc_reg_ignore_fog]);
+  attid=mcattack(100,regid,tmp1,[mc_no_stop]);
+
+  wait(0$2);
+  preparescientist(sex_female,arsc0_sk);
+  arabsci=createhuman;
+  arsci_cipl=false;
+  placeunitxyr(arabsci,58,2,2,false);
+  comcontaminate(arabsci,23,37); //66,16);
+  wait(0$3);
+  arabatt=tmp1;
+  north_dep_cnt=false;
+  south_dep_cnt=false;
+  enabled=0;
+  enable(01);
+  while not arsci_cipl and not north_dep_cnt do wait(0$1);
+  killmc(attid);
+  commovexy(arabatt^[arabsci],58,1);
+  enabled=1;
+{  enable(02);}
+end;               
+
+export sibsev,marked_08;
+
+on sibdepositcontaminated(un,x,y) do
+var tmp,tmp1,tmp2;
+  if (x=23) and (y=37) then begin   //was 66,16
+    sibsev=true;
+{    killmc(attid);
+    commovexy(arabatt^[un],58,1);   
+    if not north_dep_cnt then begin }
+      north_dep_cnt=true;
+{      wait(0$17);
+      enable(02);  
+    end           }
+  end    
+  else begin
+    enable(08);
+{    killmc(attid);
+    commovexy(arabatt^[un],148,118);}
+    south_dep_cnt=true;
+  end;
+
+on siberitedepositdestroyed(x,y) marked 08 do
+var tmp,tmp1,tmp2;
+  if (x=91) and (y=111) and not getlistofresourcesinarea(northdep) then begin
+    tmp=filterallunits([[f_side,am],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+    tmp2=0;
+    for tmp1 in tmp do tmp2=tmp2+getresourcetype(getbase(tmp1),mat_siberit);
+    tmp=filterallunits([[f_side,am],[f_or,[f_class,class_engineer],[f_weapon,us_cargo_bay]]]);
+    tmp2=tmp2+getcargo(tmp,mat_siberit);
+    tmp2=tmp2+getresourcearea(celamapa,mat_siberit);
+    tmp1=70;       //10 pristavek + 60 raketa
+    if filterallunits([[f_side,am],[f_btype,b_ext_siberium]]) then tmp1=tmp1-10;
+    if researched(am,tech_sibfiss) then tmp1=tmp1-60;
+    if tmp1>tmp2 then youlost('siberite');
+  end;
+
+var enabled;
+every 0$0.43 marked 01 do
+var tmp,tmp1;
+begin
+  tmp=filterunitsinarea(uniksever,[[f_side,ar]]);
+  if tmp then
+    for tmp1 in tmp do destroyunit(tmp1); //removeunit(tmp1);
+  tmp=filterallunits([[f_side,ar],[f_ok],[f_or,[f_occupied],[f_type,unit_human]]]);
+  if tmp and (enabled<600) then begin
+    enable;
+    if enabled then enabled=enabled+1;
+    if (enabled mod 10)=1 then commovetoarea(tmp,uniksever); //commovexy(tmp,58,1);
+  end
+  else {if not north_dep_cnt then begin north_dep_cnt=true;enable(02);end}
+    begin
+      if tmp then
+        for tmp1 in tmp do destroyunit(tmp1);
+      enable(02);
+    end;
+end;
+
+var enabled2;
+every 0$0.43 marked 03 do
+var tmp,tmp1;
+begin
+  tmp=filterunitsinarea(unikjih,[[f_side,ar]]);
+  if tmp then
+    for tmp1 in tmp do destroyunit(tmp1);
+  tmp=filterallunits([[f_side,ar],[f_ok],[f_or,[f_occupied],[f_type,unit_human]]]);
+  if tmp and (enabled<600) then begin
+    enable;
+    enabled2=enabled2+1;
+    if not (enabled mod 12) then commovetoarea(tmp,unikjih); //commovexy(tmp,148,118);
+  end
+    else
+      if tmp then
+       for tmp1 in tmp do destroyunit(tmp1);
+end;
+
+//dialog 4
+every 0$1 {trigger north_dep_cnt} marked 02 do
+var tmp,tmp1,tmp2;
+begin
+  tmp=filterallunits([[f_side,am],[f_class,class_scientistic]]) diff john;
+  if not tmp then begin
+    tmp=filterallunits([[f_side,am],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john;
+    tmp1=[];
+    for tmp2 in tmp do tmp1=tmp1^[getskill(tmp2,skill_scientistic)];
+    tmp=bestfromlistbylist(tmp,tmp1);
+  end
+  else tmp=tmp[1];
+  if tmp and north_dep_cnt then begin
+    dialogueon;
+    say(tmp,'D4-Sci1-1');
+    say(john,'D4-JMM-1');
+    say(tmp,'D4-Sci1-2');
+    say(john,'D4-JMM-2');
+    say(tmp,'D4-Sci1-3');
+    say(john,'D4-JMM-3');
+    if getresourcevisibility(91,111,am) then say(john,'D4-JMM-3a')
+    else say(john,'D4-JMM-3b');
+    dialogueoff;
+  end;
+  //arabove jsou kazit druhe lozisko
+  wait(delay1);
+  uc_nation=nation_arabian;
+  uc_side=ar;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=arv0_ch;
+  vc_weapon=arv0_wp;
+  tmp=createvehicle;
+  setdir(tmp,3);
+  placeunitarea(tmp,cestasever,false);
+  preparemechanic(sex_male,arv0_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp1=[tmp];
+  vc_chassis=arv1_ch;
+  vc_weapon=arv1_wp;
+  tmp=createvehicle;
+  setdir(tmp,2);
+  placeunitarea(tmp,cestasever,false);
+  preparemechanic(sex_male,arv1_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+  vc_chassis=arv2_ch;
+  vc_weapon=arv2_wp;
+  tmp=createvehicle;
+  setdir(tmp,3);
+  placeunitarea(tmp,cestasever,false);
+  preparemechanic(sex_male,arv2_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+
+//  comagressivemove(arabatt,76,99);
+  if debug then msg('druhy utok (kryci)');
+  attid=mcattack(100,regid,tmp1,[mc_no_stop{,[mc_area_dont_leave,dropzone]}]);
+
+  arabatt=tmp1;
+  wait(0$5);
+  preparescientist(sex_female,arsc0_sk);
+  arabsci=createhuman;
+  arsci_cipl=false;
+  placeunitxyr(arabsci,97,118,2,false);
+  comcontaminate(arabsci,91,111);
+  while not arsci_cipl and not south_dep_cnt do wait(0$1);
+
+  tmp=filterallunits([[f_side,am],[f_class,class_scientistic]]) diff john;
+  if not tmp then begin
+    tmp=filterallunits([[f_side,am],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john;
+    tmp1=[];
+    for tmp2 in tmp do tmp1=tmp1^[getskill(tmp2,skill_scientistic)];
+    tmp=bestfromlistbylist(tmp,tmp1);
+  end
+  else tmp=tmp[1];
+  if tmp and south_dep_cnt and not north_dep_cnt then begin
+    dialogueon;
+    say(tmp,'D4-Sci1-1');
+    say(john,'D4-JMM-1');
+    say(tmp,'D4-Sci1-2');
+    say(john,'D4-JMM-2');
+    say(tmp,'D4-Sci1-3');
+    say(john,'D4-JMM-3');
+    if getresourcevisibility(23,37,am) then say(john,'D4-JMM-3a')
+    else say(john,'D4-JMM-3b');
+    dialogueoff;
+  end;
+
+  killmc(attid);
+  commovexy(arabatt^[arabsci],148,118);
+  enable(03);
+  enabled2=0;
+
+  enable(11);
+end;
+
+
+var attida;
+every 0$1 trigger posily do
+var tmp,tmp1;             
+begin
+  if go4it<=(9+30) then go4it=41;
+  wait(1$30);
+  if debug then msg('utok na posily');
+  uc_side=ar;
+  uc_nation=nation_arabian;
+  vc_chassis=arattv0_ch;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_weapon=arattv0_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitxyr(tmp,170,69,6,false);
+  preparemechanic(sex_male,aratt0);
+  placehumaninunit(createhuman,tmp);
+  tmp1=[tmp];
+  vc_chassis=arattv1_ch;
+  vc_weapon=arattv1_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitxyr(tmp,170,69,6,false);
+  preparemechanic(sex_male,aratt1);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+  vc_chassis=arattv2_ch;
+  vc_weapon=arattv2_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitxyr(tmp,170,69,6,false);
+  preparemechanic(sex_male,aratt2);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+  vc_chassis=arattv3_ch;
+  vc_weapon=arattv3_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitxyr(tmp,170,69,6,false);
+  preparemechanic(sex_male,aratt3);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+  vc_chassis=arattv4_ch;
+  vc_weapon=arattv4_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitxyr(tmp,170,69,6,false);
+  preparemechanic(sex_male,aratt4);
+  placehumaninunit(createhuman,tmp);
+  tmp1=tmp1^[tmp];
+  if difficulty=3 then begin
+    vc_chassis=arattv4_ch;
+    vc_weapon=arattv4_wp;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitxyr(tmp,170,69,6,false);
+    preparemechanic(sex_male,aratt4);
+    placehumaninunit(createhuman,tmp);
+    tmp1=tmp1^[tmp];
+  end;
+
+  comagressivemove(tmp1,82,62);
+//  debug_strings=[];
+//  wait(0$0.5);
+//  msg('hi!');
+  while unitfilter(tmp1,[[f_ok]]) diff filterunitsinarea(wayp00,[[f_side,ar],[f_ok]]) do wait(0$1);
+//  msg('he?');
+//  debug_strings=[];
+  //commovexy(tmp1,68,103);
+  attida=mcattack(100,regid,tmp1,[mc_no_stop]);
+
+
+end;            
+
+
+//nejake ty utoky
+var attidb;
+export attno;
+every 0$10+10$0 marked 11 do
+var tmp,tmp1,tmp2,ch,wp,ctrl,neco;
+begin           
+  go4it=go4it-1;
+  if not go4it then begin
+    if debug then msg('nejaky ten utok');
+    attno=attno+1;
+    uc_side=ar;
+    uc_nation=nation_arabian;
+    case difficulty of
+      1:begin
+        ch=[{ar_medium_trike,ar_medium_trike,ar_medium_trike,}ar_half_tracked];
+        wp=[ar_gun,ar_gun,ar_gun,ar_rocket_launcher,ar_flame_thrower,ar_gatling_gun,
+            ar_gatling_gun,ar_gatling_gun,ar_double_machine_gun,ar_double_machine_gun];
+      end;
+      2:begin
+        ch=[{ar_medium_trike,ar_medium_trike,}ar_half_tracked,ar_half_tracked];
+        wp=[ar_gun,ar_gun,ar_gun,ar_rocket_launcher,ar_flame_thrower,ar_flame_thrower,
+            ar_gatling_gun,ar_gun,ar_rocket_launcher,ar_flame_thrower];
+      end;
+      3:begin
+        ch=[{ar_medium_trike,}ar_half_tracked,ar_half_tracked,ar_half_tracked,ar_half_tracked];
+        wp=[ar_gun,ar_gun,ar_gun,ar_rocket_launcher,ar_flame_thrower,ar_flame_thrower,
+            ar_flame_thrower,ar_rocket_launcher,ar_rocket_launcher,ar_flame_thrower];
+      end;
+    end;
+
+    vc_control=control_manual;
+    vc_engine=engine_siberite;
+    tmp1=[];
+    case difficulty of
+      1:neco=1;
+      2:neco=2;
+      3:neco=4;
+    end;
+    if attno>3 then neco=neco+((attno-3)div 2); //uchylny vzorecek, co? :)
+    for tmp2=1 to 2+neco do begin
+      vc_chassis=ch[rand(1,0+ch)];
+      vc_weapon=wp[rand(1,0+wp)];
+      ctrl=0;
+      if prob(33) then ctrl=1;
+      if ctrl then vc_control=control_apeman;
+      tmp=createvehicle;
+      setdir(tmp,4);
+      placeunitxyr(tmp,187,109,6,false);
+      if not ctrl then begin
+        preparemechanic(sex_male,rand(3+difficulty,5+difficulty));
+        placehumaninunit(createhuman,tmp);
+      end
+      else vc_control=control_manual;
+      tmp1=tmp1^[tmp];
+    end;
+    vc_control=control_apeman;
+    if attno>3 then begin
+      if difficulty>1 then begin
+        vc_chassis=ar_half_tracked;
+        vc_weapon=ar_selfpropelled_bomb;
+        tmp=createvehicle;
+        setdir(tmp,4);
+        placeunitxyr(tmp,187,109,7,false);
+        tmp1=tmp1^[tmp];
+      end;
+      if difficulty>2 then begin
+        tmp=createvehicle;
+        setdir(tmp,4);
+        placeunitxyr(tmp,187,109,7,false);
+        tmp1=tmp1^[tmp];
+      end;
+    end;
+
+    comagressivemove(tmp1,82,62);
+    while unitfilter(tmp1,[[f_ok]]) diff filterunitsinarea(wayp00,[[f_side,ar],[f_ok]]) do wait(0$1);
+
+    attidb=mcattack(100,regid,tmp1,[mc_no_stop]);
+//    go4it=rand(30,66);  //5-11min
+    go4it=rand(delay2*3,108-18*difficulty); //(9,6,3)-(15,12,9)min
+    enable(12);
+  end
+  else enable;
+end;
+
+every 0$3.3+1 marked 12 do
+begin
+  if not unitfilter(getmcunits(attidb),[f_or,[f_occupied],[f_type,unit_human]]) then begin
+    killmc(attidb);
+    enable(11);
+  end
+  else enable;
+end;
+
+

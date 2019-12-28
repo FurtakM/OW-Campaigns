@@ -1,0 +1,856 @@
+var Gla, Bur, Pla, Gos, Fad, Bor, Tsr, Dav, Eis, Glb;
+var talking;
+
+export function inicializace_dialogues;
+begin
+   Bur:=Burlak;
+   Gla:=Gladkov;
+   Glb:=Gleb;
+   Pla:=Platonov;
+   Gos:=Gossudarov;
+   Fad:=Fadeev;
+
+   Bor:=Borodin;
+   Tsr:=Tsaritsyn;
+   Dav:=Davidov;
+   Eis:=Eisenstein;
+
+
+   talking:=[Bur, Gla, Pla, Gos, Fad, Bor, Tsr, Dav, Eis, Glb];
+end;
+
+// Dialogue Start (Burlak and Gladkov standing in the open, with couple of other characters nearby)
+export function DStart;
+begin
+   hide_interface_automaticaly:=true;
+   InGameOn;
+   CenterNowOnUnits(IsInUnit(Bur));
+   CenterNowOnUnits(Bur);
+   while IsInUnit(bur) do begin
+     ComExitVehicle(Bur);
+     wait(0$0.3);
+   end;
+   Say(Bur, 'DStart-Bur-1');//So where is everyone?
+   Say(Gla, 'DStart-Gla-1');//They are all here.
+   Say(Bur, 'DStart-Bur-2');//This is it!? You sai_s[4] there were many who supported you.
+   Say(Gla, 'DStart-Gla-2');//They do, but they are too afrai_s[4] to show themselves.
+   Say(Bur, 'DStart-Bur-3');//(sarcastic) Brilliant!
+   Say(Gla, 'DStart-Gla-3');//But knowing our supporters are there, means once we have demonstrated our strength the battle will be won quickly. I believe four bases under our command would be enough for victory.
+   Say(Bur, 'DStart-Bur-4');//Do you have a list of the targets comrade Gladkov?
+   SetBName(da, 'bluekher');
+   SetBName(dc, 'yegorov');
+   SetBName(dd, 'ryutin');
+   SetBName(db, 'budonny');
+   SetBName(de, 'yakir');
+   RevealFogArea(you, near_base);
+   CenterOnUnits(dc);
+   DWait(0$2);
+   Say(Gla, 'DStart-Gla-4');//There is A. I. Yegorov base in South West, commanded by colonel Tsarytsyn. He is a hard-line communist but if we can persuade him our cause is for the people he may join us.
+   CenterOnUnits(dd);
+   DWait(0$2);
+   Say(Gla, 'DStart-Gla-4a');//To the South East there is M. N. Ryutin base, under command of colonel Davidov. He's a little mad, spends too much time in the lab with scientists.
+   CenterOnUnits(de);
+   DWait(0$2);
+   Say(Gla, 'DStart-Gla-4b');//In East there is Y. E. Yakir base, commanded by colonel Eisenstein. He's a bully but can be bullied as well!
+   CenterOnUnits(db);
+   DWait(0$2);
+   Say(Gla, 'DStart-Gla-4c');//There is M. A. Budonny base in the North, it's commanded by colonel Borodin. He is weak man out for himself, he will go with the one who has the upper hand.
+   CenterOnUnits(da);
+   DWait(0$2);
+   Say(Gla, 'DStart-Gla-4d');//There is V. K. Bluekher base in North West (camera pans). Obviously this is commanded by Platonov, so we can only use force here.
+   Say(Gla, 'DStart-Gla-4e');//Of course, if we just went straight for Platonov and defeated him the rest would follow then. This could prevent many casualties. But the decision is yours comrade. We follow your command.
+   SaveForQuickRestart;
+   CenterNowOnUnits(Bur);
+   ChangeMissionObjectives('MStart');
+   InGameOff;
+end;
+
+// Dialogue Gossudarov (some time after the start of mission, Russian scientists headed by Gossudarov will start to leave base and head Eastward)
+every 29$0 marked 111 do
+begin
+  disable(112);
+  zdrhaji;
+end;
+every 0$30 trigger kecali_o_artefaktu marked 112 do
+begin
+  disable(111);
+  wait(2$15);
+  zdrhaji;
+end;
+
+
+function zdrhaji;
+var ai1sci, i, mytick;
+begin
+   vedci_zacali_zdrhat:=true;
+   TeleportExit(telp1, 136, 88);
+   ai1sci:=UnitFilter(humans[1], [mf_sci]);
+   if ai1sci then
+      run_sci:=ai1sci;
+   humans:=replace(humans,1,humans[1] diff run_sci);
+   sci:=sci diff run_sci;
+   for i in utek do
+      AddComMoveXY(run_sci, i[1], i[2]);
+   wait(0$10);
+   DGossudarov;
+   mytick:=tick+1$30;
+   while mytick>tick and not UnitFilter(run_sci, [f_or,[f_not,[f_alive]],[f_distxy, 142,88, 10]]) do
+     wait(0$1);
+   ComExitVehicle( Gossudarov);
+   while not UnitsInside(art_cargo) do begin
+     ComEnterUnit( Gossudarov, art_cargo);
+     wait(0$1);
+   end;
+   if UnitFilter(run_sci, [[f_distxy, 142,88, 12]]) then
+     while not UnitFilter(art_cargo, [[f_distxy, 136,88, 15]]) do begin
+       ComMoveUnit(art_cargo, telp1);
+       wait(0$1);
+     end;
+
+   while UnitFilter(run_sci ^ art_cargo, [[f_placed]]) do begin
+     ComMoveXY((run_sci) ^ art_cargo, utek_e[1], utek_e[2]);
+     for i in UnitFilter((run_sci) ^ art_cargo, [[f_distxy, utek_e[1], utek_e[2], 5]]) do
+        if i=art_cargo then
+          LostArte
+        else begin
+          RemoveUnit(i);
+          Goss:=false;
+        end;
+     wait(0$1);
+   end;
+end;
+every 0$1 trigger vedci_zacali_zdrhat and UnitFilter(run_sci^Gossudarov, [[f_alive],[f_placed]])=0 do
+begin
+  ChangeMissionObjectives('MGossSciOut');
+end;
+every 0$1 do //test zda maji artefact
+var h,hinfo,i;
+begin
+  h:=FindArtifact(4);
+  if h then begin // nasel artefact
+    hinfo:=HexInfo(h[1],h[2]);
+    if hinfo>0 then begin //je to jednotka
+      if GetSide(hinfo)=you then //je tvoje
+        maji_artifact:=true
+      else
+        maji_artifact:=false;
+    end
+    else begin
+      maji_artifact:=false;
+      for i:=1 to 5 do //je na zemi ale v okoli nejake tve base
+        if (ai_s[i] in your_bases) and (InArea(h[1],h[2],near_base_area[i]) or InArea(h[1],h[2],nearD)) then begin
+          maji_artifact:=true;
+          break;
+        end;
+    end;
+  end;
+  enable;
+end;
+
+export function DGossudarov;
+var x,y;
+begin
+
+   // RevealFogArea(you, vedci_zdrhaji);
+   x:=GetX(run_sci[1]);
+   y:=GetY(run_sci[1]);
+   // places area of seeing (negative range for radar seeing)
+   PlaceSeeing(x,y, You, 10);
+
+   CenterNowOnXY(x,y);
+   wait(0$1);
+   DialogueOn;
+   Say(Fad, 'DGossudarov-Fad-1');//Look, major. The scientists are leaving Blukher base. What's going on?
+   Say(Bur, 'DGossudarov-Bur-1');//(loudly) Professor!? Why the hurry?
+   Say(Gos, 'DGossudarov-Gos-1');//You know where we are going, Burlak. I'm only sorry you won't be with us. Defeating Platonov will change nothing.
+   Say(Bur, 'DGossudarov-Bur-2');//Leave the Artefact professor. Like you, it is going nowhere.
+   Say(Gos, 'DGossudarov-Gos-2');//Comrade...
+   Say(Bur, 'DGossudarov-Bur-3');//You spoke about responsibility, professor and you were right, I am responsible to my country which trusted me to preserve it's future. It trusted you also. You will not leave here alive.
+   Say(Gos, 'DGossudarov-Gos-3');//Then kill us Burlak. We will die free men, and you will live a prisoner of the party and it's propaganda.
+
+   ChangeMissionObjectives('MGoss');
+   DialogueOff;
+   wait(0$5);
+   // removes area of seeing (all matching areas)
+   RemoveSeeing(x,y, You);
+end;
+//------------------------------------------------------- BASE A --------------------------------------------------
+// Dialogue A_BaseContact
+every 0$2 trigger see_any(ai_s[plat_i], your_humans^your_cars) and UnitFilter(your_humans^your_cars, [[f_inarea,near_base_area[plat_i]]]) do
+begin
+   DA_BaseContact;
+end;
+export function DA_BaseContact;
+begin
+   DialogueOn;
+   Say(Pla, 'DA-BaseContact-Pla-1');//Gorky, you are treacherous scum! I will wipe every trace of you from the face of the earth.
+   Say(Bur, 'DA-BaseContact-Bur-1');//I am not a traitor, I only do this to ensure success of our mission. You are an obstacle Platonov. You must leave of your own accord or be removed.
+   DialogueOff;
+end;
+every 0$20 trigger see_any(ai_s[plat_i], your_humans^your_cars) and UnitFilter(your_humans^your_cars, [[f_inarea,near_base_area[plat_i]]]) do
+begin
+   wait(0$20);
+   if see_any(ai_s[plat_i], your_humans^your_cars) and UnitFilter(your_humans^your_cars, [[f_inarea,near_base_area[plat_i]]]) then
+     DA_BaseRefuse;
+   enable;
+end;
+every 0$2 trigger UnitFilter(humans[plat_i], [f_not,mf_sci])<12 do
+begin
+   DA_BaseRefuse;
+   ZoufalUtok;
+end;
+every 0$2 trigger UnitFilter(humans[plat_i], [f_not,mf_sci])<10 do
+begin
+   DA_BaseRefuse;
+   BehemothUtok;
+end;
+every 25$0 do
+begin
+   BehemothUtok;
+end;
+every 10$0 + 0$5 do
+begin
+   NormalUtok;
+end;
+
+every 0$2 trigger UnitFilter(humans[plat_i], [f_not,mf_sci])<=7 and UnitFilter(buildings[plat_i], [f_or,[f_btype,b_turret],[[f_occupied],mf_fort]])<=2 do
+var kam_zdrha,k_dispozici, mt, kam_telp, h, i, kam_zdrha_i;
+begin
+   k_dispozici:=(ai diff (ai[1]^your_bases));
+   if k_dispozici then begin
+     kam_zdrha:=(k_dispozici)[Rand(1,k_dispozici)];
+     case kam_zdrha of
+       ai_s[2] : kam_telp:=b_base;
+       ai_s[3] : kam_telp:=c_base;
+       ai_s[4] : kam_telp:=d_base;
+       ai_s[5] : kam_telp:=e_base;
+     end;
+     repeat
+       h:=RandHexArea(kam_telp,false);
+     until HexInfo(h[1],h[2])=0;
+     TeleportExit(telp1,h[1],h[2]);
+
+     ComExitVehicle(Platonov);
+     AddComExitBuilding(Platonov);
+     AddComEnterUnit(Platonov, telp1);
+     for i:=1 to 5 do
+       if ai_s[i]=kam_zdrha then 
+         kam_zdrha_i:=i;
+     plat_i:=kam_zdrha_i;
+     ai_s:=replace(ai_s,kam_zdrha_i,ai_s[1]);
+     wait(0$5);
+     AddComEnterUnit(Platonov, depots[kam_zdrha_i]);
+     DA_BaseAccept;
+     SurrenderBase(t_killbeat, ai_s[plat_i]);
+     SetAttitude(ai_s[plat_i],you,att_enemy,true);
+     SetSideBase_custom(GetBase(depots[plat_i]),ai_s[plat_i]);
+     SetSide(FilterAllUnits([[f_side,kam_zdrha]]),ai_s[plat_i]);
+     wait(1$0);
+     AddComEnterUnit(Platonov, depots[kam_zdrha_i]);
+     ZoufalUtok;
+   end
+   else begin
+     while not IsDead(Platonov) do begin
+       ComAttackUnit(Platonov, NearestUnitToUnit(your_humans, Platonov));
+       wait(0$5);
+     end;
+{     platonov_goes_out_of_map:=true;
+     wait(0$5);
+     DA_BaseAccept;
+     SurrenderBase(t_killbeat, ai_s[plat_i]);
+     VyhraMain;}
+   end;
+end;
+{export platonov_goes_out_of_map;
+every 0$1 trigger platonov_goes_out_of_map do
+begin
+  ComMoveToArea(Platonov, border_area);
+  if IsInArea(Platonov, border_area) then
+    RemoveUnit(Platonov)
+  else
+    enable;
+end;}
+
+// Dialogue A_BaseRefuse
+export function DA_BaseRefuse;
+begin
+   DialogueOn;
+   if not IsDead(Pla) then
+     if not Say(Pla, 'DA-BaseReguse-Pla-1')//Your death approaches, Gorky!
+     then msg('bad ident: DA-BaseReguse-Pla-1');
+   DialogueOff;
+end;
+
+// Dialogue A_BaseAccept (Platonov runs away ');//he uses the teleport)
+export function DA_BaseAccept;
+begin
+   DialogueOn;
+   Say(Pla, 'DA-BaseAccept-Pla-1');//You have tricked me, Gorky. But this is not the end. I will defeat you. I swear it!
+   DialogueOff;
+end;
+
+// Dialogue Behemoth (when Behemoth spotted)
+every 0$2 trigger See(you, behemoth) do
+var who;
+begin
+   //if See(you, behemoth) then begin
+     BehemothSeen:=true;
+
+     if GetSide(behemoth) = you then
+          exit;  //Player has taken over Platonov's base
+
+     CenterNowOnUnits(behemoth);
+     who:=WhoSayAny(your_humans diff talking, you, sex_male, 0, 0);
+     DialogueOn;
+     Say(who, 'DBehemoth-Rsol1-1');//Saint Trofimov. It's a moving fortress!
+     Say(Pla, 'DBehemoth-Pla-1');//Burlak! The time has come to meet your maker! You will be crushed like a beetle under my treads!
+     Say(Bur, 'DBehemoth-Bur-1');//Comrades! It's just a tank. A big mother of a tank I admit! But nothing we can't handle. Come on!
+     DialogueOff;
+   //end
+   //else
+   //  enable;
+end;
+
+//------------------------------------------------------- BASE B --------------------------------------------------
+
+// Dialogue B_BaseContact (use only if commander wants to refuse)
+every 0$2 trigger IsInArea(Bur, b_base) and ai_s[1]<>ai_s[2] do
+begin
+   if your_humans<12 and your_cars<20 then begin
+      DB_BaseContact;
+      DB_BaseRefuse1st;
+      wait(0$30);
+      enable(10);
+   end
+   else begin
+    if not ai_s[2] in your_bases then begin
+      SurrenderBase(t_intimidate, ai_s[2]);
+    end;
+   end;
+end;
+every 0$2 trigger IsInArea(Bur, b_base) and ai_s[1]<>ai_s[2] marked 10 do
+begin
+   if your_humans<12 and your_cars<20 then begin
+      DB_BaseRefuse;
+      while IsInArea(Bur, b_base) do
+        wait(0$1);
+      wait(0$20);
+      enable;
+   end
+   else begin
+    if not ai_s[2] in your_bases then begin
+      SurrenderBase(t_intimidate, ai_s[2]);
+    end;
+   end;
+end;
+every 0$2 trigger humans[2] <= 6 and ai_s[1]<>ai_s[2] do
+begin
+  if not ai_s[2] in your_bases then
+    SurrenderBase(t_killbeat, ai_s[2]);
+end;
+
+export function DB_BaseContact;
+begin
+   DialogueOn;
+   Say(Bor, 'DB-BaseContact-Bor-1');//We've heard about your mutiny, comrade. Your band of traitors will never win the support of Red Army troops.
+   DialogueOff;
+end;
+
+// Dialogue B_BaseRefuse (this dialogue is repeated always when the commander wants to refuse)
+export function DB_BaseRefuse1st;
+begin
+   DialogueOn;
+   Say(Bor, 'DB-BaseRefuse-Bor-1');//Your force is no threat to us. Leave while you still can, comrade.
+   DialogueOff;
+end;
+export function DB_BaseRefuse;
+begin
+//   DialogueOn;
+   Say(Bor, 'DB-BaseRefuse-Bor-1');//Your force is no threat to us. Leave while you still can, comrade.
+//   DialogueOff;
+end;
+
+// Dialogue B_BaseAccept
+export function DB_BaseAccept(first);
+begin
+   DialogueOn;
+   Say(Bor, 'DB-BaseAccept-Bor-1');//You are a mighty commander, comrade Gorki. I believe you can lead us to victory.
+   if first then Say(Bor, 'DB-BaseAccept-Bor-1a')//[first base] Take our base and all my men.
+            else Say(Bor, 'DB-BaseAccept-Bor-1b');//[otherwise] I need some men to defend this base against the enemy. But others I can put under your command.
+   DialogueOff;
+end;
+
+//------------------------------------------------------- BASE C --------------------------------------------------
+
+// Dialogue C_BaseContact
+var jeste_nebylo;
+every 0$2 trigger IsInArea(Bur, c_base) and ai_s[1]<>ai_s[4] do
+begin
+   jeste_nebylo:=[1,2,3,4,5,6];
+   DC_BaseContact;
+   if otazky then
+    if not ai_s[3] in your_bases then
+      SurrenderBase(t_persuade, ai_s[3])
+   else begin
+      DQrML_Wrong;
+      wait(0$30);
+      enable(11);
+   end;
+end;
+every 0$2 trigger IsInArea(Bur, c_base) marked 11 do
+begin
+   if not otazky then
+      enable
+   else
+      SurrenderBase(t_intimidate, ai_s[2]);
+end;
+every 0$2 trigger humans[3] <= 2 and ai_s[1]<>ai_s[4] do
+begin
+  if not ai_s[3] in your_bases then
+    SurrenderBase(t_killbeat, ai_s[3]);
+end;
+
+
+function otazky;
+var qb, qg, q;
+begin
+   DC_BaseQuestion;
+   qb:=0;
+   qg:=0;
+   q:=0;
+   while [(qb<=2),(qb<=1),(qb<=0)][difficulty] and jeste_nebylo do begin
+     q:=q+1;
+     case jeste_nebylo[Rand(1,jeste_nebylo)] of
+        1: begin if QML1 then qg:=qg+1 else qb:=qb+1; jeste_nebylo:=jeste_nebylo diff [1]; end;
+        2: begin if QML2 then qg:=qg+1 else qb:=qb+1; jeste_nebylo:=jeste_nebylo diff [2]; end;
+        3: begin if QML3 then qg:=qg+1 else qb:=qb+1; jeste_nebylo:=jeste_nebylo diff [3]; end;
+        4: begin if QML4 then qg:=qg+1 else qb:=qb+1; jeste_nebylo:=jeste_nebylo diff [4]; end;
+        5: begin if QML5 then qg:=qg+1 else qb:=qb+1; jeste_nebylo:=jeste_nebylo diff [5]; end;
+        6: begin if QML6 then qg:=qg+1 else qb:=qb+1; jeste_nebylo:=jeste_nebylo diff [6]; end;
+     end;
+   end;
+
+   if qg = 6 then
+        SA_OnTsaritsynQuizPerfectCleared;
+
+   if [(qb<=2),(qb<=1),(qb<=0)][difficulty] then
+     result:=true
+   else
+     result:=false;
+//   result:=q;
+end;
+export function DC_BaseContact;
+begin
+   DialogueOn;
+   Say(Tsr, 'DC-BaseContact-Tsr-1');//Comrade, I am not with you unless you are for the people. I am communist but what we saw in our country wasn't communism, it was defacement of it's principles.
+   DialogueOff;
+end;
+
+// Dialogue C_BaseQuestion
+export function DC_BaseQuestion;
+begin
+   DialogueOn;
+   Say(Tsr, 'DC-BaseQuestion-Tsr-1');//If you can prove to me that you are well-versed in true Marxism-Leninism, comrade, I'll go with you.
+   DialogueOff;
+end;
+
+// Query ML1 (in following queries, the option Ask Gleb is only available if Gleb is alive)
+function QML1;
+var mozn, qr, a, bad;
+begin
+//The seminal Marxist work "Das Kapital" (The Capital) was written by:
+//-1 Marx brothers
+//-2 Karl Marx
+//-3 St. Paul
+//-4 Ask Gleb
+   bad:=[1,3];
+
+   mozn:=[1,2,3];
+   if IsOk(Gleb) then
+     mozn:=mozn ^ [4];
+
+   qr:=SelectiveQuery('QML1', mozn);
+   if qr=4 then begin
+      a:=bad[Rand(1,2)];
+      DQrML_Gleb(a);
+      mozn:=mozn diff [a, 4];
+      qr:=SelectiveQuery('QML1', mozn);
+   end;
+   if qr in bad then
+      result:=false
+   else
+      result:=true;
+end;
+
+// Query ML2
+function QML2;
+var mozn, qr, a, bad;
+begin
+//The middle name of V. I. Lenin is:
+//-1 Ilyich
+//-2 Ivan
+//-3 Ignatius
+//-4 Ask Gleb
+   bad:=[2,3];
+
+   mozn:=[1,2,3];
+   if IsOk(Gleb) then
+     mozn:=mozn ^ [4];
+
+   qr:=SelectiveQuery('QML2', mozn);
+   if qr=4 then begin
+      a:=bad[Rand(1,2)];
+      DQrML_Gleb(a);
+      mozn:=mozn diff [a, 4];
+      qr:=SelectiveQuery('QML2', mozn);
+   end;
+   if qr in bad then
+      result:=false
+   else
+      result:=true;
+end;
+
+// Query ML3
+function QML3;
+var mozn, qr, a, bad;
+begin
+//The famous "Communist Manifesto" by K. Marx and B. Engels was first published in:
+//-38 BC
+//-1838
+//-2038
+//-4 Ask Gleb
+   bad:=[1,3];
+
+   mozn:=[1,2,3];
+   if IsOk(Gleb) then
+     mozn:=mozn ^ [4];
+
+   qr:=SelectiveQuery('QML3', mozn);
+   if qr=4 then begin
+      a:=bad[Rand(1,2)];
+      DQrML_Gleb(a);
+      mozn:=mozn diff [a, 4];
+      qr:=SelectiveQuery('QML3', mozn);
+   end;
+   if qr in bad then
+      result:=false
+   else
+      result:=true;
+end;
+
+// Query ML4
+function QML4;
+var mozn, qr, a, bad;
+begin
+//The acronym USSR stands for:
+//-1 Union of Sanctity, Serenity and Radiation
+//-2 Union of Shoplifters, Sycophants and Robbers
+//-3 Union of Soviet Socialist Republics
+//-4 Ask Gleb
+   bad:=[1,2];
+
+   mozn:=[1,2,3];
+   if IsOk(Gleb) then
+     mozn:=mozn ^ [4];
+
+   qr:=SelectiveQuery('QML4', mozn);
+   if qr=4 then begin
+      a:=bad[Rand(1,2)];
+      DQrML_Gleb(a);
+      mozn:=mozn diff [a, 4];
+      qr:=SelectiveQuery('QML4', mozn);
+   end;
+   if qr in bad then
+      result:=false
+   else
+      result:=true;
+end;
+
+// Query ML5
+function QML5;
+var mozn, qr, a, bad;
+begin
+//The Great October Socialist Revolution of 1917 that deposed the Tsar and created the first state of workers and peasants took place on:
+//-1 1st May
+//-2 7th November
+//-3 4th July
+//-4 Ask Gleb
+   bad:=[1,3];
+
+   mozn:=[1,2,3];
+   if IsOk(Gleb) then
+     mozn:=mozn ^ [4];
+
+   qr:=SelectiveQuery('QML5', mozn);
+   if qr=4 then begin
+      a:=bad[Rand(1,2)];
+      DQrML_Gleb(a);
+      mozn:=mozn diff [a, 4];
+      qr:=SelectiveQuery('QML5', mozn);
+   end;
+   if qr in bad then
+      result:=false
+   else
+      result:=true;
+end;
+
+// Query ML6
+function QML6;
+var mozn, qr, a, bad;
+begin
+   bad:=[2,3];
+
+   mozn:=[1,2,3];
+   if IsOk(Gleb) then
+     mozn:=mozn ^ [4];
+
+   qr:=SelectiveQuery('QML6', mozn);
+   if qr=4 then begin
+      a:=bad[Rand(1,2)];
+      DQrML_Gleb(a);
+      mozn:=mozn diff [a, 4];
+      qr:=SelectiveQuery('QML6', mozn);
+   end;
+   if qr in bad then
+      result:=false
+   else
+      result:=true;
+end;
+
+// Dialogue QrML_Right
+export function DQrML_Right(first);
+begin
+   DialogueOn;
+   Say(Tsr, 'DQrML#Right-Tsr-1');//Good. I see you are a true communist, comrade Gorky. Platonov was lax on ideology. It will be pleasure to work with you.
+   if first then Say(Tsr, 'DQrML#Right-Tsr-1a')//[first base] I'll now go to depot to immerse myself in study of fundamental Lenin's work "Several Remarks on Growing Corn in Southern Kamchatka". Meanwhile, you can take command of my base and my men.
+            else Say(Tsr, 'DQrML#Right-Tsr-1b');//[otherwise] I need some men to run this base, comrade, but you can take three with you.
+   DialogueOff;
+end;
+
+// Dialogue QrML_Wrong
+export function DQrML_Wrong;
+begin
+   DialogueOn;
+   Say(Tsr, 'DQrML#Wrong-Tsr-1');//No, this is not good. You are just like Platonov, ready to kill for things you know nothing about.
+   DialogueOff;
+end;
+
+// Dialogue QrML_Gleb (depending on the query select one line and redisplay query)
+function DQrML_Gleb(num);
+begin
+   DialogueOn;  //neni protoze by melo byt volano vzdy z DialogueOn
+   case num of
+     1: Say(Glb, 'DQrML#Gleb-Glb-1');//(certain) It definitely isn't the first option. (uncertain) I think.
+     2: Say(Glb, 'DQrML#Gleb-Glb-1a');//(certain) It definitely isn't the second option. (uncertain) I think.
+     3: Say(Glb, 'DQrML#Gleb-Glb-1b');//(certain) It definitely isn't the third option. (uncertain) I think.
+   end;
+   DialogueOff;
+end;
+//------------------------------------------------------- BASE D --------------------------------------------------
+
+// Dialogue D_BaseContact
+export maji_artifact;
+every 0$2 trigger IsInArea(Bur, d_base) and ai_s[1]<>ai_s[4] do
+begin
+   DD_BaseContact;
+   if maji_artifact then begin
+     if not ai_s[4] in your_bases then begin
+       SurrenderBase(t_pay, ai_s[4])
+     end;
+   end
+   else begin
+     DD_BaseRefuse1st;
+     while IsInArea(Bur, d_base) do
+       wait(0$1);
+     wait(0$20);
+     enable;
+   end;
+   enable(12);
+end;
+every 0$2 trigger IsInArea(Bur, d_base) and ai_s[1]<>ai_s[4] marked 12 do
+begin
+   if maji_artifact then begin
+     if not ai_s[4] in your_bases then begin
+       SurrenderBase(t_pay, ai_s[4])
+     end;
+   end
+   else begin
+     DD_BaseRefuse;
+     wait(0$20);
+     enable;
+   end;
+end;
+every 0$2 trigger humans[4] <= 4 and ai_s[1]<>ai_s[4] do
+begin
+  if not ai_s[4] in your_bases then
+    SurrenderBase(t_killbeat, ai_s[4]);
+end;
+export kecali_o_artefaktu;
+export function DD_BaseContact;
+begin
+   DialogueOn;
+   Say(Dav, 'DD-BaseContact-Dav-1');//I know about you, major Gorky, including your dealings with professor Gossudarov. I appreciate that you stayed with us. My concern is the Artefact. I believe it holds very powerful secrets.
+   Say(Bur, 'DD-BaseContact-Bur-1');//Maybe we can help you with Artefact research more than comrade Platonov.
+   kecali_o_artefaktu:=true;
+   DialogueOff;
+end;
+
+// Dialogue D_BaseRefuse
+export function DD_BaseRefuse1st;
+begin
+   DialogueOn;
+   Say(Dav, 'DD-BaseRefuse-Dav-1');//If you can secure the Artefact, it will prove to me that you're serious about science. Then I will support you.
+   DialogueOff;
+end;
+export function DD_BaseRefuse;
+begin
+   Say(Dav, 'DD-BaseRefuse-Dav-1');//If you can secure the Artefact, it will prove to me that you're serious about science. Then I will support you.
+end;
+
+// Dialogue D_BaseAccept (if the player brings Artefact)
+export function DD_BaseAccept(first);
+begin
+   DialogueOn;
+   Say(Dav, 'DD-BaseAccept-Dav-1');//Wonderful, comrade. By this one act you have done more for our cause than all the empty-headed generals put together.
+   if first then Say(Dav, 'DD-BaseAccept-Dav-1a')//[first base] I and three of my most senior scientists will begin work in the lab. The rest of the base is yours.
+            else Say(Dav, 'DD-BaseAccept-Dav-1b');//[otherwise] I need men to run the base and do the research, but the rest can go with you.
+   DialogueOff;
+end;
+
+//------------------------------------------------------- BASE E --------------------------------------------------
+
+// Dialogue E_BaseContact
+every 0$2 trigger IsInArea(Bur, e_base) and ai_s[1]<>ai_s[5] do
+begin
+   DE_BaseContact;
+   if UnitFilter(humans[5], [[f_ok]]) > 6 then begin
+     DE_BaseRefuse1st;
+     while IsInArea(Bur, e_base) do
+       wait(0$1);
+     wait(0$20);
+     enable(115);
+   end
+   else
+    if not ai_s[5] in your_bases then
+       SurrenderBase(t_beat, ai_s[5]);
+end;
+every 0$2 trigger IsInArea(Bur, e_base) and ai_s[1]<>ai_s[5] marked 115 do
+begin
+   if UnitFilter(humans[5], [[f_ok]]) > 6 then begin
+     DE_BaseRefuse;
+     while IsInArea(Bur, e_base) do
+       wait(0$1);
+     wait(0$20);
+   end;
+   enable;
+end;
+every 0$2 trigger UnitFilter(humans[5], [[f_ok]]) <= 6 and ai_s[1]<>ai_s[5] do
+begin
+  if not ai_s[5] in your_bases then
+    SurrenderBase(t_beat, ai_s[5]);
+end;
+every 0$2 trigger humans[5] <= 4 and ai_s[1]<>ai_s[5] do
+begin
+  if not ai_s[5] in your_bases then
+    SurrenderBase(t_killbeat, ai_s[5]);
+end;
+export function DE_BaseContact;
+begin
+   DialogueOn;
+   Say(Eis, 'DE-BaseContact-Eis-1');//We know about your mutiny, commander. I have never heard of such a deplorable act of insubordination!
+   Say(Bur, 'DE-BaseContact-Bur-1');//Platonov is a poor commander, you must know that. While he is in control we will never defeat our enemies. Which do you prefer!?
+   DialogueOff;
+end;
+
+// Dialogue E_BaseRefuse (he has a stasis researched)
+export function DE_BaseRefuse1st;
+begin
+   DialogueOn;
+   Say(Eis, 'DE-BaseRefuse-Eis-1');//I don't know if you are a good commander comrade Gorky. Attack my base and I will see.
+   DialogueOff;
+end;
+export function DE_BaseRefuse;
+begin
+//   DialogueOn;
+   Say(Eis, 'DE-BaseRefuse-Eis-1');//I don't know if you are a good commander comrade Gorky. Attack my base and I will see.
+//   DialogueOff;
+end;
+
+// Dialogue E_BaseAccept (when losses reach certain treshold)
+export function DE_BaseAccept(first);
+begin
+   DialogueOn;
+   Say(Eis, 'DE-BaseAccept-Eis-1');//Enough comrade Gorky! I see you are strong.
+   if first then Say(Eis, 'DE-BaseAccept-Eis-1a')//[first base] My men and my base are now at your service.
+            else Say(Eis, 'DE-BaseAccept-Eis-1b');//[otherwise] I need some men to defend this base, but you can take rest with you.
+   DialogueOff;
+end;
+
+//-------------------------------------------------------  --------------------------------------------------
+
+// Dialogue XbaseSurrender (when commander is killed)
+export function DXbaseSurrender(side);
+var who;
+begin
+   who:=WhoSayAny(FilterAllUnits([[f_type,unit_human],[f_nation,nation_russian]]) diff talking, side, sex_male, 0, 0);
+   DialogueOn;
+   Say(who, 'DXbaseSurrender-Rsol1-1');//Comrade Gorky, I speak for all comrades in this base. We recognise your strength and we support you. Take our base, we follow you now.
+   DialogueOff;
+end;
+
+// Dialogue Rocket (Weapon lab built)
+export function DRocket;
+var who;
+begin
+   who:=WhoSayAny(FilterAllUnits([[f_type,unit_human],[f_nation,nation_russian]]) diff talking, you, sex_male, class_scientistic, 0);
+   TalkOn;
+   Say(who, 'DRocket-RSci1-1');//Comrade commander. I've been thinking, attack from longer range would reduce casualties. If you want me to look into missile design I can do this.
+   TalkOff;
+end;
+
+// Query End
+every 0$1 trigger cap_bases>=4 do
+begin
+//   if QEnd then
+
+//      VyhraMain
+//   else begin
+      QEnd;
+      ChangeMissionObjectives('MDestroy');
+
+//      end_the_mission_allowed:=true;
+//   end;
+end;
+// Query End
+{
+every 0$1 trigger cap_bases>=5 do
+begin
+  if not IsPlaced(platonov) or IsDead(platonov) then
+    VyhraMain;
+end;}
+export function QEnd;
+var qr;
+begin
+//You now have the support of four commanders in this area. You can end the mission or play on. Will you:
+//-1 Continue
+//-2 End the mission.
+//   qr:=Query('QEnd');
+//   if qr=2 then result:=true;
+   qr:=Query('QKill');
+end;
+
+// Dialogue End (if Gladkov is not alive, some other character will take up his role)
+export function DEnd;
+var who;
+begin
+   who:=Gla;
+   if not IsOk(Gla) then
+      who:=WhoSayAny(FilterAllUnits([[f_type,unit_human],[f_nation,nation_russian]]) diff talking, you, sex_male, 0, 0);
+   DialogueOn;
+   Say(Bur, 'DEnd-Bur-1');//Now we have the support of our own troops we can concentrate on fighting the enemy!
+   if Say(who, 'DEnd-Gla-1') then //Congratulations, Burlak. This was a great achievement.
+      Say(Bur, 'DEnd-Bur-2');//Not for me, for all of us. I have learnt from this campaign that words can be as powerful as tanks.
+   Say(Bur, 'DEnd-Bur-2a');//We need a capable administrator who will take care of day-to-day running of the army. I'm prepared to conduct military operations. But for now we have to go to winter quarters anyway.
+   DialogueOff;
+end;
+

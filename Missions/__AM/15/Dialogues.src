@@ -1,0 +1,722 @@
+// hide_interface_automaticaly
+// interface_hidden
+Function FirstTalk;
+var list_of_q, selection, V;
+ begin
+
+    // Motion of vehicles
+   RaiseSailEvent(Run_JMM_Vehicles);  // In Americans1
+
+   if kappa_delayed then
+     begin
+       Say(JMM, 'D1T-JMM-1');
+       Say(Powell, 'D1T-Pow-1');
+       if kappa_saved then
+         begin
+           Say(JMM, 'D1T-JMM-2');
+           Say(Powell, 'D1T-Pow-2');
+         end
+       else if not(kappa_saved) and Woman_saved then
+         begin
+           Say(JMM, 'D1T-JMM-3');
+           Say(Powell, 'D1T-Pow-3');
+           case Woman_in_am14 of
+             1: Say(Joan, 'D1T-Joan-3');
+             2: Say(Lisa, 'D1T-Lisa-3');
+             3: Say(Coonie, 'D1T-Con-3');
+           end;
+           Say(Powell, 'D1T-Pow-4');
+         end
+       else if not(kappa_saved) and not(Woman_saved) then
+         begin
+           Say(JMM, 'D1T-JMM-4');
+           Say(Powell, 'D1T-Pow-5');
+         end;
+     end
+   else
+     begin
+       Say(JMM, 'D1nT-JMM-1');
+       Say(Powell, 'D1nT-Pow-1');
+     end;
+
+
+   // The dialog continues
+   Say(JMM, 'D1-JMM-1');
+   Say(Powell, 'D1-Pow-1');
+   Say(JMM, 'D1-JMM-2');
+   CenterJMM = false;
+   if not(Skip) then RaiseSailEvent(Map_am_base);
+   Say(Powell, 'D1-Pow-2');
+   Say(JMM, 'D1-JMM-3');
+   Say(Powell, 'D1-Pow-3');
+   Say(JMM, 'D1-JMM-4');
+   Say(Powell, 'D1-Pow-4');
+   Say(JMM, 'D1-JMM-5');
+   CenterJMM = false;
+   if not(Skip) then RaiseSailEvent(Map_rus_attack);
+   Say(Powell, 'D1-Pow-5');
+
+   // Query
+   if not(Skip) then
+     begin
+       list_of_q= [1, 2, 3, 4, 5, 6];
+       repeat
+         selection= SelectiveQuery('Q1', list_of_q);
+         list_of_q= list_of_q diff selection;
+         ResolveQuery(selection, list_of_q);
+//         debug_strings= list_of_q;
+       until (selection in [5, 6]) or list_of_q = 2;
+
+       if not(selection in [5, 6]) then
+         begin
+           selection= SelectiveQuery('Q1a', [1, 2]);
+           ResolveQuery(selection+4, list_of_q);
+         end;
+     end;
+
+ end;
+
+Function ResolveQuery(question, list_of_q);
+ begin
+   case question of
+     1: begin
+          Say(JMM, 'D2Mot-JMM-1');
+          Say(Powell, 'D2Mot-Pow-1');
+          Say(JMM, 'D2Mot-JMM-2');
+          Say(Powell, 'D2Mot-Pow-2');
+        end;
+
+     2: begin
+          Say(JMM, 'D2Rus-JMM-1');
+          Say(Powell, 'D2Rus-Pow-1');
+          Say(JMM, 'D2Rus-JMM-2');
+          if not(3 in list_of_q) then Say(Powell, 'D2Rus-Pow-2')
+          else Say(Powell, 'D2Rus-Pow-2a');
+        end;
+
+     3: begin
+          Say(JMM, 'D2Leg-JMM-1');
+          Say(Powell, 'D2Leg-Pow-1');
+          if (2 in list_of_q) then
+            begin
+              Say(JMM, 'D2Leg-JMM-2');
+              Say(Powell, 'D2Leg-Pow-2');
+            end;
+          Say(JMM, 'D2Leg-JMM-3');
+          Say(Powell, 'D2Leg-Pow-3');
+          Add_Legion_Objectives= true;
+        end;
+
+     4: begin
+          Say(JMM, 'D2Ar-JMM-1');
+          Say(Powell, 'D2Ar-Pow-1');
+          Say(JMM, 'D2Ar-JMM-2');
+          Say(Powell, 'D2Ar-Pow-2');
+          Say(JMM, 'D2Ar-JMM-3');
+          Say(Powell, 'D2Ar-Pow-3');
+        end;
+
+     5: begin
+          Say(JMM, 'D2Conf-JMM-1');
+        end;
+
+     6: begin
+          Say(JMM, 'D2Com-JMM-1');
+          Say(Powell, 'D2Com-Pow-1');
+          Say(JMM, 'D2Com-JMM-2');
+          Say(Powell, 'D2Com-Pow-2');
+        end;
+   end;
+ end;
+
+Function SecondTalk;
+ begin
+   Joan_semafor= true;
+   if Woman_saved > 0 then
+     begin
+       case Woman_saved of
+         1: Say(Joan, 'D3W-Joan-1');
+         2: Say(Lisa, 'D3W-Lisa-1');
+         3: Say(Coonie, 'D3W-Con-1');
+       end;
+       Say(JMM, 'D3W-JMM-1');
+       Say(JMM, 'D3nW-JMM-1a');
+     end;
+   Joan_semafor= false;
+ end;
+
+
+//////////////////////////////////////////////////////////
+///////////      Start of the mission      ///////////////
+//////////////////////////////////////////////////////////
+EVERY 0$1 DO
+var hlp;
+ begin
+   ingame_video= true;
+   interface_hidden= true;
+
+   FirstTalk;
+   WaitTask(JMM_veh, 1);
+   if IsInUnit(JMM) then
+     begin
+       ComExitVehicle(JMM);
+       if JMM_Woman then
+         ComExitVehicle(JMM_Woman);
+     end;
+   
+   Wait(0$1);
+   Skip= False;
+   CenterJMM= false;
+
+   Wait(0$1);
+   ComMoveXY([JMM, JMM_woman], 68, 105);
+   ComMoveXY(Powell, 47, 64);
+   RaiseSailEvent(Send_Helpers);
+   CenterOnXY(64, 99);
+   WaitTask([JMM, JMM_woman], 0.5);
+
+   ChangeMissionObjectives('M1');  //
+   ingame_video= false;
+   interface_hidden= false;
+   SaveForQuickRestart;
+
+   Wait(0$2);
+
+   RandomizeAll;
+   SecondTalk;
+   // Continue in end of SendHelpers in Americans1
+ end;
+
+//////////////////////////////////////////////////////////////////
+//////////////////   Over the Great Ingame Video   ///////////////
+//////////////////////////////////////////////////////////////////
+
+// Friend
+// MARKED 10 - Game_continue
+EVERY 0$2 TRIGGER Time_of_Ingame_Run_Over + 0$15 < tick MARKED 10 DO
+ begin
+   DialogueOn;
+   SayRadioNoName(Friend, 'D7-Friend-1');
+   Say(JMM, 'D7-JMM-1');
+   SayRadioNoName(Friend, 'D7-Friend-2');
+   Say(JMM, 'D7-JMM-2');
+   SayRadioNoName(Friend, 'D7-Friend-3');
+   Say(JMM, 'D7-JMM-3');
+   SayRadioNoName(Friend, 'D7-Friend-4');
+   Say(JMM, 'D7-JMM-4');
+   SayRadioNoName(Friend, 'D7-Friend-5');
+   Say(JMM, 'D7-JMM-5');
+   SayRadioNoName(Friend, 'D7-Friend-6');
+   Say(JMM, 'D7-JMM-6');
+   DialogueOff;
+   ChangeMissionObjectives('Mlegion');
+ end;
+
+// Stevens
+// MARKED 10 - Game_Continue
+EVERY 0$1 TRIGGER tick > Stevens_Coming_Time MARKED 10 DO
+var Stevens_people, Un, New_vehicle, Stev_vehicles;
+ begin
+   Stevens_people= [];
+   if BobbyLoc= 6 then Stevens_people= Stevens_people ^ Bobby;
+   if CyrusLoc= 6 then Stevens_people= Stevens_people ^ Cyrus;
+   if LisaLoc= 6 then Stevens_people= Stevens_people ^ Lisa;
+   if FrankLoc= 6 then Stevens_people= Stevens_people ^ Frank;
+   if BrownLoc= 6 then Stevens_people= Stevens_people ^ Brown;
+   if DonaldsonLoc= 6 then Stevens_people= Stevens_people ^ Donaldson;
+   if VanHoutenLoc= 6 then Stevens_people= Stevens_people ^ VanHouten;
+   if GladstoneLoc= 6 then Stevens_people= Stevens_people ^ Gladstone;
+   if YamokoLoc= 6 then Stevens_people= Stevens_people ^ Yamoko;
+   if GaryLoc= 6 then Stevens_people= Stevens_people ^ Gary;
+   if DenisLoc= 6 then Stevens_people= Stevens_people ^ Denis;
+   if CornellLoc= 6 then Stevens_people= Stevens_people ^ Cornell;
+   if Stevens then Stevens_people= Stevens_people ^ Stevens
+   else Stevens_people= Stevens_people ^ Baker;
+
+   Stevens_people= Stevens_people ^ OtherWithJMM diff [0];
+
+   for Un in Stevens_people do
+     begin
+       SetSide(Un, americans);
+       uc_side= americans;
+       uc_nation= nation_american;
+       uc_direction= 1;
+
+       vc_chassis= us_light_wheeled;
+       vc_engine= engine_combustion;
+       vc_control= control_manual;
+       vc_weapon= us_machine_gun;
+
+       New_vehicle= CreateVehicle;
+       Stev_vehicles= Stev_vehicles ^ New_vehicle;
+
+       PlaceHumanInUnit(Un, New_vehicle);
+       PlaceUnitArea(New_vehicle, Stev_place, false);
+     end;
+
+   DialogueON;
+   CenterOnUnits(Stev_vehicles);
+   if Stevens then
+     begin
+       SayRadio(Stevens, 'D8-Huck-1');
+       Say(JMM, 'D8-JMM-1');
+       SayRadio(Stevens, 'D8-Huck-2');
+       Say(JMM, 'D8-JMM-2');
+       SayRadio(Stevens, 'D8-Huck-3');
+       Say(JMM, 'D8-JMM-3');
+       SayRadio(Stevens, 'D8-Huck-4');
+       Say(JMM, 'D8-JMM-4');
+     end
+   else
+     begin
+       SayRadio(Baker, 'D8-Huck-1');
+       Say(JMM, 'D8-JMM-1a');
+       SayRadio(Baker, 'D8-Huck-2');
+       Say(JMM, 'D8-JMM-2');
+       SayRadio(Baker, 'D8-Huck-3');
+       Say(JMM, 'D8-JMM-3');
+       SayRadio(Baker, 'D8-Huck-4');
+       Say(JMM, 'D8-JMM-4');
+     end;
+   DialogueOFF;
+   SetTech(tech_SibFiss, americans, state_enabled);
+   ComMoveXY(Stev_vehicles, 47, 63);
+ end;
+
+Function CCreateVehicle(nat, side, dir, chassis, engine, control, weapon);
+var veh, i, person;
+ begin
+   uc_side= side;
+   uc_direction= dir;
+   uc_nation= nat;
+
+   vc_chassis= chassis;
+   vc_control= control;
+   vc_engine= engine;
+   vc_weapon= weapon;
+   veh= CreateVehicle;
+   result= veh;
+ end;
+
+
+// MARKED 11 - Woman_Comes
+EVERY 0$2 TRIGGER (tick > Woman_Coming_Time) and (tick > Time_of_Ingame_Run_Over) MARKED 11 DO
+var New_veh, i, Un, Woman_vehs;
+ begin
+   Woman_vehs= [];
+   for i= 1 to 3 do
+     begin
+       // 3x laser
+       New_veh= CCreateVehicle(nation_american, americans, 1,
+                      us_medium_tracked, engine_siberite, control_computer, us_laser);
+       Woman_vehs= Woman_vehs ^ New_veh;
+      end;
+   // 2x rocket_launcher
+   New_veh= CCreateVehicle(nation_american, americans, 1,
+                  us_medium_tracked, engine_siberite, control_computer, us_rocket_launcher);
+   Woman_vehs= Woman_vehs ^ New_veh;
+   //
+   New_veh= CCreateVehicle(nation_american, americans, 1,
+                  us_medium_tracked, engine_siberite, control_manual, us_rocket_launcher);
+   Woman_vehs= Woman_vehs ^ New_veh;
+   SetSide(JMM_Woman, americans);
+   PlaceHumanInUnit(JMM_Woman, New_veh);
+
+   For Un in Woman_vehs do
+     PlaceUnitArea(Un, Stev_place, false);
+   Wait(0$1);
+
+   DialogueON;
+   case woman_in_am14 of
+     1: begin
+          CenterOnUnits(Joan);
+          SayRadio(Joan, 'D10BW-Joan-1');
+        end;
+     2: begin
+          CenterOnUnits(Lisa);
+          SayRadio(Lisa, 'D10BW-Lisa-1');
+        end;
+     3: begin
+          CenterOnUnits(Coonie);
+          SayRadio(Coonie, 'D10BW-Con-1');
+        end;
+   end;
+   DialogueOFF;
+
+   Named_Americans= Named_Americans ^ JMM_woman;
+   All_americans= All_americans ^ JMM_woman;
+
+   ComMoveXY(Woman_vehs, 97, 167);
+   AddComMoveXY(Woman_vehs, 102, 147);
+   AddComMoveXY(Woman_vehs, 96, 128);
+   AddComMoveXY(Woman_vehs, 80, 108);
+   AddComMoveXY(Woman_vehs, 63, 92);
+   AddComMoveXY(Woman_vehs, 47, 63);
+ end;
+
+// MARKED 12 - Vsevolod_Comes
+EVERY 0$2 TRIGGER (tick > Woman_Coming_Time) and (tick > Time_of_Ingame_Run_Over) MARKED 12 DO
+var New_veh, i, Un, Vsevolod_vehs;
+ begin
+   Vsevolod_vehs= [];
+   for i= 1 to 4 do  // Lasers
+     begin
+       // 4x laser
+       New_veh= CCreateVehicle(nation_american, russians1, 1,
+                      us_medium_tracked, engine_siberite, control_computer, us_laser);
+       Vsevolod_vehs= Vsevolod_vehs ^ New_veh;
+     end;
+
+   for i= 1 to 3 do // rocket launchers
+     begin
+       // 3x rocket launcher
+       New_veh= CCreateVehicle(nation_american, russians1, 1,
+                      us_medium_tracked, engine_siberite, control_computer, us_rocket_launcher);
+       Vsevolod_vehs= Vsevolod_vehs ^ New_veh;
+     end;
+
+   // Personal Vsevolod vehicle
+   New_veh= CCreateVehicle(nation_american, russians1, 1,
+                  us_medium_tracked, engine_siberite, control_manual, us_rocket_launcher);
+   Vsevolod_vehs= Vsevolod_vehs ^ New_veh;
+   PlaceHumanInUnit(Vsevolod, New_veh);
+
+   for Un in Vsevolod_vehs do
+     PlaceUnitArea(Un, Stev_place, false);
+
+   ComMoveXY(Vsevolod_vehs, 135, 180);
+   AddComMoveXY(Vsevolod_vehs, 159, 179);
+   WaitPos(159, 179, 10, Vsevolod_vehs, 1);
+   AddComMoveXY(Vsevolod_vehs, 174, 170);
+   AddComMoveXY(Vsevolod_vehs, 170, 149);
+   AddComMoveXY(Vsevolod_vehs, 156, 134);
+   WaitPos(156, 134, 10, Vsevolod_vehs, 1);
+   AddComMoveXY(Vsevolod_vehs, 132, 118);
+   AddComMoveXY(Vsevolod_vehs, 113, 97);
+   AddComMoveXY(Vsevolod_vehs, 103, 79);
+   WaitPos(103, 79, 10, Vsevolod_vehs, 1);
+   AddComMoveXY(Vsevolod_vehs, 73, 62);
+   WaitPos(73, 62, 10, Vsevolod_vehs, 1);
+
+//   McMove(100, Vsevolod_vehs, [], []);
+
+   placeseeing(73, 62, americans,-8);
+   CenterOnXY(73, 62);
+   Wait(0$3);
+   SA_OnVsevolodAppear;
+   DialogueON;
+   Say(JMM, 'D10nB-JMM-1');
+   Say(Vsevolod, 'D10nB-Vse-1');
+   if not(IsOk(Burlak)) then Say(Vsevolod, '');
+   Say(JMM, 'D10nB-JMM-2');
+   case Woman_in_am14 of
+     1: begin
+          Say(Vsevolod, 'D10nB-Vse-2');
+          Say(JMM, 'D10nB-JMM-3');
+          Say(Vsevolod, 'D10nB-Vse-3');
+          Say(JMM, 'D10nB-JMM-4');
+        end;
+     2: begin
+          Say(JMM, 'D10nB-Vse-4');
+          Say(Vsevolod, 'D10nB-JMM-5');
+          Say(JMM, 'D10nB-Vse-5');
+        end;
+     3: begin
+          Say(Vsevolod, 'D10nB-Vse-5a');
+          Say(JMM, 'D10nB-JMM-6');
+        end;
+   end;
+   DialogueOFF;
+   removeseeing(73, 62, americans);
+
+   AddMcUnits(Russian1_reg_id, Vsevolod_vehs);
+ end;
+
+// The broadcast with Roth
+// Game_Continue= 10
+EVERY 0$1 TRIGGER tick > Alliance_broadcast MARKED 10 DO
+var list_of_q, selection;
+ begin
+   DialogueON;
+   SayRadio(Roth, 'D9-Roth-1');
+   CenterOnUnits(JMM);
+   Say(JMM, 'D9-JMM-1');
+   SayRadio(Roth, 'D9-Roth-2');
+   SayRadio(Roth, 'D9-Roth-2a');
+   SayRadio(Platonov, 'D9-Pla-2');
+   SayRadio(Roth, 'D9-Roth-3');
+   SayRadio(Platonov, 'D9-Pla-3');
+   SayRadio(Roth, 'D9-Roth-4');
+
+   list_of_q= [1, 2, 3];
+   selection= SelectiveQuery('Q9', list_of_q);
+   case selection of
+     1: begin
+          Wait(0$3);
+          SayRadio(Roth, 'D9a-Roth-1');
+        end;
+
+     2: begin
+          Wait(0$0.5);
+          Say(JMM, 'D9b-JMM-1');
+          SayRadio(Roth, 'D9b-Roth-1');
+        end;
+
+     3: begin
+          Wait(0$2);
+          Say(JMM, 'D9c-JMM-1');
+          SayRadio(Roth, 'D9c-Roth-1');
+          Say(JMM, 'D9c-JMM-2');
+          SayRadio(Roth, 'D9c-Roth-2');
+          Say(JMM, 'D9c-JMM-3');
+          SayRadio(Roth, 'D9c-Roth-3');
+        end;
+   end;
+
+   SayRadio(Roth, 'D9cont-Roth-1');
+   Say(JMM, 'D9cont-JMM-1');
+   SayRadio(Roth, 'D9cont-Roth-2');
+   Say(JMM, 'D9cont-JMM-2');
+   SayRadio(Roth, 'D9cont-Roth-3');
+   Say(JMM, 'D9cont-JMM-3');
+   DialogueOFF;
+   ChangeMissionObjectives('M3');
+ end;
+
+// Behemots
+EVERY 0$1 TRIGGER Behemots_broadcast < tick MARKED 10 DO
+var Sold1, list_of_all_males, UnNamed_males, Named_males;
+ begin
+   Sold1= 0;
+   BuildBehemots;
+   list_of_all_males= FilterAllUnits([[f_side, americans], [f_type, unit_human], [f_sex, sex_male], [f_ok],
+                                        f_not, [[f_or, [f_class, class_apeman], [f_class, class_apeman_engineer],
+                                               [f_class, class_apeman_kamikaze], [f_class, class_apeman_soldier],
+                                               [f_class, class_apeman_kamikaze]]]]);
+   UnNamed_males= list_of_all_males diff [JMM, Powell, Bobby, Cyrus, Frank,
+                 Brown, Gladstone, Cornell, Denis, Gary, Stevens];
+   // Select a live UnNamed male unit
+   if UnNamed_males <> 0 then
+     begin
+       Sold1= UnNamed_males[Rand(1, UnNamed_males)];
+     end
+   else  if list_of_all_males diff [JMM, Powell] <> 0 then // Or a live Named male unit
+     begin
+       list_of_all_males= list_of_all_males diff [JMM, Powell];
+       Sold1 = list_of_all_males[Rand(1, list_of_all_males)];
+     end;
+
+   if Sold1 <> 0 then
+     begin
+       CenterNowOnUnits(JMM);
+       DialogueON;
+       Wait(0$1);
+       Say(Sold1, 'D11-Sol1-1');
+       SayRadio(Platonov, 'D11-Pla-1');
+       SayRadio(Kovaljuk, 'D11-Kov-1');
+       SayRadio(Platonov, 'D11-Pla-2');
+       Say(Sold1, 'D11-Sol1-2');
+       Say(JMM, 'D11-JMM-2');
+       DialogueOff;
+       ChangeMissionObjectives('M4');
+     end;
+ end;
+
+EVERY 0$1 TRIGGER Alaskite_Bomb_Time < tick MARKED 10 DO
+var list_of_q, selection, Americans_has_sib_rocket;
+ begin
+   DialogueON;
+   Say(Platonov, 'D15-Pla-1');
+   list_of_q= [1, 2, 3, 4];
+   selection= SelectiveQuery('Q15a', list_of_q);
+   case selection of
+     1: begin
+          Say(JMM, 'D15a-JMM-1');
+          enable(JMM_has_surrounded);
+          Friend_has_to_escape= true;
+        end;
+
+     2: begin
+          Say(JMM, 'D15b-JMM-1');
+          Say(Platonov, 'D15b-Pla-1');
+          Time_to_Think_Over= tick+3$0;
+        end;
+
+     3: begin
+          Say(JMM, 'D15c-JMM-1');
+          Say(Platonov, 'D15c-Pla-1');
+          Russian_Siberite_Attack= true;
+          Friend_has_to_escape= true;
+        end;
+
+     4: begin
+          Say(JMM, 'D15d-JMM-1');
+          Say(Platonov, 'D15d-Pla-1');
+          if Friend_Accepted then The_Last_Time= tick+1$0
+          else The_Last_Time= tick+5$0;
+          Americans_has_sib_rocket= FilterAllUnits([[f_side, americans], [f_weapon, us_siberium_rocket]]);
+          if not(Americans_has_sib_rocket) then
+            Friend_has_to_escape= true;
+        end;
+   end;
+   DialogueOFF;
+ end;
+
+
+// End of time to think over
+EVERY 0$1 TRIGGER (Time_to_Think_Over <> 0) and (Time_to_Think_Over < tick) MARKED 10 DO
+var selection, list_of_q, Americans_has_sib_rocket;
+  begin
+    DialogueON;
+   list_of_q= [1, 3, 4];
+   selection= SelectiveQuery('Q15a', list_of_q);
+   case selection of
+     1: begin
+          Say(JMM, 'D15a-JMM-1');
+          enable(JMM_has_surrounded);
+          Friend_has_to_escape= true;
+        end;
+
+     3: begin
+          Say(JMM, 'D15c-JMM-1');
+          Say(Platonov, 'D15c-Pla-1');
+          Russian_Siberite_Attack= true;
+          Friend_has_to_escape= true;
+        end;
+
+     4: begin
+          Say(JMM, 'D15d-JMM-1a');
+          Say(Platonov, 'D15d-Pla-1');
+          if Friend_Accepted then The_Last_Time= tick+1$0
+          else The_Last_Time= tick+5$0;
+          Americans_has_sib_rocket= FilterAllUnits([[f_side, americans], [f_weapon, us_siberium_rocket]]);
+          if not(Americans_has_sib_rocket) then
+            Friend_has_to_escape= true;
+        end;
+
+   end;
+    DialogueOFF;
+  end;
+
+Function FriendSelectedDialogue;
+ begin
+   ComStop(Friend);
+   CenterNowOnUnits(Friend);
+   DialogueON;
+   Say(JMM, 'D16-JMM-1');
+   Say(Friend, 'D16-Friend-1');
+   Say(JMM, 'D16-JMM-2');
+   DialogueOFF;
+ end;
+
+
+// Friend try to escape
+EVERY 0$1 TRIGGER (Friend_has_to_escape) and IsOk(Friend) DO
+ begin
+   disable;
+   if (Alaskite_Bomb_Time+0$15 < tick) then
+     begin
+       if IsSelected(Friend) then
+         DeselectUnits(Friend);
+       enable(Friend_Escapes);
+       ComMoveXY(Friend, 20, 2);
+       AddComHold(Friend);
+       Wait(0$0.5);
+       while (HasTask(Friend) and not(IsSelected(Friend))) do
+         Wait(0$1);
+       if IsSelected(Friend) then
+         FriendSelectedDialogue
+       else
+         begin
+           DestroyUnit(Friend);
+           Friend_escaped= true;
+         end;
+     end
+   else enable;
+ end;
+
+
+// Platonov has chacked the develop of am sib rock.
+EVERY 0$1 TRIGGER (The_Last_Time <> 0) and (The_Last_Time < tick) MARKED 10 DO
+var Americans_has_sib_rocket, Sold1, list_of_all_males, UnNamed_males, Named_males;
+ begin
+   Named_males= [Bobby, Cyrus, Frank, Brown, Gladstone, Cornell, Denis, Gary, Stevens];
+   list_of_all_males= FilterAllUnits([[f_side, americans], [f_type, unit_human], [f_sex, sex_male], [f_ok],
+                                       f_not, [[f_or, [f_class, class_apeman], [f_class, class_apeman_engineer],
+                                       [f_class, class_apeman_kamikaze], [f_class, class_apeman_soldier],
+                                       [f_class, class_apeman_kamikaze]]]]);
+   UnNamed_males= list_of_all_males diff ([JMM, Powell] ^ Named_males);
+
+   // Select a live UnNamed male unit
+   if UnNamed_males <> 0 then
+     begin
+       Sold1= list_of_all_males[Rand(1, list_of_all_males)];
+     end
+   else  // Or a live Named male unit
+     begin
+       Named_males= UnitFilter(Named_males, [[f_ok], [f_sex, sex_male]]);
+       if named_males <> 0 then Sold1 = Named_males[Rand(1, Named_males)];
+     end;
+
+
+   Americans_has_sib_rocket= FilterAllUnits([[f_side, americans], [f_weapon, us_siberium_rocket]]);
+   DialogueON;
+
+   if (Americans_has_sib_rocket = 0) and Friend_Accepted then
+     begin
+       Say(Platonov, 'D16a-Pla-1');
+       if IsOk(Stevens) then Say(Stevens, 'D16a-Huck-1')
+       else Say(Sold1, 'D16a-Sol1-1');
+       if Friend_Escaped then Say(JMM, 'D16a-JMM-1')
+       else
+         begin
+           Say(JMM, 'D16a-JMM-1a');
+           Say(Friend, 'D16a-Friend-1');
+         end;
+      Russian_Siberite_Attack= true;
+     end
+
+   else if (Americans_has_sib_rocket = 0) and not(Friend_Accepted) then
+     begin
+      Say(Platonov, 'D16b-Pla-1');
+      Say(JMM, 'D16b-JMM-1');
+      Russian_Siberite_Attack= true;
+     end
+
+   else
+     begin
+       Say(Platonov, 'D16c-Pla-1');
+     end;
+
+   DialogueOFF;
+ end;
+
+
+EVERY 0$2 TRIGGER CenterJMM DO
+var X, Y, NewX, NewY;
+ begin
+   if IsInUnit(JMM) = JMM_veh then
+        begin
+             X= GetX(JMM_veh);
+             Y= GetY(Jmm_veh);
+             NewX= ShiftX(X, GetDir(JMM_veh), 5);
+             NewY= ShiftY(Y, GetDir(JMM_veh), 5);
+        end
+   else
+        begin
+             NewX = GetX(JMM);
+             NewY = GetY(JMM);
+        end;
+
+   CenterOnXY(NewX, NewY);
+   enable;
+ end;
+
+
+{
+EVERY 0$1 DO
+ begin
+   debug_strings= [CenterJMM];
+   enable;
+ end;
+ }

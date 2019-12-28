@@ -1,0 +1,700 @@
+// Nemenne promenne dulezite pro chod modulu
+var  us_weapons,                // seznam americkych zbrani
+     ar_weapons,                // seznam arabskych zbrani
+     ru_weapons;                // seznam ruskych zbrani
+
+var  sib_engine,                // cena siberitoveho motoru
+     oil_engine;                // cena olejoveho motoru
+
+var  prefered;                  // preferovane typy vozidel [ chassis, engine, control, weapon ] (0 for random)
+
+var main_extensions;            // hlavni pristavky, ktere jsou pozadovany u tovarny
+
+var hovers_recomended,
+    flat_land;
+
+
+// Menici se promenne (musim se jich uplne zbavit)
+export mechanics_wanted,        // mira touhy po mechanicich (0-nepotrebuju, 5-MOOC POTREBUJEME)
+       extension_wanted;        // seznam pristavku, ktere je nutno postavit
+
+
+//---------------------------------------//
+//-----  DEFINOVANI PRIORIT VYROBY  -----//
+function init_priority(side,side_nation);
+var us_main_control;
+begin
+  us_main_control:=b_ext_computer;
+  prefered_control:=control_computer;
+
+    case side_nation of
+  1: main_extensions:=[b_ext_track, b_ext_siberium, b_ext_laser, b_ext_rocket, us_main_control];
+  2: main_extensions:=[b_ext_track, b_ext_gun, b_ext_rocket, b_ext_radar, b_ext_siberium];
+  3: main_extensions:=[b_ext_track, b_ext_gun, b_ext_rocket, b_ext_computer, b_ext_siberium];
+    end;
+end;
+
+
+//---------------------------------//
+//-----  INICIALIZACE VYROBY  -----//
+export function init_manufacture;
+begin
+  hovers_recomended:=false;
+  flat_land:=false;
+
+  sib_engine:=10;       // cena siberitoveho motoru (mnozstvi siberitu)
+  oil_engine:=30;       // cena olejoveho motoru (mnozstvi oleje)
+
+  // ident_zbrane, seznam pozadovanych technologii, extension
+  us_weapons:=[ [ [us_machine_gun, [], 0],                                             // chassis light
+                  [us_light_gun, [tech_Gun], b_ext_gun],
+                  [us_radar, [tech_Radar], b_ext_radar],
+                  [us_crane, [], b_ext_noncombat]
+                  ],
+                [ [us_gatling_gun, [tech_Gatling], 0],                                 // chassis medium
+                  [us_double_gun, [tech_Gun], b_ext_gun],
+                  [us_rocket_launcher, [tech_Rocket], b_ext_rocket],
+                  [us_laser, [tech_Laser], b_ext_laser],
+                  [us_cargo_bay, [], b_ext_noncombat]
+                  ],
+                [ [us_bulldozer, [], b_ext_noncombat],                                 // chassis heavy
+                  [us_siberium_rocket, [tech_SibEng, tech_Rocket], b_ext_siberium],
+                  [us_heavy_gun, [tech_AdvMet], b_ext_gun]
+                  ]
+              ];
+
+  ar_weapons:=[ [ [ar_multimissile_ballista, [], 0],                                   // chassis light
+                  [ar_double_machine_gun, [], 0],
+                  [ar_light_gun, [tech_Gun], b_ext_gun]
+                  ],
+                [ [ar_gatling_gun, [tech_Gatling], 0],                                 // chassis medium
+                  [ar_flame_thrower, [tech_Flame], b_ext_stitch],
+                  [ar_gun, [tech_Gun], b_ext_gun],
+                  [ar_rocket_launcher, [tech_Rocket], b_ext_rocket],
+                  [ar_selfpropelled_bomb, [tech_Explos], b_ext_siberium],
+                  [ar_radar, [tech_Radar], b_ext_radar],
+                  [ar_control_tower, [tech_RemCont], b_ext_radar],
+                  [ar_cargo_bay, [], b_ext_stitch]
+                  ],
+                []                                                                    // chassis heavy
+              ];
+
+  ru_weapons:=[ [],                                                                   // chassis light
+                [ [ru_heavy_machine_gun, [], 0],                                      // chassis medium
+                  [ru_gatling_gun, [tech_Gatling], 0],
+                  [ru_gun, [tech_Gun], b_ext_gun],
+                  [ru_rocket_launcher, [tech_Rocket], b_ext_rocket],
+                  [ru_cargo_bay, [], b_ext_noncombat]
+                  ],
+                [ [ru_heavy_gun, [tech_AdvMet], b_ext_gun],                           // chassis heavy
+                  [ru_rocket, [tech_AdvRocket], b_ext_rocket],
+                  [ru_siberium_rocket, [tech_SibEng, tech_SibFiss], b_ext_siberium],
+                  [ru_time_lapser, [tech_Lapser], b_ext_siberium],
+                  [ru_bulldozer, [], b_ext_noncombat]
+                  ]
+              ];
+
+  // kazda strana bude pri utoku podporena jeste alespon jednim gatlingem (flame throwerem) a jednim (radar)
+  // nebo dvema (time lapser) specialnimi vozidly
+
+end;
+
+function init_prefered_vehicles(side_nation);
+begin
+  // chassis, engine, control, weapon, extension needed
+    case side_nation of
+  1: prefered:=[ [[us_medium_wheeled,us_medium_wheeled,us_morphling][difficulty], 0, control_remote, us_laser],
+                 [us_morphling, 0, control_remote, us_heavy_gun],
+                 [us_morphling, 0, control_remote, us_rocket_launcher] ];
+  2: prefered:=[ [ar_medium_trike, 0, control_remote, ar_rocket_launcher],
+                 [ar_medium_trike, 0, control_remote, ar_gun] ];
+  3: prefered:=[ [0, engine_siberite, control_computer, ru_heavy_gun],
+                 [0, engine_siberite, control_computer, ru_rocket] ];
+    end;
+end;
+
+
+//-------------------------------------------//
+//-----  ZJISTOVANI NECINNOSTI TOVARNY  -----//
+every 0$1.9 do
+var un,factories,
+    active_side,
+    active_nation,
+    wait_timers, construction_order_given;
+begin
+  wait_timers = [];
+  for un = 1 to 8 do
+       wait_timers = wait_timers ^ 0$15.9;
+
+  repeat
+  wait(0$1);
+  
+  for active_side in cpu_list do
+    begin
+         if wait_timers[active_side] > 0$0 then
+              begin
+                   wait_timers = Replace(wait_timers, active_side, wait_timers[active_side] - 0$1 );
+                   continue;
+              end;
+
+         if (Get_Resources(active_side)[2]>29) or (Get_resources(active_side)[3]>9) then
+           begin
+               case active_side of
+                    us: if us_sib_wait then
+                         continue;
+                    ru: if ru_sib_wait then
+                         continue;
+               end;
+
+             factories:=FilterAllUnits([ [f_side,active_side], [f_or, [f_btype,b_workshop], [f_btype,b_factory]] ]);
+             if factories = 0 then
+                  continue;
+
+             un = factories[1];
+
+             active_nation:=GetCPUNation(active_side);
+             init_priority(active_side,active_nation);
+             init_prefered_vehicles(active_nation);
+
+             // pokud uz mame fabriku ktera nic nedela, tak delat zacneme
+             // jako parametr by se mohl predavat i seznam vyrobenych
+             // jednotek vcetne crane a carg bay, aby vedel, jake pristavky
+             // chtit postavit
+             if not BuildingStatus(un)=bs_working then
+                  begin
+                       construction_order_given = build_new_vehicle(active_side,active_nation,un);
+
+                       if construction_order_given then
+                            begin
+                                 //It takes a few ticks for a factory to actually start working
+                                 wait(10);
+
+                                 if BuildingStatus(un)=bs_working then
+                                      wait_timers = Replace(wait_timers, active_side, 0$15.9);
+                            end;
+                  end;
+           end;
+    end;
+
+  until false;
+end;
+
+//------
+function Get_Resources(side);
+var depots;
+begin
+  depots = FilterAllUnits([ [f_side,side], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  if depots > 0 then
+       result:=GetResources(GetBase(depots[1]))
+  else
+       result = [0,0,0];
+end;
+
+
+//-------------------------------------//
+//-----  MAIN MANUFACTURE MODULE  -----//
+function build_new_vehicle(side,nation,factory);
+var can_made,            // seznam druhu zbrani, ktere je aktualne mozno v bazi vyrobit dle technologie a zastavby
+    mechanics,           // seznam mechaniku pridelenych k vyrobe
+    wanted;              // vybira ze seznamu 'can_made' vozidla podle strategie, zdroju a pokrocilosti hry
+begin
+  result = false;
+  mechanics:=request_people(side,class_mechanic,1);        // vyzadani lidskeho vyrobniho potencialu
+  can_made:=get_progress(side,nation,factory);             // zjisteni vyrobni potence zakladny (technologie, extensiony)
+  if can_made then
+    begin
+      wanted:=get_next_vehicle(side,nation,factory,can_made);     // vybere konkretni typ vozidla pro dalsi vyrobu
+      if transfer_mechanics(side,mechanics,factory,wanted) then   // presun mechaniku do tovarny
+        result = start_building_vehicle(nation,factory,wanted);            // prikaz tovarne k vyrobe noveho vozidla
+    end;
+  cleanup_extensions(side,nation,factory);                        // overi zadosti o pristavky a odstrani neopravnene
+end;
+//-------------------------------------//
+//-------------------------------------//
+
+
+//--------------------------------------------------------------------//
+//-----  ZJISTENI MOZNOSTI VYROBY PODLE TECHNOLOGII A PRISTAVKU  -----//
+function get_progress(side,nation,factory);
+var vysledek,
+    chassis,                                  // index do weapon listu
+    weapon,                                   // index do chassis
+    list;                                     // pomocny seznam podle narodnosti pocitace
+begin
+  vysledek:=[];
+  list:=[];
+
+    case nation of
+  1: list:=us_weapons;
+  2: list:=ar_weapons;
+  3: list:=ru_weapons;
+    end;
+
+  for chassis=1 to 3 do
+    if (chassis<3) or                               // lehky nebo stredni podvozek
+       (nation=nation_russian) or                   // nebo (podvozek tezky) rusaci schopni vyrabet heavy wheeled
+       (TrackExtension(factory)) then               // nebo amici s track pristavkem
+      for weapon in list[chassis] do
+        if Technology_Researched(side,weapon[2]) or             // pokud je vynalezena potrebna technologie
+           not weapon[2] then                                   // nebo neni potreba zadna technologie
+          begin
+            if ExtensionBuild(factory, weapon[3]) or            // a stoji potrebny pristavek
+               not weapon[3] then                               // nebo neni potreba zadny pristavek
+              vysledek:=vysledek ^ weapon[1]                    // pak muzu vyrobit tuhle zbran na tomhle podvozku
+            else                                                // jinak pozadam o pristavek
+              extension_wanted:=extension_wanted ^ weapon[3];
+          end;
+  result:=vysledek;                                             // seznam zbrani
+end;
+
+//------
+function Technology_Researched(side,list);
+var tech,vysledek;
+begin
+  vysledek:=true;
+  for tech in list do
+    if not Researched(side,tech) then
+      vysledek:=false;
+  result:=vysledek;
+end;
+
+//------
+function ExtensionBuild(factory, extension);
+var i, vysledek, list;
+begin
+  vysledek:=false;
+  if extension>0 then                                      // technologie potrebuje pristavek
+    begin
+      list:=GetExtPositions(factory);
+      for i in list do
+        if GetBType(HexInfo(i[1],i[2]))=extension then
+          begin
+            vysledek:=true;
+            break;
+          end;
+    end
+  else                                                     // technologie nepotrebuje pristavek
+    vysledek:=true;
+  result:=vysledek;
+end;
+
+//------------------------------------------------//
+//-----  VYBER KONKRETNIHO VOZIDLA DO VYROBY  ----//
+function get_next_vehicle(side,nation,factory,possible);
+var un,pom,
+    list,               // pomocny seznam zbrani podle narodnosti pocitace
+    cargo_bay,          // seznam cargo bayu dane strany
+    crane,              // seznam cranu dane strany
+    nation_cargo,       // pomocna promenna pro cargo bay dle narodnosti
+    nation_crane,       // pomocna promenna pro crane dle narodnosti
+    weapon_prefered,    // seznam preferovanych zbrani
+    weapon_else,        // pokud nemuzu vytvorit nic z preferovanych vozu, pak vyrobim tohle
+    vysledek;
+begin
+  vysledek:=[];
+
+    case nation of
+  1: begin
+       list:=us_weapons;
+       nation_cargo:=us_cargo_bay;
+       nation_crane:=us_crane;
+     end;
+  2: begin
+       list:=ar_weapons;
+       nation_cargo:=ar_cargo_bay;
+       nation_crane:=0;
+     end;
+  3: begin
+       list:=ru_weapons;
+       nation_cargo:=ru_cargo_bay;
+       nation_crane:=ru_crane;
+     end;
+    end;
+
+  pom:=AvailableWeaponList(factory);
+  cargo_bay:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_weapon,nation_cargo] ]);
+
+  if (not cargo_bay) and (nation_cargo in pom) and Remote_or_Computer(factory) and TrackExtension(factory) then
+    vysledek:=Define_NonCombat(side,nation,factory,nation_cargo)         // [chassis, engine, control, weapon]
+  else
+    possible:=possible diff nation_cargo;
+
+  if not vysledek then
+    begin
+      crane:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_weapon,nation_crane] ]);
+      if (not crane) and (nation_crane in pom) and Remote_or_Computer(factory) and TrackExtension(factory) then
+        vysledek:=Define_NonCombat(side,nation,factory,nation_crane)     // [chassis, engine, control, weapon]
+      else
+        possible:=possible diff nation_crane;
+    end;
+
+  if not vysledek then
+    begin
+      weapon_prefered:=[];
+      weapon_else:=0;
+
+      for un in prefered do
+        if (un[4] in possible) then
+          weapon_prefered:=weapon_prefered ^ [un];                            // pridani cele struktury vozidla
+                                           
+      if not weapon_prefered then
+        begin
+          for un in possible do
+            if un>weapon_else then
+              weapon_else:=un;
+          vysledek:=Define_Vehicle(side,nation,factory,weapon_else);          // [chassis, engine, control, weapon]       *
+        end
+      else
+        vysledek:=Select_from_Prefered(side,nation,factory,weapon_prefered);  // [chassis, engine, control, weapon]       *
+    end;
+
+  result:=vysledek;
+end;
+
+//------
+function Remote_or_Computer(factory);
+var vysledek;
+begin
+  vysledek:=false;
+  if ExtensionBuild(factory,b_ext_computer) or ExtensionBuild(factory,b_ext_radar) then
+    vysledek:=true;
+  result:=vysledek;
+end;
+
+//------
+function TrackExtension(factory);
+begin
+  result:=ExtensionBuild(factory,b_ext_track);
+end;
+
+//------
+function Define_NonCombat(side,nation,factory,weapon);
+var components;
+begin
+  components:=[];
+
+  //-- chassis
+    case nation of
+  1: components:=components ^ us_medium_tracked;
+  2: components:=components ^ ar_half_tracked;
+  3: components:=components ^ ru_medium_tracked;
+    end;
+
+  //-- engine
+  if ExtensionBuild(factory,b_ext_siberium) and (Get_Resources(side)[3]>=sib_engine) then
+    components:=components ^ engine_siberite
+  else
+    components:=components ^ engine_combustion;
+
+  //-- control
+  if (nation=nation_arabian) and ApemanCanDrive(side) then
+    components:=components ^ control_apeman
+  else
+    if ExtensionBuild(factory,b_ext_computer) then
+      components:=components ^ control_computer
+    else
+      components:=components ^ control_remote;
+
+  //-- weapon
+  components:=components ^ [weapon];
+  result:=components;
+end;
+
+//------
+function Select_from_Prefered(side,nation,factory,possible);
+var un,i,
+    count,                   // pocet cpu aut ve hre s danou zbrani
+    components,              // identifikatory komponent jednotlivych vozidel
+    controls,                // seznam vyrobytelnych ovladani
+    vysledek;
+begin
+  count:=[-1,0];
+  for un in possible do
+    begin
+      i:=0 + FilterAllUnits([ [f_side,side], [f_weapon,un[4]] ]);
+      if (count[1] < 0) or       // jeste nebyl definovan counter
+         (count[1] > i) then     // nebo sem nasel zbran, kterych mam zatim nejmin
+        count:=[i,un];
+    end;
+
+  un:=count[2];
+  components:=[];
+  controls:=AvailableControlList(factory);
+
+  // define chassis
+  if un[1] in AvailableChassisList(factory) then
+    components:=components ^ un[1]
+  else
+    components:=components ^ SelectChassis(side,nation,factory,ChassisWeight(nation,un[4]));
+
+  // define engine
+  if un[2] in AvailableEngineList(factory) then
+    components:=components ^ un[2]
+  else
+    if (not components[1] in [us_light_wheeled, ar_hovercraft, ar_light_trike]) and (Get_Resources(side)[3]>9) then
+      components:=components ^ engine_siberite
+    else
+      components:=components ^ engine_combustion;
+
+  // define control                                    // <---- upravit podle poctu lidi a tak podobne
+  if un[3] in AvailableControlList(factory) then
+    components:=components ^ un[3]
+  else
+    begin
+      if control_remote in controls then
+        components:=components ^ control_remote
+      else
+        if control_computer in controls then
+          components:=components ^ control_computer
+        else
+          components:=components ^ control_manual;
+    end;
+
+  // define weapon
+  components:=components ^ un[4];
+  result:=components;
+end;
+
+//------
+function Define_Vehicle(side,nation,factory,weapon);
+var components;
+begin
+  components:=[];
+
+  //-- chassis
+    case ChassisWeight(nation,weapon) of
+  1: components:=components ^ SelectChassis(side,nation,factory,1);
+  2: components:=components ^ SelectChassis(side,nation,factory,2);
+  3: components:=components ^ SelectChassis(side,nation,factory,3);
+    end;
+
+  //-- engine
+  if ExtensionBuild(factory,b_ext_siberium) and (Get_Resources(side)[3]>=sib_engine) then
+    components:=components ^ engine_siberite
+  else
+    components:=components ^ engine_combustion;
+
+  //-- control
+  if (nation=nation_arabian) and ApemanCanDrive(side) then
+    components:=components ^ control_apeman
+  else
+    if ExtensionBuild(factory,b_ext_computer) then
+      components:=components ^ control_computer
+    else
+      components:=components ^ control_remote;
+
+  //-- weapon
+  components:=components ^ [weapon];
+  result:=components;
+end;
+
+//------
+function SelectChassis(side,nation,factory,weight);
+var un,vysledek;
+begin
+  vysledek:=0;
+
+    case weight of
+  1: begin
+         case nation of
+       1: vysledek:=us_light_wheeled;
+       2: if hovers_recomended then
+            vysledek:=ar_hovercraft
+          else
+            vysledek:=ar_light_trike;
+         end;
+     end;
+  2: begin
+       if (not flat_land) and TrackExtension(factory) then
+           case nation of
+         1: vysledek:=us_medium_tracked;
+         2: vysledek:=ar_half_tracked;
+         3: vysledek:=ru_medium_tracked;
+           end
+       else
+           case nation of
+         1: vysledek:=us_medium_wheeled;
+         2: vysledek:=ar_medium_trike;
+         3: vysledek:=ru_medium_wheeled;
+           end
+     end;
+  3: begin
+         case nation of
+       1: if GetTech(side,tech_AdvChassis)=state_researched then
+            vysledek:=us_morphling
+          else
+            vysledek:=us_heavy_tracked;
+       3: if TrackExtension(factory) then
+            vysledek:=ru_heavy_tracked
+          else
+            vysledek:=ru_heavy_wheeled;
+         end
+     end;
+    end;
+  result:=vysledek;
+end;
+
+//------
+function ChassisWeight(nation,weapon);
+var chassis,un,vysledek,
+    weapon_list;
+begin
+    case nation of
+  1: weapon_list:=us_weapons;
+  2: weapon_list:=ar_weapons;
+  3: weapon_list:=ru_weapons;
+    end;
+
+  vysledek:=false;
+  for chassis=1 to 3 do
+    if not vysledek then
+      for un in weapon_list[chassis] do
+        if weapon=un[1] then
+          begin
+             vysledek:=chassis;
+            break;
+          end;
+  result:=vysledek;
+end;
+
+//------
+function ApemanCanDrive(side);
+var un;
+begin
+  result:=(GetTech(side,tech_ApeNeural)=state_researched) and FilterAllUnits([ [f_side,side], [f_class,class_apeman] ]);
+end;
+
+
+//------------------------------------------//
+//-----  TRASFER MECHANIKU DO TOVARNY  -----//
+function transfer_mechanics(side,mechanics,factory,components);
+var un,isin;
+begin
+  isin:=UnitsInside(factory);
+  if (0+isin)>5 then                          // vsichni potrebni mechanici jsou v tovarne
+    begin
+      result:=true;
+      exit;
+    end;
+  un:=true;
+
+  if side=ar then
+    mechanics:=UnitFilter(mechanics,[f_not, [f_driving] ]);
+
+  DoEnterUnit(mechanics,factory);
+  if components[3]=control_apeman then
+    begin
+      un:=FilterAllUnits([ [f_side,side], [f_class,class_apeman], [f_not, [f_hastask]] ]);
+      if un then
+        DoEnterUnit(un[1], factory)
+      else
+        begin
+          un:=FilterAllUnits([ [f_side,side], [f_class,class_apeman] ]);
+          if un then
+            DoEnterUnit(un[1], factory);
+        end;
+    end;
+  result:=un;
+end;
+
+Function DoEnterUnit(moving_un_list, into_un);
+     var inside_un, t, moving_un;
+     begin
+          for moving_un in moving_un_list do
+               begin
+                    inside_un = IsInUnit(moving_un);
+                    if inside_un <> into_un then
+                         begin
+                              if inside_un > 0 then
+                                   t = GetType(inside_un)
+                              else
+                                   t = 0;
+                    
+                              case t of
+                                   unit_vehicle: ComExitVehicle(moving_un);
+                                   unit_building: ComExitBuilding(moving_un);
+                                   0: ComEnterUnit(moving_un, into_un);
+                              end;
+                         end;
+               end;
+     end;
+
+
+//-------------------------------------//
+//------  VYROBA NOVEHO VOZIDLA  ------//
+function start_building_vehicle(nation,factory,vehicle);
+begin
+  if (not UnitsInside(factory)) and (nation<>ar) then
+    begin
+         result = false;
+         exit;
+    end;
+
+  if vehicle[3]=control_apeman and not ApemanInFactory(factory) then
+    begin
+         result = false;
+         exit;
+    end;
+
+  ComChangeProfession(UnitsInside(factory),class_mechanic); //Apes will ignore this
+  ComConstruct(factory, vehicle[1], vehicle[2], vehicle[3], vehicle[4]);
+
+  result = true;
+end;
+
+//------
+function ApemanInFactory(factory);
+var un,list,vysledek;
+begin
+  vysledek:=false;
+  list:=UnitsInside(factory);
+  for un in list do
+    if GetClass(un)=class_apeman then
+      begin
+        vysledek:=true;
+        break;
+      end;
+  result:=vysledek;
+end;
+
+//---------------------------------------------------//
+//-----  OVERENI OPRAVNENI ZADOSTI O PRISTAVKY  -----//
+// bud sem chtel neopravnene non combat nebo neco jineho *
+function cleanup_extensions(side,nation,factory);
+var un,list,
+    crane,
+    cargo_bay,
+    nation_crane,
+    nation_cargo;
+begin
+    case nation of
+  1: begin
+       nation_cargo:=us_cargo_bay;
+       nation_crane:=us_crane;
+     end;
+  2: begin
+       nation_cargo:=ar_cargo_bay;
+       nation_crane:=0;
+     end;
+  3: begin
+       nation_cargo:=ru_cargo_bay;
+       nation_crane:=ru_crane;
+     end;
+    end;
+
+  cargo_bay:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_weapon,nation_cargo] ]);
+  crane:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_weapon,nation_crane] ]);
+
+  if (nation_crane in extension_wanted) and crane then
+    extension_wanted:=extension_wanted diff nation_crane;
+
+  if (nation_cargo in extension_wanted) and cargo_bay then
+    extension_wanted:=extension_wanted diff nation_cargo;
+
+  list:=extension_wanted;
+  for un in list do
+    begin
+      if not un in main_extensions then
+        extension_wanted:=extension_wanted diff un;
+    end;
+end;

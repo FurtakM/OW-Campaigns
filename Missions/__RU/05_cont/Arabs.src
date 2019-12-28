@@ -1,0 +1,167 @@
+var builds1, builds2, builds3, builds4, builds5, builds6, builds7, builds8;
+var stavi;
+var arabs_init;
+export arabs;
+
+var upgrade;
+
+every 0$1 do
+begin
+//konstanty
+    upgrade:=10;
+//num,class,level
+    arabs_init:=[ [[2,class_engineer,4],
+                   [2,class_scientistic,3],
+                   [5,class_soldier,3],
+                   [3,class_mechanic,3]],
+
+                  [[3,class_engineer,5],
+                   [2,class_scientistic,4],
+                   [7,class_soldier,4],
+                   [4,class_mechanic,4]],
+
+                  [[3,class_engineer,6],
+                   [2,class_scientistic,5],
+                   [8,class_soldier,5],
+                   [5,class_mechanic,5]]    ][difficulty];
+
+//x,y,dir,btype
+    builds1:=[[123,63,3,b_depot],
+              [114,61,1,b_breastwork],
+              [119,71,1,b_breastwork]];
+    builds2:=[[125,73,2,b_armoury],
+              [131,51,2,b_oil_mine],
+              [138,78,5,b_lab]];
+    builds3:=[[137,63,4,b_workshop],
+              [137,63,upgrade,b_workshop],
+              [133,59,2,b_ext_noncombat],
+              [137,60,3,b_ext_stitch]];
+    builds4:=[[125,73,upgrade,b_armoury],
+              [123,63,upgrade,b_depot]];
+    builds5:=[[141,63,4,b_ext_gun]];
+
+//factory
+//137,63,4
+//pristavky
+//1-133,59,2
+//2-137,60,3
+//3-141,63,4
+//4-140,66,5
+//5-137,67,0
+
+    place_base(builds1);
+    place_arabs;
+    wait(0$3);
+    build_base(builds2);
+    wait(0$40);
+    build_base(builds3);
+    wait(2$0);
+    build_base(builds4);
+end;
+
+
+function place_base(builds);
+var i, base;
+begin
+    InitUc;
+    InitBc;
+    uc_side:=arabians;
+    uc_nation:=nation_arabian;
+
+    for i in builds do begin
+        bc_type:=i[4];
+        if bc_type=b_lab or bc_type=b_lab_half or bc_type=b_lab_full then begin
+           bc_kind1:=i[5];
+           bc_kind2:=i[6];
+        end;
+        uc_direction:=i[3];
+        PlaceUnitXY(CreateBuilding, i[1],i[2], false);
+    end;
+    base:=GetBase(FilterAllUnits([f_btype,b_depot])[1]);
+    SetResourceType(base, mat_cans, 250);
+    SetResourceType(base, mat_oil, 150);
+end;
+
+function place_arabs;
+var i,j;
+begin
+    InitUc;
+    InitHc;
+    uc_side:=arabians;
+    uc_nation:=nation_arabian;
+
+    for i in arabs_init do begin
+      PrepareHuman(0, i[2], i[3]);
+      for j:=1 to i[1] do begin
+         arabs:=arabs ^ CreateHuman;
+      end;
+    end;
+    for i in arabs do
+      PlaceUnitArea(i, ar_place, false);
+end;
+
+
+function build_base(builds);
+var stavari, i, a;
+begin
+    for i in builds do begin
+        stavari:=get_stavari;
+        a:=UnitFilter(stavari, [f_class,class_engineer]);
+        msg(stavari);
+        msg(a);
+
+        while not a=stavari do begin
+           ComChangeProfession(stavari, class_engineer);
+           wait(0$1);
+        end;
+
+        while not BuildingsInProgress(arabians) do begin
+            if i[3]=upgrade then
+               AddComUpgrade(get_build(i[1],i[2],i[4]))
+            else
+               AddComBuild(stavari, i[4], i[1],i[2],i[3]);
+            wait(0$1);
+        end;
+        stavi:=i;
+        while BuildingsInProgress(arabians) do
+            wait(0$1);
+        ComStop(stavari);
+    end;
+end;
+
+function get_build(x,y,btype);
+var blds, i;
+begin
+    blds:=FilterAllUnits([f_btype,btype]);
+    for i in blds do
+        if GetX(i)=x and GetY(i)=y then
+           break;
+    if GetX(i)=x and GetY(i)=y then
+       result:=i
+    else
+       result:=0;
+end;
+
+function get_stavari;
+begin
+    result:=get_x_best(arabs_init[1][1], skill_engineering);
+end;
+        
+function get_x_best(num, skill);
+var i, lidi, skills;
+begin
+    lidi:=FilterAllUnits([[f_side,arabians],[f_type,unit_human]]);
+    skills:=[];
+    result:=[];
+    for i in lidi do
+        skills:=skills ^ GetSkill(i, skill);
+    SortListByListDesc(lidi, skills);
+    for i:=1 to num do
+        result:=result ^ lidi[i];
+end;
+
+
+
+
+
+

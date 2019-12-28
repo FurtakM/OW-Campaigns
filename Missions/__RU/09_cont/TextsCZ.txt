@@ -1,0 +1,340 @@
+@ Djinn out of bottle
+% Although the US had to abandon the mine they had already extracted enough Siberite for a substantial research programme. 
+& Base Alpha; October 25, ERA + 1
+
+// Dialogue 1 (MacMillan arives to the Alpha)
+$ D1-JMM-1
+- (arrives) Major MacMillan. Powell se mnou chtìl mluvit.
+$ D1-Sol1-1
+- Okamik, pane. (enters barracks)
+$ D1-Sol1-1a
+- (tlumenì) Ten MacMillan u je tady, pane.
+$ D1-Pow-1
+- (vyjde ven) Vıbornì.
+$ D1-JMM-2
+- (stroze) O co jde, generále. (procházejí se spolu)
+$ D1-Pow-2
+- Major, now we have Siberite in our possession but without research facilities it is worthless to us. Your mission is to build a new lab, to be called Epsilon 1. 
+$ D1-JMM-3
+- But that's a waste of personnel, there's the centre at Alpha...
+$ D1-Pow-3
+- Don't question my authority Macmillan! Do you think I'm unaware we have facilities here!?
+$ D1-JMM-4
+- I'm sorry General. 
+$ D1-Pow-4
+- There's too many lives at stake here at Alpha. We don't understand Siberite, and I'm not going to wake up with a base full of dead people because we 'thought it was safe'. 
+$ D1-JMM-5
+- Understood General.
+$ D1-Pow-5
+- (if Joan alive) Just to let you know, Dr. Fergusson will be transferred along with the other scientists, so that might enthuse you to get it done a bit quicker.
+$ D1-Pow-5a
+- And Major, I know you've had some dealings with the Arab mercenaries...
+$ D1-JMM-6
+- What about it?
+$ D1-Pow-6
+- I spoke with their commander, Sheik Abdul...
+$ D1-JMM-7
+- And?
+$ D1-Pow-7
+- I've made an agreement with him. Together we can achieve our aims swiftly.
+$ D1-JMM-8
+- In which area sir?
+$ D1-Pow-8
+- Joint research on Siberite.
+$ D1-JMM-9
+- What?
+$ D1-Pow-9
+- In the group I'm sending there will be four Arab soldiers. You will assist them in constructing their own laboratory and make sure they have sufficient supplies of Siberite to work on. 
+$ D1-JMM-10
+- General...
+$ D1-Pow-10
+- Is that understood Macmillan?
+$ D1-JMM-11
+- Understood General.
+
+# M1
+Add Main construct
+- Construct a base
+Add Main protect
+- Protect Siberite in your vehicles
+#
+
+# M1a
+Chg construct
+- Postav siberitovou laboratoø a zajisti jí dodávku energie.
+#
+
+# M1b
+Out protect
+#
+
+// Dialogue 2 (when trucks enters scene)
+$ D2-Gary-1
+- This is insane, why the hell should we help mercenaries, they said themselves they've no allegiance to us.
+$ D2-JMM-1
+- I've asked myself the same questions Gary. We've just got to trust that the General knows something we don't. 
+$ D2-Gary-2
+- That'll be the day.
+
+// Dialogue 2a (MacMillan meets group of scientists)
+$ D2a-Sim-1
+- Susanne Simms from the Siberite research programme, at your command Major.
+$ D2a-JMM-1
+- Glad you all made it.
+
+// Dialogue 2b (continues if Joan present)
+$ D2b-Joan-1
+- So are we!
+$ D2b-JMM-1
+- Hey, I've missed you.
+$ D2b-Joan-2
+- I've missed you more!
+
+// Dialogue 2c (continues if Denis present)
+$ D2c-Den-1
+- Rád vás zase vidím, kapitáne... vlastnì u poruèíku...
+$ D2c-Sim-1
+- Nezlobte se na nìj, majore. On se nikdy ty hodnosti nenauèí.
+$ D2c-JMM-1
+- A hele, není támhle to Paul Khatam?
+$ D2c-Kha-1
+- (nìjak odpoví, ale ne nijak vøele)
+
+// Dialogue 3 (after lab and power plants are functional)
+$ D3-Sci1-1
+- Brilliant, we can finally get to work on siberite.
+$ D3-Gary-1
+- Siberit, siberit... mám pocit, e tak trochu zapomínáte, e jsme ve válce. Co takhle nìco uiteèného.
+$ D3-Sol1-1
+- Hele, nemìlo by se taky pracovat na vylepšení arzenálu?
+$ D3-Sci1-2
+- A co byste chtìli? Máme vymyslet, jak na kolenì smontovat z ocelovıch trubek stíhaèku?
+$ D3-JMM-2
+- Staèily by ty laserovı zamìøovaèe. Slibujete je u dva tıdny.
+$ D3-Sci1-3
+- To jste si mìli vzpomenout døív, na to potøebujeme opto laboratoø, ne tuhle.
+$ D3-Den-3
+- Rád bych podotknul, e jsem u nìkolikrát ádal o vybavení na poèítaèovı vızkum. Rusové mají u dlouho poèítaèem øízená vozidla i vìe, a my stále nic.
+$ D3-FSci2-3
+- A co ty poèítaèe? Rusové mají u dlouho poèítaèem øízená vozidla i vìe, a my stále nic.
+$ D3-Sci2-3
+- A co ty poèítaèe? Rusové mají u dlouho poèítaèem øízená vozidla i vìe, a my stále nic.
+$ D3-JMM-3
+- Siberit je, samozøejmì, stále priorita. Ale ty zamìøovaèe by se fakt hodily, stejnì jako poèítaèem øízené vìe.
+
+# M2
+Out construct
+Add Main research
+- Prozkoumej všechny dostupné siberitové technologie
+Add Secondary sights
+- Vyzkoumej laserové zamìøovaèe
+Add Secondary ai
+- Vyzkoumej umìlou inteligenci
+#
+
+# M2a
+Out research
+#
+
+# M2b
+Out sights
+#
+
+# M2c
+Out ai
+#
+
+// Dialogue 3a (during research if Simms present)
+$ D3a-Sim-1
+- The Major informed me about the fragments of new material. Would it be possible to take a look?
+$ D3a-Sci1-1
+- Of course.
+$ D3a-Sim-2
+- I'm sure Peter'd be interested.
+$ D3a-Sci1-2
+- You don't mean the geologist Peter?
+$ D3a-Sim-3
+- Yeah, why? Do you have a problem with him?
+$ D3a-Sci1-3
+- Doesn't everyone? He's out of his mind, all that hippy shit - drop your gun and your pants and put a flower up your arse!
+$ D3a-Sim-4
+- You think believing in peace makes him mad?
+$ D3a-Sci1-4
+- No, but believing it's possible in this place does. 
+$ D3a-Sim-5
+- (if Joan alive) He's made more progress on Siberite than anyone except Fergusson. I can't see why the General left him out of Epsilon.
+$ D3a-Sim-5a
+- (if Joan not alive) He's made more progress on Siberite than anyone. I can't see why the General left him out of Epsilon.
+$ D3a-Sci1-5
+- Maybe Powell's more sceptical about the Arabs than we thought. Knowing Peter if he cracked the structure the first thing he'd do is announce it to the Arabs and the next thing he'd do is tell the Russians. 
+$ D3a-Sim-6
+- Peter's an idealist, he isn't stupid. 
+$ D3a-Sci1-6
+- Simms, if Peter Roth was really smart, he'd never have come to this hell hole would he!?
+
+// Dialogue 4 
+$ D4-FSol1-1
+- Major, we've sighted a powerful Russian convoy. Here sir. Awaiting your orders sir.
+
+# M3
+Add Main protect
+- protect your base at all costs
+#
+
+// Dialogue 5 (when Khatam present, a silent dialog between two arabs)
+$ D5-Ar1-1
+- What is wrong with this man? He wears US uniform but he makes his prayers to Allah.
+$ D5-Diet-1
+- Your great religion reaches the darkest corners of the world Mohammed. Even America! 
+$ D5-Ar1-2
+- You never know, he may want to get closer to his God. We should let Hajii know.
+$ D5-Diet-2
+- I'll get on the radio now.
+
+// Dialogue 6 (during research)
+$ D6-Sci1-1
+- Major, I feel awkward saying anything, but...
+$ D6-JMM-1
+- Tell me what's on your mind Dr.
+$ D6-Sci1-2
+- The Arabs are supposed to be working with us, but it's clear they tell us nothing of value while we share everything. 
+$ D6-JMM-2
+- Maybe we're just further down the road than them.
+$ D6-Sci1-3
+- I think there's more to it sir. I don't know what's going on but I just don't trust them.
+$ D6-JMM-3
+- I can't take action without evidence Dr.
+$ D6-Sci1-4
+- Which is why I should have kept quiet...
+$ D6-JMM-4
+- No. You did the right thing. I have the same feelings. We just need a few facts to back them up.
+
+// Dialogue 6b (if MacMillan attack Arabians)
+$ D6b-Pow-1
+- Macmillan, you've abused your command and made a mockery of the United States Army. An attack on the civilian personnel of an allied power is an unpardonable war crime. You are relieved of your rank and and will face a court martial. Dismissed.
+
+// Dialogue 7 (if Mikhail lives - nedivte se, bude to vysvìtleno v 7a)
+$ D7-Cor-1
+- (vstoupí pomalu do základny, vyèerpanì se ptá) Kdo tady velí...
+$ D7-FSol1-1
+- Kdo to proboha je? Majore MacMillane, je tu nìjaké podezøelé individuum ve zbytcích americké uniformy!
+$ D7-Sol1-1
+- Kdo to proboha je? Majore MacMillane, je tu nìjaké podezøelé individuum ve zbytcích americké uniformy!
+$ D7-Cor-2
+- (vyèerpanì) MacMillan? Major? To se sem trmácím jenom proto, abych vidìl, jak ten parchant šplhá po ebøíèku?
+$ D7-JMM-2
+- Cornell? To snad není monı, Mark Cornell? Proboha, chlape, ty iješ?
+$ D7-Cor-3
+- Ne, vole, pøišel jsem tì strašit. (padne k zemi)
+$ D7-JMM-3
+- Rychle, doktora. Tenhle chlap byl pohøešovanej nìkolik mìsícù.
+
+// Dialogue 7a (some time after Cornells recovering, when he gets near to John)
+$ D7a-JMM-1
+- Vypadáš hroznì, Cornelli. Nechceš nám øíci, kde sis válel šunky, zatímco my jsme se tu døeli?
+$ D7a-Cor-1
+- Ále, byl jsem hostem v ruském táboøe. Ještì pøed pár tıdny jsem si uíval kadodenního bití, muèení, vıslechù a dalších atrakcí.
+$ D7a-JMM-2
+- Aha... a proè tì pustili? Slíbils, e u budeš hodnej?
+$ D7a-Cor-2
+- Asi je moje muèení pøestalo bavit. Navíc dostali lepší hraèku, nìjakou arabskou oldaèku. Byla to celkem pìkná baba, kdy ji pøivedli... (this is reference to Arabian campaign)
+$ D7a-JMM-3
+- Poèkej, a proto se rozhodli tì pustit?
+$ D7a-Cor-3
+- Ale kdepak pustit, zabít.
+$ D7a-JMM-4
+- A?
+$ D7a-Cor-4
+- (if Cornell meets in mission 3 Mikhail) Pamatuješ Mikhaila Berezova? Ten rusák, co poøád øíkal, e je kamarád s Amerika, utekl nám bìhem prùlomu... no, tak noc pøed popravou mì potají pustil.
+$ D7a-Cor-4a
+- (if Mikhail has fled or if he was never captured) Znáš nìjakıho Mikhaila Berezova? Ptal se, jestli tì neznám. Prı jsi mu zachránil ivot, kdy se tu objevil. Noc pøed popravou mì pustil, prı na oplátku, mám tì pozdravovat.
+$ D7a-JMM-5
+- Ach tak, Mikhail. Doufám, e mu na to nepøišli.
+$ D7a-Cor-5
+- Bastard! Tìšil jsem se, e ráno budu mít všechno za sebou, a místo toho jsem se ocitnul zmlácenej a hladovej sám v divoèinì. Nìkolik tıdnù koøínkù mi na síle nepøidalo. Sorry, MacMillane, asi ti nebudu moc platnej, sotva se plouím.
+$ D7a-JMM-6
+- Tak se dej co nejdøív do kupy, chlape. 
+
+// Dialogue 8 (arabians attacks)
+$ D8-Sol1-1
+- The Arabs are attacking sir. I repeat, the Arabs are attacking us. 
+$ D8-Sci1-1
+- Their Scientists are trying to get to their armoury.
+$ D8-JMM-1
+- Calling all units. The Arabs have attacked. All Arab military are now considered hostile. Seek and destroy.
+
+# M4
+Add secondary arabs
+- Kill renegade Arab scientists. 
+#
+
+// Dialogue 8a (arabians attacks)
+$ D8a-Gary-1
+- I knew it from the start Major, joining forces was a lousy gamble. 
+
+// Dialogue 8b (after arabians attacks)
+$ D8b-Sol1-1
+- Where the fuck are you going Paul?
+$ D8b-FSol1-1
+- Where the fuck are you going Paul?
+$ D8b-Kha-1
+- They need me more than you.
+$ D8b-Sol1-2
+- You're joining the Arabs after what they've done. 
+$ D8b-FSol1-2
+- You're joining the Arabs after what they've done. 
+$ D8b-Kha-2
+- I fight them, I fight my own people, my own God. You can shoot me if you want to. I will only go to Allah sooner. 
+$ D8b-Sol1-3
+- You're wrong, but you're still my friend. Go if you're going. But you're making a big mistake. 
+$ D8b-FSol1-3
+- You're wrong, but you're still my friend. Go if you're going. But you're making a big mistake. 
+$ D8b-Kha-3
+- Take care. 
+$ D8b-Sol1-4
+- Get the fuck out of here.
+$ D8b-FSol1-4
+- Get the fuck out of here.
+
+// Dialogue 9a (if player knows about time-space and slowdown grenades from previous mission)
+$ D9a-Cyrus-1
+- (if present) Do hajzlu. Pane, Rusové pouívají ty svı zasranı novı bazuky. Aby èert spral celej siberit!
+$ D9a-Sol1-1
+- Pane, zdá se, e Rusové pouívají to speciální støelivo do bazuky, jak nám o nìm øíkali Arabové.
+
+// Dialogue 9b (if player doesn't know)
+$ D9b-Cyrus-1
+- (if present) Do hajzlu. Pane, Rusové pouívají nìjakı zasranı novı bazuky. Kdo to koupí, je na nìjakou dobu úplnì bezbrannej... a nebo se z nièeho nic ocitne nìkde jinde. A nebo u z toho všeho blbnu.
+$ D9b-Sol1-1
+- Pane, zdá se, e Ruští bazukéøi pouívají nìjaké nové rakety. Dìlá to nìjakı kejkle s èasoprostorem - zpomaluje èas, deformuje prostor a kdoví co ještì.
+
+// Dialogue 9c (continues)
+$ D9c-JMM-1
+- Zpráva všem. Dávejte si pozor na ruské rakety. Mohou vyvolávat zvláštní èasoprostorové poruchy.
+$ D9c-JMM-1a
+- (if laser sights are researched) Naši snipeøi a se zamìøí na bazukéry. Opakuji. Sejmìte je, dìlají nám v tom bordel.
+
+^ Main
+Siberit prozkoumán
+
+| JMM
+John MacMillan zemøel
+
+| Siberite
+Nemáš dost siberitu na dokonèení vızkumu.
+
+* sights
++ laserové zamìøovaèe 
+- nepøipravil jsi technologii laserovıch zamìøovaèù
+*
+
+* computers
++ umìlá inteligence
+- nevyvinul jsi umìlou inteligenci
+*
+
+* renegades
++ zrádci potrestáni
+- unikli ti arabští vìdci, kteøí zradili
+- unikli ti nìkteøí z arabskıch vìdcù, kteøí zradili
+*

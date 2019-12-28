@@ -1,0 +1,208 @@
+var outside_list,                  // seznam vnejsich areji jednotlivych stran
+    inside_list;                   // seznam vnitrnich areji jednotlivych stran
+
+
+var base_areas,                    // areje pro zjistovani pritomnosti nepratel (hrace) aby se mohl loadnut novy cargo bay
+    create_areas;                  // misto ka se loaduje novy cargo bay
+
+var us_bay,ru_bay,ar_bay;
+var us_bad,ru_bad,ar_bad;
+
+export function init_crates_collecting;
+begin
+  outside_list:=[us_crates,ar_crates,ru_crates];
+  inside_list:=[us_inner_base,ar_base,ru_inner_base];
+
+  base_areas:=[us_base,ar_base,ru_base];
+  create_areas:=[us_create,ar_create,ru_create];
+
+  us_bad:=[];
+  ru_bad:=[];
+  ar_bad:=[];
+end;
+
+
+//------------------------------------------//
+//-----  Hlavni trigr hledajici bedny  -----//
+every 0$5.4 do
+var un,
+    side,             // aktivni strana, pro kterou se provadi sbirani beden
+    list,             // seznam souradnic beden v dane areji
+    cargo,            // seznam cargo bay vozidel
+    n_cargo,          // ident pro jednotliva narodni carga
+    engineers;        // seznam engineeru
+begin
+  for side in cpu_list do
+    begin
+      list:=GetListOfCratesInArea(outside_list[side]);
+      if list then
+        begin
+            case side of
+          1: n_cargo:=us_cargo_bay;
+          2: n_cargo:=ar_cargo_bay;
+          3: n_cargo:=ru_cargo_bay;
+            end;
+
+          cargo:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_weapon,n_cargo] ]);
+          if cargo then
+            begin
+              cargo:=cargo[1];
+              if (not HasTask(cargo)) and (not ([list[1],list[2]] in (us_bad^ru_bad^ar_bad) )) then
+                begin
+                  ComCollect(cargo,list[1],list[2]);
+                  case side of
+                   us: us_bay:=us_bay ^ [[list[1],list[2]]];
+                   ru: ru_bay:=ru_bay ^ [[list[1],list[2]]];
+                   ar: ar_bay:=ar_bay ^ [[list[1],list[2]]];
+                  end;
+                end;
+            end;
+        end;
+
+      list:=GetListOfCratesInArea(inside_list[side]);
+      if list then
+        begin
+          engineers:=FilterAllUnits([ [f_side,side], [f_type,unit_human], [f_class,class_engineer] ]);
+
+          for un in engineers do
+            if not GetUnitMc(un) then
+              ComCollect(un,list[1],list[2]);
+        end;
+    end;
+  enable;
+end;
+
+
+//-----------------------------------------------------//
+//-----  Obnovovani cargo vozidel pro CPU strany  -----//
+every 1$0.6 do
+var un,
+    n_cargo,cargo,
+    side;
+begin
+  for side in cpu_list do
+    begin
+        case side of
+      1: n_cargo:=us_cargo_bay;
+      2: n_cargo:=ar_cargo_bay;
+      3: n_cargo:=ru_cargo_bay;
+        end;
+      cargo:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_weapon,n_cargo] ]);
+      if not (cargo or FilterUnitsInArea(base_areas[side], [ [f_side,you] ])) then
+        begin
+          uc_side:=side;
+            case side of
+          1: uc_nation:=nation_american;
+          2: uc_nation:=nation_arabian;
+          3: uc_nation:=nation_russian;
+            end;
+
+          uc_direction:=Rand(0,5);
+            case side of
+          1: vc_chassis:=us_medium_tracked;
+          2: vc_chassis:=ar_half_tracked;
+          3: vc_chassis:=ru_medium_tracked;
+            end;
+          vc_engine:=engine_siberite;
+            case side of
+          1: vc_control:=control_computer;
+          2: vc_control:=control_apeman;
+          3: vc_control:=control_computer;
+            end;
+          vc_weapon:=n_cargo;
+
+          un:=CreateVehicle;
+          while GetTag(83) do
+            wait(0$1);
+          PlaceUnitArea(un,create_areas[side],false);
+        end;
+
+    end;
+  enable;
+end;
+
+
+//---------------------------------------------------------//
+//-----  Osetreni nedostupnosti krabic pro Cargo Bay  -----//
+export function remove_bad_crates(side);
+var list,un,x,y;
+begin
+  case side of
+   us: begin
+         x:=us_bay[us_bad][1];
+         y:=us_bay[us_bad][2];
+         us_bad:=us_bad ^ [[x,y]];
+       end;
+   ru: begin
+         x:=ru_bay[us_bad][1];
+         y:=ru_bay[us_bad][2];
+         ru_bad:=ru_bad ^ [[x,y]];
+       end;
+   ar: begin
+         x:=ar_bay[us_bad][1];
+         y:=ar_bay[us_bad][2];
+         ru_bad:=ru_bad ^ [[x,y]];
+       end;
+  end;
+
+  list:=FilterAllUnits([ [f_side,side], [f_type,unit_human], [f_class,class_engineer], [f_ok] ]);
+
+  for un in list do
+    if not GetUnitMc(un) then
+      begin
+        ComRemember(un);
+        AddComCollect(un,x,y);
+        AddComReturn(un);
+      end;
+end;
+
+
+
+
+every 0$7.9 trigger us_bad do
+var un,list;
+begin
+  list:=[];
+  for un in us_bad do
+    begin
+      MoveAreaXY(crates_check,un[1],un[2]);
+      if GetListOfCratesInArea(crates_check) then
+        list:=list ^ [un];
+    end;
+  us_bad:=list;
+  enable;
+end;
+
+every 0$7.8 trigger ru_bad do
+var un,list;
+begin
+  list:=[];
+  for un in ru_bad do
+    begin
+      MoveAreaXY(crates_check,un[1],un[2]);
+      if GetListOfCratesInArea(crates_check) then
+        list:=list ^ [un];
+    end;
+  ru_bad:=list;
+  enable;
+end;
+
+every 0$7.7 trigger ar_bad do
+var un,list;
+begin
+  list:=[];
+  for un in ar_bad do
+    begin
+      MoveAreaXY(crates_check,un[1],un[2]);
+      if GetListOfCratesInArea(crates_check) then
+        list:=list ^ [un];
+    end;
+  ar_bad:=list;
+  enable;
+end;
+
+
+
+
+
+

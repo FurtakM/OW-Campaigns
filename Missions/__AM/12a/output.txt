@@ -1,0 +1,1669 @@
+// var am , amam , moji ; var tmp , tmp2 , max , zbytekz11a , zbytekz11b ; starting begin SA_OnMissionStart ;
+   0: CALL 2903 0 0
+// amam = 1 ;
+   4: LD_ADDR_LOC 2
+   8: PUSH
+   9: LD_INT 1
+  11: ST_TO_ADDR
+// am = 7 ;
+  12: LD_ADDR_LOC 1
+  16: PUSH
+  17: LD_INT 7
+  19: ST_TO_ADDR
+// moji = [ ] ;
+  20: LD_ADDR_LOC 3
+  24: PUSH
+  25: EMPTY
+  26: ST_TO_ADDR
+// changesidefog ( amam , am ) ;
+  27: LD_LOC 2
+  31: PPUSH
+  32: LD_LOC 1
+  36: PPUSH
+  37: CALL_OW 343
+// revealfogarea ( am , celamapa ) ;
+  41: LD_LOC 1
+  45: PPUSH
+  46: LD_INT 1
+  48: PPUSH
+  49: CALL_OW 332
+// prepare_americans ;
+  53: CALL 1882 0 0
+// placeunitxy ( john , 55 , 14 , false ) ;
+  57: LD_LOC 9
+  61: PPUSH
+  62: LD_INT 55
+  64: PPUSH
+  65: LD_INT 14
+  67: PPUSH
+  68: LD_INT 0
+  70: PPUSH
+  71: CALL_OW 48
+// placeunitxy ( roth , 58 , 14 , false ) ;
+  75: LD_LOC 11
+  79: PPUSH
+  80: LD_INT 58
+  82: PPUSH
+  83: LD_INT 14
+  85: PPUSH
+  86: LD_INT 0
+  88: PPUSH
+  89: CALL_OW 48
+// centernowonunits ( [ john , roth ] ) ;
+  93: LD_LOC 9
+  97: PUSH
+  98: LD_LOC 11
+ 102: PUSH
+ 103: EMPTY
+ 104: LIST
+ 105: LIST
+ 106: PPUSH
+ 107: CALL_OW 87
+// interface_hidden = true ;
+ 111: LD_ADDR_OWVAR 54
+ 115: PUSH
+ 116: LD_INT 1
+ 118: ST_TO_ADDR
+// dialogueon ;
+ 119: CALL_OW 6
+// dwait ( 0 0$0.5 ) ;
+ 123: LD_INT 18
+ 125: PPUSH
+ 126: CALL_OW 68
+// say ( roth , DStart-Roth-1 ) ;
+ 130: LD_LOC 11
+ 134: PPUSH
+ 135: LD_STRING DStart-Roth-1
+ 137: PPUSH
+ 138: CALL_OW 88
+// say ( john , DStart-JMM-1 ) ;
+ 142: LD_LOC 9
+ 146: PPUSH
+ 147: LD_STRING DStart-JMM-1
+ 149: PPUSH
+ 150: CALL_OW 88
+// say ( roth , DStart-Roth-2 ) ;
+ 154: LD_LOC 11
+ 158: PPUSH
+ 159: LD_STRING DStart-Roth-2
+ 161: PPUSH
+ 162: CALL_OW 88
+// say ( john , DStart-JMM-2 ) ;
+ 166: LD_LOC 9
+ 170: PPUSH
+ 171: LD_STRING DStart-JMM-2
+ 173: PPUSH
+ 174: CALL_OW 88
+// say ( roth , DStart-Roth-3 ) ;
+ 178: LD_LOC 11
+ 182: PPUSH
+ 183: LD_STRING DStart-Roth-3
+ 185: PPUSH
+ 186: CALL_OW 88
+// say ( john , DStart-JMM-3 ) ;
+ 190: LD_LOC 9
+ 194: PPUSH
+ 195: LD_STRING DStart-JMM-3
+ 197: PPUSH
+ 198: CALL_OW 88
+// say ( roth , DStart-Roth-4 ) ;
+ 202: LD_LOC 11
+ 206: PPUSH
+ 207: LD_STRING DStart-Roth-4
+ 209: PPUSH
+ 210: CALL_OW 88
+// say ( john , DStart-JMM-4 ) ;
+ 214: LD_LOC 9
+ 218: PPUSH
+ 219: LD_STRING DStart-JMM-4
+ 221: PPUSH
+ 222: CALL_OW 88
+// say ( roth , DStart-Roth-5 ) ;
+ 226: LD_LOC 11
+ 230: PPUSH
+ 231: LD_STRING DStart-Roth-5
+ 233: PPUSH
+ 234: CALL_OW 88
+// say ( john , DStart-JMM-5 ) ;
+ 238: LD_LOC 9
+ 242: PPUSH
+ 243: LD_STRING DStart-JMM-5
+ 245: PPUSH
+ 246: CALL_OW 88
+// say ( roth , DStart-Roth-6 ) ;
+ 250: LD_LOC 11
+ 254: PPUSH
+ 255: LD_STRING DStart-Roth-6
+ 257: PPUSH
+ 258: CALL_OW 88
+// dialogueoff ;
+ 262: CALL_OW 7
+// tmp = 12 - na + zbytekz11 ;
+ 266: LD_ADDR_LOC 4
+ 270: PUSH
+ 271: LD_INT 12
+ 273: PUSH
+ 274: LD_LOC 26
+ 278: MINUS
+ 279: PUSH
+ 280: LD_LOC 23
+ 284: PLUS
+ 285: ST_TO_ADDR
+// randomizeall ;
+ 286: CALL_OW 11
+// if tmp < 7 then
+ 290: LD_LOC 4
+ 294: PUSH
+ 295: LD_INT 7
+ 297: LESS
+ 298: IFFALSE 395
+// for tmp2 = tmp + 1 to 7 do
+ 300: LD_ADDR_LOC 5
+ 304: PUSH
+ 305: DOUBLE
+ 306: LD_LOC 4
+ 310: PUSH
+ 311: LD_INT 1
+ 313: PLUS
+ 314: DEC
+ 315: ST_TO_ADDR
+ 316: LD_INT 7
+ 318: PUSH
+ 319: FOR_TO
+ 320: IFFALSE 393
+// begin max = rand ( 1 , 2 ) ;
+ 322: LD_ADDR_LOC 6
+ 326: PUSH
+ 327: LD_INT 1
+ 329: PPUSH
+ 330: LD_INT 2
+ 332: PPUSH
+ 333: CALL_OW 12
+ 337: ST_TO_ADDR
+// preparehuman ( rand ( 1 , 2 ) , [ class_soldier , class_scientistic ] [ max ] , 6 ) ;
+ 338: LD_INT 1
+ 340: PPUSH
+ 341: LD_INT 2
+ 343: PPUSH
+ 344: CALL_OW 12
+ 348: PPUSH
+ 349: LD_INT 1
+ 351: PUSH
+ 352: LD_INT 4
+ 354: PUSH
+ 355: EMPTY
+ 356: LIST
+ 357: LIST
+ 358: PUSH
+ 359: LD_LOC 6
+ 363: ARRAY
+ 364: PPUSH
+ 365: LD_INT 6
+ 367: PPUSH
+ 368: CALL_OW 380
+// zbytekz11 = zbytekz11 ^ [ createhuman ] ;
+ 372: LD_ADDR_LOC 23
+ 376: PUSH
+ 377: LD_LOC 23
+ 381: PUSH
+ 382: CALL_OW 44
+ 386: PUSH
+ 387: EMPTY
+ 388: LIST
+ 389: ADD
+ 390: ST_TO_ADDR
+// end ;
+ 391: GO 319
+ 393: POP
+ 394: POP
+// tmp2 = 0 ;
+ 395: LD_ADDR_LOC 5
+ 399: PUSH
+ 400: LD_INT 0
+ 402: ST_TO_ADDR
+// if not denis then
+ 403: LD_LOC 19
+ 407: NOT
+ 408: IFFALSE 424
+// tmp2 = tmp2 + 1 ;
+ 410: LD_ADDR_LOC 5
+ 414: PUSH
+ 415: LD_LOC 5
+ 419: PUSH
+ 420: LD_INT 1
+ 422: PLUS
+ 423: ST_TO_ADDR
+// if not simms then
+ 424: LD_LOC 22
+ 428: NOT
+ 429: IFFALSE 445
+// tmp2 = tmp2 + 1 ;
+ 431: LD_ADDR_LOC 5
+ 435: PUSH
+ 436: LD_LOC 5
+ 440: PUSH
+ 441: LD_INT 1
+ 443: PLUS
+ 444: ST_TO_ADDR
+// max = 5 + tmp2 ;
+ 445: LD_ADDR_LOC 6
+ 449: PUSH
+ 450: LD_INT 5
+ 452: PUSH
+ 453: LD_LOC 5
+ 457: PLUS
+ 458: ST_TO_ADDR
+// moji = [ denis , simms ] ^ characterselection (  , max - 2 , max , [ sel_change_class , john , roth , denis , simms , sel_not_hired , sel_changeable , joan , bobby , cyrus , lisa , frank , markc , brown , lucy , tim , yamoko , gary ] ^ zbytekz11 , [ [ class_scientistic , 3 ] , [ class_sniper , 0 , 3 ] , class_soldier ] ) ;
+ 459: LD_ADDR_LOC 3
+ 463: PUSH
+ 464: LD_LOC 19
+ 468: PUSH
+ 469: LD_LOC 22
+ 473: PUSH
+ 474: EMPTY
+ 475: LIST
+ 476: LIST
+ 477: PUSH
+ 478: LD_STRING 
+ 480: PPUSH
+ 481: LD_LOC 6
+ 485: PUSH
+ 486: LD_INT 2
+ 488: MINUS
+ 489: PPUSH
+ 490: LD_LOC 6
+ 494: PPUSH
+ 495: LD_INT -5
+ 497: PUSH
+ 498: LD_LOC 9
+ 502: PUSH
+ 503: LD_LOC 11
+ 507: PUSH
+ 508: LD_LOC 19
+ 512: PUSH
+ 513: LD_LOC 22
+ 517: PUSH
+ 518: LD_INT -2
+ 520: PUSH
+ 521: LD_INT -3
+ 523: PUSH
+ 524: LD_LOC 12
+ 528: PUSH
+ 529: LD_LOC 13
+ 533: PUSH
+ 534: LD_LOC 14
+ 538: PUSH
+ 539: LD_LOC 15
+ 543: PUSH
+ 544: LD_LOC 16
+ 548: PUSH
+ 549: LD_LOC 17
+ 553: PUSH
+ 554: LD_LOC 25
+ 558: PUSH
+ 559: LD_LOC 24
+ 563: PUSH
+ 564: LD_LOC 18
+ 568: PUSH
+ 569: LD_LOC 20
+ 573: PUSH
+ 574: LD_LOC 21
+ 578: PUSH
+ 579: EMPTY
+ 580: LIST
+ 581: LIST
+ 582: LIST
+ 583: LIST
+ 584: LIST
+ 585: LIST
+ 586: LIST
+ 587: LIST
+ 588: LIST
+ 589: LIST
+ 590: LIST
+ 591: LIST
+ 592: LIST
+ 593: LIST
+ 594: LIST
+ 595: LIST
+ 596: LIST
+ 597: LIST
+ 598: PUSH
+ 599: LD_LOC 23
+ 603: ADD
+ 604: PPUSH
+ 605: LD_INT 4
+ 607: PUSH
+ 608: LD_INT 3
+ 610: PUSH
+ 611: EMPTY
+ 612: LIST
+ 613: LIST
+ 614: PUSH
+ 615: LD_INT 5
+ 617: PUSH
+ 618: LD_INT 0
+ 620: PUSH
+ 621: LD_INT 3
+ 623: PUSH
+ 624: EMPTY
+ 625: LIST
+ 626: LIST
+ 627: LIST
+ 628: PUSH
+ 629: LD_INT 1
+ 631: PUSH
+ 632: EMPTY
+ 633: LIST
+ 634: LIST
+ 635: LIST
+ 636: PPUSH
+ 637: CALL_OW 42
+ 641: ADD
+ 642: ST_TO_ADDR
+// if ( denis = 0 ) then
+ 643: LD_LOC 19
+ 647: PUSH
+ 648: LD_INT 0
+ 650: EQUAL
+ 651: IFFALSE 665
+// savevariable ( 0 , denis ) else
+ 653: LD_INT 0
+ 655: PPUSH
+ 656: LD_STRING denis
+ 658: PPUSH
+ 659: CALL_OW 39
+ 663: GO 718
+// if ( denis in moji ) then
+ 665: LD_LOC 19
+ 669: PUSH
+ 670: LD_LOC 3
+ 674: IN
+ 675: IFFALSE 708
+// begin savevariable ( 1 , denis ) ;
+ 677: LD_INT 1
+ 679: PPUSH
+ 680: LD_STRING denis
+ 682: PPUSH
+ 683: CALL_OW 39
+// moji = moji diff [ denis ] ;
+ 687: LD_ADDR_LOC 3
+ 691: PUSH
+ 692: LD_LOC 3
+ 696: PUSH
+ 697: LD_LOC 19
+ 701: PUSH
+ 702: EMPTY
+ 703: LIST
+ 704: DIFF
+ 705: ST_TO_ADDR
+// end else
+ 706: GO 718
+// savevariable ( 2 , denis ) ;
+ 708: LD_INT 2
+ 710: PPUSH
+ 711: LD_STRING denis
+ 713: PPUSH
+ 714: CALL_OW 39
+// savecharacters ( denis , Denis ) ;
+ 718: LD_LOC 19
+ 722: PPUSH
+ 723: LD_STRING Denis
+ 725: PPUSH
+ 726: CALL_OW 38
+// if ( simms = 0 ) then
+ 730: LD_LOC 22
+ 734: PUSH
+ 735: LD_INT 0
+ 737: EQUAL
+ 738: IFFALSE 752
+// savevariable ( 0 , simms ) else
+ 740: LD_INT 0
+ 742: PPUSH
+ 743: LD_STRING simms
+ 745: PPUSH
+ 746: CALL_OW 39
+ 750: GO 805
+// if ( simms in moji ) then
+ 752: LD_LOC 22
+ 756: PUSH
+ 757: LD_LOC 3
+ 761: IN
+ 762: IFFALSE 795
+// begin savevariable ( 1 , simms ) ;
+ 764: LD_INT 1
+ 766: PPUSH
+ 767: LD_STRING simms
+ 769: PPUSH
+ 770: CALL_OW 39
+// moji = moji diff [ simms ] ;
+ 774: LD_ADDR_LOC 3
+ 778: PUSH
+ 779: LD_LOC 3
+ 783: PUSH
+ 784: LD_LOC 22
+ 788: PUSH
+ 789: EMPTY
+ 790: LIST
+ 791: DIFF
+ 792: ST_TO_ADDR
+// end else
+ 793: GO 805
+// savevariable ( 2 , simms ) ;
+ 795: LD_INT 2
+ 797: PPUSH
+ 798: LD_STRING simms
+ 800: PPUSH
+ 801: CALL_OW 39
+// savecharacters ( simms , Simms ) ;
+ 805: LD_LOC 22
+ 809: PPUSH
+ 810: LD_STRING Simms
+ 812: PPUSH
+ 813: CALL_OW 38
+// if ( joan = 0 ) then
+ 817: LD_LOC 12
+ 821: PUSH
+ 822: LD_INT 0
+ 824: EQUAL
+ 825: IFFALSE 839
+// savevariable ( 0 , joan ) else
+ 827: LD_INT 0
+ 829: PPUSH
+ 830: LD_STRING joan
+ 832: PPUSH
+ 833: CALL_OW 39
+ 837: GO 892
+// if ( joan in moji ) then
+ 839: LD_LOC 12
+ 843: PUSH
+ 844: LD_LOC 3
+ 848: IN
+ 849: IFFALSE 882
+// begin savevariable ( 1 , joan ) ;
+ 851: LD_INT 1
+ 853: PPUSH
+ 854: LD_STRING joan
+ 856: PPUSH
+ 857: CALL_OW 39
+// moji = moji diff [ joan ] ;
+ 861: LD_ADDR_LOC 3
+ 865: PUSH
+ 866: LD_LOC 3
+ 870: PUSH
+ 871: LD_LOC 12
+ 875: PUSH
+ 876: EMPTY
+ 877: LIST
+ 878: DIFF
+ 879: ST_TO_ADDR
+// end else
+ 880: GO 892
+// savevariable ( 2 , joan ) ;
+ 882: LD_INT 2
+ 884: PPUSH
+ 885: LD_STRING joan
+ 887: PPUSH
+ 888: CALL_OW 39
+// savecharacters ( joan , Joan ) ;
+ 892: LD_LOC 12
+ 896: PPUSH
+ 897: LD_STRING Joan
+ 899: PPUSH
+ 900: CALL_OW 38
+// if ( bobby = 0 ) then
+ 904: LD_LOC 13
+ 908: PUSH
+ 909: LD_INT 0
+ 911: EQUAL
+ 912: IFFALSE 926
+// savevariable ( 0 , bobby ) else
+ 914: LD_INT 0
+ 916: PPUSH
+ 917: LD_STRING bobby
+ 919: PPUSH
+ 920: CALL_OW 39
+ 924: GO 979
+// if ( bobby in moji ) then
+ 926: LD_LOC 13
+ 930: PUSH
+ 931: LD_LOC 3
+ 935: IN
+ 936: IFFALSE 969
+// begin savevariable ( 1 , bobby ) ;
+ 938: LD_INT 1
+ 940: PPUSH
+ 941: LD_STRING bobby
+ 943: PPUSH
+ 944: CALL_OW 39
+// moji = moji diff [ bobby ] ;
+ 948: LD_ADDR_LOC 3
+ 952: PUSH
+ 953: LD_LOC 3
+ 957: PUSH
+ 958: LD_LOC 13
+ 962: PUSH
+ 963: EMPTY
+ 964: LIST
+ 965: DIFF
+ 966: ST_TO_ADDR
+// end else
+ 967: GO 979
+// savevariable ( 2 , bobby ) ;
+ 969: LD_INT 2
+ 971: PPUSH
+ 972: LD_STRING bobby
+ 974: PPUSH
+ 975: CALL_OW 39
+// savecharacters ( bobby , Bobby ) ;
+ 979: LD_LOC 13
+ 983: PPUSH
+ 984: LD_STRING Bobby
+ 986: PPUSH
+ 987: CALL_OW 38
+// if ( cyrus = 0 ) then
+ 991: LD_LOC 14
+ 995: PUSH
+ 996: LD_INT 0
+ 998: EQUAL
+ 999: IFFALSE 1013
+// savevariable ( 0 , cyrus ) else
+1001: LD_INT 0
+1003: PPUSH
+1004: LD_STRING cyrus
+1006: PPUSH
+1007: CALL_OW 39
+1011: GO 1066
+// if ( cyrus in moji ) then
+1013: LD_LOC 14
+1017: PUSH
+1018: LD_LOC 3
+1022: IN
+1023: IFFALSE 1056
+// begin savevariable ( 1 , cyrus ) ;
+1025: LD_INT 1
+1027: PPUSH
+1028: LD_STRING cyrus
+1030: PPUSH
+1031: CALL_OW 39
+// moji = moji diff [ cyrus ] ;
+1035: LD_ADDR_LOC 3
+1039: PUSH
+1040: LD_LOC 3
+1044: PUSH
+1045: LD_LOC 14
+1049: PUSH
+1050: EMPTY
+1051: LIST
+1052: DIFF
+1053: ST_TO_ADDR
+// end else
+1054: GO 1066
+// savevariable ( 2 , cyrus ) ;
+1056: LD_INT 2
+1058: PPUSH
+1059: LD_STRING cyrus
+1061: PPUSH
+1062: CALL_OW 39
+// savecharacters ( cyrus , Cyrus ) ;
+1066: LD_LOC 14
+1070: PPUSH
+1071: LD_STRING Cyrus
+1073: PPUSH
+1074: CALL_OW 38
+// if ( lisa = 0 ) then
+1078: LD_LOC 15
+1082: PUSH
+1083: LD_INT 0
+1085: EQUAL
+1086: IFFALSE 1100
+// savevariable ( 0 , lisa ) else
+1088: LD_INT 0
+1090: PPUSH
+1091: LD_STRING lisa
+1093: PPUSH
+1094: CALL_OW 39
+1098: GO 1153
+// if ( lisa in moji ) then
+1100: LD_LOC 15
+1104: PUSH
+1105: LD_LOC 3
+1109: IN
+1110: IFFALSE 1143
+// begin savevariable ( 1 , lisa ) ;
+1112: LD_INT 1
+1114: PPUSH
+1115: LD_STRING lisa
+1117: PPUSH
+1118: CALL_OW 39
+// moji = moji diff [ lisa ] ;
+1122: LD_ADDR_LOC 3
+1126: PUSH
+1127: LD_LOC 3
+1131: PUSH
+1132: LD_LOC 15
+1136: PUSH
+1137: EMPTY
+1138: LIST
+1139: DIFF
+1140: ST_TO_ADDR
+// end else
+1141: GO 1153
+// savevariable ( 2 , lisa ) ;
+1143: LD_INT 2
+1145: PPUSH
+1146: LD_STRING lisa
+1148: PPUSH
+1149: CALL_OW 39
+// savecharacters ( lisa , Lisa ) ;
+1153: LD_LOC 15
+1157: PPUSH
+1158: LD_STRING Lisa
+1160: PPUSH
+1161: CALL_OW 38
+// if ( frank = 0 ) then
+1165: LD_LOC 16
+1169: PUSH
+1170: LD_INT 0
+1172: EQUAL
+1173: IFFALSE 1187
+// savevariable ( 0 , frank ) else
+1175: LD_INT 0
+1177: PPUSH
+1178: LD_STRING frank
+1180: PPUSH
+1181: CALL_OW 39
+1185: GO 1240
+// if ( frank in moji ) then
+1187: LD_LOC 16
+1191: PUSH
+1192: LD_LOC 3
+1196: IN
+1197: IFFALSE 1230
+// begin savevariable ( 1 , frank ) ;
+1199: LD_INT 1
+1201: PPUSH
+1202: LD_STRING frank
+1204: PPUSH
+1205: CALL_OW 39
+// moji = moji diff [ frank ] ;
+1209: LD_ADDR_LOC 3
+1213: PUSH
+1214: LD_LOC 3
+1218: PUSH
+1219: LD_LOC 16
+1223: PUSH
+1224: EMPTY
+1225: LIST
+1226: DIFF
+1227: ST_TO_ADDR
+// end else
+1228: GO 1240
+// savevariable ( 2 , frank ) ;
+1230: LD_INT 2
+1232: PPUSH
+1233: LD_STRING frank
+1235: PPUSH
+1236: CALL_OW 39
+// savecharacters ( frank , Frank ) ;
+1240: LD_LOC 16
+1244: PPUSH
+1245: LD_STRING Frank
+1247: PPUSH
+1248: CALL_OW 38
+// if ( markc = 0 ) then
+1252: LD_LOC 17
+1256: PUSH
+1257: LD_INT 0
+1259: EQUAL
+1260: IFFALSE 1274
+// savevariable ( 0 , cornell ) else
+1262: LD_INT 0
+1264: PPUSH
+1265: LD_STRING cornell
+1267: PPUSH
+1268: CALL_OW 39
+1272: GO 1327
+// if ( markc in moji ) then
+1274: LD_LOC 17
+1278: PUSH
+1279: LD_LOC 3
+1283: IN
+1284: IFFALSE 1317
+// begin savevariable ( 1 , cornell ) ;
+1286: LD_INT 1
+1288: PPUSH
+1289: LD_STRING cornell
+1291: PPUSH
+1292: CALL_OW 39
+// moji = moji diff [ markc ] ;
+1296: LD_ADDR_LOC 3
+1300: PUSH
+1301: LD_LOC 3
+1305: PUSH
+1306: LD_LOC 17
+1310: PUSH
+1311: EMPTY
+1312: LIST
+1313: DIFF
+1314: ST_TO_ADDR
+// end else
+1315: GO 1327
+// savevariable ( 2 , cornell ) ;
+1317: LD_INT 2
+1319: PPUSH
+1320: LD_STRING cornell
+1322: PPUSH
+1323: CALL_OW 39
+// savecharacters ( markc , Cornell ) ;
+1327: LD_LOC 17
+1331: PPUSH
+1332: LD_STRING Cornell
+1334: PPUSH
+1335: CALL_OW 38
+// if ( brown = 0 ) then
+1339: LD_LOC 25
+1343: PUSH
+1344: LD_INT 0
+1346: EQUAL
+1347: IFFALSE 1361
+// savevariable ( 0 , brown ) else
+1349: LD_INT 0
+1351: PPUSH
+1352: LD_STRING brown
+1354: PPUSH
+1355: CALL_OW 39
+1359: GO 1414
+// if ( brown in moji ) then
+1361: LD_LOC 25
+1365: PUSH
+1366: LD_LOC 3
+1370: IN
+1371: IFFALSE 1404
+// begin savevariable ( 1 , brown ) ;
+1373: LD_INT 1
+1375: PPUSH
+1376: LD_STRING brown
+1378: PPUSH
+1379: CALL_OW 39
+// moji = moji diff [ brown ] ;
+1383: LD_ADDR_LOC 3
+1387: PUSH
+1388: LD_LOC 3
+1392: PUSH
+1393: LD_LOC 25
+1397: PUSH
+1398: EMPTY
+1399: LIST
+1400: DIFF
+1401: ST_TO_ADDR
+// end else
+1402: GO 1414
+// savevariable ( 2 , brown ) ;
+1404: LD_INT 2
+1406: PPUSH
+1407: LD_STRING brown
+1409: PPUSH
+1410: CALL_OW 39
+// savecharacters ( brown , Brown ) ;
+1414: LD_LOC 25
+1418: PPUSH
+1419: LD_STRING Brown
+1421: PPUSH
+1422: CALL_OW 38
+// if ( lucy = 0 ) then
+1426: LD_LOC 24
+1430: PUSH
+1431: LD_INT 0
+1433: EQUAL
+1434: IFFALSE 1448
+// savevariable ( 0 , lucy ) else
+1436: LD_INT 0
+1438: PPUSH
+1439: LD_STRING lucy
+1441: PPUSH
+1442: CALL_OW 39
+1446: GO 1501
+// if ( lucy in moji ) then
+1448: LD_LOC 24
+1452: PUSH
+1453: LD_LOC 3
+1457: IN
+1458: IFFALSE 1491
+// begin savevariable ( 1 , lucy ) ;
+1460: LD_INT 1
+1462: PPUSH
+1463: LD_STRING lucy
+1465: PPUSH
+1466: CALL_OW 39
+// moji = moji diff [ lucy ] ;
+1470: LD_ADDR_LOC 3
+1474: PUSH
+1475: LD_LOC 3
+1479: PUSH
+1480: LD_LOC 24
+1484: PUSH
+1485: EMPTY
+1486: LIST
+1487: DIFF
+1488: ST_TO_ADDR
+// end else
+1489: GO 1501
+// savevariable ( 2 , lucy ) ;
+1491: LD_INT 2
+1493: PPUSH
+1494: LD_STRING lucy
+1496: PPUSH
+1497: CALL_OW 39
+// savecharacters ( lucy , Donaldson ) ;
+1501: LD_LOC 24
+1505: PPUSH
+1506: LD_STRING Donaldson
+1508: PPUSH
+1509: CALL_OW 38
+// if ( tim = 0 ) then
+1513: LD_LOC 18
+1517: PUSH
+1518: LD_INT 0
+1520: EQUAL
+1521: IFFALSE 1535
+// savevariable ( 0 , gladstone ) else
+1523: LD_INT 0
+1525: PPUSH
+1526: LD_STRING gladstone
+1528: PPUSH
+1529: CALL_OW 39
+1533: GO 1588
+// if ( tim in moji ) then
+1535: LD_LOC 18
+1539: PUSH
+1540: LD_LOC 3
+1544: IN
+1545: IFFALSE 1578
+// begin savevariable ( 1 , gladstone ) ;
+1547: LD_INT 1
+1549: PPUSH
+1550: LD_STRING gladstone
+1552: PPUSH
+1553: CALL_OW 39
+// moji = moji diff [ tim ] ;
+1557: LD_ADDR_LOC 3
+1561: PUSH
+1562: LD_LOC 3
+1566: PUSH
+1567: LD_LOC 18
+1571: PUSH
+1572: EMPTY
+1573: LIST
+1574: DIFF
+1575: ST_TO_ADDR
+// end else
+1576: GO 1588
+// savevariable ( 2 , gladstone ) ;
+1578: LD_INT 2
+1580: PPUSH
+1581: LD_STRING gladstone
+1583: PPUSH
+1584: CALL_OW 39
+// savecharacters ( tim , Gladstone ) ;
+1588: LD_LOC 18
+1592: PPUSH
+1593: LD_STRING Gladstone
+1595: PPUSH
+1596: CALL_OW 38
+// if ( yamoko = 0 ) then
+1600: LD_LOC 20
+1604: PUSH
+1605: LD_INT 0
+1607: EQUAL
+1608: IFFALSE 1622
+// savevariable ( 0 , yamoko ) else
+1610: LD_INT 0
+1612: PPUSH
+1613: LD_STRING yamoko
+1615: PPUSH
+1616: CALL_OW 39
+1620: GO 1675
+// if ( yamoko in moji ) then
+1622: LD_LOC 20
+1626: PUSH
+1627: LD_LOC 3
+1631: IN
+1632: IFFALSE 1665
+// begin savevariable ( 1 , yamoko ) ;
+1634: LD_INT 1
+1636: PPUSH
+1637: LD_STRING yamoko
+1639: PPUSH
+1640: CALL_OW 39
+// moji = moji diff [ yamoko ] ;
+1644: LD_ADDR_LOC 3
+1648: PUSH
+1649: LD_LOC 3
+1653: PUSH
+1654: LD_LOC 20
+1658: PUSH
+1659: EMPTY
+1660: LIST
+1661: DIFF
+1662: ST_TO_ADDR
+// end else
+1663: GO 1675
+// savevariable ( 2 , yamoko ) ;
+1665: LD_INT 2
+1667: PPUSH
+1668: LD_STRING yamoko
+1670: PPUSH
+1671: CALL_OW 39
+// if yamoko then
+1675: LD_LOC 20
+1679: IFFALSE 1693
+// savecharacters ( yamoko , Yamoko ) ;
+1681: LD_LOC 20
+1685: PPUSH
+1686: LD_STRING Yamoko
+1688: PPUSH
+1689: CALL_OW 38
+// if ( gary = 0 ) then
+1693: LD_LOC 21
+1697: PUSH
+1698: LD_INT 0
+1700: EQUAL
+1701: IFFALSE 1715
+// savevariable ( 0 , gary ) else
+1703: LD_INT 0
+1705: PPUSH
+1706: LD_STRING gary
+1708: PPUSH
+1709: CALL_OW 39
+1713: GO 1768
+// if ( gary in moji ) then
+1715: LD_LOC 21
+1719: PUSH
+1720: LD_LOC 3
+1724: IN
+1725: IFFALSE 1758
+// begin savevariable ( 1 , gary ) ;
+1727: LD_INT 1
+1729: PPUSH
+1730: LD_STRING gary
+1732: PPUSH
+1733: CALL_OW 39
+// moji = moji diff [ gary ] ;
+1737: LD_ADDR_LOC 3
+1741: PUSH
+1742: LD_LOC 3
+1746: PUSH
+1747: LD_LOC 21
+1751: PUSH
+1752: EMPTY
+1753: LIST
+1754: DIFF
+1755: ST_TO_ADDR
+// end else
+1756: GO 1768
+// savevariable ( 2 , gary ) ;
+1758: LD_INT 2
+1760: PPUSH
+1761: LD_STRING gary
+1763: PPUSH
+1764: CALL_OW 39
+// savecharacters ( gary , Gary ) ;
+1768: LD_LOC 21
+1772: PPUSH
+1773: LD_STRING Gary
+1775: PPUSH
+1776: CALL_OW 38
+// savevariable ( 0 + moji , mojiam12a_c ) ;
+1780: LD_INT 0
+1782: PUSH
+1783: LD_LOC 3
+1787: PLUS
+1788: PPUSH
+1789: LD_STRING mojiam12a_c
+1791: PPUSH
+1792: CALL_OW 39
+// savecharacters ( moji , mojiam12a ) ;
+1796: LD_LOC 3
+1800: PPUSH
+1801: LD_STRING mojiam12a
+1803: PPUSH
+1804: CALL_OW 38
+// savecharacters ( ( zbytekz11a ^ zbytekz11b ) isect moji , otherwithJMM ) ;
+1808: LD_LOC 7
+1812: PUSH
+1813: LD_LOC 8
+1817: ADD
+1818: PUSH
+1819: LD_LOC 3
+1823: ISECT
+1824: PPUSH
+1825: LD_STRING otherwithJMM
+1827: PPUSH
+1828: CALL_OW 38
+// savecharacters ( ( zbytekz11a ^ zbytekz11b ) diff moji , othernotJMM ) ;
+1832: LD_LOC 7
+1836: PUSH
+1837: LD_LOC 8
+1841: ADD
+1842: PUSH
+1843: LD_LOC 3
+1847: DIFF
+1848: PPUSH
+1849: LD_STRING othernotJMM
+1851: PPUSH
+1852: CALL_OW 38
+// wait ( 0 0$1 ) ;
+1856: LD_INT 35
+1858: PPUSH
+1859: CALL_OW 67
+// interface_hidden = false ;
+1863: LD_ADDR_OWVAR 54
+1867: PUSH
+1868: LD_INT 0
+1870: ST_TO_ADDR
+// changemap ( 1 , %_cont ) ;
+1871: LD_STRING 1
+1873: PPUSH
+1874: LD_STRING %_cont
+1876: PPUSH
+1877: CALL_OW 340
+// end ;
+1881: END
+// var john , powell , roth , joan , bobby , cyrus , lisa , frank , markc , tim , denis , yamoko , gary , simms , zbytekz11 ; var lucy , brown ; var na ; function prepare_americans ; var tmp ; begin
+1882: LD_INT 0
+1884: PPUSH
+1885: PPUSH
+// uc_side = am ;
+1886: LD_ADDR_OWVAR 20
+1890: PUSH
+1891: LD_LOC 1
+1895: ST_TO_ADDR
+// if checkcharacterset ( JMM ) then
+1896: LD_STRING JMM
+1898: PPUSH
+1899: CALL_OW 29
+1903: IFFALSE 1923
+// john = createcharacterwithclass ( JMM , class_soldier ) else
+1905: LD_ADDR_LOC 9
+1909: PUSH
+1910: LD_STRING JMM
+1912: PPUSH
+1913: LD_INT 1
+1915: PPUSH
+1916: CALL_OW 35
+1920: ST_TO_ADDR
+1921: GO 1936
+// buildquery ( neny JMM , [ OK ] ) ;
+1923: LD_STRING neny JMM
+1925: PPUSH
+1926: LD_STRING OK
+1928: PUSH
+1929: EMPTY
+1930: LIST
+1931: PPUSH
+1932: CALL_OW 99
+// roth = newcharacter ( Roth ) ;
+1936: LD_ADDR_LOC 11
+1940: PUSH
+1941: LD_STRING Roth
+1943: PPUSH
+1944: CALL_OW 25
+1948: ST_TO_ADDR
+// if not roth then
+1949: LD_LOC 11
+1953: NOT
+1954: IFFALSE 1969
+// buildquery ( neny Roth , [ OK ] ) ;
+1956: LD_STRING neny Roth
+1958: PPUSH
+1959: LD_STRING OK
+1961: PUSH
+1962: EMPTY
+1963: LIST
+1964: PPUSH
+1965: CALL_OW 99
+// powell = newcharacter ( Powell ) ;
+1969: LD_ADDR_LOC 10
+1973: PUSH
+1974: LD_STRING Powell
+1976: PPUSH
+1977: CALL_OW 25
+1981: ST_TO_ADDR
+// if not powell then
+1982: LD_LOC 10
+1986: NOT
+1987: IFFALSE 2002
+// buildquery ( neny Powell , [ OK ] ) ;
+1989: LD_STRING neny Powell
+1991: PPUSH
+1992: LD_STRING OK
+1994: PUSH
+1995: EMPTY
+1996: LIST
+1997: PPUSH
+1998: CALL_OW 99
+// na = 0 ;
+2002: LD_ADDR_LOC 26
+2006: PUSH
+2007: LD_INT 0
+2009: ST_TO_ADDR
+// if checkcharacterset ( Joan ) then
+2010: LD_STRING Joan
+2012: PPUSH
+2013: CALL_OW 29
+2017: IFFALSE 2037
+// joan = createcharacterwithclass ( Joan , class_scientistic ) else
+2019: LD_ADDR_LOC 12
+2023: PUSH
+2024: LD_STRING Joan
+2026: PPUSH
+2027: LD_INT 4
+2029: PPUSH
+2030: CALL_OW 35
+2034: ST_TO_ADDR
+2035: GO 2059
+// begin joan = 0 ;
+2037: LD_ADDR_LOC 12
+2041: PUSH
+2042: LD_INT 0
+2044: ST_TO_ADDR
+// na = na + 1 ;
+2045: LD_ADDR_LOC 26
+2049: PUSH
+2050: LD_LOC 26
+2054: PUSH
+2055: LD_INT 1
+2057: PLUS
+2058: ST_TO_ADDR
+// end ; if checkcharacterset ( Bobby ) then
+2059: LD_STRING Bobby
+2061: PPUSH
+2062: CALL_OW 29
+2066: IFFALSE 2086
+// bobby = createcharacterwithclass ( Bobby , class_soldier ) else
+2068: LD_ADDR_LOC 13
+2072: PUSH
+2073: LD_STRING Bobby
+2075: PPUSH
+2076: LD_INT 1
+2078: PPUSH
+2079: CALL_OW 35
+2083: ST_TO_ADDR
+2084: GO 2108
+// begin bobby = 0 ;
+2086: LD_ADDR_LOC 13
+2090: PUSH
+2091: LD_INT 0
+2093: ST_TO_ADDR
+// na = na + 1 ;
+2094: LD_ADDR_LOC 26
+2098: PUSH
+2099: LD_LOC 26
+2103: PUSH
+2104: LD_INT 1
+2106: PLUS
+2107: ST_TO_ADDR
+// end ; if checkcharacterset ( Cyrus ) then
+2108: LD_STRING Cyrus
+2110: PPUSH
+2111: CALL_OW 29
+2115: IFFALSE 2135
+// cyrus = createcharacterwithclass ( Cyrus , class_soldier ) else
+2117: LD_ADDR_LOC 14
+2121: PUSH
+2122: LD_STRING Cyrus
+2124: PPUSH
+2125: LD_INT 1
+2127: PPUSH
+2128: CALL_OW 35
+2132: ST_TO_ADDR
+2133: GO 2157
+// begin cyrus = 0 ;
+2135: LD_ADDR_LOC 14
+2139: PUSH
+2140: LD_INT 0
+2142: ST_TO_ADDR
+// na = na + 1 ;
+2143: LD_ADDR_LOC 26
+2147: PUSH
+2148: LD_LOC 26
+2152: PUSH
+2153: LD_INT 1
+2155: PLUS
+2156: ST_TO_ADDR
+// end ; if checkcharacterset ( Lisa ) then
+2157: LD_STRING Lisa
+2159: PPUSH
+2160: CALL_OW 29
+2164: IFFALSE 2184
+// lisa = createcharacterwithclass ( Lisa , class_soldier ) else
+2166: LD_ADDR_LOC 15
+2170: PUSH
+2171: LD_STRING Lisa
+2173: PPUSH
+2174: LD_INT 1
+2176: PPUSH
+2177: CALL_OW 35
+2181: ST_TO_ADDR
+2182: GO 2206
+// begin lisa = 0 ;
+2184: LD_ADDR_LOC 15
+2188: PUSH
+2189: LD_INT 0
+2191: ST_TO_ADDR
+// na = na + 1 ;
+2192: LD_ADDR_LOC 26
+2196: PUSH
+2197: LD_LOC 26
+2201: PUSH
+2202: LD_INT 1
+2204: PLUS
+2205: ST_TO_ADDR
+// end ; if checkcharacterset ( Frank ) then
+2206: LD_STRING Frank
+2208: PPUSH
+2209: CALL_OW 29
+2213: IFFALSE 2233
+// frank = createcharacterwithclass ( Frank , class_sniper ) else
+2215: LD_ADDR_LOC 16
+2219: PUSH
+2220: LD_STRING Frank
+2222: PPUSH
+2223: LD_INT 5
+2225: PPUSH
+2226: CALL_OW 35
+2230: ST_TO_ADDR
+2231: GO 2255
+// begin frank = 0 ;
+2233: LD_ADDR_LOC 16
+2237: PUSH
+2238: LD_INT 0
+2240: ST_TO_ADDR
+// na = na + 1 ;
+2241: LD_ADDR_LOC 26
+2245: PUSH
+2246: LD_LOC 26
+2250: PUSH
+2251: LD_INT 1
+2253: PLUS
+2254: ST_TO_ADDR
+// end ; if checkcharacterset ( Cornell ) then
+2255: LD_STRING Cornell
+2257: PPUSH
+2258: CALL_OW 29
+2262: IFFALSE 2282
+// markc = createcharacterwithclass ( Cornell , class_soldier ) else
+2264: LD_ADDR_LOC 17
+2268: PUSH
+2269: LD_STRING Cornell
+2271: PPUSH
+2272: LD_INT 1
+2274: PPUSH
+2275: CALL_OW 35
+2279: ST_TO_ADDR
+2280: GO 2304
+// begin markc = 0 ;
+2282: LD_ADDR_LOC 17
+2286: PUSH
+2287: LD_INT 0
+2289: ST_TO_ADDR
+// na = na + 1 ;
+2290: LD_ADDR_LOC 26
+2294: PUSH
+2295: LD_LOC 26
+2299: PUSH
+2300: LD_INT 1
+2302: PLUS
+2303: ST_TO_ADDR
+// end ; if checkcharacterset ( Brown ) then
+2304: LD_STRING Brown
+2306: PPUSH
+2307: CALL_OW 29
+2311: IFFALSE 2331
+// brown = createcharacterwithclass ( Brown , class_soldier ) else
+2313: LD_ADDR_LOC 25
+2317: PUSH
+2318: LD_STRING Brown
+2320: PPUSH
+2321: LD_INT 1
+2323: PPUSH
+2324: CALL_OW 35
+2328: ST_TO_ADDR
+2329: GO 2353
+// begin brown = 0 ;
+2331: LD_ADDR_LOC 25
+2335: PUSH
+2336: LD_INT 0
+2338: ST_TO_ADDR
+// na = na + 1 ;
+2339: LD_ADDR_LOC 26
+2343: PUSH
+2344: LD_LOC 26
+2348: PUSH
+2349: LD_INT 1
+2351: PLUS
+2352: ST_TO_ADDR
+// end ; if checkcharacterset ( Donaldson ) then
+2353: LD_STRING Donaldson
+2355: PPUSH
+2356: CALL_OW 29
+2360: IFFALSE 2380
+// lucy = createcharacterwithclass ( Donaldson , class_soldier ) else
+2362: LD_ADDR_LOC 24
+2366: PUSH
+2367: LD_STRING Donaldson
+2369: PPUSH
+2370: LD_INT 1
+2372: PPUSH
+2373: CALL_OW 35
+2377: ST_TO_ADDR
+2378: GO 2402
+// begin lucy = 0 ;
+2380: LD_ADDR_LOC 24
+2384: PUSH
+2385: LD_INT 0
+2387: ST_TO_ADDR
+// na = na + 1 ;
+2388: LD_ADDR_LOC 26
+2392: PUSH
+2393: LD_LOC 26
+2397: PUSH
+2398: LD_INT 1
+2400: PLUS
+2401: ST_TO_ADDR
+// end ; if checkcharacterset ( Gladstone ) then
+2402: LD_STRING Gladstone
+2404: PPUSH
+2405: CALL_OW 29
+2409: IFFALSE 2429
+// tim = createcharacterwithclass ( Gladstone , class_scientistic ) else
+2411: LD_ADDR_LOC 18
+2415: PUSH
+2416: LD_STRING Gladstone
+2418: PPUSH
+2419: LD_INT 4
+2421: PPUSH
+2422: CALL_OW 35
+2426: ST_TO_ADDR
+2427: GO 2451
+// begin tim = 0 ;
+2429: LD_ADDR_LOC 18
+2433: PUSH
+2434: LD_INT 0
+2436: ST_TO_ADDR
+// na = na + 1 ;
+2437: LD_ADDR_LOC 26
+2441: PUSH
+2442: LD_LOC 26
+2446: PUSH
+2447: LD_INT 1
+2449: PLUS
+2450: ST_TO_ADDR
+// end ; if checkcharacterset ( Denis ) then
+2451: LD_STRING Denis
+2453: PPUSH
+2454: CALL_OW 29
+2458: IFFALSE 2478
+// denis = createcharacterwithclass ( Denis , class_scientistic ) else
+2460: LD_ADDR_LOC 19
+2464: PUSH
+2465: LD_STRING Denis
+2467: PPUSH
+2468: LD_INT 4
+2470: PPUSH
+2471: CALL_OW 35
+2475: ST_TO_ADDR
+2476: GO 2500
+// begin denis = 0 ;
+2478: LD_ADDR_LOC 19
+2482: PUSH
+2483: LD_INT 0
+2485: ST_TO_ADDR
+// na = na + 1 ;
+2486: LD_ADDR_LOC 26
+2490: PUSH
+2491: LD_LOC 26
+2495: PUSH
+2496: LD_INT 1
+2498: PLUS
+2499: ST_TO_ADDR
+// end ; if not frank then
+2500: LD_LOC 16
+2504: NOT
+2505: IFFALSE 2558
+// if checkcharacterset ( Yamoko ) then
+2507: LD_STRING Yamoko
+2509: PPUSH
+2510: CALL_OW 29
+2514: IFFALSE 2534
+// yamoko = createcharacterwithclass ( Yamoko , class_soldier ) else
+2516: LD_ADDR_LOC 20
+2520: PUSH
+2521: LD_STRING Yamoko
+2523: PPUSH
+2524: LD_INT 1
+2526: PPUSH
+2527: CALL_OW 35
+2531: ST_TO_ADDR
+2532: GO 2556
+// begin yamoko = 0 ;
+2534: LD_ADDR_LOC 20
+2538: PUSH
+2539: LD_INT 0
+2541: ST_TO_ADDR
+// na = na + 1 ;
+2542: LD_ADDR_LOC 26
+2546: PUSH
+2547: LD_LOC 26
+2551: PUSH
+2552: LD_INT 1
+2554: PLUS
+2555: ST_TO_ADDR
+// end else
+2556: GO 2580
+// begin yamoko = 0 ;
+2558: LD_ADDR_LOC 20
+2562: PUSH
+2563: LD_INT 0
+2565: ST_TO_ADDR
+// na = na + 1 ;
+2566: LD_ADDR_LOC 26
+2570: PUSH
+2571: LD_LOC 26
+2575: PUSH
+2576: LD_INT 1
+2578: PLUS
+2579: ST_TO_ADDR
+// end ; if checkcharacterset ( Gary ) then
+2580: LD_STRING Gary
+2582: PPUSH
+2583: CALL_OW 29
+2587: IFFALSE 2607
+// gary = createcharacterwithclass ( Gary , class_soldier ) else
+2589: LD_ADDR_LOC 21
+2593: PUSH
+2594: LD_STRING Gary
+2596: PPUSH
+2597: LD_INT 1
+2599: PPUSH
+2600: CALL_OW 35
+2604: ST_TO_ADDR
+2605: GO 2629
+// begin gary = 0 ;
+2607: LD_ADDR_LOC 21
+2611: PUSH
+2612: LD_INT 0
+2614: ST_TO_ADDR
+// na = na + 1 ;
+2615: LD_ADDR_LOC 26
+2619: PUSH
+2620: LD_LOC 26
+2624: PUSH
+2625: LD_INT 1
+2627: PLUS
+2628: ST_TO_ADDR
+// end ; if checkcharacterset ( Simms ) then
+2629: LD_STRING Simms
+2631: PPUSH
+2632: CALL_OW 29
+2636: IFFALSE 2656
+// simms = createcharacterwithclass ( Simms , class_scientistic ) else
+2638: LD_ADDR_LOC 22
+2642: PUSH
+2643: LD_STRING Simms
+2645: PPUSH
+2646: LD_INT 4
+2648: PPUSH
+2649: CALL_OW 35
+2653: ST_TO_ADDR
+2654: GO 2678
+// begin simms = 0 ;
+2656: LD_ADDR_LOC 22
+2660: PUSH
+2661: LD_INT 0
+2663: ST_TO_ADDR
+// na = na + 1 ;
+2664: LD_ADDR_LOC 26
+2668: PUSH
+2669: LD_LOC 26
+2673: PUSH
+2674: LD_INT 1
+2676: PLUS
+2677: ST_TO_ADDR
+// end ; zbytekz11a = [ ] ;
+2678: LD_ADDR_LOC 7
+2682: PUSH
+2683: EMPTY
+2684: ST_TO_ADDR
+// zbytekz11b = [ ] ;
+2685: LD_ADDR_LOC 8
+2689: PUSH
+2690: EMPTY
+2691: ST_TO_ADDR
+// if checkcharacterset ( otherwithJMM ) then
+2692: LD_STRING otherwithJMM
+2694: PPUSH
+2695: CALL_OW 29
+2699: IFFALSE 2716
+// zbytekz11a = createcharacterset ( otherwithJMM ) else
+2701: LD_ADDR_LOC 7
+2705: PUSH
+2706: LD_STRING otherwithJMM
+2708: PPUSH
+2709: CALL_OW 31
+2713: ST_TO_ADDR
+2714: GO 2729
+// buildquery ( neny otherwithJMM , [ OK ] ) ;
+2716: LD_STRING neny otherwithJMM
+2718: PPUSH
+2719: LD_STRING OK
+2721: PUSH
+2722: EMPTY
+2723: LIST
+2724: PPUSH
+2725: CALL_OW 99
+// if checkcharacterset ( othernotJMM ) then
+2729: LD_STRING othernotJMM
+2731: PPUSH
+2732: CALL_OW 29
+2736: IFFALSE 2753
+// zbytekz11b = createcharacterset ( othernotJMM ) else
+2738: LD_ADDR_LOC 8
+2742: PUSH
+2743: LD_STRING othernotJMM
+2745: PPUSH
+2746: CALL_OW 31
+2750: ST_TO_ADDR
+2751: GO 2766
+// buildquery ( neny othernotJMM , [ OK ] ) ;
+2753: LD_STRING neny othernotJMM
+2755: PPUSH
+2756: LD_STRING OK
+2758: PUSH
+2759: EMPTY
+2760: LIST
+2761: PPUSH
+2762: CALL_OW 99
+// zbytekz11 = zbytekz11a ^ zbytekz11b ;
+2766: LD_ADDR_LOC 23
+2770: PUSH
+2771: LD_LOC 7
+2775: PUSH
+2776: LD_LOC 8
+2780: ADD
+2781: ST_TO_ADDR
+// for tmp in zbytekz11 do
+2782: LD_ADDR_VAR 0 2
+2786: PUSH
+2787: LD_LOC 23
+2791: PUSH
+2792: FOR_IN
+2793: IFFALSE 2896
+// if ( getclass ( tmp ) = class_mechanic ) or ( getclass ( tmp ) = class_engineer ) or ( getclass ( tmp ) = class_mortar ) then
+2795: LD_VAR 0 2
+2799: PPUSH
+2800: CALL_OW 257
+2804: PUSH
+2805: LD_INT 3
+2807: EQUAL
+2808: PUSH
+2809: LD_VAR 0 2
+2813: PPUSH
+2814: CALL_OW 257
+2818: PUSH
+2819: LD_INT 2
+2821: EQUAL
+2822: OR
+2823: PUSH
+2824: LD_VAR 0 2
+2828: PPUSH
+2829: CALL_OW 257
+2833: PUSH
+2834: LD_INT 8
+2836: EQUAL
+2837: OR
+2838: IFFALSE 2894
+// if getskill ( tmp , skill_scientistic ) > getskill ( tmp , skill_combat ) then
+2840: LD_VAR 0 2
+2844: PPUSH
+2845: LD_INT 4
+2847: PPUSH
+2848: CALL_OW 259
+2852: PUSH
+2853: LD_VAR 0 2
+2857: PPUSH
+2858: LD_INT 1
+2860: PPUSH
+2861: CALL_OW 259
+2865: GREATER
+2866: IFFALSE 2882
+// setclass ( tmp , class_scientistic ) else
+2868: LD_VAR 0 2
+2872: PPUSH
+2873: LD_INT 4
+2875: PPUSH
+2876: CALL_OW 336
+2880: GO 2894
+// setclass ( tmp , class_soldier ) ;
+2882: LD_VAR 0 2
+2886: PPUSH
+2887: LD_INT 1
+2889: PPUSH
+2890: CALL_OW 336
+2894: GO 2792
+2896: POP
+2897: POP
+// end ; end_of_file
+2898: LD_VAR 0 1
+2902: RET
+// export function SA_OnMissionStart ; begin
+2903: LD_INT 0
+2905: PPUSH
+// SetAchievement ( ACH_PAC ) ;
+2906: LD_STRING ACH_PAC
+2908: PPUSH
+2909: CALL_OW 543
+// end ;
+2913: LD_VAR 0 1
+2917: RET

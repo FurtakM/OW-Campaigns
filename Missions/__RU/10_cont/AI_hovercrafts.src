@@ -1,0 +1,128 @@
+var ready,                   // hoovery v plne sile pripravene na utok
+    attackers,               // hoovery v utoku
+    repaired;                // hoovery na oprave
+
+var too_close;               // pokud jsou rusi prilis blizko arei pro opravu hoveru, pak hoveri zniceni hoveri prchaji
+
+
+// inicializace hovercraftu a jejich strategie
+export function init_hovers;
+begin
+  too_close:=false;
+  ready:=hovercrafts;
+  attackers:=[];
+  repaired:=[];
+  enable(3);
+end;
+
+// utok na bazinami oslabene ruske ubozaky
+every 40 trigger FilterUnitsInArea(hover_attack, [ [f_side,you] ]) Marked 3 do
+var un,
+    enemies,        // seznam nepratel nad bazinama
+    most_dammaged;  // nejposramocenejsi ruska jednotka nad bazinama
+begin
+  enemies:=FilterUnitsInArea(hover_attack, [ [f_side,you] ]);
+
+  // vyber nejposkozenejsi jednotky nad bazinama
+  if difficulty<3 then
+    most_dammaged:=enemies[Rand(1,0+enemies)]
+  else
+    begin
+      most_dammaged:=enemies[1];
+      for un in enemies do
+        if GetLives(un)<GetLives(most_dammaged) then
+          most_dammaged:=un;
+    end;
+
+  if (attackers>1) or (ready>1) then
+    begin
+      attackers:=attackers ^ ready;
+      ready:=[];
+    end;
+
+  for un in attackers do
+    if GetWeapon(attackers)=ar_multimissile_ballista then
+      ComAgressiveMove(un,GetX(most_dammaged),GetY(most_dammaged))
+    else
+      ComAttackUnit(un,most_dammaged);
+
+  enable;
+end;
+
+// ztahnuti vylakanych hoveru na opravovaci post
+every 0$2 trigger (not FilterUnitsInArea(hover_attack, [ [f_side,you] ])) and attackers Marked 3 do
+begin
+  repaired:=repaired ^ attackers;
+  ComMoveToArea(attackers,hover_repair);
+  attackers:=[];
+end;
+
+// ztahovani poskozenych hovercraftu z boje do opravovaci areji
+every 0$1 Marked 3 do
+var un;
+begin
+  for un in attackers do
+    begin
+      if GetLives(un)<550 then                // poskozene vozidlo se stahuje
+        begin
+          if too_close then                   // pryc z mapy, pokud jsou rusaci prilis blizko
+            ComMoveToArea(un,hover_flee)
+          else
+            begin                             // na opravu, pokud jsou rusaci dostatecne daleko
+              repaired:=repaired ^ un;
+              attackers:=attackers diff un;
+              ComMoveToArea(un,hover_repair);
+            end;
+        end;
+      wait(1);
+    end;
+  enable;
+end;
+
+// opravovani poskozenych hovercraftu v opravovaci areji
+every 0$2 Marked 3 do
+var i;
+begin
+  for i=1 to hovercrafts do
+    begin
+      if (hovercrafts[i] in repaired) and (not HasTask(hovercrafts[i])) then
+        begin
+          if IsInUnit(hover_riders[i]) then             // cerstve pristaveny hovercraft na opravu
+            begin
+              ComExitVehicle(hover_riders[i]);
+              wait(1);
+              AddComRepairVehicle(hover_riders[i],hovercrafts[i]);
+            end;
+
+          if GetLives(hovercrafts[i])=1000 or           // zarazeni opraveneho hovercraftu do pripravene skupiny
+             too_close then                             // stahnuti vsech jednotek na oprave mimo mapu
+            begin
+              ComEnterUnit(hover_riders[i],hovercrafts[i]);
+              ready:=ready ^ hovercrafts[i];
+              repaired:=repaired diff hovercrafts[i];
+            end;
+        end;
+      wait(1);
+    end;
+  enable;
+end;
+
+// overovani vzdalenosti rusu od opravovaci oblasti
+every 0$1 trigger FilterUnitsInArea(another_warning_sniper, [ [f_side,you] ]) Marked 3 do
+begin
+  too_close:=true;
+  enable(4);
+end;
+
+// trigger pro unik poskozenych hovercraftu z mapy
+every 0$1 Marked 4 do
+var un,list;
+begin
+  list:=FilterUnitsInArea(hover_flee, [ [f_side,enemy], [f_chassis,ar_hovercraft] ]);
+  for un in list do
+    begin
+       RemoveUnit(IsDrivenBy(un));
+       RemoveUnit(un);
+       wait(1);
+    end;
+end;

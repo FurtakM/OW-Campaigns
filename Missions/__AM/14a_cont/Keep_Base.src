@@ -1,0 +1,51 @@
+
+
+every 0$1 Marked 7 do
+var list,un;
+begin
+  list:=FilterAllUnits([ [f_side,americans],
+                         [f_type,unit_building],
+                         [f_or, [f_btype,b_turret],
+                                [f_btype,b_bunker]],
+                         f_not, [f_lives,1000] ]);
+
+  if list then
+    repair_base(list);
+
+  if not keep_base_finished then
+    enable;
+end;
+
+
+function repair_base(list);
+var un,driver;
+begin
+  repeat
+    if keep_base_finished then
+      exit;
+
+    if list then
+      ComRepairBuilding(crane,list[1])
+    else
+      exit;
+
+    if GetLives(crane)<700 then                             // repairing american crane
+      begin
+        ComMoveToArea(crane,am_repair);
+        while not IsInArea(crane,am_repair) do
+          wait(0$1);
+        ComExitVehicle(crane);
+        while IsDrivenBy(crane) do
+          wait(10);
+        ComRepairVehicle(us_mech,crane);
+        AddComEnterUnit(us_mech,crane);
+        while not IsDrivenBy(crane) do
+          wait(0$1);
+      end;
+
+    if GetLives(list[1])=1000 then
+      list:=list diff list[1];
+
+    wait(0$1);
+  until not list;
+end;

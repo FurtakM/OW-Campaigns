@@ -1,0 +1,157 @@
+export Frank, Lisa, Joan, Powell, JMM, Denis, Bobby, Cyrus, Donaldson, Brown, Gladstone, Gary;
+export FSol1, Sol1, Sci1;
+export you, you2, russians, arabians;
+export otherG2, other_survivors, Gamma2;
+export SikorskiDiedIn8;
+
+
+function load_units_1;
+var i, bud, b, depot, blds, tmp, lidi;
+begin
+
+   InitUc;
+   InitHc;
+   InitVc;
+
+  //jeste promena Gamma2 - schileny seznam budov
+  //prvky jsou seznamy tvaru [x,y,direction,building_type,level]
+    Gamma2:=LoadVariable('Gamma2',[]);
+    if not Gamma2 then Msg('Corrupted save');
+    blds:=[];
+    for i in Gamma2 do begin
+        bc_type:=i[4];
+        bc_level:=i[5];
+        uc_nation:=i[6];
+        case bc_type of
+             b_lab,b_lab_half,b_lab_full: begin
+                                             bc_kind1:=i[7];
+                                             bc_kind2:=i[8];
+                                          end;
+        end;
+        tmp:=CreateAndPlaceBuildingXYD(i[1], i[2], i[3]);
+        if bc_type=b_bunker or bc_type=b_turret then
+          PlaceWeaponTurret(tmp, i[7]);
+        if bc_type=b_depot or bc_type=b_warehouse then
+          Setbname(tmp, 'gamma');
+
+        blds:=blds^tmp;
+    end;
+
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    JMM:=CreateCharacter('JMM');
+    Powell:=NewCharacter('Powell');
+
+    If TestCharacters('otherGamma2') then
+      otherG2:=CreateCharacterSet('otherGamma2');
+
+    Lisa:=0;
+    if CheckCharacterSet('Lisa') then
+      If LoadVariable('LisaLoc', 0)=2 then
+          Lisa:=CreateCharacter('Lisa');
+    Frank:=0;
+    if CheckCharacterSet('Frank') then
+      If LoadVariable('FrankLoc', 0)=2 then
+          Frank:=CreateCharacter('Frank');
+    Donaldson:=0;
+    if CheckCharacterSet('Donaldson') then
+      If LoadVariable('DonaldsonLoc', 0)=2 then
+          Donaldson:=CreateCharacter('Donaldson');
+    Brown:=0;
+    if CheckCharacterSet('Brown') then
+      If LoadVariable('BrownLoc', 0)=2 then
+          Brown:=CreateCharacter('Brown');
+    Gladstone:=0;
+    if CheckCharacterSet('Gladstone') then
+      If LoadVariable('GladstoneLoc', 0)=2 then
+          Gladstone:=CreateCharacter('Gladstone');
+    Joan:=0;
+    if CheckCharacterSet('Joan') then
+      If LoadVariable('JoanLoc', 0)=2 then
+          Joan:=CreateCharacter('Joan');
+    Denis:=0;
+    if CheckCharacterSet('Denis') then
+      If LoadVariable('DenisLoc', 0)=2 then
+          Denis:=CreateCharacter('Denis');
+
+    if not Lisa then
+       FSol1:=UnitFilter(otherG2 diff [Lisa,Frank,JMM], [f_sex,sex_female]);
+    if FSol1 then
+       FSol1:=FSol1[1]
+    else begin
+       uc_side:=you;
+       PrepareHuman(sex_female,0,Rand(-2,-4));
+       FSol1:=CreateHuman;
+    end;
+
+    if not Frank then
+       Sol1:=UnitFilter(otherG2 diff [Lisa,Frank,JMM], [f_sex,sex_male]);
+    if Sol1 then
+       Sol1:=Sol1[1]
+    else begin
+       uc_side:=you;
+       PrepareHuman(sex_male,0,Rand(-2,-4));
+       Sol1:=CreateHuman;
+    end;
+
+    if LoadVariable('SikorskiLoc', 0)=0 then
+       SikorskiDiedin8:=true
+    else
+       SikorskiDiedin8:=false;
+
+
+    PlaceUnitXYR(JMM, 52,23,10,false);
+
+    depot:=FilterAllUnits([f_btype,b_depot]);
+    if depot then depot:=depot[1];
+    lidi:=[Lisa, Frank, Donaldson, Brown, Joan, Denis, Gladstone, FSol1, Sol1] diff 0;
+    for i in lidi do begin
+       PlaceUnitXYR(i, GetX(JMM), GetY(JMM), 5, false);
+    end;
+    bud:=FilterAllUnits([f_or,[f_btype,b_depot],[f_btype,b_warehouse],[f_btype,b_factory],[f_btype,b_workshop],[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full],[f_btype,b_armoury],[f_btype,b_barracks],[f_btype,b_control_tower],[f_btype,b_bunker],[f_btype,b_breastwork]]);
+    if CheckCharacterSet('otherGamma2') then
+       otherG2:=CreateCharacterSet('otherGamma2');
+    for i in otherG2  do begin
+       b:=bud[Rand(1, bud)];
+       if rand(1,5) < 3 then
+          PlaceHumanInUnit(i, b)
+       else
+          PlaceUnitXYR(i, Getx(b), gety(b), 11, false);
+    end;
+    lidi:=lidi + otherG2;
+
+    for i:=lidi to 22 do begin
+       PrepareHuman(0, 0, rand(4,6));
+       b:=bud[Rand(1, bud)];
+       if rand(1,5) < 3 then
+          PlaceHumanInUnit(CreateHuman, b)
+       else
+          PlaceUnitXYR(CreateHuman, Getx(b), gety(b), 14, false);
+    end;
+
+    for i:=1 to 6 do begin
+       vc_engine:=engine_combustion;
+       vc_control:=control_manual;
+       vc_weapon:=[us_gatling_gun,us_heavy_gun,us_double_gun,us_cargo_bay,us_machine_gun][Rand(1,5)];
+       if vc_weapon = us_heavy_gun then vc_chassis = us_heavy_tracked
+       else vc_chassis:=[us_medium_tracked,us_medium_wheeled,us_heavy_tracked][Rand(1,3)];
+       uc_direction:=Rand(0,5);
+       PlaceUnitXYR(CreateVehicle, Getx(b), gety(b), 14, false);
+    end;
+
+end;
+starting
+begin
+
+    you:=1;
+    you2:=4;
+    arabians:=2;
+    russians:=3;
+
+    load_units_1;
+    Dialog1;
+//    YouWin;
+    ChangeMap('%_cont','%_cont');
+end;
+

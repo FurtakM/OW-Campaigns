@@ -1,0 +1,172 @@
+EXPORT Ru_base;
+EXPORT cislo_baze;
+
+EXPORT Ru_enter;
+
+EXPORT masha;
+EXPORT bur;
+EXPORT dol;
+EXPORT kapisto;
+EXPORT petro;
+EXPORT pop;
+EXPORT bel;
+EXPORT gny;
+EXPORT kiri;
+EXPORT koval;
+EXPORT schol;
+EXPORT kuzmov;
+EXPORT karam;
+EXPORT petrov;
+EXPORT gleb;
+EXPORT lipsch;
+EXPORT tito;
+EXPORT xavier;
+EXPORT obluk;
+EXPORT kozlov;
+
+VAR bedny;
+
+EXPORT test_ukonceni_allowed;   //umozneno ukonceni custom od hrace
+
+// nastaveni pocatecnich hodnot
+EVERY 0$0.1 DO
+begin
+  bedny=0;
+  test_ukonceni_allowed=false;
+end;
+
+// placnuti resourcu podle vyberu mista pro stavbu
+EXPORT function place_resource;
+begin
+   CreateDepositXY(45,72,mat_oil);
+   CreateDepositXY(51,86,mat_siberit);
+   CreateDepositXY(92,110,mat_oil);
+   CreateDepositXY(103,103,mat_siberit);
+   CreateDepositXY(151,84,mat_oil);
+   CreateDepositXY(139,60,mat_siberit);
+end;
+
+// hodi rusy na zacatek
+EXPORT function placni_rusy_na_zacatek;
+VAR ezone;
+VAR i;
+begin
+  case cislo_baze of
+   1:begin
+       ezone=ezone1;
+       RevealFogArea(You,Renter1);
+     end;
+   2:begin
+       ezone=ezone2;
+       RevealFogArea(You,Renter2);
+     end;
+   3:begin
+       ezone=ezone3;
+       RevealFogArea(You,Renter3);
+     end;
+  end;
+  for i in RUSI_ENTER_LIST do PlaceUnitArea(i,ezone,false);
+  CenterNowOnUnits(RUSI_ENTER_LIST);
+  chmo1;
+  InGameOff;
+end;
+
+// padani beden do ruske baze
+
+EVERY 0$1 DO
+begin
+  wait(delay_beden[difficulty]);
+  wait(Rand(1,bedny*0$20));
+  bedny=bedny+1;
+
+  case cislo_baze of
+   1:CreateCratesArea(Rand(3,5),base3,true);
+   2:CreateCratesArea(Rand(3,5),base2,true);
+   3:CreateCratesArea(Rand(3,5),base1,true);
+   else begin
+          msg('ERROR: pri padani beden doslo k chybe');
+        end;
+  end;
+  enable;
+end;
+
+// padani beden po cle plose
+EVERY 1$30 DO
+begin
+  wait(Rand(1,1$0));
+  CreateCratesArea(Rand(1,5),Bedny_Ar,true);
+  enable;
+end;
+
+// test na ukonceni !!!
+EVERY 0$1 DO
+VAR okay;
+VAR plab;
+VAR i;
+VAR pom;
+begin
+  okay=true;
+  if IsOK(Am_lab1) then
+    if GetSide(Am_lab1)=Amici then okay=false;
+  if IsOK(Am_lab2) then
+    if GetSide(Am_lab2)=Amici then okay=false;
+  if IsOK(Am_lab3) then
+    if GetSide(Am_lab3)=Amici then okay=false;
+  If IsOK(Joan) then okay=false;
+
+  if okay and test_na_vedce     // test na vedce je v amici
+    then begin
+           plab=0;
+           for i in [Am_lab1,Am_lab2,Am_lab3] do
+              if GetSide(i)=You or IsDead(i) then plab=plab+1;
+           if GetTech(tech_TauRad,You) and GetTech(tech_SpacAnom,You) then plab=plab+1;
+           if plab>=4 then konec_mise
+                      else begin
+                             pom=query_konec;
+                             if pom=2 then konec_mise
+                                      else begin
+                                             end_the_mission_allowed=true;
+                                             test_ukonceni_allowed=true;
+                                           end;
+                           end;
+         end
+    else enable;
+end;
+
+// zmasovani mashe
+EVERY 0$1 DO
+begin
+  SetMark(Masha,1);
+end;
+
+// ukoncovani ve chvili, kdyu to ma uz fuced skoncit
+EVERY 0$5 TRIGGER test_ukonceni_allowed DO
+VAR okay;
+VAR i;
+VAR plab;
+begin
+  okay=true;
+  if IsOK(Am_lab1) then
+    if GetSide(Am_lab1)=Amici then okay=false;
+  if IsOK(Am_lab2) then
+    if GetSide(Am_lab2)=Amici then okay=false;
+  if IsOK(Am_lab2) then
+    if GetSide(Am_lab2)=Amici then okay=false;
+  If IsOK(Joan) then okay=false;
+
+  if okay and test_na_vedce     // test na vedce je v amici
+    then begin
+           plab=0;
+           for i in [Am_lab1,Am_lab2,Am_lab3] do
+              if GetSide(i)=You or IsDead(i) then plab=plab+1;
+           if GetTech(tech_TauRad,You) and GetTech(tech_SpacAnom,You) then plab=plab+1;
+           if plab>=4 then konec_mise;
+         end;
+  enable;
+end;
+
+// dostanou i mortarmany
+EVERY 1$0 TRIGGER GetSide(Ar_bar)=You DO
+begin
+  SetTech(tech_Mortar,You,state_researched);
+end;

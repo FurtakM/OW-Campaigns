@@ -1,0 +1,523 @@
+export war_forces,war_lapser,war_count;          // jednotky pripravujici se na valecne tazeni
+export attack_forces;                            // aktualni jednotky ve valecnem tazeni
+export backup_forces,backup_lapser,backup_count; // zalozni obrane jednotky
+export manual_forces,manual_lapser;              // vozidla pro ruske vojaky
+export fuel_tank;                                // zasobovaci vozidlo                 - neni              //NIY
+export chybi;                                    // index chybejiciho vozidla
+export mm_vehicle;                               // ukradnute MacMillanovo auto
+export defend_forces;                            // seznam computerovych vozidel pouzitych v obrane
+export us_important;                             // veze, rafinerie a elektrarny v US zakladne
+       // 1 - computer time lapser
+       // 2 - manualni time lapser
+       // 3 - manualni bojove vozidlo
+
+var klic_area_1,klic_area_2;        // pri kazdem utoku si pocitac zapamatuje klicove obranne body
+var klic_area_3,klic_area_4;        // takze pri dalsim pristim utoku nepojede naslepo, ale zameri
+var klic_area_5,klic_area_6;        // se na ne, pokud tam samozrejme jeste budou
+var klic_area_7,klic_area_8;
+var klic_area_9;
+var destroy_now;                    // seznam aktualnich important cilu, v poradi v jakem byly zahlednuty
+var important;                      // seznam identifikatoru important staveb
+
+var multi;           // identifikace multivektoroveho utocneho modu ;-)                                    //NIY
+var skrivanek;       // utocna jednotka skrivanek  - pokud bude mit war_forces 4 a vice vozidel,
+var kolibrik;        // utocna jednotka kolibrik   - muze pocitac utok rozdelit na 2 cesty
+var attack_begin;    // true - muze zacit samotny utok po sektorech
+//var budova;          // promena prave postave nebo prave znicene US budovy v eventu
+var cislo_utoku;     // pocitadlo utoku (pro zvetsovani obtiznosti utoku - zvetsuje udernou silu)
+
+
+// promenne v nelibosti
+var now_area,next_area;
+var event_unit;
+
+
+export function startup_war_definition;
+begin
+  war_forces:=[];
+   war_lapser:=0;
+   war_count:=Rand(2,3);
+  backup_forces:=[];
+   backup_lapser:=0;
+   backup_count:=Rand(2,3);
+  manual_forces:=[];
+   manual_lapser:=0;
+  defend_forces:=[];
+
+  klic_area_1:=[];     // slozeni seznamu :
+  klic_area_2:=[];     // priorita,souradnice_x,souradnice_y
+  klic_area_3:=[];     // objekt, area, souradnice_x, souradnice_y
+  klic_area_4:=[];
+  klic_area_5:=[];
+  klic_area_6:=[];
+  klic_area_7:=[];
+  klic_area_8:=[];
+  klic_area_9:=[];
+
+  cislo_utoku:=1;
+  mm_vehicle:=0;
+end;
+
+// zjistovani chybejicich vozidel v backup_forces, manual_forces a war_forces
+export function zjisti_pozadavky;
+var vybrano;          // indentifikator toho, zda uz byl vybran chybejici vuz
+var i;
+begin
+  chybi:=0;
+  if manual_forces<russians_forces then
+    chybi:=3;
+  // time lapsery zatim nejdou detekovat, tak je nebudu ani vyrabet
+end;
+
+// obcasne obnovovani backup_forces
+every 5$0 trigger (backup_forces<backup_count) and (war_forces>0) do
+var hex;
+begin
+  hex:=RandHexArea(parking_place,true);
+  backup_forces:=backup_forces ^ (war_forces[1]);
+  ComAgressiveMove(war_forces[1],hex[1],hex[2]);
+  war_forces:=war_forces diff backup_forces;
+
+  Enable;
+end;
+
+// zaparkovani prave vyrobeneho manualne rizeneho vozdila
+export function zaparkuj_vozidlo(puvod_ridice,vozidlo);
+var ridic,hex;
+begin
+  manual_forces:=manual_forces^vozidlo;
+  hex:=RandHexArea(parking_place,true);
+  if (manual_forces<2) then
+    ComMoveXY(vozidlo,103,59)
+  else
+    ComMoveXY(vozidlo,hex[1],hex[2]);
+  repeat
+    wait(0$5);
+  until not IsBusy(vozidlo);
+  ridic:=IsDrivenBy(vozidlo);
+  ComExitVehicle(ridic);
+  AddComReturn(ridic);
+end;
+
+// shromazdovani vyrobenych vozidel
+export function collect_war_forces;
+begin
+  ComAgressiveMove(war_forces,103,65);
+end;
+
+//-----  Cilova mista jednotlivych arei  -----//
+function zjisti_cilove_misto (cislo_arei);
+var vysledek;
+begin
+    case cislo_arei of
+  1: vysledek:=[75,83];
+  2: vysledek:=[82,102];
+  3: vysledek:=[85,116];
+  4: vysledek:=[95,107];
+  5: vysledek:=[108,116];
+  6: vysledek:=[105,133];
+  7: vysledek:=[85,133];
+  8: vysledek:=[62,105];
+  9: vysledek:=[103,97];
+    end;
+
+  result:=vysledek;
+end;
+
+function a_jmeno(cislo);
+var vysledek;
+begin
+    case cislo of
+  1: vysledek:=u_north;
+  2: vysledek:=u_central_n;
+  3: vysledek:=u_central;
+  4: vysledek:=u_hill;
+  5: vysledek:=u_walley;
+  6: vysledek:=u_forgotten;
+  7: vysledek:=u_south;
+  8: vysledek:=u_heart;
+  9: vysledek:=u_east;
+ 11: vysledek:=n_gather;
+ 12: vysledek:=e_gather;
+ 13: vysledek:=s_gather;
+    end;
+
+  result:=vysledek;
+end;
+
+//-----  Pripraveni valecneho utocneho komanda do startovni pozice -----//
+function goto_north_sector;
+var i,utocniku;
+begin
+  ComAgressiveMove(attack_forces,100,67);
+  AddComAgressiveMove(attack_forces,87,65);
+  AddComAgressiveMove(attack_forces,74,64);
+  repeat
+    wait(0$2);
+  until vsichni_v_arei(n_gather) or (not attack_forces);
+  attack_begin:=true;
+end;
+
+function goto_east_sector;
+var i,utocniku;
+begin
+  utocniku:=0+attack_forces;
+  ComAgressiveMove(attack_forces,111,73);
+  AddComAgressiveMove(attack_forces,116,95);
+  repeat
+    wait(0$2);
+  until vsichni_v_arei(e_gather) or (not attack_forces);
+  attack_begin:=true;
+end;
+
+function goto_south_sector;
+var i,utocniku;
+begin
+  utocniku:=0+attack_forces;
+  ComAgressiveMove(attack_forces,111,73);
+  AddComAgressiveMove(attack_forces,127,118);
+  repeat
+    wait(0$2);
+  until vsichni_v_arei(s_gather) or (not attack_forces);
+  attack_begin:=true;
+end;
+
+//-----  Vyhledavani nejschudnejsi valecne cesty  -----//
+function zjisti_schudne_okoli(area); 
+var a1,a2,vysledek;
+var v1,v2;
+begin
+    case area of                    // definice sousednich sektoru
+  1: begin a1:=2; a2:=0; end;       // v pripade nerozhodnosti ma a1 prioritu nad a2
+  2: begin a1:=3; a2:=8; end;
+  3: begin a1:=7; a2:=2; end;
+  4: begin a1:=2; a2:=3; end;
+  5: begin a1:=3; a2:=6; end;
+  6: begin a1:=7; a2:=3; end;
+  7: begin a1:=8; a2:=3; end;
+  8: begin a1:=2; a2:=7; end;
+  9: begin a1:=2; a2:=5; end;
+ 11: begin a1:=1; a2:=0; end;
+ 12: begin a1:=5; a2:=0; end;
+ 13: begin a1:=9; a2:=0; end;
+    end;
+
+  v1:=[a1];
+  if a2 then
+    v1:=v1 ^ a1;
+
+  vysledek:=v1[Rand(1,v1)];
+
+  result:=vysledek;
+end;
+
+function navrhni_startovni_pozici;
+var s1,s2,s3,vysledek;
+var un,truck;
+begin
+  s1:=klic_area_1;
+  s2:=klic_area_9;
+  s3:=klic_area_5;
+
+  truck:=true;
+  for un in attack_forces do
+    if GetChassis(un)<>ru_heavy_tracked then
+      truck:=false;
+
+  if (a_jmeno(s1)<a_jmeno(s2)) and (a_jmeno(s1)<a_jmeno(s3)) and truck then
+    vysledek:=1
+  else
+    if (a_jmeno(s2)<a_jmeno(s3)) then
+      vysledek:=9
+    else
+      vysledek:=5;
+
+  result:=vysledek;
+end;
+
+function vsichni_v_arei(ktera_area);
+var un,vysledek;
+begin
+  un:=FilterUnitsInArea(ktera_area, [[f_side,russians]]);
+  if un>=((attack_forces+1) div 2) then
+    vysledek:=true
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+// ukladani important objektu do areji
+function see_important(now_area);
+var un,area,vysledek;
+begin
+  vysledek:=false;
+  area:=[];
+  for un in us_important do
+    if See(russians,un) then
+      begin
+        area:=area^un;
+          case now_area of
+        1: klic_area_1:=klic_area_1 union area;
+        2: klic_area_2:=klic_area_2 union area;
+        3: klic_area_3:=klic_area_3 union area;
+        4: klic_area_4:=klic_area_4 union area;
+        5: klic_area_5:=klic_area_5 union area;
+        6: klic_area_6:=klic_area_6 union area;
+        7: klic_area_7:=klic_area_7 union area;
+        8: klic_area_8:=klic_area_8 union area;
+        9: klic_area_9:=klic_area_9 union area;
+          end;
+        destroy_now:=destroy_now union un;
+        vysledek:=true;
+      end;
+  result:=vysledek;
+end;
+
+// niceni important objektu                        - upravit na prednostni niceni vozidel
+function destroy_important(area);
+var i,j,max,max_search;
+var cil,prior_1,prior_max;
+begin
+  max_search:=3;
+  max:=0+destroy_now;
+  if max>3 then
+    j:=3
+  else
+    j:=max;
+
+  prior_max:=[0,0];       // priorita,cislo budovy
+  for i=1 to j do
+    begin
+      prior_1:=0;
+        case GetBType(destroy_now[i]) of          // - mozna by to chtelo pridat jeste depo a solarni elektrarny
+      33: prior_1:=4;       // turret
+      30: prior_1:=4;       // siberite mine
+      29: prior_1:=3;       // oil mine
+      28: prior_1:=3;       // siberite power
+      26: prior_1:=2;       // oil power
+     else prior_1:=1;       // v opacnem pripade
+        end;
+
+      if GetLives(destroy_now[i])<750 then
+        prior_1:=prior_1+1;
+      if GetLives(destroy_now[i])<500 then
+        prior_1:=prior_1+2;
+      if GetLives(destroy_now[i])<250 then
+        prior_1:=prior_1+2;
+
+      if prior_1>prior_max[1] then
+        prior_max:=[prior_1,destroy_now[i]];
+    end;
+  if prior_max[2] then
+    DestroyTarget(prior_max[2],GetX(prior_max[2]),GetY(prior_max[2]));
+end;
+
+function DestroyTarget(target,x,y);
+var un;
+begin
+  for un in attack_forces do
+    if GetWeapon(un) in [ru_rocket,ru_rocket_launcher] then
+      ComAttackPlace(un,x,y)
+    else
+      ComAttackUnit(un,target);
+end;
+
+
+// inicializace ukonceni utoku
+function konec_jednoho_utoku;
+begin
+  war_forces:=war_forces^attack_forces;
+  attack_forces:=[];
+  attack_begin:=false;
+  war_count:=Rand(cislo_utoku+1,cislo_utoku+3);
+  if war_count>4 then
+    war_count:=Rand(4,5);
+end;
+
+// Valecna kampan vedena cestou nejmensiho odporu
+function low_cesta;
+var i,max,areas,
+    mc_id,
+    new_destination;
+begin
+  multi:=false;                          // vypnuti multivektoroveho utocneho modu
+  attack_begin:=false;                   // zapnuti identifikatoru o novem utoku
+  max:=0+attack_forces;                  // pocet lidi v utocnem komandu
+  destroy_now:=[];                       // vynulovani seznamu aktualnich important cilu
+
+  if cislo_utoku>1 then
+      now_area:=navrhni_startovni_pozici
+  else
+    now_area:=1;                         // !!!! smer prvniho utoku, po odladeni zadat 9 !!!! //
+
+    case now_area of
+  1: goto_north_sector;
+  9: goto_east_sector;
+  5: goto_south_sector;
+    end;
+
+  repeat
+    wait(0$1);
+  until attack_begin;
+
+  mc_id:=0;
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= //
+  repeat
+    next_area:=zjisti_schudne_okoli(now_area);                   // hleda nejschudnejsi okolni sektor
+    new_destination:=zjisti_cilove_misto(next_area);             // najde zakladni pozici v novem sektoru
+
+    repeat
+      if see_important(now_area) then                            // detekce dulezitych cilu v sektoru
+        begin
+          if ExistMc(mc_id) then
+            begin
+              KillMc(mc_id);
+              mc_id:=0;
+            end;
+          destroy_important(now_area);                              // likvidace dulezitych cilu v sektoru
+        end
+      else
+        if not ExistMc(mc_id) then
+          mc_id:=McMove(2,attack_forces,[[new_destination[1],new_destination[2]]],[]);
+
+      wait(0$3);
+    until vsichni_v_arei(a_jmeno(next_area)) or (not attack_forces);
+
+    now_area:=next_area;
+  until not attack_forces;
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= //
+
+  konec_jednoho_utoku;
+  cislo_utoku:=cislo_utoku+1;
+end;
+
+// Aktualizace seznamu dulezitych cilu
+function nacti_important_budovy;
+var list_important,un;
+begin
+  us_important:=[];
+  list_important:=FilterAllUnits([ [f_or, [f_side,you], [f_side,neutral]], [f_type,unit_building] ]);
+                  
+  important:=[b_depot, b_warehouse, b_factory, b_armoury, b_barracks, b_lab_full, b_oil_power, b_solar_power,
+              b_siberite_power, b_oil_mine, b_siberite_mine, b_breastwork, b_bunker, b_turret ];
+
+  for un in list_important do
+    begin
+      if GetBType(un) in important then
+        us_important:=us_important^un;
+    end;
+end;
+
+
+//------------------------------------//
+//-----  MACRA - very important  -----//
+on UnitGoesToRed(jednotka) do 
+begin
+  event_unit:=jednotka;
+  if jednotka in attack_forces then
+    begin
+      attack_forces:=attack_forces diff [jednotka];
+      if (not attack_forces) and (attack_begin) then
+        konec_jednoho_utoku;
+    end;
+  if ((jednotka=MacMillan) and (not IsOK(survivor))) or
+     ((jednotka=MacMillan) and (not visit_base)) then
+    konec_mise;
+end;
+
+on UnitDestroyed(jednotka) do
+var pomocna_mnozina;
+begin
+  event_unit:=jednotka;
+  attack_forces:=attack_forces diff [jednotka];
+  us_important:=us_important diff [jednotka];
+  destroy_now:=destroy_now diff [jednotka];
+    case now_area of
+  1: klic_area_1:=klic_area_1 diff [jednotka];
+  2: klic_area_2:=klic_area_2 diff [jednotka];
+  3: klic_area_3:=klic_area_3 diff [jednotka];
+  4: klic_area_4:=klic_area_4 diff [jednotka];
+  5: klic_area_5:=klic_area_5 diff [jednotka];
+  6: klic_area_6:=klic_area_6 diff [jednotka];
+  7: klic_area_7:=klic_area_7 diff [jednotka];
+  8: klic_area_8:=klic_area_8 diff [jednotka];
+  9: klic_area_9:=klic_area_9 diff [jednotka];
+    end;
+  if jednotka=macmillan then
+    konec_mise;
+  if (not attack_forces) and (attack_begin) then
+    konec_jednoho_utoku;
+  if GetSide(jednotka)=russians then
+    begin
+      russians_forces:=russians_forces diff jednotka;
+      ru_ing:=ru_ing diff jednotka;
+      ru_sol:=ru_sol diff jednotka;
+      ru_sci:=ru_sci diff jednotka;
+      ru_mec:=ru_mec diff jednotka;
+      reserved_people:=[];
+    end;
+//  if (GetType(jednotka)=unit_vehicle) and (GetWeapon(jednotka)=us_double_laser) then
+//    double_laser:=double_laser - 1;
+end;
+
+on VehicleCaptured(veh_new,veh_old,veh_orig,veh_hum) do
+begin
+  if GetSide(veh_old)=russians then
+    begin
+      war_forces:=war_forces diff [veh_old];
+      attack_forces:=attack_forces diff [veh_old];
+    end;
+  if (not attack_forces) and (attack_begin) then
+    konec_jednoho_utoku;
+end;
+
+on BuildingComplete(jednotka) do
+begin
+  if GetBType(jednotka) in important then
+    us_important:=us_important^jednotka;
+end;
+
+//-----  Multivektorovy utocny mod -----//
+function multi_cesta;                                                                   // ***
+begin
+  multi:=true;
+end;
+
+// hledani poctu valecnych vozidel a vyber valecne cesty
+every 0$45 trigger (war_forces>=war_count) and (not attack_begin) do
+var list,un;
+begin
+  list:=[];
+  for un in war_forces do
+    if un in defend_forces then
+      list:=list ^ un;
+  if (war_forces diff list)<war_count then
+    begin
+      enable;
+      exit;
+    end;
+
+  attack_forces:=war_forces;
+  war_forces:=[];
+  nacti_important_budovy;
+  low_cesta;
+
+  Enable;
+end;
+
+
+every 0$5 trigger attack_forces>0 do
+var un,puvodni_velikost;
+begin
+  puvodni_velikost:=0+attack_forces;
+  for un in attack_forces do
+    if not IsOK(un) then
+      attack_forces:=attack_forces diff un;
+  if (attack_forces=[]) and (puvodni_velikost>0) then
+    konec_jednoho_utoku;
+end;
+
+
+//-----  Defenzivni strategie ruske zakladny Uljanov -----//
+
+

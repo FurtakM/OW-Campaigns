@@ -1,0 +1,379 @@
+export you,                                  // strana hrace
+       ru,                                   // rusaci
+       us,                                   // americani
+       ar,                                   // arabove
+       ar_al,                                // arabove - omar
+       neutral,                              // neutralni
+       camp;                                 // ident kampane (4-us, 6-ru)
+
+export cpu_list;                             // seznam pocitacovych zakladen pro CPU sail
+
+export ru_nation,                            // ruska narodnost
+       us_nation,                            // americka narodnost
+       ar_nation;                            // arabska narodnost
+
+export Burlak,                               // postavy kladnych ruskych hrdinu zainteresovanych v kecani
+       MacMillan,
+       Roth,
+       Gossudarov;
+
+export Petrosyan, Belkov, Kirilenkova,       // spravni rusti rekove a nastenky
+       Gnyevko, Gladkov, Dolgov, Gleb,
+       Kapitsova, Kuzmov, Kovalyuk,
+       Scholtze, Karamazov, Titov,
+       Oblukov, Kozlov, Petrovova,
+       Bystrov, Lipshchin, Fadeev;
+
+
+export Bobby, Brown, Cornell, Connie,        // spravni americti hosi a holky
+       Cyrus, Denis, Donaldson, Frank,
+       Gary, Gladstone, Joan, Lisa,
+       Peterson, Simms, VanHouten, Yamoko;
+
+export Omar,                                 // tajemny sejk omar prochazejici casem a nekterymi misemi
+       OmarKilled,
+       NegotiationOffered,
+       OmarWillTryContaminateMotherlode;
+
+export Powell,                               // konzumni tupi americane odsouzeni k zahube
+       Platonov;                             // prilis zaujati rusove, neschopni vymanit se ze silne ideove vychovy
+
+
+export aliance_forces;                       // seznam vsech zivych aliancnich hrdinu
+
+export finalize;                             // 0- nic nedobito, 1 - jedna zakladna dobita, 2 - vse dobito, muzu koncit
+
+export prefered_control;                     // promenna pro CPU ovladani
+
+export siberite_rocket_send;
+
+//------------------------//
+//-- PRIPRAVA AMERICANU --//
+function prepare_us_units;
+begin
+  Powell:=NewCharacter('Powell');
+  SetSide(Powell,us);
+end;
+
+//-------------------//
+//-- PRIPRAVA RUSU --//
+function prepare_ru_units;
+begin
+  Platonov:=NewCharacter('Platonov');
+  SetSide(Platonov,ru);
+end;
+
+//--------------------//
+//-- PRIPRAVA ARABU --//
+function prepare_ar_units;
+begin
+  OmarWillTryContaminateMotherlode = false;
+
+  if difficulty >= 2 then
+       SetTech(tech_stimdrugs,ar_al,state_researched);
+
+  if camp = 6 then
+       OmarKilled:=LoadVariable('OmarKilled',true)
+  else //camp = 4
+       OmarKilled = false;
+
+  if OmarKilled then
+       begin
+            Omar = 0;
+            exit;
+       end;
+
+  if TestCharacters('Omar') {and CheckCharacterSet('Omar') and camp = 6} then
+       Omar:=CreateCharacter('Omar')
+  else
+       Omar = NewCharacter('Omar');
+
+  SetSide(Omar,ar_al);
+  NegotiationOffered:=LoadVariable('NegotiationsOffered',false);
+
+  if NegotiationOffered then
+    Enable(2)
+  else
+    //Enable(3);
+    OmarWillTryContaminateMotherlode = true;
+end;
+
+//----------------------//
+//-- PRIPRAVA ALIANCE --//
+function prepare_al_units;
+var un,count,i,nations,art_loaded,selected,aliance,
+    pom_list,
+    veh_cargo,         // seznam moznych cargo aby mutaci - rizene pocitacem
+    veh_basic,
+    veh_battle,
+    vehicles,
+    veh_list,
+    JMM_car,
+    Bur_car;
+begin
+  nations:=[nation_american, nation_russian];
+  uc_side:=you;
+
+  aliance_forces:=[];
+
+  // Loadovani (creatovani) doprovodu do posledni mise
+  load_all_aliance;
+
+  aliance:=[];
+  // Loadovani hlavnich postav mise
+  Burlak:=CreateCharacter('Burlak');
+  aliance:=aliance ^ Burlak;
+
+  if TestCharacters('JMM') and CheckCharacterSet('JMM') then
+    begin
+      MacMillan:=CreateCharacter('JMM');
+      SetClass(MacMillan,class_engineer);
+      aliance:=aliance ^ MacMillan;
+    end;
+
+  if TestCharacters('Roth') and CheckCharacterSet('Roth') then
+    begin
+      Roth:=CreateCharacter('Roth');
+      SetClass(Roth,class_scientistic);
+      aliance:=aliance ^ Roth;
+    end;
+
+  if TestCharacters('Gossudarov') and CheckCharacterSet('Gossudarov') then
+    begin
+      Gossudarov:=CreateCharacter('Gossudarov');
+      SetClass(Gossudarov,class_scientistic);
+      aliance:=aliance ^ Gossudarov;
+    end;
+
+  if aliance<20 then
+    for i=aliance to 20 do
+      begin
+        PrepareHuman(0,0,6);
+        hc_last_mission:=15;
+        aliance_forces:=aliance_forces ^ CreateHuman;
+      end;
+
+  selected:=CharacterSelection('',12-aliance,12-aliance,
+                aliance ^ [sel_not_hired,sel_changeable,sel_change_class] ^ aliance_forces,
+                [class_soldier,class_engineer,class_mechanic,class_scientistic]);
+
+  aliance_forces:=aliance ^ selected;
+
+  // Load vozidel MacMillana a Burlaka z minule mise
+  JMM_car:=LoadVariable('JMM_car',[us_medium_tracked,engine_combustion,control_manual,us_cargo_bay]);
+  Bur_car:=LoadVariable('Bur_car',[ru_medium_tracked,engine_siberite,control_manual,ru_rocket_launcher]);
+
+  if (JMM_car[1] = 0) then
+    JMM_car:=[us_medium_tracked,engine_combustion,control_manual,us_cargo_bay];
+  if (Bur_car[1] = 0) then
+    Bur_car:=[ru_medium_tracked,engine_siberite,control_manual,ru_rocket_launcher];
+
+  // a zajisteni, ze alespon jedno z tech dvou vozidel bude cargo bay
+  if not ((JMM_car[4] in [us_cargo_bay,ru_cargo_bay]) or (Bur_car[4] in [us_cargo_bay,ru_cargo_bay])) then
+    JMM_car:=[us_medium_tracked,engine_combustion,control_manual,us_cargo_bay];
+
+  // tvorba MacMillanova vozidla
+  if JMM_car[1] in [us_light_wheeled,us_medium_wheeled,us_medium_tracked,us_heavy_tracked,us_morphling] then
+    uc_nation:=nation_american
+  else
+    uc_nation:=nation_russian;
+  uc_direction:=Rand(2,3);
+  vc_chassis:=JMM_car[1];
+  vc_engine:=JMM_car[2];
+  vc_control:=JMM_car[3];
+  vc_weapon:=JMM_car[4];
+  un:=CreateVehicle;
+
+  art_loaded:=false;
+
+  PlaceHumanInUnit(MacMillan,un);
+  PlaceUnitArea(un,jmm_starting,false);
+  if GetWeapon(un) in [us_cargo_bay, ru_cargo_bay] then
+    begin
+      SetCargo(un,mat_artefact,50);
+      art_loaded:=true;
+    end;
+
+  // tvorba Burlakova vozidla
+  if Bur_car[1] in [ru_medium_wheeled,ru_medium_tracked,ru_heavy_wheeled,ru_heavy_tracked] then
+    uc_nation:=nation_russian
+  else
+    uc_nation:=nation_american;
+  uc_direction:=Rand(2,3);
+  vc_chassis:=Bur_car[1];
+  vc_engine:=Bur_car[2];
+  vc_control:=Bur_car[3];
+  vc_weapon:=Bur_car[4];
+  un:=CreateVehicle;
+
+  PlaceHumanInUnit(Burlak,un);
+  PlaceUnitArea(un,burlak_starting,false);
+  if (GetWeapon(un) in [us_cargo_bay, ru_cargo_bay]) and not art_loaded then
+    SetCargo(un,mat_artefact,50);
+
+  // Priprava vozidel -  chassis, engine, control, weapon
+  veh_cargo:=[ [nation_american,us_medium_tracked,engine_combustion,control_computer,us_cargo_bay],
+               [nation_american,us_medium_tracked,engine_combustion,control_manual,us_cargo_bay],
+               [nation_russian,ru_medium_tracked,engine_siberite,control_computer,ru_cargo_bay],
+               [nation_russian,ru_medium_tracked,engine_siberite,control_manual,ru_cargo_bay]
+             ];
+  veh_basic:=[ [nation_american,us_medium_tracked,engine_combustion,control_computer,us_crane],
+               [nation_russian,ru_heavy_tracked,engine_siberite,control_manual,ru_bulldozer],
+             ];
+  veh_battle:=[ [nation_american,us_medium_tracked,engine_combustion,control_manual,us_rocket_launcher],
+                [nation_american,us_medium_tracked,engine_siberite,control_manual,us_laser],
+                [nation_american,us_heavy_tracked,engine_siberite,control_manual,us_heavy_gun],
+                [nation_american,us_morphling,engine_combustion,control_manual,us_rocket_launcher],
+                [nation_russian,ru_medium_wheeled,engine_combustion,control_manual,ru_rocket_launcher],
+                [nation_russian,ru_medium_tracked,engine_siberite,control_manual,ru_gun],
+                [nation_russian,ru_heavy_wheeled,engine_combustion,control_manual,ru_heavy_gun],
+                [nation_russian,ru_heavy_tracked,engine_siberite,control_manual,ru_heavy_gun],
+              ];
+
+//   veh_battle:=[ [us_morphling,engine_combustion,control_manual,us_siberium_rocket] ];
+
+  veh_list:=[];
+  count:=0;     // pocet manualne rizenych vozidel
+  //tvorba dvou Cargo Bay vozidel
+  for i=3 to 4 do
+    begin
+      uc_direction:=Rand(2,3);           // vsichni otoceni smerem na jih
+      un:=veh_cargo[Rand(1,veh_cargo)];
+      uc_nation:=un[1];
+      vc_chassis:=un[2];
+      vc_engine:=un[3];
+      vc_control:=un[4];
+      vc_weapon:=un[5];
+      veh_list:=veh_list ^ CreateVehicle;
+      if un[4]=control_manual then
+        count:=count+1;
+      SetCargo(veh_list[veh_list],mat_artefact,i*10);
+    end;
+
+  // tvorba zakladnich stavebnich stroju
+  for un in veh_basic do
+    begin
+      uc_direction:=Rand(2,3);           // vsichni otoceni smerem na jih
+      uc_nation:=un[1];
+      vc_chassis:=un[2];
+      vc_engine:=un[3];
+      vc_control:=un[4];
+      vc_weapon:=un[5];
+      veh_list:=veh_list ^ CreateVehicle;
+      if un[4]=control_manual then
+        count:=count+1;
+    end;
+
+  // tvorba zbytku bojovych mechanickych sil
+  count:=aliance_forces - 2 - count;     // zbyvajici pocet lidi, kteri jeste nemaji vlastni auto
+  for i=1 to count do
+    begin
+      uc_direction:=Rand(2,3);           // vsichni otoceni smerem na jih
+      un:=veh_battle[Rand(1,veh_battle)];
+      uc_nation:=un[1];
+      vc_chassis:=un[2];
+      vc_engine:=un[3];
+      vc_control:=un[4];
+      vc_weapon:=un[5];
+      veh_list:=veh_list ^ CreateVehicle;
+    end;
+
+  // Umisteni vsech postav do posledni mise
+  pom_list:=aliance_forces diff [MacMillan,Burlak];
+  i:=1;
+  for un in veh_list do
+    begin
+      uc_direction:=Rand(2,3);           // vsichni otoceni smerem na jih
+      if GetControl(un)=control_manual then
+        begin
+          PlaceHumanInUnit(pom_list[i],un);
+          PlaceUnitArea(un,starting_area,false);
+          i:=i+1;
+        end
+      else
+        PlaceUnitArea(un,starting_area,false);
+    end;
+
+  ComEnterUnit(uss_ape,uss);
+end;
+
+//--------------------//
+//-- PRIPRAVA STRAN --//
+function prepare_sides;
+begin
+  neutral:=0;
+  you:=7;
+  camp:=6;              // (6 - aliance za rusy, 4 - aliance za americany)
+  ru:=3;
+  us:=1;
+  ar:=2;
+  ar_al:=5;
+
+  cpu_list:=[us,ar,ru];
+
+  ru_nation:=nation_russian;
+  us_nation:=nation_american;
+  ar_nation:=nation_arabian;
+
+  finalize:=0;
+  siberite_rocket_send:=false;
+
+  Disable(1);           // rozhovor o moznosti zkoumani alieni veze
+  Disable(2);           // Omar zije a zkousi nabidnout sve kvality alianci
+  //Disable(3);           // Omar zije a pokousi se znicit Motherlode
+  Disable(4);           // overovani zda je mozno vyrobit siberitovku u amiku
+  Disable(5);           // overovani zda je mozno vyrobit siberitovku u rusaku
+
+  Disable(24);          // disable rechargovani prozkoumavaciho artefaktu
+  Disable(25);          // disable rechargovani destrukcniho artefaktu
+  Disable(26);          // disable rechargovani teleportacniho artefaktu
+
+  Disable(222);         // udrzovani ciste US zakladny
+  Disable(223);         // udrzovani ciste RU zakladny
+
+  // nastaveni vztahu pro hrace
+  SetAttitude(you,ru,att_enemy,true);
+  SetAttitude(you,us,att_enemy,true);
+  SetAttitude(you,ar,att_enemy,true);
+  SetAttitude(you,neutral,att_neutral,true);
+  SetAttitude(you,ar_al,att_enemy,true);
+
+  // nastaveni vztahu pro pocitace
+  SetAttitude(ru,us,att_enemy,true);
+  SetAttitude(ru,ar,att_enemy,true);
+  SetAttitude(us,ar,att_enemy,true);
+  SetAttitude(ru,ar_al,att_enemy,true);
+  SetAttitude(us,ar_al,att_enemy,true);
+end;
+
+
+//--------------------//
+//-- STARTING BLOCK --//
+starting
+begin
+  RandomizeAll;
+
+  prepare_sides;
+  prepare_us_units;
+  prepare_ru_units;
+  prepare_ar_units;
+  prepare_al_units;
+  prepare_apemans;
+
+  create_russians;
+  create_americans;
+  create_arabians;
+
+  init_distribution;
+  init_defend;
+  init_attack;
+  init_keep_base;
+  init_research;
+  init_manufacture;
+  init_crates_loading;
+  init_crates_collecting;
+  init_alien_research;
+  init_sib_rocket;
+
+  starting_scene;
+end;

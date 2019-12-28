@@ -1,0 +1,138 @@
+
+//main                                  
+export am,rus,ar;
+export burlak,bspoted,burlakv,burlakv_ch,burlakv_wp,burlak_sk;
+export arsc0_sk,arv0_ch,arv0_wp,arv0_sk,arv1_ch,arv1_wp,arv1_sk,arv2_ch,arv2_wp,arv2_sk;
+export aratt0,aratt1,aratt2,aratt3,aratt4,arattv0_ch,arattv0_wp,arattv1_ch,arattv1_wp,arattv2_ch,arattv2_wp,arattv3_ch,arattv3_wp,arattv4_ch,arattv4_wp;
+
+export amreinf0,amreinf1,amreinf2,amreinf3,amreinfv0_ch,amreinfv0_wp,amreinfv1_ch,amreinfv1_wp;
+export bur_hrn,debug,delay1,delay2;
+
+var cper,cperiode,supplies;
+
+function set_vars;
+begin
+  am=1;
+  rus=3;
+  ar=2;
+
+  delay1=[3$0,2$0,1$0][difficulty];   //doba mezi burlakem a arabama  
+  delay2=[18,12,6][difficulty];    //doba mezi arabama a arabama     
+  cperiode=[2$00,2$30,3$00][difficulty];
+  supplies=[11,11,11][difficulty];
+  arsc0_sk=[5,7,7][difficulty];
+  arv0_ch=[ar_half_tracked,ar_half_tracked,ar_half_tracked][difficulty];
+  arv0_wp=[ar_flame_thrower,ar_flame_thrower,ar_flame_thrower][difficulty];
+  arv0_sk=[5,6,7][difficulty];
+  arv1_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arv1_wp=[ar_gatling_gun,ar_gatling_gun,ar_gatling_gun][difficulty];
+  arv1_sk=[5,6,7][difficulty];
+  arv2_ch=[ar_medium_trike,ar_medium_trike,ar_half_tracked][difficulty];
+  arv2_wp=[ar_gun,ar_gun,ar_gun][difficulty];
+  arv2_sk=[6,7,7][difficulty];
+                                                                                                                                  
+  amreinf0=[7,6,5][difficulty];
+  amreinf1=[6,5,5][difficulty];
+  amreinf2=[6,6,6][difficulty];
+  amreinf3=[6,5,5][difficulty];
+  amreinfv0_ch=[us_medium_tracked,us_medium_tracked,us_medium_tracked][difficulty];
+  amreinfv0_wp=[us_laser,us_laser,us_laser][difficulty];
+  amreinfv1_ch=[us_heavy_tracked,us_medium_tracked,us_medium_tracked][difficulty];
+  amreinfv1_wp=[us_heavy_gun,us_double_gun,us_light_gun][difficulty];
+                                                                                                                                               
+  aratt0=[6,6,7][difficulty];
+  aratt1=[5,5,6][difficulty];
+  aratt2=[5,6,7][difficulty];
+  aratt3=[5,6,6][difficulty];
+  aratt4=[6,6,7][difficulty];
+  arattv0_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arattv0_wp=[ar_gun,ar_rocket_launcher,ar_rocket_launcher][difficulty];
+  arattv1_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arattv1_wp=[ar_gatling_gun,ar_gatling_gun,ar_gatling_gun][difficulty];
+  arattv2_ch=[ar_medium_trike,ar_medium_trike,ar_half_tracked][difficulty];
+  arattv2_wp=[ar_gun,ar_gun,ar_rocket_launcher][difficulty];
+  arattv3_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arattv3_wp=[ar_flame_thrower,ar_flame_thrower,ar_flame_thrower][difficulty];
+  arattv4_ch=[ar_medium_trike,ar_half_tracked,ar_half_tracked][difficulty];
+  arattv4_wp=[ar_gatling_gun,ar_flame_thrower,ar_flame_thrower][difficulty];
+                                                                                                                                               
+  burlakv_ch=[ru_medium_tracked,ru_medium_tracked,ru_heavy_tracked][difficulty];
+  burlakv_wp=[ru_gatling_gun,ru_gun,ru_heavy_gun][difficulty];
+  burlak_sk=[7,9,10][difficulty];
+  bur_hrn=[300,450,600][difficulty];
+                                 
+end;
+
+export go4it;
+Export marked_09_substitute;
+starting
+begin
+//  setareamapshow(measure,1);    //debug
+  debug=false; //true;
+  disable(01);
+  disable(02);
+  disable(03);
+  disable(04);
+  disable(05);
+  disable(06);
+  disable(07);
+  //disable(09);
+  marked_09_substitute = false;
+  disable(11);
+  disable(12);
+  disable(14);
+//disable(15); //ffree
+  attno=0;
+  go4it=rand(delay2*2,36+18-6*difficulty); //(6,4,2)-(8,7,6)min
+  set_vars;
+  cper=cperiode;
+  sibsev=false;  //stav siberitoveho dolu
+  marked_08=true;  //ze chcipl siberitovy dul
+  posily=false;  
+  prepare_americans;
+  intro;   //musi byt primo za prepare_americans;
+  uc_nation=nation_russian;
+  uc_side=rus;
+//  if testcharacters('Burlak') and checkcharacterset('Burlak') then burlak=createcharacter('Burlak')
+//  else buildquery('neny Burlak',['OK']);
+  burlak=newcharacter('Burlak');
+  if not burlak then buildquery('neny Burlak',['OK']);
+  setskill(burlak,skill_mechanical,burlak_sk);
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=burlakv_ch;
+  vc_weapon=burlakv_wp;
+  burlakv=createvehicle;
+  bspoted=false;
+  burlakutekl=false;
+end;
+
+//krabice
+every 5$0 do
+begin
+  createcratesarea(rand(4,5),dropzone2,true);
+  enable;
+end;
+
+every 0$15+2$00 do
+begin
+  cper=cper-0$15;
+  if cper=0 then begin
+    if createcratesarea(5,dropzone,true) then begin
+      if (supplies>1) then begin
+        supplies=supplies-1;
+        enable;
+      end;
+      cper=cperiode;
+    end
+    else enable;
+  end
+  else enable;
+end;
+
+every 0$7 do
+begin
+  randomize;
+  enable;
+end;
+

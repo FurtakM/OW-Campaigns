@@ -1,0 +1,406 @@
+//129,136
+export lecntw00;
+
+var leen_;
+var doprovod;
+export function prepare_legion;
+var tmp;
+begin
+  uc_side=le;
+  uc_nation=nation_arabian;
+//osadka bunkru
+  preparesoldier(sex_male,les0_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,127,130,1,false);
+  comenterunit(tmp,lebunk00);
+  les0=tmp;
+  preparesoldier(sex_male,les1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,143,118,1,false);
+  comenterunit(tmp,lebunk01);
+  les1=tmp;
+  preparesoldier(sex_male,les2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,172,126,1,false);
+  comenterunit(tmp,lebunk02);
+  les2=tmp;
+
+//osadka barracksu
+  preparesoldier(sex_male,les_1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,135,124,1,false);
+  comenterunit(tmp,lebarr00);
+  les_1=tmp;
+  preparesoldier(sex_male,les_2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,135,124,1,false);
+  comenterunit(tmp,lebarr00);
+  les_2=tmp;
+  preparehuman(sex_male,class_mortar,les_3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,135,124,1,false);
+  comenterunit(tmp,lebarr00);
+  les_3=tmp;
+  preparehuman(sex_male,class_mortar,les_4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,135,124,1,false);
+  comenterunit(tmp,lebarr00);
+  les_4=tmp;
+  doprovod=[les_1,les_2,les_3,les_4];
+//  addcomfree(doprovod); nefaka
+
+// vedci v levem labu
+  preparescientist(sex_male,lesc_1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,134,133,1,false);
+  comenterunit(tmp,lelabf01);
+  lesc_1=tmp;
+  preparescientist(sex_male,lesc_2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,134,133,1,false);
+  comenterunit(tmp,lelabf01);
+  lesc_2=tmp;
+  preparescientist(sex_male,lesc_3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,134,133,1,false);
+  comenterunit(tmp,lelabf01);
+  lesc_3=tmp;
+
+
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+//mechanik do control toweru
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_control_tower;
+  lecntw00=createvehicle;
+  setdir(lecntw00,5);
+  placeunitxyr(lecntw00,159,136,1,false);
+  preparemechanic(sex_female,lem0_sk);
+  lem0=createhuman;
+  placehumaninunit(lem0,lecntw00);
+
+//vozitka
+  vc_chassis=lev1_ch;
+  vc_weapon=lev1_wp;
+  lev1=createvehicle;
+  setdir(lev1,5);
+  placeunitxy(lev1,128,123,false);
+  preparemechanic(sex_male,lem1_sk);
+  lem1=createhuman;
+  placehumaninunit(lem1,lev1);
+
+  vc_chassis=lev2_ch;
+  vc_weapon=lev2_wp;
+  lev2=createvehicle;
+  setdir(lev2,5);
+  placeunitxy(lev2,137,119,false);
+  preparemechanic(sex_male,lem2_sk);
+  lem2=createhuman;
+  placehumaninunit(lem2,lev2);
+
+  vc_chassis=lev3_ch;            //tracked
+  vc_weapon=lev3_wp;
+  lev3=createvehicle;
+  setdir(lev3,5);
+  placeunitxy(lev3,158,118,false);
+  preparemechanic(sex_male,lem3_sk);
+  lem3=createhuman;
+  placehumaninunit(lem3,lev3);
+
+
+//engineer in depot
+  prepareengineer(sex_female,9);
+  tmp=createhuman;
+  placeunitxyr(tmp,151,133,1,false);
+  comenterunit(tmp,leware00);
+  prepareengineer(sex_female,9);
+  tmp=createhuman;
+  placeunitxyr(tmp,132,136,1,false);
+  comremember(tmp);
+  comenterunit(tmp,ledepo00);
+  leen_=tmp;
+  setresourcevisibility(115,130,le);
+  setresourcevisibility(113,121,le);
+  setresourcevisibility(103,126,le);
+  setresourcevisibility(103,133,le);
+
+//engineers
+  prepareengineer(sex_male,lee0_sk);
+  lee0=createhuman;
+  placeunitxyr(lee0,128,128,1,false);
+  comhold(lee0);
+  prepareengineer(sex_male,lee1_sk);
+  lee1=createhuman;
+  placeunitxyr(lee1,141,119,1,false);
+  comhold(lee1);
+  prepareengineer(sex_male,lee2_sk);
+  lee2=createhuman;
+  placeunitxyr(lee2,174,127,1,false);
+  comhold(lee2);
+
+//init seznamu budov k oprave
+  inzinyri=[lee0,lee1,lee2];
+  comremember(inzinyri);
+  opravujte=[[lebunk00,lebarr00],[lebarr00,lebunk01],[lebunk02]];
+  //opravujese=[];
+{  wait(0$3);
+  comfree(doprovod);} //grrr koho by napadlo ze comfree vyzene lidi z budovy
+
+  legionari=filterallunits([[f_side,le],[f_type,unit_human]]);
+  pocet_legionaru=0+legionari;
+
+end;
+export pocet_legionaru,legionari;
+
+var opravujte;
+//var opravujese;
+var inzinyri;
+every 0$3 do
+var tmp,tmp2,tmp3,oprav,buds,lives;
+begin
+  for tmp=1 to 0+opravujte do begin
+    buds=[];
+    lives=[];
+    for tmp2 in opravujte[tmp] do
+      if (getlives(tmp2)<hranice_zdravi) {and not (tmp2 in opravujese)} then begin
+        buds=buds^[tmp2];
+        lives=lives^[getlives(tmp2)];
+        //opravujese=opravujese^[tmp2];
+      end;
+    tmp2=sortlistbylistasc(buds,lives);
+    if tmp2 then begin
+      comrepairbuilding(inzinyri[tmp],tmp2[1]);
+      for tmp3=2 to 0+tmp2 do addcomrepairbuilding(inzinyri[tmp],tmp2[tmp3]);
+      addcomreturn(inzinyri[tmp]);
+      addcomhold(inzinyri[tmp]);
+    end;
+  end;
+  enable;
+end;
+
+
+//lets go postavit some god damn dul v motherlode
+export ledolu,poziceledolu;
+every 0$10+15$0 marked 05 do  //debugrem!!
+var tmp,tmp1,tmp2;
+begin
+  lestavidul=lestavidul-1;
+  if not lestavidul then begin
+    if debug then msg('le: deme stavet dul');
+    tmp=filterunitsinarea(mothdep,[[f_side,le],[f_btype,b_siberite_mine]]);
+    tmp1=[];
+    for tmp2 in tmp do tmp1=tmp1^[[getx(tmp2),gety(tmp2)]];
+    tmp1=poziceledolu diff tmp1;        //DODELAT
+    tmp=rand(1,0+tmp1);                //co dys cipne?
+    tmp2=filterunitsinarea(mothdep,[[f_nation,nation_nature],[f_side,0]]);
+    commovexy(tmp2,93,113);
+    addcommovexy(tmp2,89,127);
+    comexitbuilding(leen_);
+    addcombuild(leen_,b_siberite_mine,tmp1[tmp][1],tmp1[tmp][2],2);
+    commoveunit(doprovod,leen_);
+//    while isinarea(leen_,lebase) do wait(0$1);
+//    enable(10);
+//    addcommoveunit([leen_],ledepo00);
+    if ledolu<4 then lestavidul=rand(lestavidul_min,lestavidul_max);
+  end
+  else enable;
+end;
+
+every 0$10+15$5 marked 10 do //debugrem!!
+begin
+  while islive(leen_) and not isinarea(leen_,lebase) do wait(0$1);
+  comenterunit(doprovod,lebarr00);
+  if islive(leen_) then comenterunit([leen_],ledepo00);
+end;
+
+
+on buildingcomplete(un) do  //tohleto cely je dost zbytecny
+  if (getbtype(un)=b_siberite_mine) then
+    if (getside(un)=le) and ([getx(un),gety(un)] in poziceledolu) and not lesurr then enable(05)
+    else if (getside(un)=am) and (getx(un)=64) and (gety(un)=17) and not am_surr then enable(07);
+
+            
+//legion krade siberitofku  hm na nejaky kradeni kaslu, bude utok :)
+var attid;         //DODELAT mohl bych udelal ze kdyz vyhrozoval tak zautoci hned, jinak az po chvili
+every 0$2 trigger rusacimajisib and not legdestr do
+var tmp,tmp1,tmp2,regid_le;
+begin           //|lethiefsar|==322
+  if lesurr then exit;
+  if debug then msg('legion: attaaaaaaaaaack!');
+  uc_nation=nation_arabian;
+  uc_side=le;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_rocket_launcher;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_gun;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_flame_thrower;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_rocket_launcher;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_gun;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_flame_thrower;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_rocket_launcher;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_gun;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_flame_thrower;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+//radar
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_radar;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,lethiefsar,false);
+  preparemechanic(sex_male,le_def_sk);
+  tmp1=createhuman;
+  placehumaninunit(tmp1,tmp);
+
+//selfprop. bombs
+  if difficulty>1 then begin
+    vc_control=control_remote;
+    vc_chassis=ar_half_tracked;
+    vc_weapon=ar_selfpropelled_bomb;
+    tmp=createvehicle;
+    setdir(tmp,5);
+    placeunitarea(tmp,lethiefsar,false);
+    linkvehicletohuman(tmp,lem0);
+
+    vc_control=control_remote;
+    vc_chassis=ar_half_tracked;
+    vc_weapon=ar_selfpropelled_bomb;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitarea(tmp,lethiefsar,false);
+    linkvehicletohuman(tmp,lem0);
+
+    vc_control=control_remote;
+    vc_chassis=ar_half_tracked;
+    vc_weapon=ar_selfpropelled_bomb;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitarea(tmp,lethiefsar,false);
+    linkvehicletohuman(tmp,lem0);
+  end;
+
+  tmp=filterunitsinarea(lethiefsar,[[f_or,[f_weapon,ar_rocket_launcher],[f_weapon,ar_gun],[f_weapon,ar_flame_thrower]]]);
+  tmp1=filterunitsinarea(lethiefsar,[[f_weapon,ar_selfpropelled_bomb]]);
+  tmp2=filterunitsinarea(lethiefsar,[[f_weapon,ar_radar]]);
+
+  regid_le=mcregistry(le,[[mc_reg_area_to_guard,target],mc_reg_ignore_fog]);
+  attid=mcattack(100,regid_le,tmp^tmp1^tmp2,[mc_no_stop{,[mc_area_dont_leave,target]}]);
+
+
+end;
+
+//le chytaji opoce a kamikadzuji je :)
+var lesni_opoce_;
+function lesni_opoce;
+begin
+  lesni_opoce_=filterunitsinarea(opoles,[[f_side,0],[f_class,class_apeman]]);
+  result=0+lesni_opoce_;
+end;
+
+every 0$7 trigger lesni_opoce marked 09 do
+var tmp,tmp1;
+begin
+  tmp1=[];
+  for tmp in lesni_opoce_ do tmp1=tmp1^[getdistunitxy(tmp,134,133)];
+  tmp=worstfromlistbylist(lesni_opoce_,tmp1);
+  comtamexy([lesc_1,lesc_3,lesc_2],getx(tmp),gety(tmp));
+  addcommoveunit([lesc_1,lesc_3,lesc_2],lelabf01);
+
+  wait(rand(0$30,5$0));
+  enable;
+end;
+
+on apemantamed(ape,sci) do
+var tmp,tmp1,tmp2;
+begin
+  if getside(sci)=le then begin
+    commoveunit(ape,lebarr00);
+    addcomchangeprofession(ape,class_apeman_kamikaze);
+    addcomexitbuilding(ape);
+    tmp2=filterunitsinarea(target,[[f_side,ru],[f_or,[f_btype,b_bunker],[f_btype,b_turret]]]);
+    if not tmp2 then tmp2=filterunitsinarea(target,[[f_side,ru],[f_type,unit_building]]);
+    if not tmp2 then tmp2=filterunitsinarea(target,[[f_side,ru],[f_type,unit_vehicle]]);
+    if not tmp2 then tmp2=filterunitsinarea(target,[[f_side,ru],[f_type,unit_human]]);
+    if not tmp2 then tmp2=filterallunits([[f_side,ru],[f_type,unit_vehicle]]);
+    if not tmp2 then tmp2=filterallunits([[f_side,ru],[f_type,unit_human]]);
+    tmp1=[];
+    for tmp in tmp2 do tmp1=tmp1^[getdistunitxy(tmp,134,133)];
+    tmp=worstfromlistbylist(tmp2,tmp1);
+    if debug then msg('2b kamikadzed: '&tmp);
+    addcomattackunit(ape,tmp);
+
+  end;
+end;
+
+

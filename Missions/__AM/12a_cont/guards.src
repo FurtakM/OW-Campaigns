@@ -1,0 +1,147 @@
+//hlavne nedrazdit powella :)
+
+export killx,killy;
+{export kill_them;
+on unitgoestored(un) do
+  if not kill_them and ((getside(un)=am) or (getside(un)=oth)) then begin
+    kill_them=true;
+    killx=getx(un);
+    killy=gety(un);
+  end;
+
+var budovavezlutym_;
+function budovavezlutym;
+var tmp;
+begin
+  for tmp in budovy do
+    if getlives(tmp)<=hranice_zraneni then begin budovavezlutym_=tmp;result=tmp;exit;end;
+  result=0;
+end;
+
+every 0$1.3 trigger budovavezlutym and not kill_them do
+begin
+  kill_them=true;
+  killx=getx(budovavezlutym_);
+  killy=gety(budovavezlutym_);
+end;
+}
+
+on humandestroyed(un,side,nation,x,y,direction,sex,class) do
+  if (penalty<maxpenalty) and ((side=am) or (side=oth)) then begin
+    penalty=penalty+[10,8,6][difficulty];
+    if debug then msg('penalty: '&penalty);
+    if penalty>=maxpenalty then begin killx=x;killy=y;end
+  end;
+
+on unitgoestored(un) do
+  if (gettype(un)=unit_vehicle) and (penalty<maxpenalty) and ((getside(un)=am) or (getside(un)=oth)) then begin
+    penalty=penalty+[8,6,4][difficulty];
+    if debug then msg('penalty: '&penalty);
+    if penalty>=maxpenalty then begin killx=getx(un);killy=gety(un);end
+  end;
+
+var guards;
+every 0$1.2 trigger penalty>=maxpenalty do
+var tmp,tmp2,tmp1,rad;
+begin
+//  kill_them=false;
+  penalty=0;
+  rad=5;
+  tmp1=[];
+  while ((0+tmp1)<5) and (rad<25) do begin
+    rad=rad+5;
+    tmp1=filterallunits([[f_side,al],f_not,[f_type,unit_building],[f_ok],[f_distxy,killx,killy,rad]]);
+  end;
+//place guards
+  uc_side=am;
+  uc_nation=nation_american;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_gatling_gun;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,guard_in,false);
+  preparemechanic(sex_male,8);
+  placehumaninunit(createhuman,tmp);
+  tmp2=[tmp];
+
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_gatling_gun;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,guard_in,false);
+  preparemechanic(sex_male,8);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_gatling_gun;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,guard_in,false);
+  preparemechanic(sex_male,8);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_gatling_gun;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,guard_in,false);
+  preparemechanic(sex_male,8);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_gatling_gun;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,guard_in,false);
+  preparemechanic(sex_male,8);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=us_heavy_tracked;
+  vc_weapon=us_heavy_gun;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,guard_in,false);
+  preparemechanic(sex_male,9);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+  guards=tmp2;
+
+  for tmp in tmp1 do begin addcomattackunit(tmp2,tmp);priorityattack(am,tmp);end;
+//  addcomattackunit(tmp2,john);
+//  addcommovetoarea(tmp2,guard_out);
+  while getlives(tmp1)>0 do begin
+    wait(0$1);
+    if debug then debug_strings=['cile:',tmp1];
+  end;
+  if debug then msg('lets get off');
+  for tmp=1 to 6 do commovexy(guards[tmp],guard_out_[tmp][1],guard_out_[tmp][2]);
+  enable(04);
+  achjo=0;
+  enable;
+end;
+
+var achjo;
+
+every 0$1 marked 04 do
+var tmp,tmp1;
+begin
+  //odjezd
+  tmp=filterunitsinarea(guard_out,[[f_side,am]]);
+  for tmp1 in tmp do destroyunit(tmp1);
+  if unitfilter(guards,[[f_ok]]) then begin
+    achjo=achjo+1;
+    if (achjo mod 5)=0 then
+      for tmp=1 to 6 do commovexy(guards[tmp],guard_out_[tmp][1],guard_out_[tmp][2]);
+    enable;
+  end
+  else; //kill_them=false;
+end;
+
+

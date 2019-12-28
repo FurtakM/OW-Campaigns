@@ -1,0 +1,108 @@
+
+var d1, d2, d3, d4, d5, d6, d7, d8, d9, d10;
+
+every 0$2 do
+begin
+   d1:=[us_heavy_tracked,engine_combustion,control_manual,us_gatling_gun];
+   d2:=[us_heavy_tracked,engine_combustion,control_manual,us_double_gun];
+   d3:=[us_heavy_tracked,engine_combustion,control_manual,us_heavy_gun];
+   d5:=[us_heavy_tracked,engine_combustion,control_remote,us_gatling_gun];
+   d6:=[us_heavy_tracked,engine_combustion,control_remote,us_double_gun];
+   d7:=[us_heavy_tracked,engine_combustion,control_remote,us_heavy_gun];
+end;
+
+every 0$10 do
+begin
+   defence:=FilterAllUnits([[f_side,ai],[f_control,control_manual]]);
+   attack:=FilterAllUnits([[f_side,ai],[f_control,control_remote]]);
+end;
+
+var fact1, fact2;
+every 0$1 do
+begin
+  fact1:=fact isect b3;
+  if fact1 then fact1:=fact1[1];
+  fact2:=fact isect b4;
+  if fact2 then fact2:=fact2[1];
+  enable;
+end;
+every 0$5 trigger IsOk(fact1) and fact1 in fact and IsIdle(fact1) do
+var a, fact_attack;
+begin
+   fact_attack:=FilterAllUnits([[f_side,ai],[f_control,control_remote]]);
+   case true of
+//defence
+     (tick<15$0 and defence<3 and CanBeConstructed(fact1, d1[1], d1[2], d1[3], d1[4])): begin
+         ComConstruct(fact1, d1[1], d1[2], d1[3], d1[4]);
+     end;
+     (tick>15$0 and tick<30$0 and defence<3 and CanBeConstructed(fact1, d2[1], d2[2], d2[3], d2[4])): begin
+         ComConstruct(fact1, d2[1], d2[2], d2[3], d2[4]);
+     end;
+
+     (tick>30$0 and defence<2 and CanBeConstructed(fact1, d1[1], d1[2], d1[3], d1[4])): begin
+         ComConstruct(fact1, d1[1], d1[2], d1[3], d1[4]);
+     end;
+     (tick>30$0 and defence<4 and CanBeConstructed(fact1, d3[1], d3[2], d3[3], d3[4])): begin
+         ComConstruct(fact1, d3[1], d3[2], d3[3], d3[4]);
+     end;
+//attack
+     (tick<20$0 and fact_attack<4 and CanBeConstructed(fact1, d6[1], d6[2], d6[3], d6[4])): begin
+         ComConstruct(fact1, d6[1], d6[2], d6[3], d6[4]);
+//         msg('double');
+     end;
+     (tick>20$0 and tick<30$0 and fact_attack<3  and CanBeConstructed(fact1, d6[1], d6[2], d6[3], d6[4])): begin
+         ComConstruct(fact1, d6[1], d6[2], d6[3], d6[4]);
+//         msg('double');
+     end;
+     (tick>30$0 and fact_attack<4 and CanBeConstructed(fact1, d7[1], d7[2], d7[3], d7[4])): begin
+         ComConstruct(fact1, d7[1], d7[2], d7[3], d7[4]);
+//         msg('heavy');
+     end;
+     (tick>30$0 and fact_attack<5  and CanBeConstructed(fact1, d5[1], d5[2], d5[3], d5[4])): begin
+         ComConstruct(fact1, d5[1], d5[2], d5[3], d5[4]);
+//         msg('gatling');
+     end;
+   end;
+   enable;//-----------
+end;
+
+every 0$5 trigger IsOk(fact2) and fact2 in fact and IsIdle(fact2) do
+var a, fact_attack;
+begin
+   fact_attack:=FilterAllUnits([[f_side,ai],[f_control,control_remote]]);
+   case true of
+//defence
+     (tick<15$0 and defence<3 and CanBeConstructed(fact2, d1[1], d1[2], d1[3], d1[4])): begin
+         ComConstruct(fact2, d1[1], d1[2], d1[3], d1[4]);
+     end;
+     (tick>15$0 and tick<30$0 and defence<3 and CanBeConstructed(fact2, d2[1], d2[2], d2[3], d2[4])): begin
+         ComConstruct(fact2, d2[1], d2[2], d2[3], d2[4]);
+     end;
+
+     (tick>30$0 and defence<2 and CanBeConstructed(fact2, d1[1], d1[2], d1[3], d1[4])): begin
+         ComConstruct(fact2, d1[1], d1[2], d1[3], d1[4]);
+     end;
+     (tick>30$0 and defence<4 and CanBeConstructed(fact2, d3[1], d3[2], d3[3], d3[4])): begin
+         ComConstruct(fact2, d3[1], d3[2], d3[3], d3[4]);
+     end;
+//attack
+     (tick<15$0 and fact_attack<4 and CanBeConstructed(fact2, d5[1], d5[2], d5[3], d5[4])): begin
+         ComConstruct(fact2, d5[1], d5[2], d5[3], d5[4]);
+//         msg('gatling');
+     end;
+     (tick>15$0 and tick<30$0 and fact_attack<3  and CanBeConstructed(fact2, d6[1], d6[2], d6[3], d6[4])): begin
+         ComConstruct(fact2, d6[1], d6[2], d6[3], d6[4]);
+//         msg('double');
+     end;
+     (tick>30$0 and fact_attack<2  and CanBeConstructed(fact2, d6[1], d6[2], d6[3], d6[4])): begin
+         ComConstruct(fact2, d6[1], d6[2], d6[3], d6[4]);
+//         msg('double');
+     end;
+     (tick>30$0 and fact_attack<4  and CanBeConstructed(fact2, d7[1], d7[2], d7[3], d7[4])): begin
+         ComConstruct(fact2, d7[1], d7[2], d7[3], d7[4]);
+//         msg('heavy');
+     end;
+   end;
+   enable;//-----------
+end;
+

@@ -1,0 +1,1879 @@
+EXPORT Speaker;     
+
+var Byl_u_zakladny1, Followed, Mikhails_outcome, Mikhail_status, end_of_m;
+var rsol, rv, tiger, sour, target_of_escape, attacker;
+export JMMInVehicle,CyrusInVehicle;
+
+// Waits until no of units from list_of_units is busy
+EXPORT Function WaitTask(list_of_units, reaction);
+var i, busy;
+ begin
+  wait(2);
+  repeat
+   busy= false;
+   for i in list_of_units do
+    if IsOk(i) then
+     if HasTask(i) then busy= true; {begin busy= true; debug_strings= [['Task y']]; end
+                        else debug_strings= [['Task n']];}
+   if busy then wait(0$1*reaction);
+  until not(busy);
+ end;
+
+
+// Outset
+EVERY 0$1 TRIGGER not(test) DO
+ var sold, alive, Un, hlp;
+ begin
+  hlp= tick;
+  IngameOn;
+  Dialogue_Number= 1;
+
+   if IsOk(Bobby) or IsOk(Cyrus) then
+     begin
+       alive= []; Speaker= [];
+       if IsOk(Bobby) then alive= alive ^ Bobby;
+       if IsOk(Cyrus) then alive= alive ^ Cyrus;
+
+
+       // Bobby
+       if IsOk(Bobby) And not(Skip) then if IsOk(Cyrus) then AddComTurnUnit(Bobby, Cyrus)
+                                                        else AddComTurnUnit(Bobby, John);
+       if IsOk(Bobby) And not(Skip) then AddComWait(Bobby, 0$1);
+       if IsOk(Bobby) And not(Skip) then AddComMoveXY(Bobby, 39, 67);
+       if IsOk(Bobby) And not(Skip) then AddComTurnUnit(Bobby, John);
+       // Cyrus
+       if IsOk(Cyrus) And not(Skip) then ComWait(Cyrus, 0$0.5);
+       if IsOk(Cyrus) And not(Skip) then AddComMoveXY(Cyrus, 41, 71);
+       if IsOk(Cyrus) And not(Skip) then AddComWait(Cyrus, 0$1);
+       // John
+        if IsOk(John) And not(Skip) then ComMoveXY(John, 47, 68);
+
+        if IsOk(John) And not(Skip) then if IsOk(Bobby) then AddComTurnUnit(John, Bobby)
+                                                        else AddComTurnUnit(John, Cyrus);
+
+       //Dialogues
+       Un= alive[Rand(1, alive)];
+       if not(Skip) then if (Un= Bobby) and IsOk(Bobby) then Say(Bobby, 'D1a-Bobby-1');
+       if not(Skip) then if (Un= Cyrus) and IsOk(Cyrus) then Say(Cyrus, 'D1a-Cyrus-1');
+
+
+       // Bobby
+       if IsOk(Bobby) and not(Skip) then ComMoveXY(Bobby, 47, 70);
+       if IsOk(Bobby) and not(Skip) then AddComWait(Bobby, 0$0.5);
+       // Cyrus
+       if IsOk(Cyrus) and not(Skip) then AddComMoveXY(Cyrus, 43, 69);
+       if IsOk(Cyrus) and not(Skip) then AddComWait(Cyrus, 0$0.5);
+       if IsOk(Cyrus) and not(Skip) then if IsOk(Bobby) then AddComTurnUnit(Cyrus, Bobby)
+                                                        else AddComTurnUnit(Cyrus, John);
+       // John
+       if IsOk(John) And not(Skip) then AddComWait(John, 0$5);
+       if IsOk(John) And not(Skip) then AddComMoveXY(John, 36, 63);
+       if IsOk(John) And not(Skip) then if IsOk(Cyrus) then AddComTurnUnit(John, Cyrus)
+                                                       else AddComTurnUnit(John, Bobby);
+       // Dialogues
+       if IsOk(John) And not(Skip) then Say(John, 'D1a-JMM-1');
+       // Dialogues
+       Un= alive[Rand(1, alive)];
+       if not(Skip) then if (Un= Bobby) and IsOk(Bobby) then Say(Bobby, 'D1a-Bobby-2');
+       if not(Skip) then if (Un= Cyrus) and IsOk(Cyrus) then Say(Cyrus, 'D1a-Cyrus-2');
+
+       CenterOnUnits([John, Lisa]);
+
+       //Bobby
+       if IsOk(Bobby) and not(Skip) then AddComTurnUnit(Bobby, John);
+       if IsOk(Bobby) and not(Skip) then AddComMoveXY(Bobby, 42, 69);
+       if IsOk(Bobby) and not(Skip) then AddComWait(Bobby, 0$0.3);
+
+       // Cyrus
+       if IsOk(Cyrus) and not(Skip) then AddComWait(Cyrus, 0$2);
+       if IsOk(Cyrus) and not(Skip) then AddComMoveXY(Cyrus, 37, 66);
+       if IsOk(Cyrus) and not(Skip) then AddComTurnUnit(Cyrus, John);
+
+
+       // John
+       if IsOk(John) And not(Skip) then AddComWait(John, 0$3);
+       if IsOk(John) And not(Skip) then AddComTurnUnit(John, Lisa);
+       if IsOk(John) And not(Skip) then AddComWait(John, 0$1);
+       if IsOk(John) And not(Skip) then AddComHold(John);
+       // Dialogues
+       if IsOk(John) And not(Skip) then Say(John, 'D1a-JMM-2');
+
+
+       // John
+       if IsOk(John) And not(Skip) then ComWait(John, 0$0.5);
+       if IsOk(John) And not(Skip) then AddComTurnUnit(John, Lisa);
+       if not(IsAt(John, 36, 63)) then
+        begin
+          ComMoveXY(John, 36, 63);                        // At any time
+          AddComTurnUnit(John, Lisa);
+        end;
+
+       // Bobby
+       if IsOk(Bobby) and not(Skip) then ComWait(Bobby, 0$1);
+       if IsOk(Bobby) and not(Skip) then AddComTurnUnit(Bobby, Lisa);
+       if IsOk(Bobby) and not(IsAt(Bobby, 36, 61)) then AddComMoveXY(Bobby, 36, 61);   // At any time
+       if IsOk(Bobby) and not(Skip) then AddComWait(Bobby, 0$0.5);
+       if IsOk(Bobby) and not(Skip) then AddComTurnUnit(Bobby, Lisa);
+
+       // Cyrus
+       if IsOk(Cyrus) and not(Skip) then ComWait(Cyrus, 0$1);
+       if IsOk(Cyrus) and not(Skip) then AddComTurnUnit(Cyrus, Lisa);
+       if IsOk(Cyrus) and not(Skip) then AddComWait(Cyrus, 0$1);
+       if IsOk(Cyrus) and not(IsAt(Cyrus, 35, 63)) then AddComMoveXY(Cyrus, 35, 63);    // At any time
+       if IsOk(Cyrus) and not(Skip) then AddComTurnUnit(Cyrus, Lisa);
+
+
+       // Lisa
+       if IsOk(Lisa) and not(Skip) then CenterOnUnits(Lisa);
+       if IsOk(Lisa) and not(Skip) then ComWait(Lisa, 0$2);
+       AddComWalk(Lisa);
+       AddComMoveXY(Lisa, 33, 59);
+       AddComTurnUnit(Lisa, John);
+
+       if not(Skip) then ComWait(AmME1, 0$3);
+       AddComWalk(AmME1);
+       AddComMoveXY(AmME1, 31, 58);
+       AddComTurnUnit(AmME1, John);
+
+       if not(Skip) then ComWait(AmFE2, 0$3);
+       AddComWalk(AmFE2);
+       AddComMoveXY(AmFE2, 33, 56);
+       AddComTurnUnit(AmFE2, John);
+
+       if Nick then
+         begin
+           if not(Skip) then ComWait(Nick, 0$2);
+           AddComWalk(Nick);
+           AddComMoveXY(Nick, 34, 57);
+           AddComTurnUnit(Nick, John);
+         end;
+
+       Say(Lisa, 'D1a-Lisa-2');
+
+
+     end
+   else
+     begin
+       ComMoveXY(John, 49, 66);
+       AddComWait(John, 0$0.5);
+       if not(Skip) then Wait(0$3);
+       if not(Skip) then Say(John, 'D1b-JMM-1');
+       if not(Skip) then AddComTurnXY(John, 54, 71);
+       if not(Skip) then AddComWait(John, 0$0.7);
+       if not(Skip) then AddComTurnXY(John, 55, 63);
+       if not(Skip) then AddComWait(John, 0$0.7);
+
+       if not(Skip) then AddComMoveXY(John, 45, 62);
+       if not(Skip) then AddComTurnXY(John, 52, 60);
+       if not(Skip) then AddComWait(John, 0$1);
+       if not(Skip) then AddComTurnXY(John, 37, 48);
+       if not(Skip) then AddComWait(John, 0$0.5);
+       if not(Skip) then AddComTurnXY(John, 36, 60);
+       if not(Skip) then AddComWait(John, 0$1);
+
+       if not(Skip) then AddComMoveXY(John, 41, 65);
+       AddComMoveXY(John, 36, 61);
+       if not(Skip) then AddComTurnXY(John, 29, 54);                                          // At any time
+       While not(GetDistUnitXY(John, 36, 61) < 2) do Wait(0$0.2);
+
+       if not(Skip) then AddComCrawl(John);
+
+       CenterOnXY(GetX(Lisa)-1, GetY(Lisa)-3);
+
+       Say(John, 'D1b-JMM-1a');
+
+       if not(Skip) then ComWait(John, 0$3);
+       AddComWalk(John);
+       AddComTurnUnit(John, Lisa);
+
+       if not(Skip) then ComWait(Lisa, 0$0.5);
+       AddComWalk(Lisa);
+       AddComMoveXY(Lisa, 33, 59);
+       AddComTurnUnit(Lisa, John);
+
+       if not(Skip) then ComWait(AmME1, 0$1);
+       AddComWalk(AmME1);
+       AddComMoveXY(AmME1, 31, 58);
+       AddComTurnUnit(AmME1, John);
+
+       if not(Skip) then ComWait(AmFE2, 0$1);
+       AddComWalk(AmFE2);
+       AddComMoveXY(AmFE2, 33, 56);
+       AddComTurnUnit(AmFE2, John);
+
+       if Nick then
+         begin
+           AddComWalk(Nick);
+           AddComMoveXY(Nick, 34, 57);
+           AddComTurnUnit(Nick, John);
+         end;
+
+
+       if not(Skip) then Wait(0$1);
+       if not(Skip) then Say(Lisa, 'D1b-Lisa-1');
+     end;
+
+
+   // The dialogue continues in both cases
+   if not(Skip) then Say(John, 'D1-JMM-1');
+   if not(Skip) then Say(Lisa, 'D1-Lisa-1');
+   if not(Skip) then Say(John, 'D1-JMM-2');
+   if not(Skip) then SayRadio(Powell, 'D1-Pow-2');
+   if not(Skip) and IsOk(Cyrus) then
+     begin
+       Say(Cyrus, 'D1-Cyrus-2');
+       Say(John, 'D1-JMM-3');
+     end;
+   if not(Skip) then SayRadio(Powell, 'D1-Pow-3');
+   if not(Skip) then Say(John, 'D1-JMM-4');
+   if not(Skip) then SayRadio(Powell, 'D1-Pow-4');
+   if not(Skip) then SayRadio(Powell, 'D1-Pow-4a');
+   alive= []; Speaker= [];
+   if IsOk(Bobby) then alive= alive ^ Bobby;
+   if IsOk(Cyrus) then alive= alive ^ Cyrus;
+   if (IsOk(Bobby) or IsOk(Cyrus)) then
+     Un= alive[Rand(1, alive)];
+   if alive <> 0 then
+     begin
+       if not(Skip) then if (Un= Bobby) and IsOk(Bobby) then
+         begin
+           Say(Bobby, 'D1-Bobby-4');
+           if not(Skip) then Say(Lisa, 'D1-Lisa-4');
+         end;
+       if not(Skip) then if (Un= Cyrus) and IsOk(Cyrus) then Say(Cyrus, 'D1-Cyrus-4');
+     end;
+   if not(Skip) then Say(John, 'D1-JMM-5');
+
+
+   sold= FilterUnitsInArea(Start, [f_side, americans]);
+
+  IngameOff;
+  tick= hlp;
+  Skip= false;
+
+  ComFree(sold);
+  ComFree(John);
+  wait(0$1);
+  ChangeMissionObjectives('M1');
+  SaveForQuickRestart;
+  Hint('Engineers');
+  Hint('Groups');
+  SetSide([Lisa, AmME1, AmFE2], americans);
+  if Nick then SetSide(Nick, americans);
+  enable(Engineers_not_dead);
+ end;
+
+
+// Create Dead americans at north
+EVERY 0$1 TRIGGER (SeeArea(americans, Dead_Am_1) > 0) DO
+ begin
+   hc_sex= sex_male;
+   hc_class= class_soldier;
+   hc_skills= [1, 2, 1, 1];
+   hc_name= '';
+   hc_attr= [10, 10];
+
+   uc_side= americans1;
+   uc_nation= nation_american;
+   PrepareHuman(0, class_soldier, 0);
+   uc_direction= Rand(1, 6);
+   AmD1= CreateHuman;
+   PrepareHuman(0, class_soldier, 0);
+   uc_direction= Rand(1, 6);
+   AmD2= CreateHuman;
+   PrepareHuman(0, class_soldier, 0);
+   uc_direction= Rand(1, 6);
+   AmD3= CreateHuman;
+   PrepareHuman(0, class_soldier, 0);
+   uc_direction= Rand(1, 6);
+   AmD4= CreateHuman;
+   SetLives([AmD1, AmD2, AmD3, AmD4], 0);
+   PlaceUnitXY(AmD1, 27, 15, false);
+   PlaceUnitXY(AmD2, 25, 13, false);
+   PlaceUnitXY(AmD3, 29, 16, false);
+   PlaceUnitXY(AmD4, 27, 14, false);
+ end;
+
+// If see a dead americans at north base
+EVERY 0$1 TRIGGER (SeeXY(americans, 27, 15) or SeeXY(americans, 25, 13) or
+                   SeeXY(americans, 29, 16) or SeeXY(americans, 28, 14)) DO
+var alive, speaker, Un;
+ begin
+   InGameOn;
+
+   CenterOnXY(27, 15);
+   if IsOk(John) then
+     begin
+       ComWalk(John);
+       ComMoveXY(John, 24, 14);
+       AddComTurnXY(John, 27, 15);
+     end;
+   if IsOk(Lisa) then
+     begin
+       ComWalk(Lisa);
+       ComMoveXY(Lisa, 27, 13);
+       AddComTurnXY(Lisa, 28, 14);
+     end;
+   if IsOk(Bobby) then
+     begin
+       ComWalk(Bobby);
+       ComMoveXY(Bobby, 30, 18);
+       AddComTurnXY(Bobby, 29, 16);
+     end;
+   if IsOk(Cyrus) then
+     begin
+       ComWalk(Cyrus);
+       ComMoveXY(Cyrus, 27, 16);
+       AddComTurnXY(Cyrus, 27, 15);
+     end;
+   if IsOk(AmME1) then
+     begin
+       ComWalk(AmME1);
+       ComMoveXY(AmME1, 27, 14);
+       AddComTurnXY(AmME1, 28, 14);
+     end;
+   if IsOk(AmFE2) then
+     begin
+       ComWalk(AmFE2);
+       ComMoveXY(AmFE2, 23, 14);
+       AddComTurnXY(AmFE2, 25, 13);
+     end;
+   if IsOk(Khatam) then
+     begin
+       ComWalk(Khatam);
+       ComMoveXY(Khatam, 25, 14);
+       AddComTurnXY(Khatam, 25, 13);
+     end;
+   if IsOk(Nick) then
+     begin
+       ComWalk(Nick);
+       ComMoveXY(Nick, 24, 16);
+       AddComTurnXY(Nick, 25, 13);
+     end;
+
+   alive= [];
+   if IsOk(Lisa) then alive= alive ^ Lisa;
+   if IsOk(Bobby) then alive= alive ^ Bobby;
+   if IsOk(Cyrus) then alive= alive ^ Cyrus;
+   if IsOk(AmME1) then alive= alive ^ AmME1;
+   if IsOk(AmFE2) then alive= alive ^ AmFE2;
+   speaker= alive[Rand(1,alive)];
+   case speaker of
+    Lisa: Say(Lisa, 'DCorpses-Lisa-1');
+    Bobby: Say(Bobby, 'DCorpses-Bobby-1');
+    Cyrus: Say(Cyrus, 'DCorpses-Cyrus-1');
+    AmME1: Say(AmME1, 'DCorpses-Sol1-1');
+    AmFE2: Say(AmFE2, 'DCorpses-FSol1-1');
+   end;
+   Say(John, 'DCorpses-JMM-1');
+   if IsOk(Khatam) then Say(Khatam, 'DCorpses-Khat-1');
+   IngameOff;
+
+   Say(John, 'DCorpses-JMM-2');
+
+   Tested_Americans= [John, Lisa, Bobby, Cyrus, Khatam, AmME1, AmFE2];
+   for Un in Tested_Americans do
+     Init_Lives= Init_Lives ^ GetLives(Un);
+ end;
+
+// Hint Hold
+EVERY 0$4 do
+var all, i, pom;     
+ begin
+  pom=true;
+  if GetLives([John, Cyrus, Bobby, Khatam, Lisa, AmME1, AmFE2, AmMSo3, Nick])
+              < Initial_Lives-1 then
+    begin
+      if holdfreemode then
+        Hint('Hold2')
+      else
+        Hint('Hold');
+     pom=false;
+    end;
+  if pom then enable;
+ end;
+
+Function Retreat;
+var Un, i, Lives_Decreased;
+ begin
+   i= 1;
+   for Un in Tested_Americans do
+     begin
+       if GetLives(Un) <> Init_Lives[i] then Lives_Decreased= True;
+       i= i+1;
+     end;
+
+  if ((See(americans, Brw1) or See(americans, Brw2) or  See(americans, Brw3)) and
+       (FilterAllUnits([[f_side, americans], [f_type, unit_vehicle]]) = 0) and
+        Lives_Decreased and
+        not(IsInArea(John, hill)))
+      then result=1
+  else result=0;
+ end;                              
+                                  
+// When americans attack the north russians base without vehicles
+EVERY 0$2 TRIGGER Retreat do
+ begin
+  Byl_u_zakladny1=true;
+  Say(John, 'DX1-JMM-1');
+ end;
+
+// When americas come over the River
+EVERY 0$1 TRIGGER SeeXY(americans, 75, 70) or SeeXY(americans, 77, 73) or
+                  SeeXY(americans, 77, 69) or SeeXY(americans, 78, 71) DO
+var Uns, Un;
+ begin
+   PlaceUnitXY(AmR1, 75, 70, false);
+   SetLives(AmR1, 500);
+   PlaceUnitXY(AmR2, 77, 73, false);
+   SetLives(AmR2, 0);
+   PlaceUnitXY(RuR1, 77, 69, false);     
+   PlaceUnitXY(RuR2, 78, 71, false);
+   ComAttackUnit([RuR1, RuR2], AmR1);
+   Uns= FilterAllUnits([[f_side, americans], [f_distxy, 77, 71, 20]]) diff [John, Lisa, Khatam];
+   if Uns <> 0 then
+     begin
+       Un= Uns[Rand(1,Uns)];
+       Say(Un, 'DF-Sol1-1');
+     end;
+   Say(John, 'DF-JMM-1');
+   while IsOk(RuR1) or IsOk(RuR2) do Wait(0$1);
+   if not(IsDead(AmR1)) then
+     begin
+       SetSide(AmR1, americans);
+       Uns= FilterAllUnits([[f_side, americans], [f_class, class_scientistic]]);
+       if Uns <> 0 then
+         Say(John, 'DFa-JMM-1')
+       else Say(John, 'DFa-JMM-1a');
+     end;
+
+   while not(IsOk(AmR1) or IsDead(AmR1)) do Wait(0$1);
+   if IsOk(AmR1) then
+     begin
+       Say(AmR1, 'DFb-Sol1-1');
+       ComMoveXY(AmR1, 77, 73);
+       Wait(0$2);
+       Say(AmR1, 'DFb-Sol1-1a');
+     end;
+ end;
+
+
+
+
+EVERY 0$2 TRIGGER See(americans, dep1) or See(americans, dep2) do
+ begin
+  Hint('CapturingBuilding');
+ end;
+
+Function see_vehicle;
+ begin
+  if (See(americans, vehicle1) or See(americans, vehicle2)) then     // see vehicles
+   begin
+    result=1;
+    enable(vehicles_detected);
+   end
+  else result=0;
+ end;
+
+Function see_vehicle1;  //without enable(vehicles_detected);
+ begin
+  if (See(americans, vehicle1) or See(americans, vehicle2)) then     // see vehicles
+   begin
+    result=1;
+   end
+  else result=0;
+ end;
+
+
+Function guardians_are_death;
+ begin
+  if not(IsOk(RusESo1) or IsOk(RusESo2) or IsOK(RusEM1)) then
+   result=1
+  else result=0;
+ end;
+
+// MARKED 21 - East_guard_seen
+EVERY 0$1 TRIGGER (see_vehicle and not(JMM_saw_east_guard)) MARKED 21 do
+ begin
+  JMM_saw_east_guard= true;
+  Say(John, 'DX3-JMM-1');
+ end;
+
+EVERY 0$2 TRIGGER IsOk(RusEM1) and IsDrivenBy(vehicle1)= RusEM1 do
+ begin
+  sergej_succeeds= 1;
+ end;
+
+// When americans attack eastern base        // russians see americans at area Dohled
+EVERY 0$1 TRIGGER FilterUnitsInArea(Dohled, [[f_see, russians],[f_side, americans]]) > 0 do
+  begin
+   ComFree(RusEast);
+   disable(East_guard_seen);
+   DialogueOn;
+   SayNoFace(RusESo2, 'DX3-Rus1-1'); //SayNoFace???
+   DialogueOff;
+   if not(JMM_saw_east_guard) then
+     begin
+       JMM_saw_east_guard= true;
+       DialogueOn;
+       Say(John, 'DX3-JMM-1');
+       DialogueOff;
+       PlaceSeeing(117, 41, americans,-6);
+       Wait(0$10);
+       RemoveSeeing(117, 41, americans);
+     end;
+   
+   enable(attack);             // fork
+  end;
+
+
+// By the east russians base
+EVERY 0$5 TRIGGER see_vehicle1 and guardians_are_death MARKED 6 do
+ begin
+  DialogueOn;
+  if IsOk(Bobby) then Say(Bobby, 'DX2-Bobby-1')
+  else Say(John, 'DX2-JMM-1');
+  if (Byl_u_zakladny1 and IsOk(Bobby)) then Say(John, 'DX2-JMM-1a');
+  DialogueOff;
+ end;
+
+EVERY 0$2 TRIGGER see_vehicle1 and guardians_are_death do
+ begin
+   if IsOk(vehicle1) and IsOk(Vehicle2) then
+     Hint('CapturingVehicles1')
+   else
+     Hint('CapturingVehicles2');
+//  if sergej_succeeds = 0 then Hint('CapturingVehicles1')
+//  else if sergej_succeeds = 1 then Hint('CapturingVehicles2');
+ end;
+
+// MARKED 5 - vehicles_detected
+on VehicleCaptured(vehnew, vehold, origside, hum)  MARKED 5 do
+var InV1, InV2;
+ begin
+  if ((vehold= vehicle1) or (vehold= vehicle2)) and (hum <> RusEM1)
+     and First_Capture then
+   begin
+      First_Capture= False;
+      disable(uncanny_vehicles);
+      DialogueOn;
+      if ((hum = John) and IsOk(Lisa)) then
+       begin
+        Say(Lisa, 'DX2b-Lisa-1');
+        Say(John, 'DX2b-JMM-1');
+        Hint('ControllingVehicles');
+       end
+      else
+       begin              
+        Say(John, 'DX2a-JMM-1');
+        if hum = Lisa then
+         Say(Lisa, 'DX2a-Lisa-1')
+        else if hum = Bobby then
+         Say(Bobby, 'DX2a-Bobby-1')
+        else if hum = Cyrus then
+         Say(Cyrus, 'DX2a-Cyrus-1')
+        else if (GetSex(hum) = Sex_Male) then
+         Say(hum, 'DX2a-Sol1-1')
+        else Say(hum, 'DX2a-FSol1-1');
+        Say(John, 'DX2a-JMM-2');
+        Hint('ControllingVehicles');
+       end;
+      DialogueOff;
+      if sergej_succeeds= 0 then sergej_succeeds=2;
+    end;
+  if (vehold= vehicle1) then
+      vehicle1_new= vehnew;
+  if (vehold= vehicle2) then
+      vehicle2_new= vehnew;
+ end;
+
+EVERY 0$5 TRIGGER (IsOk(vehicle1_new) and not(IsInArea(vehicle1_new, Area01))) or
+                  (IsOk(vehicle2_new) and not(IsInArea(vehicle2_new, Area01))) DO
+ begin
+   Hint('VehicleState');
+ end;
+
+
+EVERY 0$1 TRIGGER GetLives(RusEM1) < 1000 DO
+ begin
+  if not(IsBusy(RusEM1)) then ComFree(RusEM1);
+ end;
+
+EVERY 0$3 TRIGGER FilterUnitsInArea(Before_River, [f_side, americans]) <> 0 DO
+ var Uns, Un;
+  begin
+    Uns= FilterUnitsInArea(Before_River, [[f_side, americans]]);
+    for Un in Uns do
+      if IsSelected(Un) then
+        begin
+          Hint('Rivers');
+          Exit;
+        end;
+    enable;
+  end;
+
+// driver runs into the car
+//MARKED 10 - attack
+EVERY 0$0.1 MARKED 10 do
+  begin
+   AddComEnterUnit(RusEM1, vehicle1);
+   AddComFree(RusEM1);
+  end;
+
+// Select the nearest unit to un from units
+Function Nearest(un, units);
+var nearest_dist, nearest_un, sold, dist;
+
+ begin
+  nearest_dist= 1000;
+  nearest_un= un;
+  for sold in units do
+   begin
+    dist = GetDistUnits(un, sold);
+    if dist < nearest_dist then
+      begin
+        nearest_un=sold;
+        nearest_dist=dist;
+      end;
+   end;
+   result:=nearest_un;
+ end;
+
+
+Function FindMostIll(Uns);
+var TheMostIll, Un;
+ begin
+   TheMostIll= Uns[1];
+   for Un in Uns do
+     if GetLives(Un) < GetLives(TheMostIll) then
+       TheMostIll= Un;
+   result= TheMostIll;
+ end;
+
+// Khatam appears
+EVERY 0$0.5 TRIGGER SeeXY(americans, 25, 32) do
+var Uns, Un, Ill, The_Most_Ill;
+ begin
+  IngameOn;
+  PlaceUnitXYR(Khatam,25, 31, 1, false);
+  CenterOnUnits(Khatam);
+
+  Uns= FilterAllUnits([[f_side, americans]]);
+  for Un in Uns do
+    begin
+      ComWait(Un, 0$1* Rand(5, 15));
+      ComTurnUnit(Un, Khatam);
+    end;
+
+  AddComMoveUnit(Khatam, Nearest(Khatam, FilterAllUnits([f_side, americans]) diff [Khatam]));
+  Say(Khatam, 'D2a-Khat-1');
+  if GetDistUnits(Khatam, John) < 15 and GetDistUnits(Khatam, John) > 5 then
+    AddComMoveUnit(Khatam, John);
+  Say(John, 'D2a-JMM-1');
+  IngameOff;
+
+  DialogueOn;
+  interface_hidden= true;
+  Say(Khatam, 'D2a-Khat-2');
+  Say(John, 'D2a-JMM-2');
+  Say(Khatam, 'D2a-Khat-3');
+  Say(John, 'D2a-JMM-3');
+  Say(Khatam, 'D2a-Khat-4');
+  Say(John, 'D2a-JMM-4');
+  Say(Khatam, 'D2a-Khat-5');
+  Say(John, 'D2a-JMM-5');
+  interface_hidden= false;
+  DialogueOff;
+  ComFree(Uns);
+  ComFree(Khatam);
+  SetSide(Khatam, americans);
+  Ill= UnitFilter([John, Cyrus, Bobby, Nick, Lisa, AmME1, AmFE2, AmMSo3], [f_ok]);
+  The_Most_Ill= FindMostIll(Ill);
+  if GetLives(The_Most_Ill) < 1000 and IsLive(The_Most_Ill) then
+    begin
+      ComHeal(Khatam, The_Most_Ill);
+      Say(Khatam, 'D2b-Khat-1');
+      Hint('Scientists1');
+    end
+  else Hint('Scientists2');
+ end;
+
+
+
+Function Set_times;
+ var Time_to_visit, i;
+ begin
+  Time_of_capture=tick;
+  i= (27 - (Time_of_capture)/1$0)/(2 + Difficulty); // zvetsit
+  if i< 1.5 then i=1.5;
+  if i > 4 then i=4;
+  Time_to_visit= (i* 1$0) div 1;
+  Time_of_visit= Time_of_capture+Time_to_visit;
+  Time_of_attack= Time_of_visit+5$30+(3-Difficulty)*(2$00);
+  ChangeMissionObjectives('M2');
+  Say(John, 'D3b-JMM-1');                                          
+ end;
+
+EVERY 0$2 TRIGGER GetSide(Arm1) = americans do
+ begin
+  Hint('Armoury');
+ end;
+
+EVERY 0$3 TRIGGER FilterAllUnits([[f_side, americans], [f_btype, b_breastwork]]) > 0 do
+ begin
+  Hint('Breastworks');
+ end;
+
+// When the northern depot is captured
+EVERY 0$3 TRIGGER GetSide(dep1) = americans do
+ begin
+  DialogueOn;
+  if GetSide(dep2) = americans then
+   begin
+    Say(John, 'D3a-JMM-1');
+    SayRadio(Powell, 'D3a-Pow-1');
+    Say(John, 'D3a-JMM-2');
+    SayRadio(Powell, 'D3a-Pow-2');
+    Say(John, 'D3a-JMM-3');
+    SayRadio(Powell, 'D3a-Pow-3');
+    Say(John, 'D3a-JMM-4');
+    DialogueOff;
+    Hint('Depot2');
+    Hint('Transporting');
+    Set_times;
+   end
+  else  //jeste je druhy neobsazeny depot
+   begin
+    Wait(2*0$1);
+    Say(John, 'D3-JMM-1');
+    SayRadio(Powell, 'D3-Pow-1');
+    if IsOk(Cyrus) then Say(Cyrus, 'D3-Cyrus-1');
+    DialogueOff;
+    Hint('Depot');
+   end;
+ end;
+
+// second (east) depot is captured
+EVERY 0$3 TRIGGER GetSide(dep2) = americans do
+ begin
+  DialogueOn;
+  if GetSide(dep1) = americans then
+   begin
+    Say(John, 'D3a-JMM-1');
+    SayRadio(Powell, 'D3a-Pow-1');
+    Say(John, 'D3a-JMM-2');
+    SayRadio(Powell, 'D3a-Pow-2');
+    Say(John, 'D3a-JMM-3');
+    SayRadio(Powell, 'D3a-Pow-3');
+    Say(John, 'D3a-JMM-4');
+    DialogueOff;
+    Hint('Depot2');
+    Hint('Transporting');
+    Set_times;
+   end
+  else  //jeste je druhy neobsazeny depot
+   begin
+    Wait(2*0$1);
+    Say(John, 'D3-JMM-1');
+    SayRadio(Powell, 'D3-Pow-1');
+    if IsOk(Cyrus) then Say(Cyrus, 'D3-Cyrus-1');
+    DialogueOff;
+    Hint('Depot');
+   end;
+ end;
+
+
+EVERY 0$5 TRIGGER GetResourceType(GetBase(GetUnitNumber(52, 10)), mat_cans) > 20 DO
+  begin
+    Hint('Building');
+  end;
+
+ON BuildingStarted(build, hum) DO
+  begin
+    Hint('Building2');
+    disable;
+  end;
+
+// Vacate the incomming place
+EVERY 0$0.5 TRIGGER escape_flag do
+ begin
+  if FilterUnitsInArea(prijezd, [f_side, americans]) >0 then
+  ComMoveXY(FilterUnitsInArea(prijezd, [f_side, americans]),16,7);
+  enable;
+ end;
+
+Function Escape;
+ begin
+//  if IsOk(vehicle3) then CenterOnUnits(vehicle3);
+  wait(0$1);
+  ComStop([vehicle3, vehicle4]);
+  wait(0$1);
+  if IsOk(vehicle3) then ComMoveXY(vehicle3,3,6);
+  if IsOk(vehicle4) then ComMoveXY(vehicle4,4,8);
+  if IsOk(Mikhail) and not(Mikhail_in_depot) then
+   begin
+    target_of_escape=[4,6];
+    SetSide(Mikhail, russians1);
+    AddComMoveXY(Mikhail, target_of_escape[1], target_of_escape[2]);
+    AddComHold(Mikhail);
+    SetAttitude(americans, russians1, att_enemy, true);
+    enable(Mikhails_escape);
+   end;
+  escape_flag=true;
+
+  escape_dialogue= true;
+  Say(driver3, 'D5-Rus2-1a');
+  escape_dialogue= false;
+//  wait(0$1);
+ end;
+
+
+// Russians visit of two vehicles
+EVERY 0$3 TRIGGER tick > Time_of_visit do
+var e;
+//EVERY 0$40  do
+ begin
+
+  repeat
+  if FilterUnitsInArea(Prijezd, []) = 0 then
+   break;
+{    if not((IsOk(Brw1) and GetSide(Brw1) = russians) or
+           (IsOk(Brw2) and GetSide(Brw2) = russians) or
+           (IsOk(Brw3) and GetSide(Brw3) = russians)) then
+      ingame_video=true;
+}    ComMoveXY(FilterUnitsInArea(prijezd, []), 16,7);
+    wait(0$1);//wait(4*0$1);
+//    ingame_video=false;
+  until false;
+  PlaceUnitXY(vehicle3, 5, 5, false);
+  PlaceUnitXY(vehicle4, 6, 8, false);
+  ComMoveXY(vehicle3, 66, 15);
+  ComMoveXY(vehicle4, 67, 20);
+  if See(americans, vehicle3) or See(americans, vehicle4)
+    then if not(escape_flag) then e= true
+    else e= false;
+  wait(0$7);
+  if e then Escape;
+  if vehicle_goes_flag then enable(vehicle_goes);
+  wait(0$3);
+  CenterOnUnits([vehicle3, vehicle4]);
+ end;
+
+// escape
+// MARKED 2 - vehicle_goes
+EVERY 0$2 MARKED 2 do
+ begin
+  if ((GetDistUnitXY(vehicle3, 66, 15) < 5 and (See(americans, vehicle3) or GetLives(vehicle3) < 1000))) or
+     ((GetDistUnitXY(vehicle4, 67, 20) < 5 and (See(americans, vehicle4) or GetLives(vehicle3) < 1000))) or
+     (GetLives(vehicle3) < 500) or (GetLives(vehicle4) < 500) then
+   begin
+    if not(escape_flag) then Escape;
+   end
+  else enable;
+ end;
+
+// pirozky
+// MARKED 2 - vehicle goes
+EVERY 0$2 + 0$1 TRIGGER IsOk(vehicle3) and not(escape_flag) MARKED 2 do
+ begin
+  if GetDistUnits(vehicle3, dep1) < 25 then
+    begin
+//     RevealFogArea(americans, Cesta);
+     CenterOnUnits([vehicle3, vehicle4]);
+     Say(driver3, 'D5-Rus2-1');
+    end
+  else enable;
+ end;
+
+EVERY 0$1 TRIGGER escape_flag do
+ var rus;
+ begin
+  if IsInArea(vehicle3, prijezd) and
+     (IsInUnit(driver3) >0) then
+   begin
+    flee=flee+1;
+    DestroyUnit(vehicle3);
+    if not(IsOk(vehicle4)) then
+      begin
+        disable(vehicle_goes);
+        escape_flag=false;
+        vehicle_goes_flag= false;
+      end;
+   end;
+
+  if IsInArea(vehicle4, prijezd) and
+     (IsInUnit(driver4) >0) then
+   begin
+    flee=flee+1;
+    DestroyUnit(vehicle4);
+    if not(IsOk(vehicle3)) then
+      begin
+        disable(vehicle_goes);
+        escape_flag=false;
+        vehicle_goes_flag= false;
+      end;
+   end;
+
+  if not(IsOk(vehicle3) or IsOk(vehicle4)) and flee=0
+  then begin
+        escape_flag=false;
+        Time_of_attack=Time_of_attack+1$0;
+        Attack_canceled= true;
+       end;
+
+  if escape_flag=false and IsOk(AmME1) then
+    begin
+       While escape_dialogue do
+         Wait(0$1);
+       case flee of
+        1: //if GetDistUnits(John, AmME1) <= 20 then
+            begin
+              Say(AmME1, 'D5a-Sol1-1');
+              Say(John, 'D5a-JMM-1');
+            end;
+        2: //if GetDistUnits(John, AmME1) <= 20 then
+            begin
+              Say(AmME1, 'D5a-Sol1-1a');
+              Say(John, 'D5a-JMM-1');
+            end;
+       end;
+    end
+  else if escape_flag then enable;
+ end;
+
+
+
+Function PlaceMikhail;
+ var AllAmUn, i, max, max_un;
+ begin
+  AllAmUn:= FilterAllUnits([[f_side, americans], [f_ok], [f_type, unit_human]]);
+  if AllAmUn=1 then                  // The only live unit is John
+   begin
+     PlaceUnitXYR(Mikhail, GetX(John), GetY(John), 5, true);
+     Wait(0$3);
+     ComAttackUnit(Mikhail, John);
+     result= true;
+   end
+  else if AllAmUn > 1 then                              // An another unit than John is alive
+   begin
+     for i in AllAmUn do
+       begin
+        if not(IsDying(i)) and (i <> John) then
+          max_un:=i;
+       end;
+
+     PlaceUnitXYR(Mikhail, GetX(max_un), GetY(max_un), 4, true);
+     Wait(0$3);
+     enable(Mikhail_placed);
+     ComMoveUnit(Mikhail, max_un);
+     ComStop(max_un);
+     Followed:=max_un;
+     result:=true;
+   end
+  else result:=false;
+ end;
+
+Function Try1;
+ begin
+  if IsOk(AmME1) and not(IsDying(AmME1)) then
+    begin
+      PlaceUnitXYR(Mikhail, GetX(AmME1), GetY(AmME1), 4, true);
+      Wait(0$3);
+      enable(Mikhail_placed);
+      ComMoveUnit(Mikhail, AmME1);
+      ComStop(AmME1);
+      Followed:=AmME1;
+      result:=true;
+    end
+  else result:=false;
+ end;
+
+Function Try2;
+ begin
+  If IsOk(AmFE2) and not(IsDying(AmFE2)) then
+    begin
+      PlaceUnitXYR(Mikhail, GetX(AmFE2), GetY(AmFE2), 3, true);
+      Wait(0$3);
+      enable(Mikhail_placed);
+      ComMoveUnit(Mikhail,AmFE2);
+      ComStop(AmFE2);
+      Followed:=AmFE2;
+      result:=true;
+    end
+  else result:= false;
+ end;
+
+
+// Mikhail appears
+EVERY 0$5 TRIGGER Time_of_capture+0$20 < tick do
+//EVERY 0$25 do
+  var r, cont;
+ begin
+  r=Rand(0,1);
+  cont=false;
+  count=count+1;
+// We try to select an american soldier from two possibilities
+   if IsOk(AmME1) or IsOk(AmFE2) then
+    if r then
+     begin
+      if not(Try1) then
+        if not(Try2) then cont=true
+     end
+
+    else
+     begin
+      if not(Try2) then
+        if not(Try1) then cont=true;
+     end
+
+// Else select an arbitrary person...
+   else
+    begin
+     if not(PlaceMikhail) then cont=true;
+    end;
+
+   if cont then enable;
+ end;
+
+
+// MARKED 3 - Mikhail_placed
+EVERY 0$1 Marked 3 DO
+ begin
+   if GetClass(Mikhail) <> class_mechanic then
+     SetClass(Mikhail, class_mechanic);
+   enable;
+ end;
+
+
+// MARKED 3 - Mikhail_placed
+EVERY 0$0.5 Marked 3 DO
+ var answer, all, i;
+ begin
+   if FilterAllUnits([f_side, americans]) > 1 then
+     begin
+        if FilterAllUnits([[f_side, americans], [f_dist, Mikhail, 15]]) > 0 then
+         begin
+          all=FilterAllUnits([[f_side, americans], [f_dist, Mikhail, 15]]);  // all units near then 10
+          AddComHold(all);       // stop the work
+          AddComHold(Followed);
+          AddComTurnUnit(all, Mikhail);
+          AddComTurnUnit(Followed, Mikhail);
+          while GetDistUnits(Mikhail, Followed) > 6 do wait(0$0.5);
+
+          DialogueOn;
+          CenterOnUnits([Mikhail, Followed]);
+
+          Say(Mikhail,'D4-Mikh-1');
+          if IsOk(AmME1) or IsOk(AmFE2) then
+           begin
+            if Followed = AmME1 then Say(AmME1, 'D4-Sol1-1')
+                                else Say(AmFE2, 'D4-FSol1-1');
+            Say(Mikhail, 'D4-Mikh-2');
+            if Followed = AmME1 then Say(AmME1, 'D4-Sol1-2')
+                                else Say(AmFE2, 'D4-FSol1-2');
+            Say(Mikhail, 'D4-Mikh-3');
+            if Followed = AmME1 then Say(AmME1, 'D4-Sol1-3')
+                                else Say(AmFE2, 'D4-FSol1-3');
+            Say(Mikhail, 'D4-Mikh-4');
+           end
+          else
+           begin
+            i= Nearest(Mikhail, FilterAllUnits([f_side, americans]));
+            if GetSex(i)= sex_male then Say(i, 'D4-Sol1-1')
+                                   else Say(i, 'D4-FSol1-1');
+            Say(Mikhail, 'D4-Mikh-2');
+            if GetSex(i)= sex_male then Say(i, 'D4-Sol1-2')
+                                   else Say(i, 'D4-FSol1-2');
+            Say(Mikhail, 'D4-Mikh-3');
+            if GetSex(i)= sex_male then Say(i, 'D4-Sol1-3')
+                                   else Say(i, 'D4-FSol1-3');
+            Say(Mikhail, 'D4-Mikh-4');
+           end;
+          answer=Query('Qs1');
+          DialogueOff;
+          case answer of
+           1: begin
+               SetAttitude(americans, russians1, att_enemy, true);
+               ComAttackUnit(Followed, Mikhail);
+               ComFree(Mikhail);  //To stop Mikhail from ComMoveUnit to "Followed"
+               Mikhails_outcome= -1; // killed
+               Mikhail_status:=2;
+               mikhail_marked_for_death = true;
+              end;
+
+           2: begin
+               DoNotAttack(russians, Followed);
+               enable(Mikhail_captured);
+               enable(tigers_allowed);
+               ComMoveUnit(Mikhail, Followed);
+               while GetDistUnits(Mikhail, John) > 5 do
+                 begin
+                   ComMoveUnit(Followed, John);
+                   Wait(0$1);
+                 end;
+               ComStop(Followed);
+               Mikhails_outcome= 1;
+               Mikhail_status:= 5;
+              end;
+
+           3: begin
+               ComMoveXY(Mikhail,4,6);
+               AddComHold(Mikhail);
+               enable(remove_mikhail);
+               Mikhails_outcome= -1; // released  -- je to nejak divne, ale ted se mi nad tim nechce badat - M.
+               Mikhail_status:=1;
+              end;
+          end;
+         end
+        else enable;
+     end;
+ end;
+
+// If the player decides to kill Mikhail (when he has just appeared) he tries to run
+// away if there are noone nearby.
+EVERY 0$1 trigger mikhail_marked_for_death do
+     var started_running;
+     begin
+          started_running = false;
+          repeat
+          wait(0$1);
+
+          if IsDead(Mikhail) then
+               exit;
+
+          if not started_running then
+               if FilterAllUnits([[f_side,americans],[f_dist,Mikhail,10],[f_not,[f_inside]]]) > 0 then
+                    continue;
+          
+          started_running = true;
+
+          if GetDistUnitXY(Mikhail,4,6) <= 1 or GetDistUnitXY(Mikhail,91,1) <= 1 then
+               begin
+                    RemoveUnit(Mikhail);
+                    exit;
+               end;
+
+          if GetDistUnitXY(Mikhail,4,6) < GetDistUnitXY(Mikhail,91,1) then
+               ComMoveXY(Mikhail,4,6)
+          else
+               ComMoveXY(Mikhail,91,1);
+
+          until false;
+     end;
+
+// MARKED 11 - remove_mikhail
+EVERY 0$0.5 TRIGGER IsAt(Mikhail,4,6)  MARKED 11 do
+ begin
+  RemoveUnit(Mikhail);
+ end;
+
+// MARKED 4 - Mikhail_captured
+EVERY 0$2 MARKED 4 DO
+var Alive, Speaker;
+ begin
+  if IsOk(Mikhail) and GetDistUnits(John, Mikhail) < 6 then
+   begin
+    enable(conversation);
+    ComTurnUnit(Mikhail, John);
+    DialogueOn;
+    ComMoveUnit(Mikhail, John);
+    Say(John, 'D4b-JMM-1');
+    Say(Mikhail, 'D4b-Mikh-1');
+    Say(John, 'D4b-JMM-2');
+    Say(Mikhail, 'D4b-Mikh-2');
+    Say(John, 'D4b-JMM-3');
+    Say(Mikhail, 'D4b-Mikh-3');
+    Say(John, 'D4b-JMM-4');
+    Say(Mikhail, 'D4b-Mikh-4');
+    Say(John, 'D4b-JMM-5');
+    Say(Mikhail, 'D4b-Mikh-5');
+    Say(John, 'D4b-JMM-6');
+    Say(Mikhail, 'D4b-Mikh-6');
+    Say(John, 'D4b-JMM-7');
+    Say(Mikhail, 'D4b-Mikh-7');
+
+    Alive= UnitFilter([AmME1, AmFE2, AmMSo3, Nick], [f_ok]);
+    if Alive > 0 then Speaker= Alive[Rand(1, Alive)];
+    if GetSex(Speaker) = sex_male then
+      Say(Speaker, 'D4b-Sol1-7')
+    else Say(Speaker, 'D4b-FSol1-7');
+
+    Say(John, 'D4b-JMM-8');
+
+    Alive= UnitFilter([AmME1, AmFE2, AmMSo3, Nick], [f_ok]);
+    if Alive > 0 then Speaker= Alive[Rand(1, Alive)];
+    if GetSex(Speaker) = sex_male then
+      Say(Speaker, 'D4b-Sol1-8')
+    else Say(Speaker, 'D4b-FSol1-8');
+
+    Say(John, 'D4b-JMM-9');
+    DialogueOff;
+    ChangeMissionObjectives('M3');
+    enable(depot);
+    disable(conversation);
+    ComMoveUnit(Mikhail, Followed);
+    repeat
+      ComMoveXY(Followed, 50, 13);
+      Wait(0$1);
+    until GetDistUnits(dep1, Mikhail) < 5;
+    NormalAttack(russians, Followed);
+   end
+  else enable;
+ end;
+
+// Don't lead Followed away from John
+// MARKED 12 - conversation
+EVERY 0$1 TRIGGER GetDistUnits(Followed, John) > 5 MARKED 12 do
+ begin
+  ComStop(Followed);
+  ComMoveUnit(Followed, John);
+  enable;
+ end;
+
+// MARKED 8 - depot
+EVERY 0$0.5 MARKED 8 do
+ begin
+  if IsOk(Mikhail) and GetDistUnits(dep1, Mikhail) < 10 then
+   begin
+    ComMoveXY(Mikhail, 52, 13);
+    AddComHold(Mikhail);
+    WaitTask(Mikhail, 0.5);
+    SetSide(Mikhail, americans);
+    repeat
+      ComEnterUnit(Mikhail, dep1);
+      Wait(1);
+    until IsInUnit(Mikhail) = dep1;
+    Mikhail_in_depot=true;
+    enable(great_escape);
+   end
+  else enable;
+ end;
+
+//Great escape (of Mikhail :)
+//MARKDED 9 - great_escape
+EVERY 0$4 MARKED 9 do
+var AmVehicles, AmV1, AmV2, Un,
+    Humans_In_Depot_Left, Buildings_In_Depot_Left, Vehicles_In_Depot_Left,
+    Humans_In_Depot_Right, Buildings_In_Depot_Right, Vehicles_In_Depot_Right,
+    Humans_In_Depot_Back, Buildings_In_Depot_Back, Vehicles_In_Depot_Back;
+ begin
+  AmV1= 0; AmV2= 0;
+  AmVehicles= FilterAllUnits([[f_side, americans], [f_type, unit_vehicle]]);
+  if AmVehicles^[] > 0 then AmV1= AmVehicles[1];
+  if AmVehicles^[] > 1 then AmV2= AmVehicles[2];
+
+  // The left area
+  Humans_In_Depot_Left= FilterUnitsInArea(Dep_Left, [[f_side, americans], [f_type, unit_human], [f_ok]]);
+  Buildings_In_Depot_Left= FilterUnitsInArea(Dep_Left, [[f_side, americans], [f_type, unit_building], [f_ok]]);
+  Vehicles_In_Depot_Left= FilterUnitsInArea(Dep_Left, [[f_side, americans], [f_type, unit_vehicle], [f_ok]]);
+  for Un in Buildings_In_Depot_Left do
+    Humans_In_Depot_Left= Humans_In_Depot_Left ^ UnitsInside(Un);
+  for Un in Vehicles_In_Depot_Left do
+    Humans_In_Depot_Left= Humans_In_Depot_Left ^ UnitsInside(Un);
+  Humans_In_Depot_Left= Humans_In_Depot_Left diff Mikhail;
+
+  // The Right Area
+  Humans_In_Depot_Right= FilterUnitsInArea(Dep_Right, [[f_side, americans], [f_type, unit_human], [f_ok]]);
+  Buildings_In_Depot_Right= FilterUnitsInArea(Dep_Right, [[f_side, americans], [f_type, unit_building], [f_ok]]);
+  Vehicles_In_Depot_Right= FilterUnitsInArea(Dep_Right, [[f_side, americans], [f_type, unit_vehicle], [f_ok]]);
+  for Un in Buildings_In_Depot_Right do
+    Humans_In_Depot_Right= Humans_In_Depot_Right ^ UnitsInside(Un);
+  for Un in Vehicles_In_Depot_Right do
+    Humans_In_Depot_Right= Humans_In_Depot_Right ^ UnitsInside(Un);
+  Humans_In_Depot_Right= Humans_In_Depot_Right diff Mikhail;
+
+  // The Back Area
+  Humans_In_Depot_Back= FilterUnitsInArea(Dep_Back, [[f_side, americans], [f_type, unit_human], [f_ok]]);
+  Buildings_In_Depot_Back= FilterUnitsInArea(Dep_Back, [[f_side, americans], [f_type, unit_building], [f_ok]]);
+  Vehicles_In_Depot_Back= FilterUnitsInArea(Dep_Back, [[f_side, americans], [f_type, unit_vehicle], [f_ok]]);
+  for Un in Buildings_In_Depot_Back do
+    Humans_In_Depot_Back= Humans_In_Depot_Back ^ UnitsInside(Un);
+  for Un in Vehicles_In_Depot_Back do
+    Humans_In_Depot_Back= Humans_In_Depot_Back ^ UnitsInside(Un);
+  Humans_In_Depot_Back= Humans_In_Depot_Back diff Mikhail;
+
+// Test the Way1
+//  if SeeArea(americans, DepEnter) = 0 and SeeArea(americans, EscWay1)/76 < 0.15 then
+  if (Humans_In_Depot_Left = 0) and (UnitsInside(dep1) < 2) then
+   begin
+    Mikhails_Escape_Disabled= false;
+    target_of_escape=[4,6];
+    RemoveUnit(Mikhail);
+    SetSide(Mikhail, russians1);
+    PlaceUnitXY(Mikhail,52,13,false);
+    Mikhails_lives= GetLives(Mikhail);
+    enable(Mikhails_escape); // Mikhail runs
+    SetAttitude(americans, russians1, att_enemy, true);
+    AddComMoveXY(Mikhail, target_of_escape[1], target_of_escape[2]);
+    AddComHold(Mikhail);
+   end
+
+// Test the Way2
+//  else if SeeArea(americans, DepEnter) = 0 and SeeArea(americans, EscWay2)/133 < 0.15 then
+  else if (Humans_In_Depot_Right = 0) and (UnitsInside(dep1) < 2) then
+        begin
+         Mikhails_Escape_Disabled= false;
+         target_of_escape= [61,1];
+         RemoveUnit(Mikhail);
+         SetSide(Mikhail, russians1);
+         PlaceUnitXY(Mikhail,52,13,false);
+         Mikhails_lives= GetLives(Mikhail);
+         enable(Mikhails_escape);
+         SetAttitude(americans, russians1, att_enemy, true);
+         AddComMoveXY(Mikhail,57,11);
+         AddComMoveXY(Mikhail,63,9);
+         AddComMoveXY(Mikhail, target_of_escape[1], target_of_escape[2]);
+         AddComHold(Mikhail);
+        end
+// Test the Way3
+//  else if SeeArea(americans, DepEnter) = 0 and SeeArea(americans, EscWay3)/43 < 0.15 then
+  else if (Humans_In_Depot_Back = 0) and (UnitsInside(dep1) < 2) then
+        begin
+         Mikhails_Escape_Disabled= false;
+         target_of_escape= [47,1];
+         RemoveUnit(Mikhail);
+         SetSide(Mikhail, russians1);
+         PlaceUnitXY(Mikhail,52,13,false);
+         Mikhails_lives= GetLives(Mikhail);
+         enable(Mikhails_escape);
+         SetAttitude(americans, russians1, att_enemy, true);
+         AddComMoveXY(Mikhail,49,7);
+         AddComMoveXY(Mikhail, target_of_escape[1], target_of_escape[2]);
+         AddComHold(Mikhail);
+        end
+
+  else enable;
+ end;
+
+// MARKED 13 - mikhails_escape
+EVERY 0$1 TRIGGER IsOk(Mikhail) and not(IsBusy(Mikhail)) MARKED 13 do
+ begin
+  ComMoveXY(Mikhail, target_of_escape[1], target_of_escape[2]);
+ end;
+
+
+EVERY 0$2 TRIGGER Mikhails_outcome= -2 and Mikhails_lives = 1000 do
+ var NearSol;
+ begin
+  if GetDistUnits(John, dep1) < 6 then //and not(battle) then
+   begin
+    NearSol=NearestUnitToXY(FilterAllUnits([[f_side, americans],[f_sex, sex_male]]) diff [John, Cyrus],52,13);  // all units near then 10
+    CenterOnUnits(dep1);
+    ComMoveXY(John, 52, 13);
+    DialogueOn;
+    Say(John, 'D7-JMM-1');
+    if NearSol then
+    begin
+      Say(NearSol,'D7-Sol1-1');
+      Say(John,'D7-JMM-2');
+      Say(NearSOl,'D7-Sol1-2');
+      Say(John, 'D7-JMM-3');
+      Say(NearSol, 'D7-Sol1-3');
+    end;
+    if IsOk(Cyrus) and IsOk(Lisa) then
+    begin
+      Say(Cyrus, 'D7-Cyrus-3');
+      if NearSol then
+      begin
+        Say(NearSol,'D7-Sol1-4');
+        if IsOk(Lisa) then Say(Lisa, 'D7-Lisa-4');
+      end;
+    end;
+    DialogueOff;
+   end
+  else enable;
+ end;
+
+
+// Mikhail try to escape but he is breaked
+// MARKED 13 - Mikhails_escape
+EVERY 0$1 TRIGGER (GetLives(Mikhail) < Mikhails_lives) and rep MARKED 13 do
+ begin
+  if IsOk(Mikhail) then
+   begin
+    attacker= Nearest(Mikhail, FilterAllUnits([[f_side, americans], [f_type, unit_human]]));
+    if GetSex(attacker)= sex_male then
+     begin
+       Say(attacker, 'D7a-Sol1-1');
+       enable(firing1);
+       rep=false;
+     end
+    else // if IsOk(AmFE2) then
+     begin
+       Say(attacker, 'D7a-FSol1-1');
+       enable(firing2);
+       rep=false;
+     end;
+    Mikhails_lives=GetLives(Mikhail);
+    enable;  // because there is an another MARKED 13 here.
+  end;
+ end;
+
+// MARKED 14 - firing1
+EVERY 0$1 MARKED 14 do
+ begin
+  if IsDead(Mikhail) then Say(attacker, 'D7a-Sol1-1a');
+ end;
+ 
+// MARKED 15 - firing2
+EVERY 0$1 MARKED 15 do
+ begin
+  if IsDead(Mikhail) then Say(attacker, 'D7a-FSol1-1a');
+ end;
+
+
+// when a depot is attacked
+EVERY 0$3 TRIGGER (GetLives(dep1) < Dep1_lives or GetLives(dep2) < Dep2_lives) and not(battle) do
+ begin
+  if (GetLives(dep1) < Dep1_lives and GetDistUnits(dep1, John) < 20) or
+     (GetLives(dep2) < Dep2_lives and GetDistUnits(dep2, John) < 20) then
+   Say(John, 'D8-JMM-1')
+  else
+   begin
+    Dep1_lives= GetLives(dep1);
+    Dep2_lives= GetLives(dep2);
+   end;
+ end;
+
+// generate and place a new tiger
+Function place_tiger(name, area);
+var i, x_sour, y_sour;
+ begin
+  InitUc; InitHc;
+
+  hc_sex= sex_male;
+  uc_side= 0;
+  uc_nation= nation_nature;
+  hc_class= class_tiger;
+  hc_skills= [Tiger_skill, 0, 0, 0];     // Difficulty
+  hc_agressivity= 50;
+
+  i= 5;
+
+  repeat                
+   i= i-1;
+   sour= RandHexArea(area, false);
+  until not(SeeXY(americans, sour[1], sour[2])) or i < 1;
+
+  name= CreateHuman;
+  if not(SeeXY(americans, sour[1], sour[2])) then
+   PlaceUnitXY(name, sour[1], sour[2], false);
+
+  if not(IsOk(name)) then
+   begin
+    DestroyUnit(name);
+    result= 0;
+   end
+  else result= 1;                       
+ end;
+
+// Generator of tigers
+// MARKED 18 - tigers_allowed
+EVERY 2$0 MARKED 18 do
+var i;
+ begin
+
+ for i= 1 to Difficulty do
+   begin
+     hc_sex= sex_male;
+     uc_side= 0;
+     uc_nation= nation_nature;
+     hc_class= class_tiger;
+     hc_skills= [Tiger_skill, 0, 0, 0];     // Difficulty
+     hc_agressivity= 5+15*Difficulty;
+
+     tiger= CreateHuman;
+     PlaceUnitArea(tiger, wood, false);
+   end;
+{  wait(Rand(0, 1$0));
+  Number_of_tigers= FilterAllUnits([f_class, tiger]);
+
+  if Number_of_tigers < Difficulty-1 then
+   begin
+    for tiger in tigers do
+      if not(IsOk(tiger)) and Number_of_tigers < Difficulty-1 then
+        if place_tiger(tiger, wood) then Number_of_tigers= Number_of_tigers+1;
+   end;
+  enable;}
+ end;
+
+
+// Generator of crates
+EVERY 6$0 TRIGGER Rand(1, number_of_crates) = 1 do   // Difficulty
+ begin
+  CreateCratesAnywhere(3, true);
+  enable;
+ end;
+
+
+// MARKED 19 - remove_tigers
+EVERY 0$0.1 MARKED 19 DO
+ begin
+  ComMoveXY(tigers, 98, 2);
+
+  for tiger in tigers do
+    begin
+      WaitTask(tiger, 1);
+      RemoveUnit(tiger);
+    end;
+ end;                                       
+
+
+// Begin of russians attack
+EVERY 0$3 TRIGGER tick > Time_of_attack do
+var Un;
+//EVERY 0$30 do
+ begin
+  if Attack_canceled then
+    begin
+      DialogueOn;
+      SayRadio(Powell, 'D6-Pow-1');
+      Say(John, 'D6-JMM-1');
+      SayRadio(Powell, 'D6-Pow-2');
+      Say(John, 'D6-JMM-2');
+      DialogueOff;
+      battle=false;
+      end_of_m=1;
+    end
+  else
+    begin
+      //Let's remove tiggers
+      disable(tigers_allowed);
+      enable(remove_tigers);
+
+
+      rsol=[[rsol1, rsol2], [rsol1, rsol2, rsol3, rsol4],
+            [rsol1, rsol2, rsol3, rsol4, rsol5, rsol6]][Difficulty];
+      rv=[[rv1], [rv1], [rv1, rv2]][Difficulty];
+
+      while not(PlaceUnitArea(rv1, prijezd, false)) do wait(0$0.5);          // vehicles
+      if Difficulty > 2 then
+        while not(PlaceUnitArea(rv2, prijezd, false)) do wait(0$0.5);
+      AddComAgressiveMove(rv, 16, 7);
+
+      for Un in rsol do
+        PlaceUnitArea(Un, prijezd, false);       // soldiers
+
+      AddComAgressiveMove(rsol, 16, 7);
+
+      Say(rsol1, 'D9-Rus3-1');
+      Say(rsol2, 'D9-Russ-1');
+      Hint('Boj');
+      enable(russians_attack);
+    end;
+
+ end;
+
+// MARKED 16 - russians_attack
+EVERY 0$1 MARKED 16 do
+var breastworks, target, b, min;
+ begin
+  battle= true;
+  target= 1; min=1000;                                       
+  wait(0$5 *(4-Difficulty));
+  breastworks= FilterUnitsInArea(North, [[f_btype, b_breastwork], [f_side, americans]]);
+  if breastworks=0 then
+   ComAgressiveMove(rsol^rv, 56, 11)
+  else
+   begin             // Select way near to a brestwork (36,0 or 47,18  or  62,23)
+    for b in  breastworks do
+     if min > GetDistUnitXY(b, 36, 0) then
+      min= GetDistUnitXY(b, 36, 0);
+
+    for b in  breastworks do
+     if min > GetDistUnitXY(b, 47, 18) then
+      begin
+       min= GetDistUnitXY(b, 47, 18);
+       target=2;
+      end;
+
+    for b in  breastworks do
+     if min > GetDistUnitXY(b, 62, 23) then
+      begin
+       min= GetDistUnitXY(b, 62, 23);
+       target=3;
+      end;
+
+    case target of                      // ### ATTACK ###
+    1: begin //16,2  36,0  51,4
+        AddComAgressiveMove(rsol^rv, 16, 2); wait(0$3);
+        AddComAgressiveMove(rsol, 36, 0);  //first soldiers
+        AddComAgressiveMove(rsol, 51, 4);
+        wait(0$3);
+        AddComAgressiveMove(rv, 36, 0);   // than vehicle
+        AddComAgressiveMove(rv, 51, 4);
+       end;
+    2: begin // (35,25)  47,18   51,13
+        if Rand(1,2)=1 then
+         begin
+          AddComAgressiveMove(rsol^rv, 35, 25);
+          wait(0$5);
+          AddComAgressiveMove(rsol, 47, 18);
+          wait(0$2);
+          AddComAgressiveMove(rv, 47, 18);
+         end
+        else
+         begin
+          AddComAgressiveMove(rsol, 47, 18);
+          wait(0$3);
+          AddComAgressiveMove(rv, 47, 18);
+         end;
+        AddComAgressiveMove(rsol^rv, 51, 13);
+       end;
+    3: begin // 35,25  56,37  62,23  55,10
+        AddComAgressiveMove(rsol^rv, 35, 25);
+        wait(0$5);
+        AddComAgressiveMove(rsol^rv, 56, 37);
+        wait(0$5);
+        AddComAgressiveMove(rsol, 62, 23);
+        wait(0$2);
+        AddComAgressiveMove(rv, 62, 23);
+        AddComAgressiveMove(rv, 55, 10);
+       end;
+    end;
+
+   end;
+   enable(russians_attack1);
+ end;
+
+// MARKED 17 - russians_attack1
+// when russians driver is not busy, then he can captrure the depot...   (he is engineer)
+EVERY 0$3 MARKED 17 do
+ begin
+  if IsOk(rdrv1) then
+   begin
+    if not(IsBusy(rv1)) and WantsToAttack(rv1)= 0 and Attacks(rv1)= 0 and IsOk(dep1) then
+     if GetDistUnits(rv1, dep1) < 7 and UnitsInside(dep1)= 0 then
+      begin
+       AddComExitVehicle(rv1);
+       AddComEnterUnit(rdrv1, dep1);    // ?? capture...
+      end
+     else
+       ComAgressiveMove(rv1, 51, 14);
+   end;
+   enable;
+ end;
+
+// MARKED 17 - russians attack1
+// we are waiting for end of attack...
+EVERY 0$5 TRIGGER (UnitFilter(rsol ^ [rdrv1, rdrv2], [f_alive]))= 0 MARKED 17 do
+ begin
+  disable;
+  Wait(0$5);
+  DialogueOn;
+  SayRadio(Powell, 'D6-Pow-1');
+  Say(John, 'D6-JMM-1');
+  SayRadio(Powell, 'D6-Pow-2');
+  Say(John, 'D6-JMM-2');
+  DialogueOff;
+  battle=false;
+  end_of_m=1;
+ end;
+
+EVERY 0$5 TRIGGER FilterAllUnits([[f_or,[f_side, americans], [f_side, americans1]], [f_alive], f_not, [f_ok]]) DO
+ begin
+   Hint('RedArentDead');
+ end;
+
+////////////////////////////////////
+////////  Evaluation  //////////////
+////////////////////////////////////
+
+every 0$2 trigger IsInUnit(John) do
+  begin
+    if GetType(IsInUnit(John))=unit_vehicle then
+      JMMInVehicle:=true
+    else
+      enable;
+  end;
+
+every 0$2+0$1 trigger IsInUnit(Cyrus) do
+  begin
+    if GetType(IsInUnit(Cyrus))=unit_vehicle then
+      CyrusInVehicle:=true
+    else
+      enable;
+  end;
+
+
+//Marked 13 - Mikhails_escape
+EVERY 0$1 TRIGGER IsAt(Mikhail, target_of_escape[1], target_of_escape[2]) MARKED 13 do
+ begin
+  RemoveUnit(Mikhail);
+  Mikhails_outcome= -2; // M. breaks out
+  Mikhail_status=4;
+  ChangeMissionObjectives('M3a');
+ end;
+
+// MARKED 4 - Mikhails_escape
+EVERY 0$3 TRIGGER IsDead(Mikhail) MARKED 13 do
+ begin
+  Mikhails_outcome= 2; // Killed by escape
+  Mikhail_status=3;
+  ChangeMissionObjectives('M3a');
+ end;
+
+
+////////// Mission fails ///////////
+
+// MARKED 20 - Engineers_not_dead
+EVERY 0$10 MARKED 20 DO
+var my_depots, my_eng;
+ begin
+   my_depots= FilterAllUnits([[f_type, unit_building], [f_btype, b_depot], [f_side, americans]]);
+   my_eng= FilterAllUnits([[f_type, unit_human], [f_class, class_engineer], [f_side, americans]]);
+   if my_depots = 0 and my_eng = 0 then
+     begin
+       YouLost('Engineer');
+       ExitGame;
+     end
+   else enable;
+ end;
+
+
+// EOM - JMM is death
+EVERY 0$5 TRIGGER IsDead(John) do
+ begin
+  YouLost('JMM');
+  ExitGame;
+ end;
+
+EVERY 0$5 TRIGGER IsDead(dep1) or IsDead(dep2) do
+ begin
+  YouLost('DepotDestroyed');
+ end;
+
+EVERY 0$2 TRIGGER GetSide(dep1)= russians MARKED 17 do
+ begin
+  wait(0$30);
+  if GetSide(dep1)= russians then
+    YouLost('DepotCaptured')
+  else
+    enable;
+ end;
+
+//EVERY 0$5 T
+// ??? V ruskych rukou ???
+
+
+////////// Mission succeeds ///////////
+
+EVERY 0$1 TRIGGER end_of_m do
+  var m;
+ begin
+
+   if GetSide(Mikhail) = americans then SetSide(Mikhail, russians1);
+
+   if lost_units<3 then m=1
+   else m:=-1;
+
+   if Mikhails_outcome= 1 and GetLives(Mikhail) = 0 then
+     Mikhails_outcome= -1;
+
+   AddMedal('Cans', GetResourceType(dep1, mat_cans) >=150);
+   AddMedal('Deaths', m);
+//   if IsDead(Mikhail) and Mikhails_outcome = -2 then
+//     Mikhails_outcome= 1;
+   AddMedal('Prisoner', Mikhails_outcome);
+
+   GiveMedals('MAIN');
+
+   RewardPeople(FilterAllUnits([[f_alive],[f_side,americans],[f_type,unit_human]]));
+
+   SaveCharacters(John,'JMM');
+   SaveCharacters(Bobby,'Bobby');
+   SaveCharacters(Cyrus,'Cyrus');
+   SaveCharacters(Lisa,'Lisa');
+   if GetSide(Khatam)<>americans then
+     SetLives(Khatam,0);
+   SaveCharacters(Khatam,'Khatam');
+   if not (Mikhail_status in [1,4,5]) then
+     SetLives(Mikhail, 0);
+   SaveCharacters(Mikhail, 'Mikhail');
+
+   SaveCharacters(
+     FilterAllUnits([[f_ok],[f_side,americans],[f_type,unit_human]])diff [John,Bobby,Cyrus,Lisa,Khatam,Mikhail],'other_survivors');
+
+   SaveVariable(GetResourceType(dep1, mat_cans), 'us2cans');
+   SaveVariable(JMMInVehicle,'us2JMMInVehicle');
+   SaveVariable(CyrusInVehicle,'us2CyrusInVehicle');
+   SaveVariable(Mikhail_status,'us2mikhail_state');
+
+   YouWin;
+//   ExitGame;
+ end;
+
+ON DialogueSkipped(i) DO
+ begin
+   Skip= True;
+ end;
+
+ON LeaveBuilding(building, Un) DO
+var answer;
+ begin
+   if (building = dep1) and (Un = Mikhail) and Mikhails_Escape_Disabled then
+     begin
+       SetSide(Mikhail, russians1);
+       Mikhail_in_depot= false;
+       answer= Query('QMikh2');
+       case answer of
+        1: begin
+             Mikhails_Escape_Disabled= false;
+             target_of_escape=[4,6];
+             PlaceUnitXY(Mikhail,52,13,false);
+             Mikhails_lives= GetLives(Mikhail);
+             enable(Mikhails_escape); // Mikhail runs
+             SetAttitude(americans, russians1, att_enemy, true);
+             SetSide(Mikhail, russians1);
+             AddComMoveXY(Mikhail, target_of_escape[1], target_of_escape[2]);
+             AddComHold(Mikhail);
+           end;
+        2: begin
+             disable(great_escape);
+             wait(0$2);
+             repeat
+               ComMoveXY(Mikhail, 52, 13);
+               AddComHold(Mikhail);
+               wait(0$0.5);
+             until IsAt(Mikhail,52, 13);
+//             while not(IsAt(Mikhail,52, 13)) do wait(0$0.5);
+             SetSide(Mikhail, americans);
+             repeat
+               ComEnterUnit(Mikhail, dep1);
+               Wait(1);
+             until IsInUnit(Mikhail) = dep1;
+             Mikhail_in_depot=true;
+             enable(great_escape);
+           end;
+        3: begin
+             ComMoveXY(Mikhail,4,6);
+             AddComHold(Mikhail);
+             enable(remove_mikhail);
+             Mikhails_outcome= -1; // released  -- je to nejak divne, ale ted se mi nad tim nechce badat - M.
+             Mikhail_status:=1;
+           end;
+       end;
+     end;
+ end;
+
+ON BuildingCaptured(build, origside, eng) DO
+ begin
+   if(build = lab1) and (origside = russians) then
+     begin
+       Hint('Lab');
+       disable;
+     end;
+ end;
+
+ON HumanDestroyed(un,side,nation,x,y,direction,sex,class) DO
+ begin
+   if side = americans then
+     lost_units= lost_units+1;
+ end;
+
+{
+EVERY 0$1 DO
+ begin
+   Debug_Strings= [['Speaker'], [Speaker], ['John'], [John], ['Bobby'], [Bobby], ['Cyrus'], [Cyrus]];
+ end;
+}

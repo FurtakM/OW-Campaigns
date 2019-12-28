@@ -1,0 +1,34 @@
+export reserved_people;
+
+var vysledek;
+
+
+export function init_distribution;
+var un;
+begin
+  reserved_people:=[];
+  for un=1 to 8 do
+    reserved_people:=reserved_people ^ [[]];
+end;
+
+
+export function request_people(side,man_class,priority);
+//var vysledek;
+begin
+  vysledek:=FilterAllUnits([ [f_side,side], [f_class,man_class] ]) diff reserved_people[side];
+  result:=vysledek;
+end;
+
+
+
+export function GetCPUNation(side);
+var un,vysledek;
+begin
+  un:=FilterAllUnits([ [f_side,side] ]);
+  if un then
+    vysledek:=GetSide(un[1])
+  else
+    vysledek:=false;
+
+  result:=vysledek;
+end;

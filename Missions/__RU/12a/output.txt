@@ -1,0 +1,774 @@
+// export Burlak , Gossudarov , MashaVar , Masha , RealMasha , you , ally , usa , neutral ; function read_parameters ; var i , veh ; begin
+   0: LD_INT 0
+   2: PPUSH
+   3: PPUSH
+   4: PPUSH
+// you := 3 ;
+   5: LD_ADDR_EXP 6
+   9: PUSH
+  10: LD_INT 3
+  12: ST_TO_ADDR
+// ally := 6 ;
+  13: LD_ADDR_EXP 7
+  17: PUSH
+  18: LD_INT 6
+  20: ST_TO_ADDR
+// usa := 1 ;
+  21: LD_ADDR_EXP 8
+  25: PUSH
+  26: LD_INT 1
+  28: ST_TO_ADDR
+// neutral := 0 ;
+  29: LD_ADDR_EXP 9
+  33: PUSH
+  34: LD_INT 0
+  36: ST_TO_ADDR
+// SetAttitude ( you , ally , att_friend , true ) ;
+  37: LD_EXP 6
+  41: PPUSH
+  42: LD_EXP 7
+  46: PPUSH
+  47: LD_INT 1
+  49: PPUSH
+  50: LD_INT 1
+  52: PPUSH
+  53: CALL_OW 80
+// ChangeSideFog ( ally , you ) ;
+  57: LD_EXP 7
+  61: PPUSH
+  62: LD_EXP 6
+  66: PPUSH
+  67: CALL_OW 343
+// end ;
+  71: LD_VAR 0 1
+  75: RET
+// function nacti_osobu ( ident ) ; begin
+  76: LD_INT 0
+  78: PPUSH
+// if CheckCharacterSet ( ident ) then
+  79: LD_VAR 0 1
+  83: PPUSH
+  84: CALL_OW 29
+  88: IFFALSE 107
+// result := CreateCharacter ( ident ) else
+  90: LD_ADDR_VAR 0 2
+  94: PUSH
+  95: LD_VAR 0 1
+  99: PPUSH
+ 100: CALL_OW 34
+ 104: ST_TO_ADDR
+ 105: GO 115
+// result := 0 ;
+ 107: LD_ADDR_VAR 0 2
+ 111: PUSH
+ 112: LD_INT 0
+ 114: ST_TO_ADDR
+// end ;
+ 115: LD_VAR 0 2
+ 119: RET
+// function create_people ; begin
+ 120: LD_INT 0
+ 122: PPUSH
+// uc_side = ally ;
+ 123: LD_ADDR_OWVAR 20
+ 127: PUSH
+ 128: LD_EXP 7
+ 132: ST_TO_ADDR
+// uc_nation := nation_russian ;
+ 133: LD_ADDR_OWVAR 21
+ 137: PUSH
+ 138: LD_INT 3
+ 140: ST_TO_ADDR
+// Gossudarov := nacti_osobu ( Gossudarov ) ;
+ 141: LD_ADDR_EXP 2
+ 145: PUSH
+ 146: LD_STRING Gossudarov
+ 148: PPUSH
+ 149: CALL 76 0 1
+ 153: ST_TO_ADDR
+// PlaceUnitXY ( Gossudarov , 34 , 30 , false ) ;
+ 154: LD_EXP 2
+ 158: PPUSH
+ 159: LD_INT 34
+ 161: PPUSH
+ 162: LD_INT 30
+ 164: PPUSH
+ 165: LD_INT 0
+ 167: PPUSH
+ 168: CALL_OW 48
+// ComHold ( Gossudarov ) ;
+ 172: LD_EXP 2
+ 176: PPUSH
+ 177: CALL_OW 140
+// uc_side = you ;
+ 181: LD_ADDR_OWVAR 20
+ 185: PUSH
+ 186: LD_EXP 6
+ 190: ST_TO_ADDR
+// uc_nation := nation_russian ;
+ 191: LD_ADDR_OWVAR 21
+ 195: PUSH
+ 196: LD_INT 3
+ 198: ST_TO_ADDR
+// Burlak := nacti_osobu ( Burlak ) ;
+ 199: LD_ADDR_EXP 1
+ 203: PUSH
+ 204: LD_STRING Burlak
+ 206: PPUSH
+ 207: CALL 76 0 1
+ 211: ST_TO_ADDR
+// PlaceUnitXY ( Burlak , 32 , 30 , false ) ;
+ 212: LD_EXP 1
+ 216: PPUSH
+ 217: LD_INT 32
+ 219: PPUSH
+ 220: LD_INT 30
+ 222: PPUSH
+ 223: LD_INT 0
+ 225: PPUSH
+ 226: CALL_OW 48
+// SetClass ( Burlak , 3 ) ;
+ 230: LD_EXP 1
+ 234: PPUSH
+ 235: LD_INT 3
+ 237: PPUSH
+ 238: CALL_OW 336
+// ComHold ( Burlak ) ;
+ 242: LD_EXP 1
+ 246: PPUSH
+ 247: CALL_OW 140
+// end ;
+ 251: LD_VAR 0 1
+ 255: RET
+// function create_masha ; var veh ; begin
+ 256: LD_INT 0
+ 258: PPUSH
+ 259: PPUSH
+// veh := LoadVariable ( Masha , false ) ;
+ 260: LD_ADDR_VAR 0 2
+ 264: PUSH
+ 265: LD_STRING Masha
+ 267: PPUSH
+ 268: LD_INT 0
+ 270: PPUSH
+ 271: CALL_OW 30
+ 275: ST_TO_ADDR
+// if veh then
+ 276: LD_VAR 0 2
+ 280: IFFALSE 396
+// begin uc_side := you ;
+ 282: LD_ADDR_OWVAR 20
+ 286: PUSH
+ 287: LD_EXP 6
+ 291: ST_TO_ADDR
+// uc_nation := nation_russian ;
+ 292: LD_ADDR_OWVAR 21
+ 296: PUSH
+ 297: LD_INT 3
+ 299: ST_TO_ADDR
+// uc_direction := 2 ;
+ 300: LD_ADDR_OWVAR 24
+ 304: PUSH
+ 305: LD_INT 2
+ 307: ST_TO_ADDR
+// vc_chassis := veh [ 1 ] ;
+ 308: LD_ADDR_OWVAR 37
+ 312: PUSH
+ 313: LD_VAR 0 2
+ 317: PUSH
+ 318: LD_INT 1
+ 320: ARRAY
+ 321: ST_TO_ADDR
+// vc_engine := veh [ 2 ] ;
+ 322: LD_ADDR_OWVAR 39
+ 326: PUSH
+ 327: LD_VAR 0 2
+ 331: PUSH
+ 332: LD_INT 2
+ 334: ARRAY
+ 335: ST_TO_ADDR
+// vc_control := veh [ 3 ] ;
+ 336: LD_ADDR_OWVAR 38
+ 340: PUSH
+ 341: LD_VAR 0 2
+ 345: PUSH
+ 346: LD_INT 3
+ 348: ARRAY
+ 349: ST_TO_ADDR
+// vc_weapon := veh [ 4 ] ;
+ 350: LD_ADDR_OWVAR 40
+ 354: PUSH
+ 355: LD_VAR 0 2
+ 359: PUSH
+ 360: LD_INT 4
+ 362: ARRAY
+ 363: ST_TO_ADDR
+// RealMasha := true ;
+ 364: LD_ADDR_EXP 5
+ 368: PUSH
+ 369: LD_INT 1
+ 371: ST_TO_ADDR
+// Masha := CreateVehicle ;
+ 372: LD_ADDR_EXP 4
+ 376: PUSH
+ 377: CALL_OW 45
+ 381: ST_TO_ADDR
+// SetMark ( Masha , 1 ) ;
+ 382: LD_EXP 4
+ 386: PPUSH
+ 387: LD_INT 1
+ 389: PPUSH
+ 390: CALL_OW 242
+// end else
+ 394: GO 472
+// begin uc_side := you ;
+ 396: LD_ADDR_OWVAR 20
+ 400: PUSH
+ 401: LD_EXP 6
+ 405: ST_TO_ADDR
+// uc_nation := nation_russian ;
+ 406: LD_ADDR_OWVAR 21
+ 410: PUSH
+ 411: LD_INT 3
+ 413: ST_TO_ADDR
+// uc_direction := 2 ;
+ 414: LD_ADDR_OWVAR 24
+ 418: PUSH
+ 419: LD_INT 2
+ 421: ST_TO_ADDR
+// vc_chassis := ru_medium_tracked ;
+ 422: LD_ADDR_OWVAR 37
+ 426: PUSH
+ 427: LD_INT 22
+ 429: ST_TO_ADDR
+// vc_engine := engine_siberite ;
+ 430: LD_ADDR_OWVAR 39
+ 434: PUSH
+ 435: LD_INT 3
+ 437: ST_TO_ADDR
+// vc_weapon := ru_gatling_gun ;
+ 438: LD_ADDR_OWVAR 40
+ 442: PUSH
+ 443: LD_INT 43
+ 445: ST_TO_ADDR
+// vc_control := control_manual ;
+ 446: LD_ADDR_OWVAR 38
+ 450: PUSH
+ 451: LD_INT 1
+ 453: ST_TO_ADDR
+// RealMasha := false ;
+ 454: LD_ADDR_EXP 5
+ 458: PUSH
+ 459: LD_INT 0
+ 461: ST_TO_ADDR
+// Masha := CreateVehicle ;
+ 462: LD_ADDR_EXP 4
+ 466: PUSH
+ 467: CALL_OW 45
+ 471: ST_TO_ADDR
+// end ; if GetEngine ( Masha ) <> engine_siberite then
+ 472: LD_EXP 4
+ 476: PPUSH
+ 477: CALL_OW 262
+ 481: PUSH
+ 482: LD_INT 3
+ 484: NONEQUAL
+ 485: IFFALSE 507
+// SetFuel ( Masha , Rand ( 70 , 95 ) ) ;
+ 487: LD_EXP 4
+ 491: PPUSH
+ 492: LD_INT 70
+ 494: PPUSH
+ 495: LD_INT 95
+ 497: PPUSH
+ 498: CALL_OW 12
+ 502: PPUSH
+ 503: CALL_OW 240
+// PlaceUnitXY ( Masha , 26 , 26 , false ) ;
+ 507: LD_EXP 4
+ 511: PPUSH
+ 512: LD_INT 26
+ 514: PPUSH
+ 515: LD_INT 26
+ 517: PPUSH
+ 518: LD_INT 0
+ 520: PPUSH
+ 521: CALL_OW 48
+// end ;
+ 525: LD_VAR 0 1
+ 529: RET
+// var i , MashaWanted , Chassis , Weapon ; starting begin SA_OnMissionStart ;
+ 530: CALL 1313 0 0
+// FogOff ( false ) ;
+ 534: LD_INT 0
+ 536: PPUSH
+ 537: CALL_OW 344
+// SetBName ( 1 , bluekher ) ;
+ 541: LD_INT 1
+ 543: PPUSH
+ 544: LD_STRING bluekher
+ 546: PPUSH
+ 547: CALL_OW 500
+// IngameOn ;
+ 551: CALL_OW 8
+// InitBc ;
+ 555: CALL_OW 21
+// InitHc ;
+ 559: CALL_OW 19
+// InitUc ;
+ 563: CALL_OW 18
+// InitVc ;
+ 567: CALL_OW 20
+// read_parameters ;
+ 571: CALL 0 0 0
+// create_people ;
+ 575: CALL 120 0 0
+// create_masha ;
+ 579: CALL 256 0 0
+// CenterNowOnXY ( 33 , 31 ) ;
+ 583: LD_INT 33
+ 585: PPUSH
+ 586: LD_INT 31
+ 588: PPUSH
+ 589: CALL_OW 86
+// ComTurnUnit ( Burlak , Gossudarov ) ;
+ 593: LD_EXP 1
+ 597: PPUSH
+ 598: LD_EXP 2
+ 602: PPUSH
+ 603: CALL_OW 119
+// ComTurnUnit ( Gossudarov , Burlak ) ;
+ 607: LD_EXP 2
+ 611: PPUSH
+ 612: LD_EXP 1
+ 616: PPUSH
+ 617: CALL_OW 119
+// Wait ( 0 0$1 ) ;
+ 621: LD_INT 35
+ 623: PPUSH
+ 624: CALL_OW 67
+// D_Start ;
+ 628: CALL 1189 0 0
+// Wait ( 0 0$1 ) ;
+ 632: LD_INT 35
+ 634: PPUSH
+ 635: CALL_OW 67
+// if RealMasha then
+ 639: LD_EXP 5
+ 643: IFFALSE 779
+// begin case Query ( QvehicleM ) of 1 :
+ 645: LD_STRING QvehicleM
+ 647: PPUSH
+ 648: CALL_OW 97
+ 652: PUSH
+ 653: LD_INT 1
+ 655: DOUBLE
+ 656: EQUAL
+ 657: IFTRUE 661
+ 659: GO 672
+ 661: POP
+// MashaWanted := true ; 2 :
+ 662: LD_ADDR_LOC 2
+ 666: PUSH
+ 667: LD_INT 1
+ 669: ST_TO_ADDR
+ 670: GO 777
+ 672: LD_INT 2
+ 674: DOUBLE
+ 675: EQUAL
+ 676: IFTRUE 680
+ 678: GO 776
+ 680: POP
+// begin MashaWanted := false ;
+ 681: LD_ADDR_LOC 2
+ 685: PUSH
+ 686: LD_INT 0
+ 688: ST_TO_ADDR
+// case Query ( QChassisM ) of 1 :
+ 689: LD_STRING QChassisM
+ 691: PPUSH
+ 692: CALL_OW 97
+ 696: PUSH
+ 697: LD_INT 1
+ 699: DOUBLE
+ 700: EQUAL
+ 701: IFTRUE 705
+ 703: GO 716
+ 705: POP
+// Chassis := ru_medium_wheeled ; 2 :
+ 706: LD_ADDR_LOC 3
+ 710: PUSH
+ 711: LD_INT 21
+ 713: ST_TO_ADDR
+ 714: GO 774
+ 716: LD_INT 2
+ 718: DOUBLE
+ 719: EQUAL
+ 720: IFTRUE 724
+ 722: GO 735
+ 724: POP
+// Chassis := ru_medium_tracked ; 3 :
+ 725: LD_ADDR_LOC 3
+ 729: PUSH
+ 730: LD_INT 22
+ 732: ST_TO_ADDR
+ 733: GO 774
+ 735: LD_INT 3
+ 737: DOUBLE
+ 738: EQUAL
+ 739: IFTRUE 743
+ 741: GO 754
+ 743: POP
+// Chassis := ru_heavy_wheeled ; 4 :
+ 744: LD_ADDR_LOC 3
+ 748: PUSH
+ 749: LD_INT 23
+ 751: ST_TO_ADDR
+ 752: GO 774
+ 754: LD_INT 4
+ 756: DOUBLE
+ 757: EQUAL
+ 758: IFTRUE 762
+ 760: GO 773
+ 762: POP
+// Chassis := ru_heavy_tracked ; end ;
+ 763: LD_ADDR_LOC 3
+ 767: PUSH
+ 768: LD_INT 24
+ 770: ST_TO_ADDR
+ 771: GO 774
+ 773: POP
+// end ; end ;
+ 774: GO 777
+ 776: POP
+// end else
+ 777: GO 864
+// case Query ( Qchassis ) of 1 :
+ 779: LD_STRING Qchassis
+ 781: PPUSH
+ 782: CALL_OW 97
+ 786: PUSH
+ 787: LD_INT 1
+ 789: DOUBLE
+ 790: EQUAL
+ 791: IFTRUE 795
+ 793: GO 806
+ 795: POP
+// Chassis := ru_medium_wheeled ; 2 :
+ 796: LD_ADDR_LOC 3
+ 800: PUSH
+ 801: LD_INT 21
+ 803: ST_TO_ADDR
+ 804: GO 864
+ 806: LD_INT 2
+ 808: DOUBLE
+ 809: EQUAL
+ 810: IFTRUE 814
+ 812: GO 825
+ 814: POP
+// Chassis := ru_medium_tracked ; 3 :
+ 815: LD_ADDR_LOC 3
+ 819: PUSH
+ 820: LD_INT 22
+ 822: ST_TO_ADDR
+ 823: GO 864
+ 825: LD_INT 3
+ 827: DOUBLE
+ 828: EQUAL
+ 829: IFTRUE 833
+ 831: GO 844
+ 833: POP
+// Chassis := ru_heavy_wheeled ; 4 :
+ 834: LD_ADDR_LOC 3
+ 838: PUSH
+ 839: LD_INT 23
+ 841: ST_TO_ADDR
+ 842: GO 864
+ 844: LD_INT 4
+ 846: DOUBLE
+ 847: EQUAL
+ 848: IFTRUE 852
+ 850: GO 863
+ 852: POP
+// Chassis := ru_heavy_tracked ; end ;
+ 853: LD_ADDR_LOC 3
+ 857: PUSH
+ 858: LD_INT 24
+ 860: ST_TO_ADDR
+ 861: GO 864
+ 863: POP
+// if not MashaWanted or not RealMasha then
+ 864: LD_LOC 2
+ 868: NOT
+ 869: PUSH
+ 870: LD_EXP 5
+ 874: NOT
+ 875: OR
+ 876: IFFALSE 1108
+// if Chassis = ru_medium_wheeled or Chassis = ru_medium_tracked then
+ 878: LD_LOC 3
+ 882: PUSH
+ 883: LD_INT 21
+ 885: EQUAL
+ 886: PUSH
+ 887: LD_LOC 3
+ 891: PUSH
+ 892: LD_INT 22
+ 894: EQUAL
+ 895: OR
+ 896: IFFALSE 985
+// case Query ( Qmedium ) of 1 :
+ 898: LD_STRING Qmedium
+ 900: PPUSH
+ 901: CALL_OW 97
+ 905: PUSH
+ 906: LD_INT 1
+ 908: DOUBLE
+ 909: EQUAL
+ 910: IFTRUE 914
+ 912: GO 925
+ 914: POP
+// Weapon := ru_heavy_machine_gun ; 2 :
+ 915: LD_ADDR_LOC 4
+ 919: PUSH
+ 920: LD_INT 42
+ 922: ST_TO_ADDR
+ 923: GO 983
+ 925: LD_INT 2
+ 927: DOUBLE
+ 928: EQUAL
+ 929: IFTRUE 933
+ 931: GO 944
+ 933: POP
+// Weapon := ru_gatling_gun ; 3 :
+ 934: LD_ADDR_LOC 4
+ 938: PUSH
+ 939: LD_INT 43
+ 941: ST_TO_ADDR
+ 942: GO 983
+ 944: LD_INT 3
+ 946: DOUBLE
+ 947: EQUAL
+ 948: IFTRUE 952
+ 950: GO 963
+ 952: POP
+// Weapon := ru_gun ; 4 :
+ 953: LD_ADDR_LOC 4
+ 957: PUSH
+ 958: LD_INT 44
+ 960: ST_TO_ADDR
+ 961: GO 983
+ 963: LD_INT 4
+ 965: DOUBLE
+ 966: EQUAL
+ 967: IFTRUE 971
+ 969: GO 982
+ 971: POP
+// Weapon := ru_rocket_launcher ; end else
+ 972: LD_ADDR_LOC 4
+ 976: PUSH
+ 977: LD_INT 45
+ 979: ST_TO_ADDR
+ 980: GO 983
+ 982: POP
+ 983: GO 1108
+// case Query ( Qheavy ) of 1 :
+ 985: LD_STRING Qheavy
+ 987: PPUSH
+ 988: CALL_OW 97
+ 992: PUSH
+ 993: LD_INT 1
+ 995: DOUBLE
+ 996: EQUAL
+ 997: IFTRUE 1001
+ 999: GO 1012
+1001: POP
+// Weapon := ru_heavy_machine_gun ; 2 :
+1002: LD_ADDR_LOC 4
+1006: PUSH
+1007: LD_INT 42
+1009: ST_TO_ADDR
+1010: GO 1108
+1012: LD_INT 2
+1014: DOUBLE
+1015: EQUAL
+1016: IFTRUE 1020
+1018: GO 1031
+1020: POP
+// Weapon := ru_gatling_gun ; 3 :
+1021: LD_ADDR_LOC 4
+1025: PUSH
+1026: LD_INT 43
+1028: ST_TO_ADDR
+1029: GO 1108
+1031: LD_INT 3
+1033: DOUBLE
+1034: EQUAL
+1035: IFTRUE 1039
+1037: GO 1050
+1039: POP
+// Weapon := ru_gun ; 4 :
+1040: LD_ADDR_LOC 4
+1044: PUSH
+1045: LD_INT 44
+1047: ST_TO_ADDR
+1048: GO 1108
+1050: LD_INT 4
+1052: DOUBLE
+1053: EQUAL
+1054: IFTRUE 1058
+1056: GO 1069
+1058: POP
+// Weapon := ru_rocket_launcher ; 5 :
+1059: LD_ADDR_LOC 4
+1063: PUSH
+1064: LD_INT 45
+1066: ST_TO_ADDR
+1067: GO 1108
+1069: LD_INT 5
+1071: DOUBLE
+1072: EQUAL
+1073: IFTRUE 1077
+1075: GO 1088
+1077: POP
+// Weapon := ru_heavy_gun ; 6 :
+1078: LD_ADDR_LOC 4
+1082: PUSH
+1083: LD_INT 46
+1085: ST_TO_ADDR
+1086: GO 1108
+1088: LD_INT 6
+1090: DOUBLE
+1091: EQUAL
+1092: IFTRUE 1096
+1094: GO 1107
+1096: POP
+// Weapon := ru_bulldozer ; end ;
+1097: LD_ADDR_LOC 4
+1101: PUSH
+1102: LD_INT 53
+1104: ST_TO_ADDR
+1105: GO 1108
+1107: POP
+// SaveVariable ( [ MashaWanted , Chassis , Weapon ] , EscapeVehicle_12a ) ;
+1108: LD_LOC 2
+1112: PUSH
+1113: LD_LOC 3
+1117: PUSH
+1118: LD_LOC 4
+1122: PUSH
+1123: EMPTY
+1124: LIST
+1125: LIST
+1126: LIST
+1127: PPUSH
+1128: LD_STRING EscapeVehicle_12a
+1130: PPUSH
+1131: CALL_OW 39
+// if not MashaWanted and RealMasha then
+1135: LD_LOC 2
+1139: NOT
+1140: PUSH
+1141: LD_EXP 5
+1145: AND
+1146: IFFALSE 1155
+// DeleteVariable ( Masha ) ;
+1148: LD_STRING Masha
+1150: PPUSH
+1151: CALL_OW 41
+// Wait ( 0 0$2 ) ;
+1155: LD_INT 70
+1157: PPUSH
+1158: CALL_OW 67
+// ChangeMap ( %_cont , %_cont ) ;
+1162: LD_STRING %_cont
+1164: PPUSH
+1165: LD_STRING %_cont
+1167: PPUSH
+1168: CALL_OW 340
+// IngameOff ;
+1172: CALL_OW 9
+// end ;
+1176: END
+// export function TheEnd ; begin
+1177: LD_INT 0
+1179: PPUSH
+// YouWin ;
+1180: CALL_OW 103
+// end ; end_of_file
+1184: LD_VAR 0 1
+1188: RET
+// export function D_Start ; begin
+1189: LD_INT 0
+1191: PPUSH
+// DisableExclamations ;
+1192: CALL_OW 474
+// Say ( Gossudarov , DStart-Gos-1 ) ;
+1196: LD_EXP 2
+1200: PPUSH
+1201: LD_STRING DStart-Gos-1
+1203: PPUSH
+1204: CALL_OW 88
+// Say ( Burlak , DStart-Bur-1 ) ;
+1208: LD_EXP 1
+1212: PPUSH
+1213: LD_STRING DStart-Bur-1
+1215: PPUSH
+1216: CALL_OW 88
+// Say ( Gossudarov , DStart-Gos-2 ) ;
+1220: LD_EXP 2
+1224: PPUSH
+1225: LD_STRING DStart-Gos-2
+1227: PPUSH
+1228: CALL_OW 88
+// Say ( Burlak , DStart-Bur-2 ) ;
+1232: LD_EXP 1
+1236: PPUSH
+1237: LD_STRING DStart-Bur-2
+1239: PPUSH
+1240: CALL_OW 88
+// Say ( Gossudarov , DStart-Gos-3 ) ;
+1244: LD_EXP 2
+1248: PPUSH
+1249: LD_STRING DStart-Gos-3
+1251: PPUSH
+1252: CALL_OW 88
+// Say ( Burlak , DStart-Bur-3 ) ;
+1256: LD_EXP 1
+1260: PPUSH
+1261: LD_STRING DStart-Bur-3
+1263: PPUSH
+1264: CALL_OW 88
+// Say ( Gossudarov , DStart-Gos-4 ) ;
+1268: LD_EXP 2
+1272: PPUSH
+1273: LD_STRING DStart-Gos-4
+1275: PPUSH
+1276: CALL_OW 88
+// Say ( Burlak , DStart-Bur-4 ) ;
+1280: LD_EXP 1
+1284: PPUSH
+1285: LD_STRING DStart-Bur-4
+1287: PPUSH
+1288: CALL_OW 88
+// Say ( Gossudarov , DStart-Gos-5 ) ;
+1292: LD_EXP 2
+1296: PPUSH
+1297: LD_STRING DStart-Gos-5
+1299: PPUSH
+1300: CALL_OW 88
+// EnableExclamations ;
+1304: CALL_OW 473
+// end ; end_of_file
+1308: LD_VAR 0 1
+1312: RET
+// export function SA_OnMissionStart ; begin
+1313: LD_INT 0
+1315: PPUSH
+// SetAchievement ( ACH_PAC ) ;
+1316: LD_STRING ACH_PAC
+1318: PPUSH
+1319: CALL_OW 543
+// end ;
+1323: LD_VAR 0 1
+1327: RET

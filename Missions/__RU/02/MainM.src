@@ -1,0 +1,231 @@
+EXPORT
+  WBW,  //west breastwork
+  EBW,  //east breastwork
+  BurlakComp,  // Burlak and his men
+  BelkovFreed,
+  WBWSpotted,
+  WBWAttacked,
+  WBWDestroyed,
+  EBWSpotted,
+  EBWDestroyed,
+  Charted,
+  WesternRidge,
+  QAttAm,
+  objAttack,
+  objBelkov,
+  objReturn,
+  Reinforcements,
+  BeriaVisited,
+  d19a;
+
+starting
+begin
+  WBWSpotted:=false;
+  WBWAttacked:=false;
+  WBWDestroyed:=false;
+  EBWSpotted:=false;
+  EBWDestroyed:=false;
+  BelkovFreed:=false;
+  WesternRidge:=false;
+  QAttAm:=false;
+  d19a:=false;
+  objAttack:=false;
+  Reinforcements:=false;
+  Charted:=false;
+  objBelkov:=false;
+  objReturn:=false;
+  BeriaVisited:=false;
+end;
+
+function ListAttacks(who, whom);
+var
+  i;
+begin
+  result:=false;
+  for i in who do
+  begin
+    if Attacks(i) in whom then
+    begin
+      result:=true;
+      break
+    end;
+  end;
+end;
+
+function MissionProper;
+begin
+  enable(99);  //bude cekat, dokud neodejdou ze zakladny
+  //kecy na rozloucenou
+  //add chart
+end;
+
+function ShouldReturn;
+begin
+  if Charted and (BelkovFreed or (not objBelkov)) and (WBWDestroyed or (not objAttack)) and (not objReturn) then
+  begin
+    ChangeMissionObjectives('M10a'); //return to base
+    objReturn:=true;
+  end;
+end;
+
+every 0$5 trigger (See(you,WBW) or ListAttacks(WBW,BurlakComp)) and (not WBWDestroyed) do
+var
+  UnitsInWest;
+begin
+  UnitsInWest:=FilterUnitsInArea(WesternRidge,[[f_side,you],[f_ready]]);
+  if (Burlak in UnitsInWest) and (UnitsInWest isect BurlakComp >= BurlakComp-1) then //je tam Burlak a vsichni jeho muzi krom jednoho
+  begin
+    WesternRidge:=True;
+  end;
+  if not WBWSpotted then  //pokud se dialog o wbw jeste nekonal
+  begin
+    play_dialog_15;  //mluvi o wbw
+  end;
+  WBWSpotted:=true;
+  if WesternRidge and (not QAttAm) then  // je na zapade a jeste neosvobozoval Belkova
+  begin
+    case query('QAttackBw') of
+      1: play_dialog_qwbw1;
+      2: begin
+           play_dialog_qwbw2;
+           SendReinforcements;
+           Reinforcements:=true;
+         end;
+      3: ;
+    end;
+    ChangeMissionObjectives('M7');  //Add AttackW
+    objAttack:=true;
+    play_dialog_19;  //"Ty mas ale kuraz, Burlaku!"
+    WBWAttacked:=true;
+  end;
+  if (not WesternRidge) and ListAttacks(BurlakComp,WBW) and (not d19a) then
+  begin
+    wait(0$5);
+    if ListAttacks(BurlakComp,WBW) then
+    begin
+      play_dialogue_19a;
+      d19a:=true;
+    end;
+  end;
+  if (not WesternRidge) then
+    enable
+  else
+    disable;
+end;
+
+every 0$3 trigger (UnitFilter(WBW,[f_OK]) = 0) do  //zapadni bw je znicen
+begin
+  play_dialog_20;
+  WBWDestroyed:=true;
+  if objAttack then
+    ChangeMissionObjectives('M8');  //out AttackW
+  ShouldReturn;  //kdyz nejsou zadna nesplnena objectives, ma se vratit do zakladny
+  disable
+end;
+
+every 0$5 trigger See(you,EBW) or ListAttacks(EBW,BurlakComp) do //vidi vychodni bw
+begin
+  play_dialog_16;  //mluvi o ebw
+  EBWSpotted:=true;
+  disable;
+end;
+
+every 0$3 trigger (UnitFilter(EBW,[f_OK]) = 0) do  //vychodni bw zniceny
+begin
+  play_dialog_20a;
+  EBWDestroyed:=true;
+  disable
+end;
+
+every 0$5 trigger ((FilterUnitsInArea(HelpBelkov,[[f_side,you],[f_ready]]) isect BurlakComp) > 0) do //prijel na pomoc Belkovovi
+begin
+  if (not objBelkov) then
+  begin
+    case query('QAttackAm') of
+      1: play_dialog_qAtAm1;
+      2: play_dialog_qAtAm2;
+    end;
+    ChangeMissionObjectives('M9');  //osvobodit Belkova
+    objBelkov:=true;
+  end;
+  QAttAm:=true;
+  play_dialog_23;  //"Prace pro vojaky"
+  disable
+end;
+
+every 0$5 trigger (Amici+0 = 0) and ((FilterUnitsInArea(BelkovHill,[[f_side,you],[f_ready]]) isect BurlakComp) > 0) do //Nekdo od Burlaka je Belkova na kopci
+begin                                                                                                                  //Belkov osvobozen
+  play_dialog_24;
+  BelkovFreed:=True;
+  ChangeMissionObjectives('M9a');  //out free belkov
+  if (WBWSpotted) and (not WBWDestroyed) and (not objAttack) then
+  begin
+    ChangeMissionObjectives('M7');  //attack wbw
+    objAttack:=true;
+  end;
+  ShouldReturn;
+  disable
+end;
+
+every 045 trigger AreaCharted do
+begin
+  ChangeMissionObjectives('M10'); //out chart
+  Charted:=true;
+  ShoulReturn;
+end;
+
+every 0$5 trigger ((FilterUnitsInArea(Beria,[[f_side,you],[f_ready]]) isect BurlakComp) = 0) marked 99 do //jen ceka, dokud z Berii neodejdou;
+begin
+  enable(100);
+end;
+
+every 0$5 trigger ((FilterUnitsInArea(Beria,[[f_side,you],[f_ready]]) isect BurlakComp) > 0) marked 100 do  //navrat do Berii
+begin
+  if Charted and WBWDestroyed and BelkovFreed then
+  begin
+    Victory;
+    wait(0$1);
+    exit;
+  end;
+  if objReturn then
+    ChangeMissionObjectives('M10b'); //del Return to base
+  if Charted and WBWDestroyed then
+  begin
+    case Query('QContMission') of
+      1: Victory;
+      2: begin
+           ChangeMissionObjectives('M9');  //osvobodit Belkova
+           objBelkov:=true;
+         end;
+    end;
+    exit;
+  end;
+  if (not WBWDestroyed) or (not EBWDestroyed) then  //aspon jeden bw jeste stoji
+  begin
+    if not BeriaVisited then
+      play_dialog_25
+    else
+      play_dialog_25a;
+  end;
+  BeriaVisited:=true;
+  if WBWSpotted and (not WBWDestroyed) then
+  begin
+    play_dialog_25b;  // Platonov mu da posily
+    if (not Reinforcements) then
+    begin
+      SendReinforcements;
+      Reinforcements:=true;
+    end;
+    if (not objAttack) then
+    begin
+      ChangeMissionObjectives('M7');  //znicit wbw
+      objAttack:=true;
+    end;
+  end;
+  if (not Charted) or (not WBWDestroyed) then
+  begin
+    play_dialog_25c;  //bud aby znicil wbw nebo se vratil k chartovani
+  end;
+  enable;
+end;
+

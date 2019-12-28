@@ -1,0 +1,61 @@
+var rDef1, rDef2, rDef3, rDef4, rDef5;
+var idDef1, idDef2, idDef3, idDef4, idDef5;
+export toDef1, toDef2, toDef3, toDef4, toDef5;
+every 0$1 do
+begin
+   todef1:=UnitFilter(humans[1], [mf_sol]) ^ vehicles[1] ^ UnitFilter(buildings[1], [mf_fort]);
+   todef2:=UnitFilter(humans[2], [mf_sol]) ^ vehicles[2] ^ UnitFilter(buildings[2], [mf_fort]);
+   todef3:=UnitFilter(humans[3], [mf_sol]) ^ vehicles[3] ^ UnitFilter(buildings[3], [mf_fort]);
+   todef4:=UnitFilter(humans[4], [mf_sol]) ^ vehicles[4] ^ UnitFilter(buildings[4], [mf_fort]);
+   todef5:=UnitFilter(humans[5], [mf_sol]) ^ vehicles[5] ^ UnitFilter(buildings[5], [mf_fort]);
+
+   rDef1:=McRegistry(ai_s[1], [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, nearA],[mc_reg_area_to_protect,nearA]]);
+   rDef2:=McRegistry(ai_s[2], [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, nearB],[mc_reg_area_to_protect,nearB]]);
+   rDef3:=McRegistry(ai_s[3], [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, nearC],[mc_reg_area_to_protect,nearC]]);
+   rDef4:=McRegistry(ai_s[4], [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, nearD],[mc_reg_area_to_protect,nearD]]);
+   rDef5:=McRegistry(ai_s[5], [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, nearE],[mc_reg_area_to_protect,nearE]]);
+//   [mc_reg_refresh_time, ticks]            ... interval between two registrations (default 0$1)
+//   [mc_reg_area_to_guard, defarea]         ... registries enemies in defined area (default none)
+//   [mc_reg_area_to_protect, defarea]       ... registries enemies attacking units in specified area (default none)
+//   [mc_reg_units_to_protect, listofunits]  ... registries enemies attackign specified units (default none)
+//   [mc_reg_expire_stops_to_attack, ticks]  ... how long after enemy stops to attack the registration expires (default 0$3)
+//   [mc_reg_expire_leaves_area, ticks]      ... how long after enemy leaves area the registration expires (default 0$2)
+//   (-)mc_reg_ignore_fog                    ... ignores fog so you can see all enemies in area (default false)
+//   (-)mc_reg_only_important                ... doesn't raise event if result changes from nonzero value to another nonzero value (default false)
+//)
+   idDef1:=McDefend(10, rDef1, toDef1,[mc_def_advantage, mcdef1_difficulty]);
+   idDef2:=McDefend(10, rDef2, toDef2,[mc_def_advantage, mcdef2_difficulty]);
+   idDef3:=McDefend(10, rDef3, toDef3,[mc_def_advantage, mcdef3_difficulty]);
+   idDef4:=McDefend(10, rDef4, toDef4,[mc_def_advantage, mcdef4_difficulty]);
+   idDef5:=McDefend(10, rDef5, toDef5,[mc_def_advantage, mcdef5_difficulty]);
+   //-mc_change_to_soldiers, -mc_change_to_mechanics]);
+// runs McDefend macro and returns mcid
+// There must be running McRegistry macro to start McDefend - enemies are registred by this McRegistry. McDefend
+// starts after each registration of this McRegistry. Parameters:
+//
+//   [mc_def_advantage, percent]       ... how great advantage over enemy is enough (default 200, twice)
+//   [mc_area_dont_leave, defarea] ... area where must all defenders be (default none)
+//   (-)mc_change_to_soldiers          ... set here if McDefend can switch people to soldiers
+//   (-)mc_change_to_mechanics         ... set here if McDefend can switch people to mechanics
+end;
+every 0$10 do
+begin
+   todef1:=UnitFilter(humans[1], [mf_sol]) ^ vehicles[1] ^ UnitFilter(buildings[1], [mf_fort]);
+   todef2:=UnitFilter(humans[2], [mf_sol]) ^ vehicles[2] ^ UnitFilter(buildings[2], [mf_fort]);
+   todef3:=UnitFilter(humans[3], [mf_sol]) ^ vehicles[3] ^ UnitFilter(buildings[3], [mf_fort]);
+   todef4:=UnitFilter(humans[4], [mf_sol]) ^ vehicles[4] ^ UnitFilter(buildings[4], [mf_fort]);
+   todef5:=UnitFilter(humans[5], [mf_sol]) ^ vehicles[5] ^ UnitFilter(buildings[5], [mf_fort]);
+
+   ClearMcUnits(idDef1);
+   AddMcUnits(idDef1, todef1);
+   ClearMcUnits(idDef2);
+   AddMcUnits(idDef2, todef2);
+   ClearMcUnits(idDef3);
+   AddMcUnits(idDef3, todef3);
+   ClearMcUnits(idDef4);
+   AddMcUnits(idDef4, todef4);
+   ClearMcUnits(idDef5);
+   AddMcUnits(idDef5, todef5);
+
+   enable;
+end;

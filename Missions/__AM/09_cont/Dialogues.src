@@ -1,0 +1,789 @@
+export ArmBuild;
+export ArmUpgraded;
+
+export function Dialog2;
+begin
+     InGameOn;
+///////////////////////////////
+     PlaceUnitXYR(Eng1, 35,8,3, false);
+     PlaceUnitXYR(Eng2, 35,8,3, false);
+     PlaceUnitXYR(Eng3, 35,8,3, false);
+     PlaceHumanInUnit(Eng4, CarE1);
+     PlaceUnitXY(CarE1, 41,9, false);
+     ComHold(CarE1);
+//     ComBuild(Eng3, b_depot, 34,9, 2);
+//     while not Depot1 do begin
+//         Depot1:=FilterAllUnits([[f_nation,nation_american],[f_btype,b_depot]]);
+//         wait(0$0.5);
+//     end;
+     ComMoveXY([Eng1, Eng2, Eng3],34,6);
+     AddComRepairBuilding([Eng1, Eng2, Eng3], Depot1);
+//     SetResourceType(GetBase(Depot1), mat_oil, 60);
+///////////////////////////////
+     ComEnterUnit(Gary, rudepot1);
+
+     Wait(0$1);
+     PlaceUnitXY(JMM, 33,1, false);
+     CenterNowOnUnits(JMM);
+     ComMoveXY(JMM, 34,5);
+     AddComStand(JMM);
+     CreateCratesXY(5,39,10,false);
+     CreateCratesXY(5,39,11,false);
+     CreateCratesXY(5,38,10,false);
+     CreateCratesXY(5,38,11,false);
+     Wait(0$3);
+     ComMoveXY(CarE1, 38,1);
+     while GetY(CarE1)>3 do
+           wait(0$0.3);
+     RemoveUnit(CarE1);
+     Say(JMM, 'D2-JMM-1');
+     Say(Eng1, 'D2-Eng1-1');
+     Say(JMM, 'D2-JMM-2');
+     Say(Eng1, 'D2-Eng1-2');
+     Say(JMM, 'D2-JMM-3');
+     SetSideBase(GetBase(Depot1), you);
+     SetSide([Eng1, Eng2, Eng3], you);
+
+     SaveForQuickRestart;
+     ChangeMissionObjectives('M1');
+
+     InGameOff;
+end;
+
+// dialog2a
+export byld2a;
+every 0$2 trigger IsInArea(JMM, base) marked 30 do
+begin
+     dialog2a;
+end;
+export function dialog2a;
+var i;
+begin
+     Wait(0$1);
+     ComMoveUnit(Gary, JMM);
+     byld2a:=true;
+     Wait(0$3);
+     DialogueOn;
+     Say(JMM, 'D2-JMM-3a');
+     SetSideBase(GetBase(rudepot1), you);
+     for i in FilterAllUnits([[f_side,you2],[f_type,unit_building]]) do
+         SetSide(i, you);
+     SetSide(lidi_base, you);
+     SetResourceType(GetBase(rudepot1), mat_siberit, 0);
+     Say(Gary, 'D2-Gary-3');
+     if Bobby then Say(Bobby, 'D2-Bobby-3');
+     if Cyrus then Say(Cyrus, 'D2-Cyrus-3');
+     Say(JMM, 'D2-JMM-4');
+     Say(Gary, 'D2-Gary-4');
+     if Cyrus then Say(Cyrus, 'D2-Cyrus-4')
+              else SayAny(lidi_base diff neco_rikaji, 'D2-Sol1-4', you, sex_male, 0, 0);
+     Say(JMM, 'D2-JMM-5');
+     SayAny(lidi diff neco_rikaji, 'D2-FEng1-5', you, sex_female, class_engineer, 0);
+     Say(JMM, 'D2-JMM-6');
+     SayAny(lidi diff neco_rikaji, 'D2-FEng1-6', you, sex_female, class_engineer, 0);
+     SayAny(lidi diff neco_rikaji, 'D2-Eng1-6', you, sex_male, class_engineer, 0);
+     Say(JMM, 'D2-JMM-7');
+     Say(Gary, 'D2-Gary-7');       
+     SayAny(lidi diff neco_rikaji, 'D2-FEng1-7', you, sex_female, class_engineer, 0);
+     SayAny(lidi diff neco_rikaji, 'D2-Sol1-7', you, sex_male, class_soldier, 0);
+     Say(JMM, 'D2-JMM-8');
+     dialog2byl:=true;
+
+     ChangeMissionObjectives('M1a');
+
+     DialogueOff;
+     MyHint('SibDet');
+end;
+
+every 0$5 trigger GetSide(rudepot1)=you and GetResourceType(GetBase(rudepot1), mat_siberit) do
+begin
+   case difficulty of
+     1: ChangeMissionObjectives('M2easy');
+     2: ChangeMissionObjectives('M2');
+     3: ChangeMissionObjectives('M2hard');
+   end;
+end;
+
+//every 1$0 do
+every 7$0 do
+begin
+     DialogueOn;
+     SayRadio(Powell, 'D3-Pow-1');
+     if dialog2byl then Say(JMM, 'D3-JMM-1')
+                   else Say(JMM, 'D3-JMM-1a');
+     Say(JMM, 'D3-JMM-1b');
+     SayRadio(Powell, 'D3-Pow-2');
+
+     ChangeMissionObjectives('M3');
+
+     DialogueOff;
+     counter_time:=22$0;
+end;
+
+//sem prijde cas every predtim plus 15 min;
+//every 2$0 do
+every 22$0 do
+var qr, i, mt;
+begin
+     SetAttitude(you, you2, att_neutral, true);
+     ChangeSideFog(you2, you);
+     PlaceHumanInUnit(Mec1, Car1);
+     PlaceHumanInUnit(Mec2, Car2);
+     PlaceHumanInUnit(Mec3, Car3);
+     if not PlaceUnitXYR(Car1, 35,1,10, false) then
+       PlaceUnitArea(Car1, odjezd, false);
+     if not PlaceUnitXYR(Car2, 35,1,10, false) then
+       PlaceUnitArea(Car2, odjezd, false);
+     if not PlaceUnitXYR(Car3, 35,1,10, false) then
+       PlaceUnitArea(Car3, odjezd, false);
+     ComMoveXY([Car1,Car2,Car3], 37,8);
+     AddComStand([Car1,Car2,Car3]);
+     CenterNowOnUnits(Car1);
+     Wait(0$3);
+     DialogueOn;
+     Say(Mec1, 'D4-Mech1-1');
+     Say(JMM, 'D4-JMM-1');
+     Say(Mec1, 'D4-Mech1-2');
+     AddResourceType(GetBase(Depot1), mat_cans, 300);
+     qr:=0;
+     if KolikMaBytSiberitu>GetResourceType(GetBase(Depot1), mat_siberit) then begin
+        qr:=Query('QWait');
+        case qr of
+             1: Say(JMM, 'D5a-JMM-1');
+             2: Say(JMM, 'D5b-JMM-1');
+             3: Say(JMM, 'D5c-JMM-1');
+        end;
+     end
+     else
+        Say(JMM, 'D5-JMM-1');
+     DialogueOff;
+     if qr=1 then begin
+        counter_time:=tick + 5$0;
+        Wait(5$0);
+     end;
+     if qr=2 or qr=3 then
+        NastvalPowella:=true;
+     DialogueOn;
+     if KolikMaBytSiberitu<=GetResourceType(GetBase(Depot1), mat_siberit) then 
+        Say(Mec1, 'D6-Mech1-1')
+     else begin
+       NastvalPowella:=true;
+       if 0<GetResourceType(GetBase(Depot1), mat_siberit) then
+          Say(Mec1, 'D6-Mech1-1a')
+       else
+          Say(Mec1, 'D6-Mech1-1b');
+     end;
+     DialogueOff;
+     counter_time:=0;
+
+     if GetResourceType(GetBase(Depot1), mat_siberit)>KolikMaBytSiberitu then begin
+        SetCargo([Car1], mat_siberit, KolikMaBytSiberitu);
+        AddResourceType(GetBase(Depot1), mat_siberit, -KolikMaBytSiberitu);
+     end
+     else begin
+        SetCargo([Car1], mat_siberit, GetResourceType(GetBase(Depot1), mat_siberit));
+        SetResourceType(GetBase(Depot1), mat_siberit, 0);
+     end;
+
+     mt:=tick+0$20;
+     while UnitFilter([Car1, Car2, Car3], [[f_placed]]) and mt<tick do begin
+        ComMoveToArea([Car1, Car2, Car3], odjezd);
+        AddComMoveXY([Car1, Car2, Car3],38,1);
+        case true of
+            IsInArea(Car1, odjezd) : RemoveUnit(Car1);
+            IsInArea(Car2, odjezd) : RemoveUnit(Car2);
+            IsInArea(Car3, odjezd) : RemoveUnit(Car3);
+        end;
+        wait(0$1);
+     end;
+     for i in [Car1,Car2,Car3,Mec1,Mec2,Mec3] do
+       RemoveUnit(i);
+     if NastvalPowella then
+       ChangeMissionObjectives('M3b')
+     else
+       ChangeMissionObjectives('M3a');
+end;
+
+every 0$5 trigger GetResourceType(GetBase(Depot1), mat_siberit)>35 do
+var r;
+begin
+     Sci1:=WhoSayAny(lidi diff neco_rikaji, you, sex_male, class_scientistic, 0);
+     if not Sci1 then
+        Sci1:=WhoSayAny(lidi diff neco_rikaji, you, sex_male, 0, 0);
+
+     if Sci1 then begin
+        DialogueOn;
+        Say(Sci1, 'D7-Sci1-1');
+        Say(JMM, 'D7-JMM-1');
+        Say(Sci1, 'D7-Sci1-2');
+        Say(JMM, 'D7-JMM-2');
+        Say(Sci1, 'D7-Sci1-3');
+        Say(JMM, 'D7-JMM-3');
+        DialogueOff;
+     end;
+end;
+
+// -------------------- ARABI --------------------
+export ArmStarted;
+export BarStarted;
+function odnes_jeden_oil;
+var a;
+begin
+     while GetDistUnits(Ara2, rudepot1)>4 do begin
+       ComMoveUnit(Ara2,rudepot1);
+       wait(0$0.1);
+     end;
+     ComStop(Ara2);
+     ComHold(Ara2);
+     SetCargo(Ara2, mat_oil, 10);
+     a:=GetFuel(AraCar1);
+     while GetFuel(AraCar1)<=a do begin
+       ComRefuel(Ara2, AraCar1);
+       wait(0$1);
+     end;
+     SetCargo(Ara2, mat_oil, 0);
+     while GetDistUnits(Ara2, rudepot1)>4 do begin
+       ComMoveUnit(Ara2,rudepot1);
+       wait(0$0.1);
+     end;
+     ComStop(Ara2);
+     ComHold(Ara2);
+     SetCargo(Ara2, mat_oil, 10);
+     a:=GetFuel(AraCar2);
+     while GetFuel(AraCar2)<=a do begin
+       ComRefuel(Ara2, AraCar2);
+       wait(0$1);
+     end;
+     SetCargo(Ara2, mat_oil, 0);
+     ComStop(Ara2);
+     ComHold(Ara2);
+     result:=true;
+end;
+function odnes_neco(mat, kolik);
+var a,i;
+begin
+    for i:=1 to (kolik div 10) do begin
+       while GetDistUnits(Ara2, rudepot1)>4 do begin
+         ComMoveUnit(Ara2,rudepot1);
+         wait(0$0.1);
+       end;
+       ComHold(Ara2);
+//       AddResourceType(GetBase(rudepot1), mat, -10);
+       SetCargo(Ara2, mat, 10);
+       a:=GetCargo(AraCar2, mat);
+       while GetCargo(AraCar2, mat)<=a do begin
+         ComMoveUnit(Ara2, AraCar2);
+         wait(0$1);
+       end;
+       SetCargo(Ara2, mat, 0);
+       ComStop(Ara2);
+       ComHold(Ara2);
+    end;
+    result:=true;
+end;
+every 0$1 do
+var mt;
+begin
+  if arabi_time<>0 then
+    if arabi_time>1 then begin
+      wait(arabi_time);
+      mt:=tick+3$0;
+      while Getside(rudepot1)<>you and mt>tick do
+        wait(0$3);
+      if Getside(rudepot1)=you and FilterAllUnits([[f_side, you], [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]) > 0 then
+        arabi;
+    end;
+end;
+every 27$0 trigger arabi_time=0 AND Getside(rudepot1)=you and FilterAllUnits([[f_side, you], [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]) > 0 do
+begin
+  arabi;
+end;
+export kecy, mina1, mina3;
+function arabi;
+var cekani, qr, nabidka, i, a, mytick, to_reach, ara1_faze, ara3_faze,odmitl_v_query;
+begin
+     PlaceUnitArea(Ara1, rus_mat_l, false);
+     PlaceUnitArea(Ara2, rus_mat_l, false);
+     PlaceUnitArea(Ara3, rus_mat_l, false);
+     PlaceUnitArea(AraCar1, rus_mat_l, false);
+     PlaceUnitArea(AraCar2, rus_mat_l, false);
+     ComHold([Ara1, Ara2, Ara3, Ara4, Ara5]);
+     DialogueOn;
+     SayRadio(Ara1, 'D8-Ar1-1');
+     Say(JMM, 'D8-JMM-1');
+     SayRadio(Ara1, 'D8-Ar1-2');
+     Say(JMM, 'D8-JMM-2');
+     SayRadio(Ara1, 'D8-Ar1-3');
+     Say(JMM, 'D8-JMM-3');
+     SayRadio(Ara1, 'D8-Ar1-4');
+     Say(JMM, 'D8-JMM-4');
+     SayRadio(Ara1, 'D8-Ar1-5');
+     Say(JMM, 'D8-JMM-5');
+     SayRadio(Ara1, 'D8-Ar1-6');
+     SayRadio(Ara2, 'D8-Ar2-6');
+     Say(JMM, 'D8-JMM-6');
+     SayRadio(Ara2, 'D8-Ar2-7');
+     Aqr1:=Query('QBarracks');
+     case Aqr1 of
+          1: begin
+             Say(JMM, 'D8a-JMM-1');
+             SayRadio(Ara1, 'D8a-Ar1-1');
+          end;
+          2: begin
+             Say(JMM, 'D8b-JMM-1');
+             SayRadio(Ara1, 'D8b-Ar1-1');
+             Aqr2:=Query('QInfo');
+             case Aqr2 of
+                  1: begin
+                     Say(JMM, 'D8b1-JMM-1');
+                     SayRadio(Ara1, 'D8b1-Ar1-1');
+                  end;
+                  2: begin
+                     Say(JMM, 'D8b2-JMM-1');
+                     SayRadio(Ara1, 'D8b2-Ar1-1');
+                     odmitl_v_query:=true;
+                  end;
+             end;
+          end;
+          3: begin
+             Say(JMM, 'D8c-JMM-1');
+             odmitl_v_query:=true;
+             SayRadio(Ara1, 'D8c-Ar1-1');
+          end;
+     end;
+     DialogueOff;
+////// souhlasi
+     if Aqr1=1 or (Aqr1=2 and Aqr2=1) then begin
+         ComMoveToArea(AraCar1, pod_base);
+         wait(0$1);
+         ComMoveToArea(AraCar2, pod_base);
+
+         ComWait([Ara1, Ara2, Ara3], 0$4);
+         AddComMoveToArea([Ara1, Ara2, Ara3], in_base);
+         AddComMoveXY([Ara1, Ara2, Ara3], 95,98);
+
+         AddComMoveToArea([Ara1, Ara3], for_charge);
+         AddComPlaceRemoteCharge(Ara1, 0, 0, rudepot1);
+         AddComPlaceRemoteCharge(Ara3, 0, 0, rudepot1);
+         AddComMoveToArea([Ara1, Ara3], pod_base);
+
+         mytick:=tick+2$30;
+         to_reach:=[AraCar1, AraCar2, Ara3, Ara2, Ara1];
+         while mytick>tick and to_reach do begin
+//               debug_strings:=[to_reach];
+               if IsInArea(AraCar1, pod_base)or not IsOk(AraCar1) then
+                  to_reach:=to_reach diff [AraCar1];
+               if IsInArea(AraCar2, pod_base)or not IsOk(AraCar2) then
+                  to_reach:=to_reach diff [AraCar2];
+               if IsInArea(Ara1, in_base)or not IsOk(Ara1) then
+                  to_reach:=to_reach diff [Ara1];
+               if IsInArea(Ara2, in_base)or not IsOk(Ara2) then
+                  to_reach:=to_reach diff [Ara2];
+               if IsInArea(Ara3, in_base)or not IsOk(Ara3) then
+                  to_reach:=to_reach diff [Ara3];
+
+               ComMoveToArea(AraCar1, pod_base);
+               ComMoveToArea(AraCar2, pod_base);
+               wait(0$1);
+         end;
+         // za dve nadrze
+         if Aqr1=1 then begin
+            if GetResourceType(GetBase(rudepot1), mat_oil)<60 then begin
+               DialogueOn;
+               if Say(Ara3, 'D9a-FAr1-1') then
+                  Say(JMM, 'D9a-JMM-1');
+               DialogueOff;
+               cekani:=0;
+               while cekani<60 and GetResourceType(GetBase(rudepot1), mat_oil)<60 do begin
+                   Wait(0$1);
+                   cekani:=cekani+1;
+               end;
+               if GetResourceType(GetBase(rudepot1), mat_oil)<60 then begin
+                   DialogueOn;
+                   Say(Ara1, 'D9a2-Ar1-1');
+                   DialogueOff;
+                   Aqr1:=2;
+                   Aqr2:=Query('QInfo');
+               end
+               else begin
+                   AddResourceType(GetBase(rudepot1), mat_oil, -60);
+                   if odnes_jeden_oil then
+                   if odnes_jeden_oil then
+                      odnes_jeden_oil;
+               end;
+            end
+            else begin 
+                AddResourceType(GetBase(rudepot1), mat_oil, -60);
+                if odnes_jeden_oil then
+                if odnes_jeden_oil then
+                   odnes_jeden_oil;
+            end;
+         end;
+         // za pul nadrze
+         if (Aqr1=2) and (Aqr2=1) then begin
+            if GetResourceType(GetBase(rudepot1), mat_oil)<20 then begin
+               DialogueOn;
+               if Say(Ara3, 'D9a-FAr1-1') then
+                 Say(JMM, 'D9a-JMM-1');
+               DialogueOff;
+               cekani:=0;
+               while cekani<60 and GetResourceType(GetBase(rudepot1), mat_oil)<20 do begin
+                   Wait(0$1);
+                   cekani:=cekani+1;
+               end;
+               if GetResourceType(GetBase(rudepot1), mat_oil)<20 then begin
+                   DialogueOn;
+                   Say(Ara1, 'D9a3-Ar1-1');
+                   DialogueOff;
+                   Aqr1:=2;
+                   Aqr2:=0;
+               end
+               else begin
+                    AddResourceType(GetBase(rudepot1), mat_oil, -20);
+                    odnes_jeden_oil;
+                    PoskytnouInformace:=1;
+               end;
+            end
+            else begin
+                 AddResourceType(GetBase(rudepot1), mat_oil, -20);
+                 odnes_jeden_oil;
+                 PoskytnouInformace:=1;
+            end;
+         end;
+         // stavi jim to
+         if Aqr1=1 then begin
+           if GetResourceType(GetBase(rudepot1), mat_cans)<25 then begin
+              DialogueOn;
+              if Say(Ara2, 'D9b-Ar2-1') then
+                 Say(JMM, 'D9b-JMM-1');
+              DialogueOff;
+           end;
+           cekani:=0;
+           while cekani<120 and GetResourceType(GetBase(rudepot1), mat_cans)<25 do begin
+                 Wait(0$1);
+                 cekani:=cekani+1;
+           end;
+           if GetResourceType(GetBase(rudepot1), mat_cans)>=25 then begin
+               ComMoveXY(Ara2, 94,101);
+               while not UnitFilter([Ara2],[[f_distxy,94,101,2]]) do
+                     wait(0$0.3);
+               RemoveEnvironment(91,99);
+               RemoveEnvironment(91,101);
+               RemoveEnvironment(94,102);
+               RemoveEnvironment(93,100);
+               SetAttitude(arabians, you, att_friend, true);
+               while not ArmStarted do begin
+                  wait(0$0.3);
+                  SetSide(ara2, Getside(rudepot1));
+                  ComBuild(Ara2, b_armoury, 92,101, 1);
+                  ComMoveXY(FilterAllUnits([[f_distxy,92,101,6],[f_side,arabians]]),93,90);
+               end;
+               SetSide(ara2, arabians);
+               wait(0$1);
+               ComMoveUnit([ara1, ara3], FilterAllUnits([[f_btype,b_armoury],[f_nation,nation_arabian]]));
+
+               while not ArmBuild do
+                  wait(0$1);
+               SetAttitude(arabians, you, att_neutral, true);
+
+               if GetResourceType(GetBase(rudepot1), mat_cans)<25 then begin
+                  DialogueOn;
+                  if Say(Ara2, 'D9b-Ar2-1a') then
+                     Say(JMM, 'D9b-JMM-1');
+                  DialogueOff;
+               end;
+               cekani:=0;
+               while cekani<120 and GetResourceType(GetBase(rudepot1), mat_cans)<25 do begin
+                  Wait(0$1);
+                  cekani:=cekani+1;
+               end;
+         // upgrade
+               if GetResourceType(GetBase(rudepot1), mat_cans)>=25 then begin
+                  wait(0$1);
+                  SetRestrict(b_barracks, you, state_enabled);
+                  SetAttitude(arabians, you, att_friend, true);
+                  ComUpgrade(FilterAllUnits([[f_btype,b_armoury],[f_nation, nation_arabian]]));
+                  wait(0$1);
+                  // SetRestrict(b_barracks, you, state_disabled);
+                  SetTech(tech_Mortar,you,state_researched);
+
+                  wait(0$1);
+                  ComMoveUnit([ara1, ara3], FilterAllUnits([[f_btype,b_barracks],[f_nation,nation_arabian]]));
+
+                  while not ArmUpgraded do
+                     wait(0$1);
+                  SetAttitude(arabians, you, att_neutral, true);
+
+                  DialogueOn;
+                  if Say(Ara2, 'D9d-Ar2-1') then
+                  if Say(Ara1, 'D9d-Ar1-1') then
+                  if Say(JMM, 'D9d-JMM-1') then
+                     Say(Ara1, 'D9d-Ar1-2');
+                  DialogueOff;
+
+                  nabidka:=[4];
+                  if GetResourceType(GetBase(rudepot1), mat_siberit)>=20 then
+                     nabidka:=nabidka ^ [1];
+                  if GetResourceType(GetBase(rudepot1), mat_cans)>=50 then
+                     nabidka:=nabidka ^ [2];
+                  if GetResourceType(GetBase(rudepot1), mat_oil)>=80 then
+                     nabidka:=nabidka ^ [3];
+
+                  qr:=4;
+                  if nabidka>1 then begin
+                    qr:=SelectiveQuery('QInfo2', nabidka);
+                    case qr of
+                       1: AddResourceType(GetBase(rudepot1), mat_siberit, -20);
+                       2: AddResourceType(GetBase(rudepot1), mat_cans, -50);
+                       3: AddResourceType(GetBase(rudepot1), mat_oil, -80);
+                    end;       
+                  end
+                  else begin
+                    Query('QInfoNothing');
+                  end;
+                  if qr=4 then begin
+                     DialogueOn;
+                     Say(Ara1, 'D9f-Ar1-1');
+                     DialogueOff;
+                  end
+                  else begin
+                    case qr of
+                       1: odnes_neco(mat_siberit, 20);
+                       2: odnes_neco(mat_cans, 50);
+                       3: odnes_neco(mat_oil, 80);
+                    end;
+                     DialogueOn;
+                     Say(Ara1, 'D9e-Ar1-1');
+                     PoskytnouInformace:=1;
+                     DialogueOff;
+                  end;
+               end;
+           end;
+
+           ComExitBuilding(Ara2);
+           if cekani>=120 then begin
+                 DialogueOn;
+                 if Say(Ara1, 'D9c-Ar1-1') then
+                 if Say(JMM, 'D9c-JMM-1') then
+                 if Say(Ara1, 'D9c-Ar1-2') then
+                 if Say(Ara3, 'D9c-FAr1-2') then
+                 if Say(Ara1, 'D9c-Ar1-3') then
+                    PoskytnouInformace:=2;
+                 DialogueOff;
+           end;
+         end;
+
+         for i in FilterAllUnits([[f_side,arabians],[f_type,unit_building]]) do
+             SetSide(i, you);
+         if PoskytnouInformace>0 and IsLive(ara1) and IsLive(ara2) and IsLive(ara3) then begin
+            DialogueOn;
+            if PoskytnouInformace=2 then
+               Say(JMM, 'D10a-JMM-1');
+            if PoskytnouInformace=1 then
+               Say(JMM, 'D10a-JMM-1'); /// tady ma byt moznost pro druhou situaci ale nekdo ji umazal
+            if Say(Ara1, 'D10a-Ar1-1') then
+            if Say(Ara2, 'D10a-Ar2-1') then
+            if Say(Ara3, 'D10a-FAr1-1') then
+            if Say(Ara2, 'D10a-Ar2-2') then
+            if Say(Ara3, 'D10a-FAr1-2') then
+            if Say(Ara1, 'D10a-Ar1-2') then
+            if Say(JMM, 'D10a-JMM-2') then
+            if Say(Ara1, 'D10a-Ar1-3') then
+               Say(JMM, 'D10a-JMM-3');
+            DialogueOff;
+         end;
+     end; 
+     if (Aqr1=3) or (Aqr1=2 and Aqr2=2) then begin
+
+          ara1_faze:=0;ara3_faze:=0;
+          while UnitFilter([Ara1, Ara2, Ara3, Ara4, Ara5, AraCar1, AraCar2],[f_ok]) do begin
+            for i in FilterUnitsInArea(arab_exit, [[f_side,arabians]]) do
+              if not((i=Ara1)and(ara1_faze<2)or(i=Ara3)and(ara3_faze<2)) then begin
+                RemoveUnit(i);
+                if i=AraCar1 then RemoveUnit(Ara4);
+                if i=AraCar2 then RemoveUnit(Ara5);
+                if IsInUnit(i) then RemoveUnit(IsInUnit(i));
+              end;
+            wait(0$5);
+
+            if not IsInUnit(Ara4) and not IsOK(AraCar1) then ComMoveToArea(Ara4, arab_exit);
+            if not IsInUnit(Ara5) and not IsOK(AraCar2) then ComMoveToArea(Ara5, arab_exit);
+            if not IsInUnit(Ara4) and GetFuel(AraCar1)>0 and IsOK(AraCar1) then ComEnterUnit(Ara4, AraCar1);
+            if not IsInUnit(Ara5) and GetFuel(AraCar2)>0 and IsOK(AraCar2) then ComEnterUnit(Ara5, AraCar2);
+
+            ComMoveToArea([Ara2, AraCar1, AraCar2], arab_exit);
+            AddComMoveXY([Ara2, AraCar1, AraCar2],37,72);
+
+            case true of
+                                           not IsOk(Ara1) : ara1_faze:=4;
+            (GetDistUnitXY(Ara1,57,76)<5) and ara1_faze=2 : ara1_faze:=3;
+                      MineOfUnit(Ara1)<>0 and ara1_faze=1 : begin
+                                                              ara1_faze:=2;
+                                                              mina1:=MineOfUnit(Ara1);
+                                                            end;
+            (GetDistUnitXY(Ara1,58,76)<5) and ara1_faze=0 : ara1_faze:=1;
+            end;
+            case ara1_faze of
+              0: ComMoveXY(Ara1, 58,76);
+              1: ComPlaceRemoteCharge(Ara1, 0,0, ruDepot1);
+              2: ComMoveXY(Ara1, 57,76);
+              3: begin ComMoveToArea(Ara1, arab_exit);
+                       AddComMoveXY(Ara1,37,72);
+                 end;
+            end;
+            case true of
+                           not IsOk(Ara3) : ara3_faze:=4;
+            (GetDistUnitXY(Ara3,58,76)<5) and ara3_faze=2 : ara3_faze:=3;
+                      MineOfUnit(Ara3)<>0 and ara3_faze=1 : begin
+                                                              ara3_faze:=2;
+                                                              mina3:=MineOfUnit(Ara3);
+                                                            end;
+            (GetDistUnitXY(Ara3,70,104)<5) and ara3_faze=0 : ara3_faze:=1;
+            end;
+            case ara3_faze of
+              0: ComMoveXY(Ara3, 70,104);
+              1: ComPlaceRemoteCharge(Ara3, 0,0, ruDepot1);
+              2: ComMoveXY(Ara3, 58,76);
+              3: begin ComMoveToArea(Ara3, arab_exit);
+                       AddComMoveXY(Ara3,37,72);
+                 end;
+            end;
+
+
+            if not kecy and ara1_faze>=3 and ara3_faze>=3 then begin
+              if odmitl_v_query then
+                Say(Ara2, 'D11b-Ar1-1')
+              else
+                Say(Ara2, 'D11a-Ar1-1');
+
+              if mina1 then MineExplosion(mina1[1],mina1[2],1200);
+              if mina3 then MineExplosion(mina3[1],mina3[2],1200);
+              kecy:=true;
+            end;
+          end;
+     end
+     else begin
+          while UnitFilter([Ara2, AraCar1, AraCar2],[f_ok]) do begin
+            for i in FilterUnitsInArea(arab_exit, [[f_side,arabians]]) do begin
+              RemoveUnit(i);
+              if i=AraCar1 then RemoveUnit(Ara4);
+              if i=AraCar2 then RemoveUnit(Ara5);
+              if IsInUnit(i) then RemoveUnit(IsInUnit(i));
+            end;
+            wait(0$1);
+
+            if not IsInUnit(Ara4) and not IsOK(AraCar1) then ComMoveToArea(Ara4, arab_exit);
+            if not IsInUnit(Ara5) and not IsOK(AraCar2) then ComMoveToArea(Ara5, arab_exit);
+            if not IsInUnit(Ara4) and GetFuel(AraCar1)>0 and IsOK(AraCar1) then ComEnterUnit(Ara4, AraCar1);
+            if not IsInUnit(Ara5) and GetFuel(AraCar2)>0 and IsOK(AraCar2) then ComEnterUnit(Ara5, AraCar2);
+
+            ComMoveToArea([Ara1, Ara2, Ara3, AraCar1, AraCar2], arab_exit);
+            AddComMoveXY([Ara1, Ara2, Ara3, AraCar1, AraCar2],37,72);
+          end;
+     end;
+end;
+
+every 0$1 do
+var who, a_maj_to, a, i;
+begin
+    a:=FilterAllUnits([[f_side,you]]);
+    for i in a do
+      if WantsToAttack(i) in [Ara1, Ara2, Ara3, Ara4, Ara5, AraCar1, AraCar2] then begin
+        a_maj_to:=true;
+        break;
+      end;
+
+    if a_maj_to then begin
+      SetAttitude(you,arabians,att_enemy,true);
+      who:=WhoSayAny([Ara1, Ara2, Ara3, Ara4, Ara5], arabians, sex_male, 0, 0);
+      if not kecy then begin
+        DialogueOn;
+        Say(who, 'D11a-Ar1-1');
+        DialogueOff;
+
+        kecy:=true;
+        if mina1 then MineExplosion(mina1[1],mina1[2],1200);
+        if mina3 then MineExplosion(mina3[1],mina3[2],1200);
+      end;
+    end
+    else
+      enable;
+end;
+
+every 45$30 do
+//every 2$30 do
+begin
+     DialogueOn;
+     SayRadio(Powell, 'D12-Pow-1');
+     ChangeMissionObjectives('M4');
+     EndEnable:=true;
+     SetAreaMapShow(exit_area, 1);
+     DialogueOff;
+end;
+
+export konec;
+every 55$0 do
+begin
+  Konec:=true;
+end;
+
+
+export EndEnable, TimerCas;
+every 0$1 do
+var k, br, zbyva;
+begin
+     if testing then
+       display_strings:=[['game time: '& (tick div 1$0) &': '& ((tick-(tick div 1$0) * 1$0) div 0$1)] ]
+     else
+       display_strings:=[];
+
+     zbyva:=60-GetResourceType(getbase(depot1),mat_siberit);
+     if zbyva<0 then
+       zbyva:=0;
+     if counter_time then
+       display_strings:=display_strings ^ ['#Am09-1', zbyva, counter_time - tick];
+
+     if Konec and (IsOK(JMM)) then begin
+       Vyhra;
+     end;
+
+     if TimerEnable then begin
+       if ContactTime(russians)>(TimerCas+0$45) then begin
+         if GetResourceType(GetBase(depot1), mat_siberit)>=20 and (IsOK(JMM)) then begin
+           Vyhra;
+         end;
+       end;
+     end;
+     if EndEnable then begin
+       if timer<0 then
+         timer:=0;
+       timer:=timer-0$1;
+       if testing then
+         display_strings:=display_strings ^ [[(timer div 1$0) &': '& ((timer-(timer div 1$0) * 1$0) div 0$1) ]];
+
+       if not FilterUnitsExceptArea(exit_area, [[f_ok],[f_side,you],[f_nation,nation_american],[f_type,unit_human]])
+          and GetResourceType(GetBase(depot1), mat_siberit)>=20
+          and IsInArea(JMM,exit_area) then
+         Vyhra;
+     end;
+     enable;
+end;
+
+var was_QE;
+function QE;
+begin
+  was_QE:=true;
+  if Query('QE')=2 then
+    Vyhra;
+end;
+
+
+
+
+
+
+
+
+
+
+

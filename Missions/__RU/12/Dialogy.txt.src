@@ -1,0 +1,301 @@
+
+12. October Revolution
+Briefing
+Having accepted the bid for power from Gladkov's group, Burlak must now rid the world of comrade general Platonov, for ever.
+
+Co-ordinates
+V. K. Bluekher base, October 25, 2 NR
+
+Dialogue
+Designer's notes
+The player starts in vicinity of Bluekher base. His task is to defeat the forces of general Platonov. To do so, he must capture three of the five bases in this area. While each base can be captured by brute force, there is also an alternative in each case:
+
+Kill commander
+Intimidate commander (by gathering large force in the vicinity of his base)
+Persuade commander (Answer quiz)
+Pay commander (with something from different base)
+Beat commander
+
+The player will learn about these possibilities through queries and dialogues. When he captures the first base, it will be his completely (all men, all buildings) in all next cases, the commander gives him only some men, and keeps the base.  The number of men player receives is in parentheses. The player starts with 3 men.
+
+A - 14
+B - 13 (5) - to intimidate player needs at least 12 men
+C - 5 (3) - never gets the commander
+D - 8 (2) - never gets the commander + 3 scientists + space-time lab
+E - 9 (5)
+
+His secondary objective is stop Gossudarov from joining the Alliance and keep the Artefact (this is primary obj. as it is necessary for next mission).
+
+The map is roughly square and very big, with a base in upper left, lower left and lower right corner, and in the centre of top and right edge.
+
+Character selection
+There is no character selection, all the player gets are Gladkov and his cadets.
+
+Dialogue Start (Burlak and Gladkov standing in the open, with couple of other characters nearby)
+{
+Burlak: = So where is everyone?
+Gladkov: = They are all here.
+Burlak: = This is it!? You said there were many who supported you.
+Gladkov: = They do, but they are too afraid to show themselves.
+Burlak: = (sarcastic) Brilliant!
+Gladkov: = But knowing our supporters are there, means once we have demonstrated our strength the battle will be won quickly. I believe four bases under our command would be enough for victory.
+Burlak: = Do you have a list of the targets comrade Gladkov?
+Gladkov: = There is A. I. Yegorov base in South West, commanded by colonel Tsarytsyn. He is a hard-line communist but if we can persuade him our cause is for the people he may join us.
+Gladkov: = To the South East there is M. N. Ryutin base, under command of colonel Davidov. He's a little mad, spends too much time in the lab with scientists.
+Gladkov: = In East there is Y. E. Yakir base, commanded by colonel Eisenstein. He's a bully but can be bullied as well!
+Gladkov: = There is M. A. Budonny base in the North, it's commanded by colonel Borodin. He is weak man out for himself, he will go with the one who has the upper hand.
+Gladkov: = There is V. K. Bluekher base in North West (camera pans). Obviously this is commanded by Platonov, so we can only use force here.
+Gladkov: = Of course, if we just went straight for Platonov and defeated him the rest would follow then. This could prevent many casualties. But the decision is yours comrade. We follow your command.
+}
+
+Objective change Start (+Capture, +Kill)
+Add main Capture
+# Capture at least 4 bases in the area.
+Add alternative main Kill
+# Kill general Platonov.
+End
+
+Dialogue Gossudarov (some time after the start of mission, Russian scientists headed by Gossudarov will start to leave base and head Eastward)
+{
+Fadeev: = Look, major. The scientists are leaving Blukher base. What's going on?
+Burlak: =  (loudly) Professor!? Why the hurry?
+Gossudarov: = You know where we are going, Burlak. I'm only sorry you won't be with us. Defeating Platonov will change nothing.
+Burlak: = Leave the Artefact professor. Like you, it is going nowhere.
+Gossudarov: = Comrade...
+Burlak: = You spoke about responsibility, professor and you were right, I am responsible to my country which trusted me to preserve it's future. It trusted you also. You will not leave here alive.
+Gossudarov: = Then kill us Burlak. We will die free men, and you will live a prisoner of the party and it's propaganda.
+}
+
+Objective change Goss (+Goss, +Arte)
+Add main Arte
+# Protect the Artefact
+Add secondary Sci
+# Stop scientists from joining the Alliance.
+End
+
+Designer's notes
+The scientists will spread around the map, try to hide. We should increase their Dexterity by SAIL so that they can move faster
+
+Designer's notes
+All XBase dialogues are triggered when Burlak comes within some distance of the base. The appropriate part is played only once, the other every time Burlak comes.
+
+Dialogue A-BaseContact
+{
+Platonov: = Gorky, you are treacherous scum! I will wipe every trace of you from the face of the earth.
+Burlak: = I am not a traitor, I only do this to ensure success of our mission. You are an obstacle Platonov. You must leave of your own accord or be removed.
+}
+
+Dialogue A-BaseRefuse
+{
+Platonov: = Your death approaches, Gorky!
+}
+
+Dialogue A-BaseAccept (Platonov runs away - he uses the teleport)
+{
+Platonov: = You have tricked me, Gorky. But this is not the end. I will defeat you. I swear it!
+}
+
+Designer's notes
+If the player attacks A-base and fails to kill Platonov, he (Platonov) uses teleport to hide in one of the other bases the player did not capture yet. This base becomes A-base for the purposes of dialogues - use A-BaseRefuse if Burlak comes close to it. If the player destroys this base a well, Platonov runs off the map.
+
+If on the other hand the player ignores A-base, Platonov will construct a Behemoth and attack him.
+
+Dialogue Behemoth (when Behemoth spotted)
+{
+RSoldier1: = Saint Trofimov. It's a moving fortress!
+Platonov: = Burlak! The time has come to meet your maker! You will be crushed like a beetle under my treads!
+Burlak: = Comrades! It's just a tank. A big mother of a tank I admit! But nothing we can't handle. Come on!
+}
+
+Dialogue B-BaseContact (use only if commander wants to refuse)
+{
+Borodin: = We've heard about your mutiny, comrade. Your band of traitors will never win the support of Red Army troops.
+}
+
+Dialogue B-BaseRefuse (this dialogue is repeated always when the commander wants to refuse)
+{
+Borodin: = Your force is no threat to us. Leave while you still can, comrade.
+}
+
+Dialogue B-BaseAccept
+{
+Borodin: = You are a mighty commander, comrade Gorki. I believe you can lead us to victory.
+Borodin: = [first base] Take our base and all my men.
+Borodin: = [otherwise] I need some men to defend this base against the enemy. But others I can put under your command.
+}
+
+Character Selecion B-Base
+# Select up to 5 men
+
+Dialogue C-BaseContact
+{
+Tsaritsyn: = Comrade, I am not with you unless you are for the people. I am communist but what we saw in our country wasn't communism, it was defacement of it's principles.
+}
+
+Dialogue C-BaseQuestion
+{
+Tsaritsyn: = If you can prove to me that you are well-versed in true Marxism-Leninism, comrade, I'll go with you.
+}
+
+Query ML1 (in following queries, the option Ask Gleb is only available if Gleb is alive)
+The seminal Marxist work "Das Kapital" (The Capital) was written by:
+#1 Marx brothers
+#2 Karl Marx
+#3 St. Paul
+#4 Ask Gleb
+
+Query ML2
+The middle name of V. I. Lenin is:
+#1 Ilyich
+#2 Ivan
+#3 Ignatius
+#4 Ask Gleb
+
+Query ML3
+The famous "Communist Manifesto" by K. Marx and B. Engels was first published in:
+#38 BC
+#1838
+#2038
+#4 Ask Gleb
+
+Query ML4
+The acronym USSR stands for:
+#1 Union of Sanctity, Serenity and Radiation
+#2 Union of Shoplifters, Sycophants and Robbers
+#3 Union of Soviet Socialist Republics
+#4 Ask Gleb
+
+Query ML5
+The Great October Socialist Revolution of 1917 that deposed the Tsar and created the first state of workers and peasants took place on:
+#1 1st May
+#2 7th November
+#3 4th July
+#4 Ask Gleb
+
+Dialogue QrML#Right
+{
+Tsaritsyn: = Good. I see you are a true communist, comrade Gorky. Platonov was lax on ideology. It will be pleasure to work with you.
+Tsaritsyn: = [first base] I'll now go to depot to immerse myself in study of fundamental Lenin's work "Several Remarks on Growing Corn in Southern Kamchatka". Meanwhile, you can take command of my base and my men.
+Tsaritsyn: = [otherwise] I need some men to run this base, comrade, but you can take three with you.
+}
+
+Dialogue QrML#Wrong
+{
+Tsaritsyn: = No, this is not good. You are just like Platonov, ready to kill for things you know nothing about.
+}
+
+Dialogue QrML#Gleb (depending on the query select one line and redisplay query)
+{
+Gleb: = (certain) It definitely isn't the first option. (uncertain) I think.
+Gleb: = (certain) It definitely isn't the second option. (uncertain) I think.
+Gleb: = (certain) It definitely isn't the third option. (uncertain) I think.
+}
+
+Character Selecion C-Base
+# Select up to 5 men
+
+Dialogue D-BaseContact
+{
+Davidov: = I know about you, major Gorky, including your dealings with professor Gossudarov. I appreciate that you stayed with us. My concern is the Artefact. I believe it holds very powerful secrets.
+Burlak: = Maybe we can help you with Artefact research more than comrade Platonov.
+}
+
+Dialogue D-BaseRefuse
+{
+Davidov: = If you can secure the Artefact, it will prove to me that you're serious about science. Then I will support you.
+}
+
+Dialogue D-BaseAccept (if the player brings Artefact)
+{
+Davidov: = Wonderful, comrade. By this one act you have done more for our cause than all the empty-headed generals put together.
+Davidov: = [first base] I and three of my most senior scientists will begin work in the lab. The rest of the base is yours.
+Davidov: = [otherwise] I need men to run the base and do the research, but the rest can go with you.
+}
+
+Character Selection D-Base
+# Select up to 2 men
+
+Dialogue E-BaseContact
+{
+Eisenstein: = We know about your mutiny, commander. I have never heard of such a deplorable act of insubordination!
+Burlak: = Platonov is a poor commander, you must know that. While he is in control we will never defeat our enemies. Which do you prefer!?
+}
+
+Dialogue E-BaseRefuse (he has a stasis researched)
+{
+Eisenstein: = I don't know if you are a good commander comrade Gorky. Attack my base and I will see.
+}
+
+Dialogue E-BaseAccept (when losses reach certain treshold)
+{
+Eisenstein: = Enough comrade Gorky! I see you are strong.
+Eisenstein: = [first base] My men and my base are now at your service.
+Eisenstein: = [otherwise] I need some men to defend this base, but you can take rest with you.
+}
+
+Character Selection E-Base
+# Select up to 5 men
+
+Dialogue XbaseSurrender (when commander is killed)
+{
+Rsoldier1: = Comrade Gorky, I speak for all comrades in this base. We recognise your strength and we support you. Take our base, we follow you now.
+}
+
+Dialogue Rocket (Weapon lab built)
+{
+RScientist1: = Comrade commander. I've been thinking, attack from longer range would reduce casualties. If you want me to look into missile design I can do this.
+}
+
+Query End
+You now have the support of four commanders in this area. You can end the mission or play on. Will you:
+#1 Continue
+#2 End the mission.
+
+Dialogue End (if Gladkov is not alive, some other character will take up his role)
+{
+Burlak: = Now we have the support of our own troops we can concentrate on fighting the enemy!
+Gladkov: = Congratulations, Burlak. This was a great achievement.
+Burlak: = Not for me, for all of us. I have learnt from this campaign that words can be as powerful as tanks.
+Burlak: = We need a capable administrator who will take care of day-to-day running of the army. I'm prepared to conduct military operations. But for now we have to go to winter quarters anyway.
+}
+
+Character selection
+Appoint the main administrator.
+
+Victory Main
+Bases captured
+
+Victory Platon
+Platonov killed
+
+Loss Burlak
+Burlak is dying.
+
+Loss Arte
+Artefact was taken away.
+
+Medal All
++ All bases captured
+- You ignored one base
+
+Medal Diplomacy
++ No unnecessary fighting
+- Some bases could have been taken without fighting
+
+Medal Goss
++ Scientists stopped
+- You allowed your scientists to join the Alliance.
+
+input
+  characters
+    Burlak
+  variables
+    Masha
+output
+  characters
+    Burlak
+  variables
+    Masha
+    BehemothSeen
+    PlatonovKilled
+}

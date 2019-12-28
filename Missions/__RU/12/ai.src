@@ -1,0 +1,150 @@
+export factories; //unit[5]
+export depots; //unit[5]
+
+export buildings; //list[5]
+export humans; //list[5]
+export vehicles; //list[5]
+export attack_units; //list[5]
+export defence_units; //list
+export mcdef_units; //list
+
+export fort,sol, dep,eng, fact,mec, lab,sci; //list
+
+
+export function inicializace_ai;
+begin
+  factories:=[0,0,0,0,0];
+  depots:=[0,0,0,0,0];
+
+  buildings:=[[],[],[],[],[]];
+  humans:=[[],[],[],[],[]];
+  vehicles:=[[],[],[],[],[]];
+
+  attack_units:=[];
+  defence_units:=[];
+end;
+
+
+export function get_groups;
+var i;
+begin
+  fort:=FilterAllUnits([[f_not,[f_side,you]],mf_fort]);
+  sol:=FilterAllUnits([[f_not,[f_side,you]],mf_sol]) diff hlavouni;
+
+  dep:=FilterAllUnits([[f_not,[f_side,you]],mf_dep]);
+  eng:=FilterAllUnits([[f_not,[f_side,you]],mf_eng]) diff hlavouni;
+
+  fact:=FilterAllUnits([[f_not,[f_side,you]],mf_fact]);
+  mec:=FilterAllUnits([[f_not,[f_side,you]],mf_mec]) diff hlavouni;
+
+  lab:=FilterAllUnits([[f_not,[f_side,you]],mf_lab]);
+  sci:=FilterAllUnits([[f_not,[f_side,you]],mf_sci]) diff hlavouni;
+
+  for i:=1 to 5 do begin
+    humans:=replace(humans,i,FilterAllUnits([[f_side,ai_s[i]],[f_type,unit_human]]) diff hlavouni);
+    vehicles:=replace(vehicles,i,FilterAllUnits([[f_side,ai_s[i]],[f_type,unit_vehicle]]) diff art_cargo);
+    buildings:=replace(buildings,i,FilterAllUnits([[f_side,ai_s[i]],[f_type,unit_building]]));
+  end;
+  attack_units:=FilterAllUnits([[f_control,control_computer]]);
+  defence_units:=FilterAllUnits([[f_control,control_manual]]) diff art_cargo;
+
+  write_deps;
+  write_facts;
+end;
+export function write_deps;
+var i,a;
+begin
+  for i:=1 to 5 do begin
+    a:=UnitFilter(buildings[i], [mf_dep]);
+    if a then
+      depots:=replace(depots,i,a[1])
+    else
+      depots:=replace(depots,i,0);
+  end;
+end;
+export function write_facts;
+var i,a;
+begin
+  for i:=1 to 5 do begin
+    a:=UnitFilter(buildings[i], [mf_fact]);
+    if a then
+      factories:=replace(factories,i,a[1])
+    else
+      factories:=replace(factories,i,0);
+  end;
+end;
+
+
+
+
+every 0$6 + 0$0.9 do
+var i,j, blds, hums, cars;
+begin
+   hums:=[];
+   for i in sol do
+      if (not HasTask(i) and not (GetBType(IsInUnit(i))=b_bunker or GetBType(IsInUnit(i))=b_breastwork)) then
+         hums:=hums ^ [i];
+
+   blds:=UnitFilter(fort, [ [f_not,[f_occupied]] , [mf_bunk] ]);
+   for i in blds do begin
+      j:=NearestUnitToUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 40]]), i);
+      ComExitBuilding(j);
+      AddComEnterUnit(j, i);
+      hums:=hums diff j;
+   end;
+
+   cars:=UnitFilter(defence_units, [f_not,[f_occupied]]);
+   for i in cars do begin
+      j:=NearestUnitToUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+      ComExitBuilding(j);
+      AddComEnterUnit(j, i);
+      hums:=hums diff j;
+   end;
+
+   blds:=UnitFilter(fort, [ [f_not,[f_occupied]] , [f_or,[f_btype,b_barracks],[f_btype,b_armoury]] ]);
+   for i in blds do
+      ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;
+
+every 0$2 + 0$0.5 do
+var i,j, blds, hums;
+begin
+   blds:=dep;
+   hums:=[];
+   for i in eng do
+      if not IsBusy(i) and not IsInUnit(i) then hums:=hums ^ [i];
+
+   for i in blds do
+     ComEnterUnit(UnitFilter(hums, [[f_side,GetSide(i)],[f_dist, i, 25]]), i);
+
+   enable;
+end;
+every 0$2 + 0$0.7 do
+var i,j, blds, hums;
+begin
+   blds:=fact;
+   hums:=[];
+   for i in mec do
+      if not IsBusy(i) and not IsInUnit(i) then hums:=hums ^ [i];
+
+
+   for i in blds do
+     ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;
+every 0$2 + 0$0.9 do
+var i,j, blds, hums;
+begin
+   blds:=lab;
+   hums:=[];
+   for i in sci do
+      if not IsBusy(i) and not IsInUnit(i) then hums:=hums ^ [i];
+
+   for i in blds do
+     ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;

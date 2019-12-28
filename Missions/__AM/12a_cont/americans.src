@@ -1,0 +1,633 @@
+export john,powell,roth,joan,bobby,cyrus,lisa,frank,markc,tim,denis,yamoko,gary,simms,brown,lucy,zbytekz11;
+export moji,mojivip,ostatnivip;
+export mista,areas,pocetmist;
+export moji_backup;
+
+export function prepare_americans;
+var tmp,tmp2,tmp3;
+begin
+//  changesidefog(am,al);
+  changesidefog(oth,al);
+  uc_side=am;
+  uc_nation=nation_american;
+//osazenstvo bunkru
+  preparesoldier(sex_male,ams00);
+  tmp=createhuman;
+  placeunitxy(tmp,43,14,false);
+  commoveunit(tmp,ambunk0);
+  preparesoldier(sex_male,ams01);
+  tmp=createhuman;
+  placeunitxy(tmp,93,17,false);
+  commoveunit(tmp,ambunk1);
+  preparesoldier(sex_male,ams02);
+  tmp=createhuman;
+  placeunitxy(tmp,148,88,false);
+  commoveunit(tmp,ambunk2);
+  preparesoldier(sex_male,ams03);                        
+  tmp=createhuman;
+  placeunitxy(tmp,108,87,false);
+  commoveunit(tmp,ambunk3);
+  preparesoldier(sex_male,ams04);
+  tmp=createhuman;
+  placeunitxy(tmp,46,73,false);
+  commoveunit(tmp,ambunk4);
+  preparesoldier(sex_male,ams05);
+  tmp=createhuman;
+  placeunitxy(tmp,48,54,false);
+  commoveunit(tmp,ambunk5);
+  preparesoldier(sex_male,ams06);
+  tmp=createhuman;
+  placeunitxy(tmp,46,44,false);
+  commoveunit(tmp,ambunk6);
+//hlidky
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=amv0_ch;
+  vc_weapon=amv0_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitxy(tmp,131,61,false);
+  preparemechanic(sex_male,amv0_drv);
+  placehumaninunit(createhuman,tmp);
+  comagressivemove(tmp,105,42);
+  addcomagressivemove(tmp,98,46);
+  addcomagressivemove(tmp,100,57);
+  addcomagressivemove(tmp,114,67);
+  addcomagressivemove(tmp,134,64);
+  addcomagressivemove(tmp,105,42);
+
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=amv1_ch;
+  vc_weapon=amv1_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitxy(tmp,110,96,false);
+  preparemechanic(sex_male,amv1_drv);
+  placehumaninunit(createhuman,tmp);
+  comagressivemove(tmp,91,87);
+  addcomagressivemove(tmp,71,83);
+  addcomagressivemove(tmp,54,70);
+  addcomagressivemove(tmp,62,87);
+  addcomagressivemove(tmp,86,99);
+  addcomagressivemove(tmp,91,87);
+
+  preparehuman(sex_female,class_sniper,amv2_cl);
+  tmp=createhuman;
+  placeunitxy(tmp,80,31,false);
+  comhold(tmp);
+
+//load jednotek
+  uc_side=al;
+  if checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+  
+//  uc_side=am;
+//  if checkcharacterset('Roth') then roth=createcharacterwithclass('Roth',class_scientistic)
+//  else buildquery('neny Roth',['OK']);
+  // --- Patched by MK, Oct 3, Roth added to Start.txt by Stoupa --- CHECK!
+  roth=newcharacter('Roth');
+  if not roth then buildquery('neny Roth',['OK']);
+
+//  if checkcharacterset('Powell') then powell=createcharacter('Powell')
+//  else buildquery('neny Powell',['OK']);
+  uc_side=am;
+  powell=newcharacter('Powell');
+  if not powell then buildquery('neny Powell',['OK']);
+
+  uc_side=oth;
+  if not (testvariable('joan') and testvariable('bobby') and testvariable('cyrus') and testvariable('lisa')
+  and testvariable('frank') and testvariable('cornell') and testvariable('brown') and testvariable('lucy')
+  and testvariable('gladstone') and testvariable('denis') and testvariable('yamoko') and testvariable('gary')
+  and testvariable('simms')) then msg('a co treba si pustit i to intro?!?');
+
+  tmp=loadvariable('joan',-1);
+  if tmp then begin
+    joan=createcharacter('Joan');
+    if tmp=1 then mojivip=mojivip^[joan]
+    else ostatnivip=ostatnivip^[joan];
+  end
+  else joan=0;
+  tmp=loadvariable('bobby',-1);
+  if tmp then begin
+    bobby=createcharacter('Bobby');
+    if tmp=1 then mojivip=mojivip^[bobby]
+    else ostatnivip=ostatnivip^[bobby];
+  end
+  else bobby=0;
+  tmp=loadvariable('cyrus',-1);
+  if tmp then begin
+    cyrus=createcharacter('Cyrus');
+    if tmp=1 then mojivip=mojivip^[cyrus]
+    else ostatnivip=ostatnivip^[cyrus];
+  end
+  else cyrus=0;
+  tmp=loadvariable('lisa',-1);
+  if tmp then begin
+    lisa=createcharacter('Lisa');
+    if tmp=1 then mojivip=mojivip^[lisa]
+    else ostatnivip=ostatnivip^[lisa];
+  end
+  else lisa=0;
+  tmp=loadvariable('frank',-1);
+  if tmp then begin
+    frank=createcharacter('Frank');
+    if tmp=1 then mojivip=mojivip^[frank]
+    else ostatnivip=ostatnivip^[frank];
+  end
+  else frank=0;
+  tmp=loadvariable('cornell',-1);
+  if tmp then begin
+    markc=createcharacter('Cornell');
+    if tmp=1 then mojivip=mojivip^[markc]
+    else ostatnivip=ostatnivip^[markc];
+  end
+  else markc=0;
+
+  tmp=loadvariable('brown',-1);
+  if tmp then begin
+    brown=createcharacter('Brown');
+    if tmp=1 then mojivip=mojivip^[brown]
+    else ostatnivip=ostatnivip^[brown];
+  end
+  else brown=0;
+  tmp=loadvariable('lucy',-1);
+  if tmp then begin
+    lucy=createcharacter('Donaldson');
+    if tmp=1 then mojivip=mojivip^[lucy]
+    else ostatnivip=ostatnivip^[lucy];
+  end
+  else lucy=0;
+
+  tmp=loadvariable('gladstone',-1);
+  if tmp then begin
+    tim=createcharacter('Gladstone');
+    if tmp=1 then mojivip=mojivip^[tim]
+    else ostatnivip=ostatnivip^[tim];
+  end
+  else tim=0;
+  tmp=loadvariable('denis',-1);
+  if tmp then begin
+    denis=createcharacter('Denis');
+    if tmp=1 then mojivip=mojivip^[denis]
+    else ostatnivip=ostatnivip^[denis];
+  end
+  else denis=0;
+  tmp=loadvariable('yamoko',-1);
+  if tmp then begin
+    yamoko=createcharacter('Yamoko');
+    if tmp=1 then mojivip=mojivip^[yamoko]
+    else ostatnivip=ostatnivip^[yamoko];
+  end
+  else yamoko=0;
+  tmp=loadvariable('gary',-1);
+  if tmp then begin
+    gary=createcharacter('Gary');
+    if tmp=1 then mojivip=mojivip^[gary]
+    else ostatnivip=ostatnivip^[gary];
+  end
+  else gary=0;
+  tmp=loadvariable('simms',-1);
+  if tmp then begin
+    simms=createcharacter('Simms');
+    if tmp=1 then mojivip=mojivip^[simms]
+    else ostatnivip=ostatnivip^[simms];
+  end
+  else simms=0;
+
+  if not testvariable('mojiam12a_c') then buildquery('a co intro?!? (neny mojiam12a_c)',['OK'])
+  else begin
+    tmp2=loadvariable('mojiam12a_c',-1);
+    if tmp2 and checkcharacterset('mojiam12a') then moji=createcharacterset('mojiam12a');
+  end;
+
+  disable(03);
+{  disable(04);
+  disable(05);
+  disable(06);
+  disable(07);
+  disable(08);
+  disable(09);
+  disable(10);
+  disable(11);
+  disable(12);
+  disable(13);}
+
+  takoviti=mojivip^moji^ostatnivip;
+  moji_backup=mojivip^moji;
+  tmp2=pocetmist-takoviti;
+  for tmp=1 to tmp2 do begin
+    tmp3=rand(1,2);
+    //if tmp3=2 then tmp3=4;
+    preparehuman(rand(1,2),[class_soldier,class_scientistic][tmp3],6);   //sex,cl,lev
+    takoviti=takoviti^[createhuman];
+  end;
+
+  if debug then begin
+    debug_strings=[moji,mojivip,ostatnivip,takoviti];
+  end;
+
+  comhold(takoviti);
+
+  placeunitxy(john,115,14,false);
+  placeunitxy(roth,118,14,false);
+  comhold([john,roth]);
+//  placeunitxy(simms, 54,51,false);
+//  placeunitxy(bobby, 57,97,false);
+//  placeunitxy(cyrus, 104,112,false);
+//  placeunitxy(lisa,  149,108,false);
+//  placeunitxy(frank, 165,96,false);
+//  placeunitxy(markc, 137,62,false);
+//  placeunitxy(tim,   122,38,false);
+//  placeunitxy(denis, 100,11,false);
+//  placeunitxy(yamoko,75,3,false);
+//  placeunitxy(gary,  53,13,false);
+//  placeunitxy(joan,  24,22,false);
+
+  centernowonunits([john,roth]);
+
+  interface_hidden=true;
+  dialogueon;
+  dwait(0$0.5);
+  say(john,'D1-JMM-1');
+  say(roth,'D1-Roth-1');
+  say(john,'D1-JMM-2');
+  say(roth,'D1-Roth-2');
+  say(john,'D1-JMM-3');
+  say(roth,'D1-Roth-3');
+  settech(tech_partinvis,al,state_researched);
+  dialogueoff;
+  cominvisible(roth);
+//  addcomhold(roth);
+  wait(0$1.5);
+  dialogueon;
+  say(john,'D1-JMM-4');
+  dialogueoff;
+  comstop(roth);
+  wait(5);
+  dialogueon;
+  say(john,'D1-JMM-4a');
+  say(roth,'D1-Roth-4');
+  say(john,'D1-JMM-5');
+  say(roth,'D1-Roth-5');
+  say(john,'D1-JMM-6');
+  say(roth,'D1-Roth-6');
+  say(john,'D1-JMM-7');
+  say(roth,'D1-Roth-7');
+  dialogueoff;
+  placeunitxy(powell,115,27,false);
+  commovexy(powell,115,23);
+  while not isinarea(powell,powpl) do wait(0$0.25);
+  dialogueon;
+  say(powell,'D1-Pow-7');
+  say(john,'D1-JMM-8');
+  say(powell,'D1-Pow-8');
+  say(john,'D1-JMM-9');
+  dialogueoff;
+  ingameon;
+  commovexy(powell,115,29);
+  while not isinarea(powell,powpl2) do wait(0$0.25);
+  ingameoff;
+  interface_hidden=true;
+  dialogueon;
+  sayradio(powell,'D1-Pow-9');
+  setside([roth],oth);      //musim nejak nekam uklidit rotha
+  comhold(roth);
+
+  if joan and (not (joan in mojivip)) then sayradio(joan,'D1-Joan-9');
+  say(roth,'D1-Roth-9');
+  say(john,'D1-JMM-10');
+  dialogueoff;
+  removeunit(powell);
+  interface_hidden=false;
+
+//  changesidefog(am,am);
+  setattitude(al,am,att_enemy,true);
+
+  for tmp=1 to pocetmist do begin
+    placeunitxyr(takoviti[tmp],mista[tmp][1],mista[tmp][2],1,false);
+    settag(tmp,1);
+//    enable(2+tmp2);
+  end;
+  vesel=0;
+  joanmet=false;
+  frankmet=false;
+  lisamet=false;
+  joan_joined = false;
+  enable(03);
+
+  saveforquickrestart;
+  wait(2);
+  changemissionobjectives('M1');
+  setareamapshow(vychod,1);
+
+  john_vychod=true;
+  hint('Invisibility');
+//  enable(02);   
+end;
+
+
+var tmpar,vesel;
+function isinareaex(un,lias);
+var tmp,pm;
+begin
+  result=0;
+  pm=0+lias;
+  for tmp=1 to pm do
+    if isinarea(un,lias[tmp]) then begin tmpar=tmp;result=tmp;exit;end;
+end;
+
+every 0$0.125+2 trigger vesel do
+begin
+  if not isinarea(john,areas[vesel]) then begin setside(takoviti[vesel],am);vesel=0;end;
+  enable;
+end;
+
+export joanmet,frankmet,lisamet;
+export joan_joined;
+every 0$0.5+1 trigger isinareaex(john,areas) marked 03 do
+begin
+  if gettag(tmpar)=-1 then begin enable;exit; end;
+  case takoviti[tmpar] of
+    joan:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        joan_joined = true;
+        if joan in mojivip then begin
+          setside(joan,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(joan,'D3-Joan-Joan-1');
+          say(john,'D3-Joan-JMM-1');
+          dialogueoff;
+        end
+        else begin
+          joanmet=true;
+          dialogueon;
+          say(joan,'D4-Joan-Joan-1');
+          say(john,'D4-Joan-JMM-1');
+          say(joan,'D4-Joan-Joan-2');
+          say(john,'D4-Joan-JMM-2');
+          say(joan,'D4-Joan-Joan-3');
+          dialogueoff;
+          setside(joan,al);
+          mojivip=mojivip^[joan];
+        end;
+      end;
+    bobby:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if bobby in mojivip then begin
+          setside(bobby,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(bobby,'D3-Bobby-Bobby-1');
+          say(john,'D3-Bobby-JMM-1');
+          dialogueoff;
+        end
+        else begin
+          vesel=tmpar;
+          dialogueon;
+          say(bobby,'D4-Bobby-Bobby-1');
+          say(john,'D4-Bobby-JMM-1');
+          say(bobby,'D4-Bobby-Bobby-2');
+          dialogueoff;
+        end;
+      end;
+    cyrus:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if cyrus in mojivip then begin
+          setside(cyrus,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(cyrus,'D3-Cyrus-Cyrus-1');
+          say(john,'D3-Cyrus-JMM-1');
+          dialogueoff;
+        end
+        else begin
+          vesel=tmpar;
+          dialogueon;
+          say(cyrus,'D4-Cyrus-Cyrus-1');
+          say(john,'D4-Cyrus-JMM-1');
+          dialogueoff;
+        end
+      end;
+    lisa:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if (lisa in mojivip) then begin
+          contacted=contacted+1;
+          if {(joan=0) or (not joanmet)} not joan_joined then begin
+            setside(lisa,al);
+            lisamet=1;
+            dialogueon;
+            say(lisa,'D3-LisaL-Lisa-1');
+            say(john,'D3-LisaL-JMM-1');
+            dialogueoff;
+          end
+          else begin
+            vesel=tmpar;
+            dialogueon;
+            say(lisa,'D3-LisaJ-Lisa-1');
+            say(john,'D3-LisaJ-JMM-1');
+            say(lisa,'D3-LisaJ-Lisa-2');
+            say(john,'D3-LisaJ-JMM-2');
+            say(lisa,'D3-LisaJ-Lisa-3');
+            dialogueoff;
+            lisamet=2;
+            mojivip=mojivip diff [lisa];
+          end;
+        end
+        else
+          if (joan=0) or (not joanmet) then begin
+            vesel=tmpar;
+            dialogueon;
+            say(lisa,'D4-LisaL-Lisa-1');
+            dialogueoff;
+          end
+          else begin
+            vesel=tmpar;
+            dialogueon;
+            say(lisa,'D4-LisaJ-Lisa-1');
+            say(john,'D4-LisaJ-JMM-1');
+            say(lisa,'D4-LisaJ-Lisa-2');
+            dialogueoff;
+          end;
+      end;
+    frank:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if frank in mojivip then begin
+          setside(frank,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(frank,'D3-Frank-Frank-1');
+          say(john,'D3-Frank-JMM-1');
+          say(frank,'D3-Frank-Frank-2');
+          say(john,'D3-Frank-JMM-2');
+          say(frank,'D3-Frank-Frank-3');
+          dialogueoff;
+        end
+        else begin
+          frankmet=true;
+          dialogueon;
+          say(frank,'D4-Frank-Frank-1');
+          say(john,'D4-Frank-JMM-1');
+          say(frank,'D4-Frank-Frank-2');
+          say(john,'D4-Frank-JMM-2');
+          dialogueoff;
+          setside(frank,al);
+          mojivip=mojivip^[frank];
+       end;
+      end;
+    markc:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if markc in mojivip then begin
+          setside(markc,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(markc,'D3-Mark-Corn-1');
+          say(john,'D3-Mark-JMM-1');
+          say(markc,'D3-Mark-Corn-2');
+          dialogueoff;
+        end
+        else begin
+          vesel=tmpar;
+          dialogueon;
+          say(markc,'D4-Mark-Corn-1');
+          say(john,'D4-Mark-JMM-1');
+          say(markc,'D4-Mark-Corn-2');
+          dialogueoff;
+        end;
+      end;
+    tim:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if tim in mojivip then begin
+          setside(tim,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(john,'D3-Tim-JMM-1');
+          say(tim,'D3-Tim-Glad-1');
+          dialogueoff;
+        end
+        else begin
+          vesel=tmpar;
+          dialogueon;
+          say(john,'D4-Tim-JMM-1');
+          say(tim,'D4-Tim-Glad-1');
+          dialogueoff;
+        end;
+    end;
+    denis:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        contacted=contacted+1;
+        setside(denis,al);
+        dialogueon;
+        say(denis,'D3-Denis-Den-1');
+        say(john,'D3-Denis-JMM-1');
+        dialogueoff;
+      end;
+    yamoko:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if yamoko in mojivip then begin
+          setside(yamoko,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(yamoko,'D3-Yamako-Yam-1');
+          dialogueoff;
+        end
+        else begin
+          dialogueon;
+          say(yamoko,'D4-Yamako-Yam-1');
+          dialogueoff;
+          setside(yamoko,am);
+        end;
+      end;
+    gary:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        if gary in mojivip then begin
+          setside(gary,al);
+          contacted=contacted+1;
+          dialogueon;
+          say(gary,'D3-Gary-Gary-1');
+          say(john,'D3-Gary-JMM-1');
+          dialogueoff;
+        end
+        else begin
+          dialogueon;
+          say(gary,'D4-Gary-Gary-1');
+          dialogueoff;
+          setside(gary,am);
+        end;
+    end;
+    simms:
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);
+        contacted=contacted+1;
+        setside(simms,al);
+        dialogueon;
+        say(simms,'D3-Simms-Sim-1');
+        say(john,'D3-Simms-JMM-1');
+        dialogueoff;
+      end;
+    else 
+      if gettag(tmpar)=1 then begin
+        settag(tmpar,2);                                   //lucy,brown
+        if (takoviti[tmpar] in moji) or (takoviti[tmpar] in mojivip) then begin
+          setside(takoviti[tmpar],al);
+          contacted=contacted+1;
+          if getsex(takoviti[tmpar])=sex_male then begin
+            dialogueon;
+            say(takoviti[tmpar],'D3-Soldier1-Sol1-1');
+            say(john,'D3-Soldier1-JMM-1');
+            dialogueoff;
+          end
+          else begin
+            dialogueon;
+            say(takoviti[tmpar],'D3-Soldier2-Fsol2-1');
+            say(john,'D3-Soldier2-JMM-1');
+            dialogueoff;
+          end;
+        end
+        else begin
+          vesel=tmpar;
+          if getsex(takoviti[tmpar])=sex_female then begin
+            dialogueon;
+            say(takoviti[tmpar],'D4-Soldier1-FSol1-1');
+            say(john,'D4-Soldier1-JMM-1');
+            say(takoviti[tmpar],'D4-Soldier1-FSol1-2');
+            dialogueoff;
+          end
+          else begin
+            dialogueon;
+            say(takoviti[tmpar],'D4-Soldier2-Sol1-1');
+            say(john,'D4-Soldier2-JMM-1');
+            say(takoviti[tmpar],'D4-Soldier2-Sol2-1');
+            dialogueoff;
+          end;
+        end;
+      end;
+  end; //case
+  enable;
+end;
+
+
+{every 0$0.47 trigger isinarea(john,weaplab) do
+begin
+  setclass(john,class_bazooker);
+  enable(02);
+end;}
+
+on enterbuilding(buil,un) do
+  if (un=john) and (buil=amlab) then begin
+    setclass(john,class_bazooker);
+    settech(tech_soporific,al,state_researched);
+    changemissionobjectives('M1a');
+    enable(02);
+  end;

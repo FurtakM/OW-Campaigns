@@ -1,0 +1,269 @@
+every 0$0.8 do // Units destroying in ExitArea
+var qqq,i,un,my_filter;
+begin
+  if konec then
+    my_filter:=FilterUnitsInArea(ExitArea,[[f_or,[f_side,you],[f_side,ally]],[f_not,[f_or,[f_class,class_apeman_engineer],[f_class,class_apeman_soldier]]]])
+  else
+    my_filter:=FilterUnitsInArea(ExitArea,[f_side,ally]);
+
+  if my_filter+0>0 then
+    for un in my_filter do
+    begin
+      if un=Platonov then
+      begin
+        my_filter:=my_filter diff Platonov;
+        RemoveUnit(Platonov);
+      end;
+
+      if un=Burlak Or (IsDrivenBy(un)=Burlak) then
+      begin
+        Burlak_saved:=true;
+        //debug_strings:='Burlak_saved';
+      end;
+
+      if un=Gaydar Or (IsDrivenBy(un)=Gaydar) then
+      begin
+        Gaydar_saved:=true;
+        ChangeMissionObjectives('MOutGaydar');
+       // debug_strings:='Gaydar_saved';
+      end;
+
+      if konec then
+      begin
+        if GetType(un)=unit_vehicle AND GetSide(IsDrivenBy(un))=you AND NOT GetNation(IsDrivenBy(un))=nation_nature then
+          saved_player_units:=saved_player_units union IsDrivenBy(un)
+        else
+          if GetSide(un)=you AND NOT GetNation(un)=nation_nature then
+            saved_player_units:=saved_player_units union un;
+      end;
+    end;
+
+  for un in player_units do
+    if IsDead(un) then player_units:=player_units diff un;
+
+  for un in my_filter do
+  begin
+    if GetType(un)=unit_vehicle then
+    begin
+      player_units:=player_units diff (IsDrivenBy(un));
+      RemoveUnit(IsDrivenBy(un));
+      RemoveUnit(un);
+    end
+    else
+    begin
+      player_units:=player_units diff un;
+      RemoveUnit(un);
+    end;
+  end;
+
+  if Burlak_saved And Gaydar_saved And player_units=0 then
+    konec_mise;
+
+  enable;
+end;
+
+every 0$1+0$0.4 marked 5 do  // Gaydar's change side
+var un;
+begin
+enable;
+for un in player_units do
+  if GetDistUnits(un,Gaydar) <= 5 then
+    begin
+      disable(5);
+      SetSide(Gaydar,you);
+      Dialogue11a(un);
+      Exit;
+    end;
+end;
+
+every 0$1+0$0.2 marked 6 do
+begin
+if GetDistUnits(Burlak,Gaydar) <= 3 OR IsInArea(Gaydar,KnollArea) then  // Gaydar vs. Burlak Dialogue
+begin
+  disable(6);
+  Dialogue11b;
+  player_units:=player_units union Gaydar;
+end
+else
+  enable;
+end;
+
+every 0$0.7+0$0.3 do // SelfAttack check
+var un;
+begin
+  for un in player_units do
+    if GetSide(Attacks(un))=ally then
+      YouLost('SelfAttack');
+  enable;
+end;
+
+every 0$1.3 do // Kuzmov side change
+var un,ape;
+begin
+  for un in (player_units diff Kuzmov) do
+  begin
+    if GetDistUnits(un,Kuzmov)<10 then
+    begin
+      SetSide(Kuzmov,you);
+      exit;
+    end;
+    Wait(3);
+  end;
+  if GetSide(Kuzmov)=ally then enable;
+end;
+
+
+every 0$1+0$0.5 do // Hints 'Combat' and 'Combat2' controling
+var un;
+begin
+  for un in player_units do
+    if getside(Attacks(un))=arab AND NOT was_combat then
+    begin
+      disable;
+      was_combat:=true;
+      Wait(0$5);
+      if holdfreemode=0 then
+        Hint('Combat')
+      else
+        Hint('Combat2');
+      exit;
+    end
+    else
+     enable;
+end;
+
+every 0$1+0$0.8 marked 19 do // Mission Objective - Dismantling Base
+var filter;
+begin
+  filter:=FilterAllUnits([[f_type,unit_building],[f_not,[f_or,[f_btype,b_oil_power],[f_btype,b_oil_mine],[f_btype,b_bunker]]]]);
+
+  if filter=0 AND NOT base_dismantled then
+  begin
+    ChangeMissionObjectives('MOutDestroy');
+    base_dismantled:=True;
+  end;
+
+  if (NOT filter=0) AND base_dismantled then
+  begin
+    ChangeMissionObjectives('MAddDestroy');
+    base_dismantled:=False;
+  end;
+  enable;
+end;
+
+// ********************** EVENTS *************************
+
+on BuildingComplete(building) do
+begin
+  if depot_build=false then
+  begin
+    if (GetBType(building)=b_depot) and (GetSide(building)=you) and (IsInArea(building,KnollArea)) then
+    begin
+      depot_build=true;
+      enable(2); // convoy arriving
+      enable(8); // convoy[1] position check: This must be for...
+      ChangeMissionObjectives('MOutBuild');
+      Dialogue2;
+    end;
+    if (GetBType(building)=b_depot) AND (GetSide(building)=you) AND NOT (IsInArea(building,KnollArea)) then
+      Dialogue2x;
+  end;
+
+  if GetBType(building)=b_workshop AND NOT workshop_build then
+  begin
+    workshop_build:=true;
+    Hint('Extensions1');
+  end;
+
+  if GetBType(building)=b_armoury AND NOT armoury_build then
+  begin
+    armoury_build:=true;
+    Hint('Armoury');
+  end;
+
+  if GetBType(building)=b_breastwork AND NOT bunker_build then
+  begin
+    bunker_build:=true;
+    Hint('Bunkers');
+  end;
+
+  if GetBType(building)=b_bunker AND NOT turret_build then
+  begin
+    turret_build:=true;
+    Hint('Turrets');
+  end;
+end;
+
+on UpgradeComplete(upgraded_building) do
+begin
+  if (GetBType(upgraded_building)=b_lab_half)  AND NOT lab_upgraded then
+  begin
+    Dialogue5;
+    lab_upgraded:=true;
+  end;
+
+  if (GetBType(upgraded_building)=b_factory) AND NOT workshop_upgraded then
+  begin
+    Hint('Extensions');
+    workshop_upgraded:=true;
+  end;
+end;
+
+on UnitDestroyed(my_unit) do
+var un;
+begin
+  if my_unit=Burlak then YouLost('Burlak');
+  if my_unit=Gaydar then YouLost('Gaydar');
+
+end;
+
+on UnitGoesToRed(red_unit) do
+var un;
+begin
+  if red_unit in attack then
+  begin
+//    attack:=attack diff red_unit;
+    ar_killed:=ar_killed + 1;
+  end;
+
+  for un in sm_attack1 do
+    if un=red_unit then
+    begin
+      sm_attack1:=sm_attack1 diff red_unit;
+      ar_killed:=ar_killed + 1;
+    end;
+
+  for un in sm_attack2 do
+    if un=red_unit then
+    begin
+      sm_attack2:=sm_attack2 diff red_unit;
+      ar_killed:=ar_killed + 1;
+    end;
+
+  if red_unit=driver then
+  begin
+    Wait(0$5);
+    steal_player_buildings;
+  end;
+end;
+
+
+// New evenets
+On Command(com) do
+var i, j, temp, x, y, typeTask;
+begin
+        for i in FilterAllUnits([[f_side,3],[f_type,unit_human]]) do
+            if GetTaskList(i) > 0 then
+               for j = 1 to GetTaskList(i) do
+               begin
+
+                    temp = GetTaskList(i)[j][4];
+                    x = GetTaskList(i)[j][2];
+                    y = GetTaskList(i)[j][3];
+                    typeTask = GetTaskList(i)[j][1];
+
+                    if GetSide(temp) = 6 and GetType(temp) = unit_vehicle then SetTaskList(i, []);
+                    if x > 0 and y > 0 and typeTask = 'B' and InArea(x, y, BlockBuildArea) then SetTaskList(i, []);
+               end;   
+end;
+

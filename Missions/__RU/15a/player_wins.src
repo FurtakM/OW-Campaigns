@@ -1,0 +1,238 @@
+
+// zjistovani zniceni americke zakladny
+function Base_Destroyed(side);
+var un,list,
+    vysledek;
+begin
+  vysledek:=false;
+
+  // chybi depo a nekdo kdo by ho postavil
+  if not (FilterAllUnits([ [f_side,side], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]], [f_ok] ]) or
+          FilterAllUnits([ [f_side,side], [f_class,class_engineer], [f_ok] ])) then
+    vysledek:=true;
+
+  // pocet lidi je mensi nez 3
+  if not vysledek then
+    begin
+      list:=FilterAllUnits([ [f_side,side], [f_type,unit_human], [f_ok] ]);
+      if list<3 then
+        vysledek:=true;
+    end;
+
+  // pocet bunkru a vozidel je mensi nez 5
+  if not vysledek then
+    begin
+      list:=FilterAllUnits([ [f_side,side], [f_or, [f_btype,b_bunker], [f_btype,b_turret]], [f_ok] ]);
+      un:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle], [f_ok] ]);
+      if (un+list)<5 then
+        vysledek:=true;
+    end;
+
+  // zadna elektrarna
+  if not vysledek then
+    begin
+      list:=FilterAllUnits([ [f_side,side], [f_or,[f_btype,b_solar_power],[f_btype,b_oil_power],[f_btype,b_siberite_power]],
+                             [f_ok] ]);
+      if not list then
+        vysledek:=0;
+    end;
+
+  result:=vysledek;
+end;
+
+
+// Dialogue SurrenderAmericans (when Am base is destroyed)
+every 0$2.1 trigger Base_Destroyed(us) and not siberite_rocket_send do
+var sol,un,list;
+begin
+  if IsOK(Powell) then
+    begin
+      CenterOnUnits(Powell);
+      DialogueOn;
+      interface_hidden:=true;
+      Say(Powell,'DSurrenderAmericans-Pow-1');
+      Say(MacMillan,'DSurrenderAmericans-JMM-1');
+      interface_hidden:=false;
+      DialogueOff;
+      repeat
+        wait(0$1);
+      until not IsOK(Powell);
+    end;
+
+  cpu_list:=cpu_list diff us;
+  SetAttitude(you,us,att_friend,true);
+
+  sol:=FindLastMohycane(us);
+  if IsOK(sol) then
+    ComExitBuilding(sol);
+
+  while not See(you,sol) do
+       begin
+            un:=FilterAllUnits([ [f_side,you], [f_ok] ]);
+            ComMoveUnit(sol,NearestUnitToUnit(un,sol));
+            wait(0$1);
+       end;
+
+  CenterOnUnits(sol);
+  DialogueOn;
+  interface_hidden:=true;
+    case camp of
+  4: Say(sol,'DSurrenderAmericans-Sol1-1a');
+  6: Say(sol,'DSurrenderAmericans-Sol1-1');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+
+  finalize:=finalize+1;
+
+  list:=FilterAllUnits([ [f_side,us], f_not, [f_type,unit_human] ]);
+  SetSide(list,you);
+  DestroyAndReplaceVehicles(UnitFilter(list,[f_type,unit_vehicle]));
+
+  repeat
+    list:=FilterAllUnits([ [f_side,us], [f_type,unit_human], [f_ok] ]);
+    ComMoveToArea(list,am_leaving_area);
+    if list then
+      wait(0$2);
+    sol:=FilterUnitsInArea(am_leaving_area,[ [f_side,us], [f_type,unit_human] ]);
+    for un in sol do
+      RemoveUnit(un);
+  until not list;
+end;
+//A bug has been reported where vehicles from the CPU retains some of their CPU-behaviour
+//(kept shooting at the artifacts when in their vicinity). This is a hack to circumvent that:
+//Destroy the vehicles and replace each with an exact copy.
+Function DestroyAndReplaceVehicles(list);
+     var i, x, y, driver, veh;
+     begin
+          for i in list do
+               begin
+                    InitUc;
+                    InitVc;
+
+                    uc_nation = GetNation(i);
+                    uc_side = GetSide(i);
+                    uc_direction = GetDir(i);
+
+                    vc_chassis = GetChassis(i);
+                    vc_engine = GetEngine(i);
+                    vc_weapon = GetWeapon(i);
+                    vc_control = GetControl(i);
+                    vc_fuel_battery = GetFuel(i);
+
+                    x = GetX(i);
+                    y = GetY(i);
+
+                    driver = IsDrivenBy(i);
+                    if driver > 0 then
+                         RemoveUnit(driver);
+
+                    DestroyUnit(i);
+                    veh = CreateVehicle;
+                    PlaceUnitXY(veh,x,y,false);
+                    if driver > 0 then
+                         PlaceHumanInUnit(driver,veh);
+               end;
+     end;
+
+
+// Dialogue SurrenderRussians (when Ru base is destroyed)
+every 0$2.3 trigger Base_Destroyed(ru) and not siberite_rocket_send do
+var list,sol,un;
+begin
+  if IsOK(Platonov) then
+    begin
+      CenterOnUnits(Platonov);
+      DialogueOn;
+      interface_hidden:=true;
+      Say(Platonov,'DSurrenderRussians-Pla-1');
+      Say(Burlak,'DSurrenderRussians-Bur-1');
+      interface_hidden:=false;
+      DialogueOff;
+      repeat
+        wait(0$1);
+      until not IsOK(Platonov);
+    end;
+
+  cpu_list:=cpu_list diff ru;
+  SetAttitude(you,ru,att_friend,true);
+
+  sol:=FindLastMohycane(ru);
+  if IsOK(sol) then
+    ComExitBuilding(sol);
+
+  while not See(you,sol) do
+       begin
+            un:=FilterAllUnits([ [f_side,you], [f_ok] ]);
+            ComMoveUnit(sol,NearestUnitToUnit(un,sol));
+            wait(0$1);
+       end;
+
+  CenterOnUnits(sol);
+  DialogueOn;
+  interface_hidden:=true;
+    case camp of
+  4: Say(sol,'DSurrenderRussians-Rsol1-1a');
+  6: Say(sol,'DSurrenderRussians-Rsol1-1');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+
+  finalize:=finalize+1;
+
+  list:=FilterAllUnits([ [f_side,ru], f_not, [f_type,unit_human] ]);
+  SetSide(list,you);
+  DestroyAndReplaceVehicles(UnitFilter(list,[f_type,unit_vehicle]));
+
+  repeat
+    list:=FilterAllUnits([ [f_side,ru], [f_type,unit_human], [f_ok] ]);
+    ComMoveToArea(list,ru_leaving_area);
+    if list then
+      wait(0$2);
+    sol:=FilterUnitsInArea(ru_leaving_area,[ [f_side,ru], [f_type,unit_human] ]);
+    for un in sol do
+      RemoveUnit(un);
+  until not list;
+end;
+
+
+// Hledani posledniho mohykana
+function  FindLastMohycane(side);
+var area,
+    un,list,
+    build,unseen,
+    vysledek;
+begin
+     case side of
+  us: area:=us_base;
+  ru: area:=ru_base;
+     end;
+
+  list:=FilterAllUnits([ [f_side,side], [f_type,unit_human], [f_sex,sex_male], [f_ok] ]) diff FilterAllUnits([[f_side,side],[f_or,[f_class,class_apeman],[f_class,class_apeman_soldier],[f_class,class_apeman_engineer],[f_class,class_apeman_kamikaze]]]);
+
+  if list then
+    vysledek:=FindMaxSkill(list,skill_combat)
+  else
+    begin
+      // seznam vsech budov, do kterych muzu umistit posledniho mohykana
+      unseen:=0;
+      build:=FilterAllUnits([ [f_side,side], [f_empty], [f_ok] ]);
+      for un in build do
+        if not See(you,un) then
+          begin
+            unseen:=un;
+            break;
+          end;
+      if (not unseen) and build then
+        unseen:=build[1];
+
+      if unseen then
+        begin
+          PrepareSoldier(sex_male,5);
+          vysledek:=CreateHuman;
+          PlaceHumanInUnit(vysledek,unseen);
+        end;
+    end;
+
+  result:=vysledek;
+end;

@@ -1,0 +1,153 @@
+every 3$12 trigger vsichni_gone do
+begin
+     create_arabs_scout;
+     SetFuel([ArScout1,ArScout2,ArScout3], 100);
+     PlaceUnitArea(ArScout1, ar_in_area, false);
+     if difficulty>=2 then
+       PlaceUnitArea(ArScout2, ar_in_area, false);
+     if difficulty>=3 then
+       PlaceUnitArea(ArScout3, ar_in_area, false);
+     RaiseSailEvent(5001);
+     if difficulty>=2 then
+       RaiseSailEvent(5002);
+     if difficulty>=3 then
+       RaiseSailEvent(5003);
+     enable;
+end;
+every 3$12 + 1$0 trigger vsichni_gone do
+begin
+     SetFuel([ArScout1,ArScout2,ArScout3], 100);
+     PlaceUnitArea(ArScout1, exit_area, false);
+     if difficulty>=2 then
+       PlaceUnitArea(ArScout2, exit_area, false);
+     if difficulty>=3 then
+       PlaceUnitArea(ArScout3, exit_area, false);
+     RaiseSailEvent(5051);
+     if difficulty>=2 then
+       RaiseSailEvent(5052);
+     if difficulty>=3 then
+       RaiseSailEvent(5053);
+     enable;
+end;
+
+export function vsichni_gone;
+begin
+   result:=false;
+   if not UnitFilter([ArScout1,ArScout2,ArScout3], [[f_ok]]) then
+     result:=true;
+end;
+
+export function f_arcar1_in;
+begin
+     while not IsInArea(ArScout1, exit_area) do begin
+       if IsIdle(arscout1) then begin
+         ComAgressiveMove(ArScout1,127,135);
+         AddComAgressiveMove(ArScout1,70,134);
+//         AddComMoveToArea(ArScout1, exit_area);
+       end;
+       DU_wait(ArScout1);
+     end;
+     RemoveUnit(ArScout1);
+end;
+export function f_arcar2_in;
+begin
+     while not IsInArea(ArScout2, exit_area) do begin
+       if IsIdle(arscout2) then begin
+         ComAgressiveMove(ArScout2,127,135);
+         AddComAgressiveMove(ArScout2,70,134);
+//         AddComMoveToArea(ArScout2, exit_area);
+       end;
+       DU_wait(ArScout2);
+     end;
+     RemoveUnit(ArScout2);
+end;
+export function f_arcar3_in;
+begin
+     while not IsInArea(ArScout3, exit_area) do begin
+       if IsIdle(arscout3) then begin
+         ComAgressiveMove(ArScout3,127,135);
+         AddComAgressiveMove(ArScout3,70,134);
+//         AddComMoveToArea(ArScout3, exit_area);
+       end;
+       DU_wait(ArScout3);
+     end;
+     RemoveUnit(ArScout3);
+end;
+export function f_arcar1_exit;
+begin
+     while not IsInArea(ArScout1, ar_in_area) do begin
+       if IsIdle(arscout1) then begin
+         ComAgressiveMove(ArScout1,127,135);
+         AddComAgressiveMove(ArScout1,185,134);
+//         AddComMoveToArea(ArScout1, ar_in_area);
+       end;
+       DU_wait(ArScout1);
+     end;
+     RemoveUnit(ArScout1);
+end;
+export function f_arcar2_exit;
+begin
+     while not IsInArea(ArScout2, ar_in_area) do begin
+       if IsIdle(arscout2) then begin
+         ComAgressiveMove(ArScout2,127,135);
+         AddComAgressiveMove(ArScout2,185,134);
+//         AddComMoveToArea(ArScout2, ar_in_area);
+       end;
+       DU_wait(ArScout2);
+     end;
+     RemoveUnit(ArScout2);
+end;
+export function f_arcar3_exit;
+begin
+     while not IsInArea(ArScout3, ar_in_area) do begin
+       if IsIdle(arscout3) then begin
+         ComAgressiveMove(ArScout3,127,135);
+         AddComAgressiveMove(ArScout3,185,134);
+//         AddComMoveToArea(ArScout3, ar_in_area);
+       end;
+       DU_wait(ArScout3);
+     end;
+     RemoveUnit(ArScout3);
+end;
+
+export ArScout1, ArScout2, ArScout3, ArSc1, ArSc2, ArSc3;
+export function create_arabs_scout;
+begin
+     InitUc;
+     InitVc;
+     uc_side:=arabians;
+     uc_nation:=nation_arabian;
+     uc_direction:=4;
+
+     vc_control:=control_manual;
+     vc_engine:=engine_combustion;
+     vc_fuel_battery:=100;
+
+     vc_chassis:=ar_half_tracked;
+     vc_weapon:=ar_flame_thrower;
+     if not ArScout1 or IsDead(ArScout1) then
+        ArScout1:=CreateVehicle;
+
+     vc_chassis:=ar_half_tracked;
+     vc_weapon:=ar_gatling_gun;
+     if not ArScout2 or IsDead(ArScout2) then
+        ArScout2:=CreateVehicle;
+
+     vc_chassis:=ar_half_tracked;
+     vc_weapon:=ar_gatling_gun;
+     if not ArScout3 or IsDead(ArScout3) then
+        ArScout3:=CreateVehicle;
+
+     InitHc;
+     PrepareMechanic(0,5);
+     if not ArSc1 or IsDead(ArSc1) then
+        ArSc1:=CreateHuman;
+     if not ArSc2 or IsDead(ArSc2) then
+        ArSc2:=CreateHuman;
+     if not ArSc3 or IsDead(ArSc3) then
+        ArSc3:=CreateHuman;
+
+     PlaceHumanInUnit(ArSc1, ArScout1);
+     PlaceHumanInUnit(ArSc2, ArScout2);
+     PlaceHumanInUnit(ArSc3, ArScout3);
+end;

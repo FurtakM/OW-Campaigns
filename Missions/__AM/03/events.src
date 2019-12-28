@@ -1,0 +1,6 @@
+
+// odstraneni ruskeho vozidla ze seznamu
+on VehicleCaptured(v_new,v_old,o_side,hum) do
+begin
+  ru_trucks:=ru_trucks diff v_old;
+end;

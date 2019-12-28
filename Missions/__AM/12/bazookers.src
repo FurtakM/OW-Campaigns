@@ -1,0 +1,90 @@
+export
+  bazukeri_jdete_do_toho;
+
+var
+  registrovani,
+  dvojicky,varovani,
+  free_baz;
+
+
+// samotka
+//   kdyz nejaka jednotka vstoupi sama do oblasti samotka,
+//   jeden pali zpomalovaci na ni, jeden streli jeden teleportacni za ni,
+//   pak okamzite pali zpomalovaci na ni, nastavi se ji priority attack
+//   a ostatni maji volno...
+export function prepare_bazookers;
+  begin
+    free_baz:=[baz0,baz1,baz2,baz3,baz4,baz5];
+    varovani:=[2,1,0][difficulty];
+  end;
+
+function registruj_dvojicku(baz,en);
+  begin
+    dvojicky:=dvojicky^[[baz,en]];
+    ComSpaceShift(baz,GetX(en)+1,GetY(en)+1);
+    registrovani:=registrovani union en;
+    free_baz:=free_baz diff baz;
+  end;
+
+// kdyz je jich v oblasti moc, poslou je vsechny pryc
+every 0$1 trigger bazukeri_jdete_do_toho marked 4242 do
+  var naprahu,un,baz;
+  begin
+    naprahu:=FilterUnitsInArea(prah,[[f_side,am],[f_ok]]) diff registrovani;
+    if not naprahu then
+      begin
+        enable;
+        exit;
+      end;
+    baz:=UnitFilter(free_baz,[f_ok]);
+    if not baz then
+      begin
+        enable;
+        exit;
+      end;
+{    if (naprahu>2)or(baz<=naprahu)or(varovani) then
+      begin
+        if varovani then
+          varovani=varovani-1;}
+
+        un:=NearestUnitToXY(naprahu,69,53);
+        ComTimeShift(baz[1],GetX(un)-3,GetY(un)-3);
+        if baz>1 then
+          ComSpaceShift(baz[1],83,64);
+        if baz>2 then
+          ComSpaceShift(baz[2],85,63);
+
+    enable;
+  end;
+
+every 0$1+0$0.4 trigger bazukeri_jdete_do_toho do
+  var baz,za;
+  begin
+    baz:=UnitFilter(free_baz,[f_ok]);
+    za:=FilterUnitsInArea(prah,[[f_side,am],[f_ok]]) diff registrovani;
+    if za and (baz>1) then
+      registruj_dvojicku(baz[1],za[1]);
+    enable;
+  end;
+  
+
+every 0$1+0$0.8 trigger bazukeri_jdete_do_toho and dvojicky do
+  var dv,new;
+  begin
+    new:=[];
+    for dv in dvojicky do
+      if IsOk(dv[1])and IsOk(dv[2]) and IsInArea(dv[2],zaprahem) then
+        begin
+          ComTimeShift(dv[1],GetX(dv[2]),GetY(dv[2]));
+          new:=new^[dv];
+        end
+      else
+        begin
+          free_baz:=free_baz^dv[1];
+          registrovani:=registrovani diff dv[2];
+          ComStop(dv[1]);
+        end;
+
+    dvojicky:=new;
+    enable;
+  end;

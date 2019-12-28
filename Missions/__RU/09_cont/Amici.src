@@ -1,0 +1,421 @@
+EXPORT JMM;
+EXPORT Joan;
+EXPORT VEDCI1;
+EXPORT VEDCI2;                       
+EXPORT VEDCI3;
+EXPORT Am_opoce;
+EXPORT Am_sol;                                   
+EXPORT Am_mech;
+EXPORT Am_vyr;
+EXPORT Am_snipe;
+
+EXPORT Am_utoky;
+VAR UTOCENI;
+
+EXPORT mcmillanova_pomsta;
+EXPORT counter_utoku;
+
+// nastaveni pocatecnich hodnot
+EVERY 0$0.1 DO
+begin
+  UTOCENI=false;
+  Am_utoky=0;
+  Am_opoce=[OPC1,OPC2,OPC3,OPC4];
+  mcmillanova_pomsta=false;
+  counter_utoku=0;
+  disable(998);            // disable casovani mcmillanovy pomsty
+end;
+
+// uklid amiku do budov atd
+EVERY 0$0.2 DO
+begin
+  ComEnterUnit(VEDCI1,Am_lab1);
+  ComEnterUnit(VEDCI2,Am_lab2);
+  ComEnterUnit(VEDCI3,Am_lab3);
+  ComEnterUnit(Joan,Am_lab2);
+  ComEnterUnit(Am_opoce,Am_dep);
+  ComEnterUnit(Am_mech,Am_ct);
+  ComEnterUnit(Am_vyr,Am_tov);
+  ComEnterUnit(Am_snipe,Am_bar);
+  ComEnterUnit(Am_sol,Am_bar);
+end;
+
+// nastaveni pocatecnich levelu pro amiky
+EVERY 0$0.1 DO
+VAR i,pom;
+begin
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_building]]);
+  for i in pom do SetBLevel(i,levely_budovy_amici[difficulty]);
+end;
+
+// priprava na boj amiku
+EVERY 0$1 TRIGGER FilterAllUnits([[f_side,You],[f_see,Amici]])>0 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Am_vychod,[[f_side,You]]);
+  if pom>0 then begin
+                  if IsOK(Am_sol[1]) then begin
+                                            ComExitBuilding(Am_sol[1]);
+                                            AddComEnterUnit(Am_sol[1],Am_bu3);
+                                          end;
+                  if IsOK(Am_sol[2]) then begin
+                                            ComExitBuilding(Am_sol[2]);
+                                            AddComEnterUnit(Am_sol[2],Am_bu4);
+                                          end;
+                end
+           else begin
+                  pom=FilterUnitsInArea(Am_vychod,[[f_side,You]]);
+                  if pom>0 then
+                    begin
+                      if IsOK(Am_sol[1]) then begin
+                                                ComExitBuilding(Am_sol[1]);
+                                                AddComEnterUnit(Am_sol[1],Am_bu1);
+                                              end;
+                      if IsOK(Am_sol[2]) then begin
+                                                ComExitBuilding(Am_sol[2]);
+                                                AddComEnterUnit(Am_sol[2],Am_bu2);
+                                              end;
+                    end;
+                end;
+end;
+
+// neustale vynalezani v lab 1,2
+EVERY 1$7 DO
+begin
+  if Researched(Amici,tech_Sib1) then
+    begin
+      SetTech(tech_Sib1,Amici,state_enabled);
+      ComResearch([Am_lab1,Am_lab2],tech_Sib1);
+    end;
+  enable;
+end;
+
+// pocatek vyzkumu na zacatku v lab 1,2 !!!
+EVERY 0$19 DO
+begin
+  SetTech(tech_Sib1,Amici,state_enabled);
+  ComResearch([Am_lab1,Am_lab2],tech_Sib1);
+end;
+
+// neustale vynalezani v lab 3
+EVERY 1$8 DO
+begin
+  if Researched(Amici,tech_Opto1) then
+    begin
+      SetTech(tech_Opto1,Amici,state_enabled);
+      ComResearch(Am_lab3,tech_Opto1);
+    end;
+  enable;
+end;
+
+// pocatek vyzkumu na zacatku v lab 3 !!!
+EVERY 0$21 DO
+begin
+  SetTech(tech_Opto1,Amici,state_enabled);
+  ComResearch(Am_lab3,tech_Opto1);
+end;
+
+// uklid po utoku
+EVERY 0$10 TRIGGER Arabi_vztah=0 and bojeschopnych_rusu=0 DO
+VAR pom,i,pom1;
+begin
+  if IsOK(Am_bar) and IsInUnit(Am_sol[1])<>Am_bar and IsInUnit(Am_sol[1])<>Am_bar then
+    begin
+      ComExitBuilding(Am_sol);
+      AddComEnterUnit(Am_sol,Am_bar);
+    end;
+  opravovani_budov;
+  enable;
+end;
+
+// pocita rusy schopne bojovat x amikum
+function bojeschopnych_rusu;
+VAR pom,i,pom1;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_see,Amici]]);
+  pom1=pom;
+  for i in pom do
+    if GetType(i)=unit_vehicle and IsDrivenBy(i)=0 then pom1=pom1 diff i;
+  debug_strings=[pom1];
+  result:=pom1+0;
+end;
+
+// utok amiku na rusaky - utok 1
+EVERY 0$19 TRIGGER Am_utoky=1 DO
+VAR i;
+VAR cesta;
+begin
+  wait(cas_utoku_amiku[difficulty]);
+  wait(Rand(1,0$30));
+  if mcmillanova_pomsta then exit;
+  for i in AM_UTOK_1_LIST do PlaceUnitArea(i,Am_enter,false);
+  case cislo_baze of
+   1:cesta=[[40,46],[70,62],[57,77],[48,75]];
+   2:cesta=[[40,47],[61,52],[76,58],[83,72],[94,91]];
+   3:cesta=[[40,47],[61,52],[86,76],[103,95],[126,79],[140,82],[144,69]];
+  end;
+  McMove(1,AM_UTOK_1_LIST,cesta,[mc_move_dontcapture,mc_move_agressive,mc_move_waitwp]);
+  Am_utoky=2;
+end;
+
+// utok cislo 2 na rusaky
+EVERY 0$17 TRIGGER Am_utoky=2 DO
+VAR i;
+VAR cesta;
+begin
+  wait(cas_utoku_amiku[difficulty]);
+  if mcmillanova_pomsta then exit;
+  for i in AM_UTOK_2_LIST do PlaceUnitArea(i,Am_enter,false);
+  case cislo_baze of
+   1:cesta=[[40,46],[70,62],[57,77],[48,75]];
+   2:cesta=[[40,47],[61,52],[76,58],[83,72],[94,91]];
+   3:cesta=[[40,47],[61,52],[86,76],[103,95],[126,79],[140,82],[144,69]];
+  end;
+  McMove(1,AM_UTOK_2_LIST,cesta,[mc_move_dontcapture,mc_move_agressive,mc_move_waitwp]);
+  Am_utoky=3;
+end;
+
+// utok cislo 3 na rusaky
+EVERY 0$19 TRIGGER Am_utoky=3 DO
+VAR i;
+VAR cesta;
+begin
+  wait(cas_utoku_amiku[difficulty]);
+  if mcmillanova_pomsta then exit;
+  for i in AM_UTOK_3_LIST do PlaceUnitArea(i,Am_enter,false);
+  case cislo_baze of
+   1:cesta=[[40,46],[70,62],[96,104],[70,100],[49,78]];
+   2:cesta=[[40,47],[61,52],[59,76],[59,85],[71,99],[97,103]];
+   3:cesta=[[40,47],[61,52],[87,42],[84,20],[100,30],[128,41],[139,45],[148,65]];
+  end;
+  McMove(1,AM_UTOK_3_LIST,cesta,[mc_move_dontcapture,mc_move_agressive,mc_move_waitwp]);
+  Am_utoky=4;
+end;
+
+// utoky, kdyz nastvali mcmillana
+EVERY 0$19 TRIGGER mcmillanova_pomsta marked 999 DO
+VAR units;
+VAR i,pom;
+VAR cesta;
+begin
+  cesta=[[74,52]];
+  units=create_JMM_revange;
+  for i in units do PlaceUnitArea(i,JMM_revenge,false);
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  for i in pom do cesta=cesta^[[GetX(i),GetY(i)]];
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_building]]);
+  for i in pom do cesta=cesta^[[GetX(i),GetY(i)]];
+  McMove(1,units,cesta,[mc_move_agressive,mc_move_dontcapture]);
+  enable(998);     // enable casovani pomsty
+end;
+
+// casovani opakovani pomsty
+EVERY 0$13 marked 998 DO
+begin
+  wait(wait_mcmillanova_pomsta[difficulty]);
+  enable(999);    // znovaspusteni pomsty
+end;
+
+// odchod vedcu (utek)
+EVERY 0$13 TRIGGER Am_utoky=4 DO
+begin
+  wait(cas_na_odchod_vedcu[difficulty]);
+  cekej_na_utok;
+  ComExitBuilding(VEDCI1);
+  McMove(1,VEDCI1,[[118,60],[113,73],[98,74],[87,42],[82,33],[67,2]],[]);
+  ComExitBuilding(VEDCI2);
+  wait(0$30);
+  McMove(1,VEDCI2,[[88,10],[85,42],[93,57],[62,50],[43,31],[24,22],[30,40],[15,29]],[]);
+  ComExitBuilding(VEDCI3);
+  wait(0$30);
+  McMove(1,VEDCI3,[[101,46],[112,75],[90,90],[70,83],[54,82],[32,44],[16,28]],[]);
+  Am_utoky=5;
+end;
+
+// odebirani vedcu pri uteku
+EVERY 0$1 TRIGGER Am_utoky=5 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Sci_ex_2,[[f_side,Amici],[f_class,class_scientistic]]);
+  if pom>0 then
+    begin
+      for i in pom do RemoveUnit(i);
+      wait(0$2);
+      prohra_vedci;
+    end;
+  pom=FilterUnitsInArea(Sci_ex_3,[[f_side,Amici],[f_class,class_scientistic]]);
+  if pom>0 then
+    begin
+      for i in pom do RemoveUnit(i);
+      wait(0$2);
+      prohra_vedci;
+    end;
+  enable;
+end;
+
+// oprava budov po utoku
+function opravovani_budov;
+VAR pom,pom1,i;
+begin
+  pom1=[];
+  pom=FilterUnitsInArea(Am_base,[[f_side,Arabi],[f_type,unit_building]]);
+  for i in pom do if GetLives(i)<1000 then pom1=pom1^i;
+  if pom1>0 then begin
+                   if IsInUnit(Am_opoce[1]) or IsInUnit(Am_opoce[2]) or IsInUnit(Am_opoce[3]) then
+                     begin
+                       ComExitBuilding(Am_opoce);
+                       for i in pom1 do AddComRepairBuilding(Am_opoce,i);
+                       AddComEnterUnit(Am_opoce,Am_dep);
+                       ComEnterUnit(Am_opoce[4],Am_dep);
+                     end;
+                 end
+end;
+
+// vyroba aut
+EVERY 0$10 TRIGGER FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_vehicle]])<max_pocet_aut[difficulty] DO
+VAR design;
+begin
+  AddResourceType(GetBase(Am_dep),mat_cans,50);
+  if BuildingStatus(Am_tov)<>3 then
+    begin
+      design=get_random_design;
+      ComConstruct(Am_tov,design[1],design[2],control_remote,design[3]);
+    end;
+  enable;
+end;
+
+// vraceni nahodneho designu auta
+function get_random_design;
+VAR pom1,pom2,pom3;
+VAR aa,aa1,aa2,aa3;
+begin
+  pom1=Rand(1,5);
+  case pom1 of
+   1:aa3=us_machine_gun;
+   2:aa3=us_light_gun;
+   3:aa3=us_gatling_gun;
+   4:aa3=us_double_gun;
+   5:aa3=us_heavy_gun;
+  end;
+  if pom1=5 then pom2=4
+            else
+  if pom1 in [3,4] then pom2=Rand(2,4)
+                   else pom2=Rand(1,4);
+  case pom2 of
+   1:aa1=us_light_wheeled;
+   2:aa1=us_medium_wheeled;
+   3:aa1=us_medium_tracked;
+   4:aa1=us_heavy_tracked;
+  end;
+  if pom2<>4 then pom3=Rand(1,3)
+             else pom3=Rand(2,3);
+  case pom3 of
+   1:aa2=engine_solar;
+   2:aa2=engine_combustion;
+   3:aa2=engine_siberite;
+  end;
+  aa=[aa1,aa2,aa3];
+  result=aa;
+end;
+
+// utoceni snipera
+EVERY 0$5 TRIGGER IsOK(Am_snipe) DO
+VAR u,sl;
+begin
+  sl=false;
+  if Attacks(Am_snipe)<0 then
+    begin
+      u=Attacks(Am_snipe);
+      if GetType(u)<>unit_vehicle
+        then sl=true
+        else if GetControl(u)=control_manual then sl=true;
+      if sl then if Prob(45) then ComAttackSoporific(Am_snipe,u);
+    end;
+  enable;
+end;
+
+// pocatecni nastaveni utoku
+EVERY 0$1 DO
+begin
+  wait(cas_prvniho_utoku[difficulty]);
+  UTOCENI=true;
+end;
+
+// utoceni dokud neopujdou "normalni utoky"
+EVERY 0$1 TRIGGER UTOCENI DO
+VAR pom,i;
+VAR cesty;
+begin
+  pom=create_pre_attack;
+  for i in pom do PlaceUnitArea(i,Am_enter,false);
+  case cislo_baze of
+   1:cesty=[[[46,50],[75,55],[85,75],[96,102],[69,101],[48,78]],[[38,43],[58,54],[51,80]],[[46,50],[75,55],[85,75],[96,102],[69,101],[48,78]]];
+   2:cesty=[[[40,47],[61,52],[59,76],[59,85],[71,99],[97,103]],[[42,46],[71,48],[81,66],[96,98]],[[42,46],[71,48],[81,66],[96,98]]];
+   3:cesty=[[[40,47],[61,52],[87,42],[95,94],[113,96],[143,78],[142,68],[160,88]],[[39,43],[70,49],[94,93],[122,93],[147,64],[156,88]],[[39,43],[70,49],[94,93],[122,93],[147,64],[156,88]]];
+  end;
+  McMove(1,pom,cesty[Rand(1,3)],[mc_move_dontcapture,mc_move_agressive,mc_move_waitwp]);
+  wait(cas_na_opakovani_preattacku[difficulty]);
+  if Am_utoky=0 then enable;
+end;
+
+// prilinkovani aut
+on VehicleConstructed(veh,f) DO
+VAR pom;
+begin
+  if f=Am_tov then
+    begin
+      pom=Rand(1,2);
+      case pom of
+       1:if IsOK(Am_mech[1]) then begin
+                                    ComLinkTo(veh,Am_mech[1]);
+                                    AddComMoveXY(veh,89,22);
+                                  end
+                             else
+         if IsOK(Am_mech[2]) then begin
+                                    ComLinkTo(veh,Am_mech[2]);
+                                    AddComMoveXY(veh,119,40);
+                                  end;
+       2:if IsOK(Am_mech[2]) then begin
+                                    ComLinkTo(veh,Am_mech[2]);
+                                    AddComMoveXY(veh,119,40);
+                                  end
+                             else
+         if IsOK(Am_mech[1]) then begin
+                                    ComLinkTo(veh,Am_mech[1]);
+                                    AddComMoveXY(veh,89,22);
+                                  end;
+      end;
+    end;
+  enable;
+end;
+
+// cekanio na utoceni rusaku
+function cekej_na_utok;
+VAR utoci;
+VAR i,pom;
+VAR aunits;
+begin
+  utoci=false;
+  aunits=FilterUnitsInArea(Am_base_at,[[f_side,Amici]]);
+  while not utoci do
+   begin
+     pom=FilterAllUnits([[f_side,You]]);
+     for i in pom do
+       if Attacks(i)<>0 then
+         if Attacks(i) in aunits then utoci=true;
+     wait(0$10);
+   end;
+  wait(doba_od_utoku_k_uteku_vedcu[difficulty]);
+end;
+
+// funkce na otestovani, jestli tam jsou vedci nebo ne
+EXPORT function test_na_vedce;
+VAR i;
+VAR OK;
+begin
+  OK=true;
+  for i in VEDCI1 do if IsLive(i) then OK=false;
+  for i in VEDCI2 do if IsLive(i) then OK=false;
+  for i in VEDCI3 do if IsLive(i) then OK=false;
+  result:=OK;
+end;

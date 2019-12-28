@@ -1,0 +1,25 @@
+EXPORT LEVELY_AMICI;
+EXPORT amici_past_pocet;
+EXPORT procento_odkrytych_pro_vyhru;
+EXPORT cas_na_zachranu_belkova;
+EXPORT levely_bw_na_zapade;
+EXPORT levely_bw_na_vychode;
+
+EXPORT BELKOV_MRTVY;
+
+EXPORT function set_difficulty;
+begin
+  LEVELY_AMICI=[1,2,3];
+  amici_past_pocet=[3,5,7];
+  procento_odkrytych_pro_vyhru=[3400,3600,3800];
+  cas_na_zachranu_belkova=[20$0,15$0,10$0];
+  levely_bw_na_zapade=[1,2,3];
+  levely_bw_na_vychode=[1,2,3];
+end;
+
+// oznaceni zakladen
+EVERY 0$0.1 DO
+begin
+  SetBName(RU1_dep,'kirov');
+  SetBName(RU2_dep,'beria');
+end;

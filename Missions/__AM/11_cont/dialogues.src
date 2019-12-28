@@ -1,0 +1,529 @@
+VAR i,pom,pom1,pom2,pom3,pom4;
+VAR kecy;
+VAR KAMI;
+VAR disable_kecy_5D;
+
+// zrovna se nemluvi
+EVERY 0$0.1 do
+begin
+  for i:=1 to 2 do disable(i);
+  kecy:=false;
+  KAMI=false;
+  disable_kecy_5D=false;
+end;
+
+// capture the base
+EXPORT function chmo1;
+begin
+  CenterOnXY(86,145);
+  SetAttitude(You,Arabi,att_enemy,true);
+  SetAttitude(Arabi,You,att_enemy,true);
+  SaveForQuickRestart;
+  wait(0$0.5);
+  InGameOff;
+  ChangeMissionObjectives('M1');
+end;
+
+// zakladna je dobyta
+EVERY 0$3 TRIGGER GetSide(A1_dep)=You or IsDead(A1_dep) DO
+VAR pom1;
+begin
+  A1_dobyta=true;
+  DialogueOn;
+  SayRadio(Jmm,'D2-JMM-1');
+  SayRadio(Powell,'D2-Pow-1');
+  SayRadio(JMM,'D2-JMM-2');
+  SayRadio(Powell,'D2-Pow-2');
+  SayRadio(JMM,'D2-JMM-3');
+  DialogueOff;
+  ChangeMissionObjectives('M2');
+  Hint('CapturedBase');
+  pom=[];
+  for i in [Gary,Bobby,Frank,Lisa,Cornel,Cyrus,Don,Brown] do if IsOK(i) then pom=pom^i;
+  if pom>3 then
+    begin
+      pom1=pom[Rand(1,pom+0)];
+      pom=pom diff pom1[1];
+      pom1=pom1^pom[Rand(1,pom+0)];
+      pom=pom diff pom1[2];
+      pom1=pom1^pom[Rand(1,pom+0)];
+      pom=pom1;
+    end
+           else pom1=pom;
+  for i in pom1 do
+    case i of
+     Gary:Say(Gary,'D2a-Gary-1');
+     Bobby:Say(Bobby,'D2a-Bobby-1');
+     Frank:Say(Frank,'D2a-Frank-1');
+     Lisa:Say(Lisa,'D2a-Lisa-1');
+     Cornel:Say(Cornel,'D2a-Corn-1');
+     Cyrus:Say(Cyrus,'D2a-Cyrus-1');
+     Don:Say(Don,'D2a-Don-1');
+     Brown:Say(Brown,'D2a-Brown-1');
+   end;
+end;         
+
+// Frank na pruzkumu
+EXPORT function dialog_frank;
+var res;
+begin
+  Say(Frank,'D3F-Frank-1');
+  Say(JMM,'D3F-JMM-1');
+  Say(Frank,'D3F-Frank-2');
+  res:=Query('QFrank');
+  case res of
+   1:begin
+       Say(JMM,'D3Fa-JMM-1');
+       result:=1;
+     end;
+   2:begin
+       Say(JMM,'D3Fb-JMM-1');
+       Say(Frank,'D3Fb-Frank-1');
+       res:=Query('QFrank2');
+       if res=1 then begin
+                       Say(JMM,'D3Fba-JMM-1');
+                       Say(Frank,'D3Fba-Frank-1');
+                       Say(JMM,'D3Fba-JMM-2');
+                       result:=21;
+                     end
+                else begin
+                       Say(JMM,'D3Fbb-JMM-1');
+                       result:=22;
+                     end;
+     end;
+   3:begin
+       Say(JMM,'D3Fc-JMM-1');
+       result:=3;
+     end;
+  end;
+end;
+
+// Frank uspel
+EXPORT function fuspech1;
+begin
+  DialogueOn;
+  Say(JMM,'D4Fa-JMM-1');
+  RevealFogArea(You,Pruzkum1);
+  CenterNowOnXY(111,123);
+  CenterOnXy(32,39);
+  Say(Frank,'D4Fa-Frank-1');
+  wait(0$3);
+  RevealFogArea(You,Pruzkum2);
+  CenterNowOnXy(122,68);
+  Say(JMM,'D4Fa-JMM-2');
+  Say(Frank,'D4Fa-Frank-2');
+  DialogueOff;
+  CenterOnUnits([Frank]);
+end;
+
+// Frank se vratil
+EXPORT function fuspech2;
+begin
+  DialogueOn;
+  RevealFogArea(You,Pruzkum3);
+  if IsOK(Frank) then
+    begin
+      Say(Frank,'D4Fb-Frank-1');
+      Say(JMM,'D4Fb-JMM-1');
+      pom=GetPeople(sex_female,class_scientistic,[]);
+      if pom>0 then Say(pom[1],'D4Fb-FSci1-1');
+      Say(Frank,'D4Fb-Frank-2');
+      Say(JMM,'D4Fb-JMM-2');
+    end;
+  DialogueOff;
+  CenterOnUnits([Frank]);
+end;
+
+// Frank chcipnul
+EXPORT function fuspech3;
+begin
+  //Say(JMM,'D4Fb-JMM-1');
+end;
+
+// Yamoko na pruzkumu
+EXPORT function dialog_yamoko;
+begin
+   Say(Yamoko,'D3Y-Yam-1');
+   Say(JMM,'D3Y-JMM-1');
+   Say(Yamoko,'D3Y-Yam-2');
+   result=Query('QYamoko');
+   if result=1
+     then begin
+            Say(JMM,'D3Ya-JMM-1');
+            Say(Yamoko,'D3Ya-Yam-1');
+          end
+     else Say(JMM,'D3Yb-JMM-1');
+end;
+
+// yamoto uspela
+EXPORT function yuspech1;
+begin
+  DialogueOn;
+  Say(Yamoko,'D4Ya-Yam-1');
+  Say(JMM,'D4Ya-JMM-1');
+  RevealFogArea(You,Pruzkum1);
+  CenterNowOnXY(111,123);
+  CenterOnXy(32,39);
+  Say(Yamoko,'D4Ya-Yam-2');
+  wait(0$3);
+  RevealFogArea(You,Pruzkum2);
+  CenterNowOnXy(122,68);
+  Say(JMM,'D4Ya-JMM-2');
+  Say(Yamoko,'D4Ya-Yam-3');
+  DialogueOff;
+  CenterOnUnits([Yamoko]);
+end;
+
+// Yamoko se vratil
+EXPORT function yuspech2;
+begin
+  DialogueOn;
+  RevealFogArea(You,Pruzkum3);
+  if IsOK(Yamoko) then
+    begin
+      Say(Yamoko,'D4Yc-Yam-1');
+      Say(JMM,'D4Yc-JMM-1');
+      Say(Yamoko,'D4Yc-Yam-2');
+      Say(JMM,'D4Yc-JMM-2');
+    end;
+  DialogueOff;
+  CenterOnUnits([Yamoko]);
+end;
+
+// Yamoko chcipla
+EXPORT function yuspech3;
+begin
+  //Say(JMM,'D4Yb-JMM-1');
+end;
+
+// uvidel kamikadzeho
+EVERY 0$1 TRIGGER See(You,A2_kam1) or See(You,A2_kam2) or See(You,A2_kam3) DO
+begin
+  while kecy do wait(0$1);
+  kecy=true;
+  DialogueOn;
+  if See(You,A2_kam1) then CenterNowOnUnits(A2_kam1)
+                      else
+  if See(You,A2_kam2) then CenterNowOnUnits(A2_kam2)
+                      else
+  if See(You,A2_kam3) then CenterNowOnUnits(A2_kam3)
+                      else CenterNowOnUnits([A2_kam1,A2_kam2,A2_kam3]);
+  pom=GetPeople(sex_male,class_soldier,[JMM]);
+  if pom<0 then begin
+                  msg('ERROR: GetPeople returns wrong data. Please report it as a bug');
+                  konec_mise;
+                end;
+  case pom of
+   0:begin
+       pom=JMM;
+       pom1=JMM;
+     end;
+   1:begin
+       pom=pom[1];
+       pom1=JMM;
+     end;
+   else begin
+          pom1=pom[2];
+          pom=pom[1];
+        end;
+  end;
+  DialogueOn;
+  Say(pom,'D5b-Sol1-1');
+  Say(pom1,'D5b-Sol2-1');
+  DialogueOff;
+  if not disable_kecy_5D then enable(1);
+  DialogueOff;
+  kecy=false;
+end;
+
+// exploze kamikazdeho
+ON UnitKamikazed(un) DO
+begin
+  if not KAMI then
+    begin
+      KAMI=true;
+      while kecy do wait(0$1);
+      kecy=true;
+      wait(0$1.5);
+      pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+      pom=pom diff [JMM];
+      if pom>0 then
+        begin
+          DialogueOn;
+          if GetSex(pom[1])=sex_male then Say(pom[1],'D5c-Sol1-1')
+                                     else Say(pom[1],'D5c-FSol1-1');
+          Say(JMM,'D5c-JMM-1');
+          DialogueOff;
+        end;
+      if not disable_kecy_5D then enable(1);
+      kecy=false;
+    end;
+  enable;
+end;
+
+// uvidel opicakem rizene auto
+EVERY 0$1 TRIGGER See(You,A2_op1) or See(You,A2_op2) or See(You,A2_op3) DO
+begin
+  while kecy do wait(0$1);
+  kecy=true;
+  CenterOnUnits([A2_op1,A2_op2,A2_op3]);
+  pom=GetPeople(sex_male,class_soldier,[JMM]);
+  if pom<0 then begin
+                  msg('ERROR: GetPeople returns wrong data. Please report it as a bug');
+                  konec_mise;
+                end;
+  case pom of
+   0:begin
+       pom=JMM;
+       pom1=JMM;
+     end;
+   1:begin
+       pom=pom[1];
+       pom1=JMM;
+     end;
+   else begin
+          pom1=pom[2];
+          pom=pom[1];
+        end;
+  end;
+  DialogueOn;
+  if GetSex(pom)=sex_male then Say(pom,'D5a-Sol1-1')
+                          else Say(pom,'D5a-FSol1-1');
+  if GetSex(pom1)=sex_male then Say(pom1,'D5a-Sol2-1')
+                           else Say(pom1,'D5a-FSol2-1');
+  DialogueOff;
+  if not disable_kecy_5D then enable(1);
+  kecy=false;
+end;
+
+// pokracujici rozhovor
+EVERY 0$1 TRIGGER not disable_kecy_5D marked 1 DO
+begin
+  while kecy do wait(0$1);
+  kecy=true;
+  if IsOK(Lisa) then Say(Lisa,'D5d-Lisa-1')
+                else
+  if IsOK(Cyrus) then Say(Cyrus,'D5d-Cyrus-1')
+                 else
+  if IsOK(Gary) then Say(Gary,'D5d-Gary-1')
+                else begin
+                       pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+                       if pom>0 then Say(pom[1],'D5d-Sol1-1');
+                     end;
+  Say(JMM,'D5d-JMM-1');
+  disable_kecy_5D=true;
+  kecy=false;
+end;
+
+// dobyti druhe base
+EVERY 0$3 TRIGGER GetSide(A2_dep)=You or IsDead(A2_dep) DO
+VAR sci1;
+begin
+  wait(0$1);
+  CreateResourcesArea(mat_artefact,5,Art_zone,false);
+  PlaceSeeing(16,9,You,-5);
+  wait(0$1);
+  DialogueOn;
+  CenterOnXY(17,10);
+  pom=GetPeople(sex_male,class_scientistic,[JMM]);
+  if pom>0 then sci1=pom[1]
+           else exit;
+  Say(sci1,'D6-Sci1-1');
+  Say(JMM,'D6-JMM-1');
+  Say(sci1,'D6-Sci1-2');
+  Say(JMM,'D6-JMM-2');
+  DialogueOff;
+  ChangeMissionObjectives('M3');
+  RemoveSeeing(16,9,You);
+  A2_dobyta=true;
+end;
+
+// zradce s opicakem
+EVERY 0$20 TRIGGER A2_dobyta DO
+begin
+  if A1_dobyta and A3_dobyta then exit;
+  wait(0$10);
+  if not IsOK(A3_solop) then exit;
+  DialogueOn;
+  pom=GetPeople(sex_male,class_soldier,[JMM,Cyrus,Gary,Bobby]);
+  if pom=0 then pom=GetPeople(sex_male,class_soldier,[JMM]);
+  if pom=0 then pom=JMM
+           else pom=pom[1];
+  Say(pom,'D7-Sol1-1');
+  Say(JMM,'D7-JMM-1');
+  SayRadio(A3_solop,'D7-Ar1-1');
+  Say(JMM,'D7-JMM-2');
+  SayRadio(A3_solop,'D7-Ar1-2');
+  Say(JMM,'D7-JMM-3');
+  SayRadio(A3_solop,'D7-Ar1-3');
+  Say(JMM,'D7-JMM-4');
+  CenterOnXY(126,93);
+  RevealFogArea(You,Baziny);
+  SayRadio(A3_solop,'D7-Ar1-4');
+  pom=Query('QCameras');
+  if pom=1 then begin
+                  oposoldier=1;
+                  ChangeMissionObjectives('MCar');
+                  SetAreaMapShow(baziny,1);
+                end
+           else oposoldier=-1;
+  DialogueOff;
+end;
+                    
+// oznacenikam
+EXPORT function dialog_kamery;
+begin
+  if not IsOK(A3_solop) then exit;
+  Say(A3_solop,'D7a-Ar1-1');
+  HiddenCamera(87,3,You);
+  HiddenCamera(105,39,You);
+  HiddenCamera(134,56,You);
+  HiddenCamera(122,51,You);
+  HiddenCamera(91,8,You);
+  ChangeMissionObjectives('MCarOut');
+  SetAreaMapShow(baziny,0);
+end;
+
+// konec pro cas
+EVERY 1$0 DO
+begin
+  wait(timelimit[difficulty]);
+  InGameOn;
+  Say(Powell,'D9-Pow-1');
+  InGameOff;
+  wait(10$0);
+  DialogueOn;
+  Say(Powell,'D9a-Pow-1');
+  end_of_mission_time;
+end;
+
+// vidi remote
+EVERY 0$3 DO
+begin
+  pom1=false;
+  pom=[A3_are1,A3_are2,A3_are3,A3_are4,A3_are5,A3_are6,A3_are7,A3_are8,A3_are9];
+  for i in pom do if See(You,i) then pom1=true;
+  if not pom1
+    then enable
+    else begin
+           if not (IsOK(A3_rv1) or IsOK(A3_rv2) or IsOK(A3_rv3)) then
+             begin
+               disable;
+               exit;
+             end;
+           pom=FilterAllUnits([[f_side,You],[f_class,class_soldier]]);
+           if pom=0 then pom=GetPeople(sex_male,class_soldier,[JMM]);
+           if pom=0 then pom=GetPeople(sex_female,class_soldier,[]);
+           if pom=0 then pom=[JMM];
+           if GetSex(pom[1])=sex_male then Say(pom[1],'D8-Sol1-1')
+                                      else Say(pom[1],'D8-FSol1-1');
+           Say(JMM,'D8-JMM-1');
+           wait(0$20);
+           enable(2);
+         end;
+end;
+
+// pokracovani 8 ... videli auta Remote
+EVERY 0$5 marked 2 DO
+begin
+  pom1=false;
+  pom=[A3_rv1,A3_rv2,A3_rv3];
+  for i in pom do if See(You,i) then pom1=true;
+  if not pom1
+    then enable
+    else begin
+           pom=FilterAllUnits([[f_side,You],[f_class,class_soldier]]) diff JMM;
+           if pom=0 then pom=GetPeople(sex_male,class_soldier,[JMM]);
+           if pom=0 then pom=GetPeople(sex_female,class_soldier,[JMM]);
+           if pom=0 then pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]) diff JMM;
+           if pom=0 then exit;
+           DialogueOn;
+           CenterOnUnits([A3_rv1,A3_rv2,A3_rv3]);
+           if GetSex(pom[1])=sex_male then Say(pom[1],'D8a-Sol2-1')
+                                      else Say(pom[1],'D8a-FSol2-1');
+           Say(JMM,'D8a-JMM-1');
+           DialogueOff;
+         end;
+end;
+
+// utok na arabaky - zacatek po zrade
+EVERY 0$0.1 TRIGGER FilterUnitsInArea(Abase1,[[f_side,You]])>0 DO
+VAR pom;
+begin
+  case Rand(1,3) of
+   1:pom=A1_vo1;
+   2:pom=A1_ve1;
+   3:pom=A1_vo4;
+  end;
+  if IsOK(pom) then Say(pom,'D2aa-Ar1-1');
+  uprav_zivoty_arabskych_budov;
+end;
+
+// vyber lidi pro dialogy
+function GetPeople(sex,povolani,diffseznam);
+VAR pom,pom1,pom2,pom3,pom4,pom5,pom6;
+VAR pom1a,pom2a,pom3a,pom4a,pom5a,pom6a;
+VAR j;
+begin
+  pom1=FilterAllUnits([[f_side,You],[f_class,class_scientistic],[f_sex,sex]]);
+  pom1a=FilterAllUnits([[f_side,You],[f_type,unit_vehicle],[f_control,control_manual]]);
+  for j in pom1a do if GetClass(Isdrivenby(j))=class_scientistic then pom1=pom1^j;
+
+  pom2=FilterAllUnits([[f_side,You],[f_class,class_mechanic],[f_sex,sex]]);
+  pom2a=FilterAllUnits([[f_side,You],[f_type,unit_vehicle],[f_control,control_manual]]);
+  for j in pom2a do if GetClass(Isdrivenby(j))=class_mechanic then pom2=pom2^j;
+
+  pom3=FilterAllUnits([[f_side,You],[f_class,class_engineer],[f_sex,sex]]);
+  pom3a=FilterAllUnits([[f_side,You],[f_type,unit_vehicle],[f_control,control_manual]]);
+  for j in pom3a do if GetClass(Isdrivenby(j))=class_engineer then pom3=pom3^j;
+
+  pom4=FilterAllUnits([[f_side,You],[f_class,class_soldier],[f_sex,sex]]);
+  pom4a=FilterAllUnits([[f_side,You],[f_type,unit_vehicle],[f_control,control_manual]]);
+  for j in pom4a do if GetClass(Isdrivenby(j))=class_soldier then pom4=pom4^j;
+
+  pom5=FilterAllUnits([[f_side,You],[f_class,class_sniper],[f_sex,sex]]);
+  pom5a=FilterAllUnits([[f_side,You],[f_type,unit_vehicle],[f_control,control_manual]]);
+  for j in pom5a do if GetClass(Isdrivenby(j))=class_sniper then pom5=pom5^j;
+
+  pom6=FilterAllUnits([[f_side,You],[f_class,class_mortar],[f_sex,sex]]);
+  pom6a=FilterAllUnits([[f_side,You],[f_type,unit_vehicle],[f_control,control_manual]]);
+  for j in pom6a do if GetClass(Isdrivenby(j))=class_mortar then pom6=pom6^j;
+
+  case povolani of
+   class_scientistic:pom=pom1;
+   class_mechanic:pom=pom2;
+   class_engineer:pom=pom3;
+   class_soldier:pom=pom4;
+   class_sniper:pom=pom5;
+   class_mortar:pom=pom6;
+  end;
+
+  if povolani<>class_scientistic then pom=pom^pom1;
+  if povolani<>class_mechanic then pom=pom^pom2;
+  if povolani<>class_engineer then pom=pom^pom3;
+  if povolani<>class_soldier then pom=pom^pom4;
+  if povolani<>class_sniper then pom=pom^pom5;
+  if povolani<>class_mortar then pom=pom^pom6;
+
+  result:= pom diff diffseznam;
+end;
+
+// query na ukonceni mise
+EXPORT function query_konec_mise;
+VAR pom;
+begin
+  pom=Query('QEndMission');
+  result:=pom;
+end;
+
+// hint na stimulation drugs
+EVERY 0$1 DO
+VAR pom;
+VAR jedn;
+begin
+  jedn=0;
+  pom=FilterAllUnits([[f_side,Arabi],[f_type,unit_human],[f_see,You]]);
+  for i in pom do if GetLives(i)<250 then jedn=i;
+  if jedn<>0 then Hint('stimulationdrugs')
+             else enable;
+end;

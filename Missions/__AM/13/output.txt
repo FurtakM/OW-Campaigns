@@ -1,0 +1,2416 @@
+// var vedci_zdrhli ; var am , john , powell , otherwith , othernot , americani ; var bobby , cyrus , lisa , cornel , frank , brown , lucy , glad , denis , yamoko , gary , huck ; var bobbyloc , cyrusloc , lisaloc , cornelloc , frankloc , brownloc , lucyloc , gladloc , denisloc , yamokoloc , garyloc ; var withjmmvip , notjmmvip , lidi ; var zakl , x , y , r , tmp , tmp1 , zakladna ; var debug ; var i , blbecci ; starting begin debug = false ;
+   0: LD_ADDR_LOC 41
+   4: PUSH
+   5: LD_INT 0
+   7: ST_TO_ADDR
+// if debug then
+   8: LD_LOC 41
+  12: IFFALSE 21
+// msg ( Bacha debug is ON ) ;
+  14: LD_STRING Bacha debug is ON
+  16: PPUSH
+  17: CALL_OW 100
+// am = 1 ;
+  21: LD_ADDR_LOC 2
+  25: PUSH
+  26: LD_INT 1
+  28: ST_TO_ADDR
+// uc_nation = nation_american ;
+  29: LD_ADDR_OWVAR 21
+  33: PUSH
+  34: LD_INT 1
+  36: ST_TO_ADDR
+// uc_side = am ;
+  37: LD_ADDR_OWVAR 20
+  41: PUSH
+  42: LD_LOC 2
+  46: ST_TO_ADDR
+// if testcharacters ( JMM ) and checkcharacterset ( JMM ) then
+  47: LD_STRING JMM
+  49: PPUSH
+  50: CALL_OW 28
+  54: PUSH
+  55: LD_STRING JMM
+  57: PPUSH
+  58: CALL_OW 29
+  62: AND
+  63: IFFALSE 83
+// john = createcharacterwithclass ( JMM , class_soldier ) else
+  65: LD_ADDR_LOC 3
+  69: PUSH
+  70: LD_STRING JMM
+  72: PPUSH
+  73: LD_INT 1
+  75: PPUSH
+  76: CALL_OW 35
+  80: ST_TO_ADDR
+  81: GO 96
+// buildquery ( neny JMM , [ OK ] ) ;
+  83: LD_STRING neny JMM
+  85: PPUSH
+  86: LD_STRING OK
+  88: PUSH
+  89: EMPTY
+  90: LIST
+  91: PPUSH
+  92: CALL_OW 99
+// powell = newcharacter ( Powell ) ;
+  96: LD_ADDR_LOC 4
+ 100: PUSH
+ 101: LD_STRING Powell
+ 103: PPUSH
+ 104: CALL_OW 25
+ 108: ST_TO_ADDR
+// if not powell then
+ 109: LD_LOC 4
+ 113: NOT
+ 114: IFFALSE 129
+// buildquery ( neny Powell , [ OK ] ) ;
+ 116: LD_STRING neny Powell
+ 118: PPUSH
+ 119: LD_STRING OK
+ 121: PUSH
+ 122: EMPTY
+ 123: LIST
+ 124: PPUSH
+ 125: CALL_OW 99
+// huck = newcharacter ( Stevens ) ;
+ 129: LD_ADDR_LOC 19
+ 133: PUSH
+ 134: LD_STRING Stevens
+ 136: PPUSH
+ 137: CALL_OW 25
+ 141: ST_TO_ADDR
+// if not huck then
+ 142: LD_LOC 19
+ 146: NOT
+ 147: IFFALSE 162
+// buildquery ( neny Stevens , [ OK ] ) ;
+ 149: LD_STRING neny Stevens
+ 151: PPUSH
+ 152: LD_STRING OK
+ 154: PUSH
+ 155: EMPTY
+ 156: LIST
+ 157: PPUSH
+ 158: CALL_OW 99
+// otherwith = [ ] ;
+ 162: LD_ADDR_LOC 5
+ 166: PUSH
+ 167: EMPTY
+ 168: ST_TO_ADDR
+// othernot = [ ] ;
+ 169: LD_ADDR_LOC 6
+ 173: PUSH
+ 174: EMPTY
+ 175: ST_TO_ADDR
+// if testvariable ( vedci_zdrhli ) then
+ 176: LD_STRING vedci_zdrhli
+ 178: PPUSH
+ 179: CALL_OW 27
+ 183: IFFALSE 204
+// vedci_zdrhli = loadvariable ( vedci_zdrhli , - 1 ) else
+ 185: LD_ADDR_LOC 1
+ 189: PUSH
+ 190: LD_STRING vedci_zdrhli
+ 192: PPUSH
+ 193: LD_INT 1
+ 195: NEG
+ 196: PPUSH
+ 197: CALL_OW 30
+ 201: ST_TO_ADDR
+ 202: GO 217
+// buildquery ( neny vedci_zdrhli , [ OK ] ) ;
+ 204: LD_STRING neny vedci_zdrhli
+ 206: PPUSH
+ 207: LD_STRING OK
+ 209: PUSH
+ 210: EMPTY
+ 211: LIST
+ 212: PPUSH
+ 213: CALL_OW 99
+// if testcharacters ( otherwithJMM ) then
+ 217: LD_STRING otherwithJMM
+ 219: PPUSH
+ 220: CALL_OW 28
+ 224: IFFALSE 259
+// if checkcharacterset ( otherwithJMM ) then
+ 226: LD_STRING otherwithJMM
+ 228: PPUSH
+ 229: CALL_OW 29
+ 233: IFFALSE 250
+// otherwith = createcharacterset ( otherwithJMM ) else
+ 235: LD_ADDR_LOC 5
+ 239: PUSH
+ 240: LD_STRING otherwithJMM
+ 242: PPUSH
+ 243: CALL_OW 31
+ 247: ST_TO_ADDR
+ 248: GO 257
+// otherwith = [ ] else
+ 250: LD_ADDR_LOC 5
+ 254: PUSH
+ 255: EMPTY
+ 256: ST_TO_ADDR
+ 257: GO 272
+// buildquery ( neny otherwithJMM , [ OK ] ) ;
+ 259: LD_STRING neny otherwithJMM
+ 261: PPUSH
+ 262: LD_STRING OK
+ 264: PUSH
+ 265: EMPTY
+ 266: LIST
+ 267: PPUSH
+ 268: CALL_OW 99
+// if testcharacters ( othernotJMM ) then
+ 272: LD_STRING othernotJMM
+ 274: PPUSH
+ 275: CALL_OW 28
+ 279: IFFALSE 314
+// if checkcharacterset ( othernotJMM ) then
+ 281: LD_STRING othernotJMM
+ 283: PPUSH
+ 284: CALL_OW 29
+ 288: IFFALSE 305
+// othernot = createcharacterset ( othernotJMM ) else
+ 290: LD_ADDR_LOC 6
+ 294: PUSH
+ 295: LD_STRING othernotJMM
+ 297: PPUSH
+ 298: CALL_OW 31
+ 302: ST_TO_ADDR
+ 303: GO 312
+// othernot = [ ] else
+ 305: LD_ADDR_LOC 6
+ 309: PUSH
+ 310: EMPTY
+ 311: ST_TO_ADDR
+ 312: GO 327
+// buildquery ( neny othernotJMM , [ OK ] ) ;
+ 314: LD_STRING neny othernotJMM
+ 316: PPUSH
+ 317: LD_STRING OK
+ 319: PUSH
+ 320: EMPTY
+ 321: LIST
+ 322: PPUSH
+ 323: CALL_OW 99
+// withjmmvip = [ ] ;
+ 327: LD_ADDR_LOC 31
+ 331: PUSH
+ 332: EMPTY
+ 333: ST_TO_ADDR
+// notjmmvip = [ ] ;
+ 334: LD_ADDR_LOC 32
+ 338: PUSH
+ 339: EMPTY
+ 340: ST_TO_ADDR
+// if not testcharacters ( Bobby ) or not checkcharacterset ( Bobby ) then
+ 341: LD_STRING Bobby
+ 343: PPUSH
+ 344: CALL_OW 28
+ 348: NOT
+ 349: PUSH
+ 350: LD_STRING Bobby
+ 352: PPUSH
+ 353: CALL_OW 29
+ 357: NOT
+ 358: OR
+ 359: IFFALSE 371
+// bobby = 0 else
+ 361: LD_ADDR_LOC 8
+ 365: PUSH
+ 366: LD_INT 0
+ 368: ST_TO_ADDR
+ 369: GO 492
+// begin bobby = createcharacter ( Bobby ) ;
+ 371: LD_ADDR_LOC 8
+ 375: PUSH
+ 376: LD_STRING Bobby
+ 378: PPUSH
+ 379: CALL_OW 34
+ 383: ST_TO_ADDR
+// bobbyloc = loadvariable ( BobbyLoc , - 1 ) ;
+ 384: LD_ADDR_LOC 20
+ 388: PUSH
+ 389: LD_STRING BobbyLoc
+ 391: PPUSH
+ 392: LD_INT 1
+ 394: NEG
+ 395: PPUSH
+ 396: CALL_OW 30
+ 400: ST_TO_ADDR
+// case bobbyloc of 6 :
+ 401: LD_LOC 20
+ 405: PUSH
+ 406: LD_INT 6
+ 408: DOUBLE
+ 409: EQUAL
+ 410: IFTRUE 414
+ 412: GO 436
+ 414: POP
+// withjmmvip = withjmmvip ^ [ bobby ] ; 7 :
+ 415: LD_ADDR_LOC 31
+ 419: PUSH
+ 420: LD_LOC 31
+ 424: PUSH
+ 425: LD_LOC 8
+ 429: PUSH
+ 430: EMPTY
+ 431: LIST
+ 432: ADD
+ 433: ST_TO_ADDR
+ 434: GO 492
+ 436: LD_INT 7
+ 438: DOUBLE
+ 439: EQUAL
+ 440: IFTRUE 444
+ 442: GO 466
+ 444: POP
+// notjmmvip = notjmmvip ^ [ bobby ] ; - 1 :
+ 445: LD_ADDR_LOC 32
+ 449: PUSH
+ 450: LD_LOC 32
+ 454: PUSH
+ 455: LD_LOC 8
+ 459: PUSH
+ 460: EMPTY
+ 461: LIST
+ 462: ADD
+ 463: ST_TO_ADDR
+ 464: GO 492
+ 466: LD_INT 1
+ 468: NEG
+ 469: DOUBLE
+ 470: EQUAL
+ 471: IFTRUE 475
+ 473: GO 491
+ 475: POP
+// buildquery ( neny BobbyLoc , [ OK ] ) ; end ;
+ 476: LD_STRING neny BobbyLoc
+ 478: PPUSH
+ 479: LD_STRING OK
+ 481: PUSH
+ 482: EMPTY
+ 483: LIST
+ 484: PPUSH
+ 485: CALL_OW 99
+ 489: GO 492
+ 491: POP
+// end ; if not testcharacters ( Cyrus ) or not checkcharacterset ( Cyrus ) then
+ 492: LD_STRING Cyrus
+ 494: PPUSH
+ 495: CALL_OW 28
+ 499: NOT
+ 500: PUSH
+ 501: LD_STRING Cyrus
+ 503: PPUSH
+ 504: CALL_OW 29
+ 508: NOT
+ 509: OR
+ 510: IFFALSE 522
+// cyrus = 0 else
+ 512: LD_ADDR_LOC 9
+ 516: PUSH
+ 517: LD_INT 0
+ 519: ST_TO_ADDR
+ 520: GO 643
+// begin cyrus = createcharacter ( Cyrus ) ;
+ 522: LD_ADDR_LOC 9
+ 526: PUSH
+ 527: LD_STRING Cyrus
+ 529: PPUSH
+ 530: CALL_OW 34
+ 534: ST_TO_ADDR
+// cyrusloc = loadvariable ( CyrusLoc , - 1 ) ;
+ 535: LD_ADDR_LOC 21
+ 539: PUSH
+ 540: LD_STRING CyrusLoc
+ 542: PPUSH
+ 543: LD_INT 1
+ 545: NEG
+ 546: PPUSH
+ 547: CALL_OW 30
+ 551: ST_TO_ADDR
+// case cyrusloc of 6 :
+ 552: LD_LOC 21
+ 556: PUSH
+ 557: LD_INT 6
+ 559: DOUBLE
+ 560: EQUAL
+ 561: IFTRUE 565
+ 563: GO 587
+ 565: POP
+// withjmmvip = withjmmvip ^ [ cyrus ] ; 7 :
+ 566: LD_ADDR_LOC 31
+ 570: PUSH
+ 571: LD_LOC 31
+ 575: PUSH
+ 576: LD_LOC 9
+ 580: PUSH
+ 581: EMPTY
+ 582: LIST
+ 583: ADD
+ 584: ST_TO_ADDR
+ 585: GO 643
+ 587: LD_INT 7
+ 589: DOUBLE
+ 590: EQUAL
+ 591: IFTRUE 595
+ 593: GO 617
+ 595: POP
+// notjmmvip = notjmmvip ^ [ cyrus ] ; - 1 :
+ 596: LD_ADDR_LOC 32
+ 600: PUSH
+ 601: LD_LOC 32
+ 605: PUSH
+ 606: LD_LOC 9
+ 610: PUSH
+ 611: EMPTY
+ 612: LIST
+ 613: ADD
+ 614: ST_TO_ADDR
+ 615: GO 643
+ 617: LD_INT 1
+ 619: NEG
+ 620: DOUBLE
+ 621: EQUAL
+ 622: IFTRUE 626
+ 624: GO 642
+ 626: POP
+// buildquery ( neny CyrusLoc , [ OK ] ) ; end ;
+ 627: LD_STRING neny CyrusLoc
+ 629: PPUSH
+ 630: LD_STRING OK
+ 632: PUSH
+ 633: EMPTY
+ 634: LIST
+ 635: PPUSH
+ 636: CALL_OW 99
+ 640: GO 643
+ 642: POP
+// end ; if not testcharacters ( Joan ) or not checkcharacterset ( Joan ) or not testcharacters ( Lisa ) or not checkcharacterset ( Lisa ) then
+ 643: LD_STRING Joan
+ 645: PPUSH
+ 646: CALL_OW 28
+ 650: NOT
+ 651: PUSH
+ 652: LD_STRING Joan
+ 654: PPUSH
+ 655: CALL_OW 29
+ 659: NOT
+ 660: OR
+ 661: PUSH
+ 662: LD_STRING Lisa
+ 664: PPUSH
+ 665: CALL_OW 28
+ 669: NOT
+ 670: OR
+ 671: PUSH
+ 672: LD_STRING Lisa
+ 674: PPUSH
+ 675: CALL_OW 29
+ 679: NOT
+ 680: OR
+ 681: IFFALSE 693
+// lisa = 0 else
+ 683: LD_ADDR_LOC 10
+ 687: PUSH
+ 688: LD_INT 0
+ 690: ST_TO_ADDR
+ 691: GO 814
+// begin lisa = createcharacter ( Lisa ) ;
+ 693: LD_ADDR_LOC 10
+ 697: PUSH
+ 698: LD_STRING Lisa
+ 700: PPUSH
+ 701: CALL_OW 34
+ 705: ST_TO_ADDR
+// lisaloc = loadvariable ( LisaLoc , - 1 ) ;
+ 706: LD_ADDR_LOC 22
+ 710: PUSH
+ 711: LD_STRING LisaLoc
+ 713: PPUSH
+ 714: LD_INT 1
+ 716: NEG
+ 717: PPUSH
+ 718: CALL_OW 30
+ 722: ST_TO_ADDR
+// case lisaloc of 6 :
+ 723: LD_LOC 22
+ 727: PUSH
+ 728: LD_INT 6
+ 730: DOUBLE
+ 731: EQUAL
+ 732: IFTRUE 736
+ 734: GO 758
+ 736: POP
+// withjmmvip = withjmmvip ^ [ lisa ] ; 7 :
+ 737: LD_ADDR_LOC 31
+ 741: PUSH
+ 742: LD_LOC 31
+ 746: PUSH
+ 747: LD_LOC 10
+ 751: PUSH
+ 752: EMPTY
+ 753: LIST
+ 754: ADD
+ 755: ST_TO_ADDR
+ 756: GO 814
+ 758: LD_INT 7
+ 760: DOUBLE
+ 761: EQUAL
+ 762: IFTRUE 766
+ 764: GO 788
+ 766: POP
+// notjmmvip = notjmmvip ^ [ lisa ] ; - 1 :
+ 767: LD_ADDR_LOC 32
+ 771: PUSH
+ 772: LD_LOC 32
+ 776: PUSH
+ 777: LD_LOC 10
+ 781: PUSH
+ 782: EMPTY
+ 783: LIST
+ 784: ADD
+ 785: ST_TO_ADDR
+ 786: GO 814
+ 788: LD_INT 1
+ 790: NEG
+ 791: DOUBLE
+ 792: EQUAL
+ 793: IFTRUE 797
+ 795: GO 813
+ 797: POP
+// buildquery ( neny LisaLoc , [ OK ] ) ; end ;
+ 798: LD_STRING neny LisaLoc
+ 800: PPUSH
+ 801: LD_STRING OK
+ 803: PUSH
+ 804: EMPTY
+ 805: LIST
+ 806: PPUSH
+ 807: CALL_OW 99
+ 811: GO 814
+ 813: POP
+// end ; if not testcharacters ( Cornell ) or not checkcharacterset ( Cornell ) then
+ 814: LD_STRING Cornell
+ 816: PPUSH
+ 817: CALL_OW 28
+ 821: NOT
+ 822: PUSH
+ 823: LD_STRING Cornell
+ 825: PPUSH
+ 826: CALL_OW 29
+ 830: NOT
+ 831: OR
+ 832: IFFALSE 844
+// cornel = 0 else
+ 834: LD_ADDR_LOC 11
+ 838: PUSH
+ 839: LD_INT 0
+ 841: ST_TO_ADDR
+ 842: GO 965
+// begin cornel = createcharacter ( Cornell ) ;
+ 844: LD_ADDR_LOC 11
+ 848: PUSH
+ 849: LD_STRING Cornell
+ 851: PPUSH
+ 852: CALL_OW 34
+ 856: ST_TO_ADDR
+// cornelloc = loadvariable ( CornellLoc , - 1 ) ;
+ 857: LD_ADDR_LOC 23
+ 861: PUSH
+ 862: LD_STRING CornellLoc
+ 864: PPUSH
+ 865: LD_INT 1
+ 867: NEG
+ 868: PPUSH
+ 869: CALL_OW 30
+ 873: ST_TO_ADDR
+// case cornelloc of 6 :
+ 874: LD_LOC 23
+ 878: PUSH
+ 879: LD_INT 6
+ 881: DOUBLE
+ 882: EQUAL
+ 883: IFTRUE 887
+ 885: GO 909
+ 887: POP
+// withjmmvip = withjmmvip ^ [ cornel ] ; 7 :
+ 888: LD_ADDR_LOC 31
+ 892: PUSH
+ 893: LD_LOC 31
+ 897: PUSH
+ 898: LD_LOC 11
+ 902: PUSH
+ 903: EMPTY
+ 904: LIST
+ 905: ADD
+ 906: ST_TO_ADDR
+ 907: GO 965
+ 909: LD_INT 7
+ 911: DOUBLE
+ 912: EQUAL
+ 913: IFTRUE 917
+ 915: GO 939
+ 917: POP
+// notjmmvip = notjmmvip ^ [ cornel ] ; - 1 :
+ 918: LD_ADDR_LOC 32
+ 922: PUSH
+ 923: LD_LOC 32
+ 927: PUSH
+ 928: LD_LOC 11
+ 932: PUSH
+ 933: EMPTY
+ 934: LIST
+ 935: ADD
+ 936: ST_TO_ADDR
+ 937: GO 965
+ 939: LD_INT 1
+ 941: NEG
+ 942: DOUBLE
+ 943: EQUAL
+ 944: IFTRUE 948
+ 946: GO 964
+ 948: POP
+// buildquery ( neny CornellLoc , [ OK ] ) ; end ;
+ 949: LD_STRING neny CornellLoc
+ 951: PPUSH
+ 952: LD_STRING OK
+ 954: PUSH
+ 955: EMPTY
+ 956: LIST
+ 957: PPUSH
+ 958: CALL_OW 99
+ 962: GO 965
+ 964: POP
+// end ; if not testcharacters ( Frank ) or not checkcharacterset ( Frank ) then
+ 965: LD_STRING Frank
+ 967: PPUSH
+ 968: CALL_OW 28
+ 972: NOT
+ 973: PUSH
+ 974: LD_STRING Frank
+ 976: PPUSH
+ 977: CALL_OW 29
+ 981: NOT
+ 982: OR
+ 983: IFFALSE 995
+// frank = 0 else
+ 985: LD_ADDR_LOC 12
+ 989: PUSH
+ 990: LD_INT 0
+ 992: ST_TO_ADDR
+ 993: GO 1116
+// begin frank = createcharacter ( Frank ) ;
+ 995: LD_ADDR_LOC 12
+ 999: PUSH
+1000: LD_STRING Frank
+1002: PPUSH
+1003: CALL_OW 34
+1007: ST_TO_ADDR
+// frankloc = loadvariable ( FrankLoc , - 1 ) ;
+1008: LD_ADDR_LOC 24
+1012: PUSH
+1013: LD_STRING FrankLoc
+1015: PPUSH
+1016: LD_INT 1
+1018: NEG
+1019: PPUSH
+1020: CALL_OW 30
+1024: ST_TO_ADDR
+// case frankloc of 6 :
+1025: LD_LOC 24
+1029: PUSH
+1030: LD_INT 6
+1032: DOUBLE
+1033: EQUAL
+1034: IFTRUE 1038
+1036: GO 1060
+1038: POP
+// withjmmvip = withjmmvip ^ [ frank ] ; 7 :
+1039: LD_ADDR_LOC 31
+1043: PUSH
+1044: LD_LOC 31
+1048: PUSH
+1049: LD_LOC 12
+1053: PUSH
+1054: EMPTY
+1055: LIST
+1056: ADD
+1057: ST_TO_ADDR
+1058: GO 1116
+1060: LD_INT 7
+1062: DOUBLE
+1063: EQUAL
+1064: IFTRUE 1068
+1066: GO 1090
+1068: POP
+// notjmmvip = notjmmvip ^ [ frank ] ; - 1 :
+1069: LD_ADDR_LOC 32
+1073: PUSH
+1074: LD_LOC 32
+1078: PUSH
+1079: LD_LOC 12
+1083: PUSH
+1084: EMPTY
+1085: LIST
+1086: ADD
+1087: ST_TO_ADDR
+1088: GO 1116
+1090: LD_INT 1
+1092: NEG
+1093: DOUBLE
+1094: EQUAL
+1095: IFTRUE 1099
+1097: GO 1115
+1099: POP
+// buildquery ( neny FrankLoc , [ OK ] ) ; end ;
+1100: LD_STRING neny FrankLoc
+1102: PPUSH
+1103: LD_STRING OK
+1105: PUSH
+1106: EMPTY
+1107: LIST
+1108: PPUSH
+1109: CALL_OW 99
+1113: GO 1116
+1115: POP
+// end ; if not testcharacters ( Brown ) or not checkcharacterset ( Brown ) then
+1116: LD_STRING Brown
+1118: PPUSH
+1119: CALL_OW 28
+1123: NOT
+1124: PUSH
+1125: LD_STRING Brown
+1127: PPUSH
+1128: CALL_OW 29
+1132: NOT
+1133: OR
+1134: IFFALSE 1146
+// brown = 0 else
+1136: LD_ADDR_LOC 13
+1140: PUSH
+1141: LD_INT 0
+1143: ST_TO_ADDR
+1144: GO 1267
+// begin brown = createcharacter ( Brown ) ;
+1146: LD_ADDR_LOC 13
+1150: PUSH
+1151: LD_STRING Brown
+1153: PPUSH
+1154: CALL_OW 34
+1158: ST_TO_ADDR
+// brownloc = loadvariable ( BrownLoc , - 1 ) ;
+1159: LD_ADDR_LOC 25
+1163: PUSH
+1164: LD_STRING BrownLoc
+1166: PPUSH
+1167: LD_INT 1
+1169: NEG
+1170: PPUSH
+1171: CALL_OW 30
+1175: ST_TO_ADDR
+// case brownloc of 6 :
+1176: LD_LOC 25
+1180: PUSH
+1181: LD_INT 6
+1183: DOUBLE
+1184: EQUAL
+1185: IFTRUE 1189
+1187: GO 1211
+1189: POP
+// withjmmvip = withjmmvip ^ [ brown ] ; 7 :
+1190: LD_ADDR_LOC 31
+1194: PUSH
+1195: LD_LOC 31
+1199: PUSH
+1200: LD_LOC 13
+1204: PUSH
+1205: EMPTY
+1206: LIST
+1207: ADD
+1208: ST_TO_ADDR
+1209: GO 1267
+1211: LD_INT 7
+1213: DOUBLE
+1214: EQUAL
+1215: IFTRUE 1219
+1217: GO 1241
+1219: POP
+// notjmmvip = notjmmvip ^ [ brown ] ; - 1 :
+1220: LD_ADDR_LOC 32
+1224: PUSH
+1225: LD_LOC 32
+1229: PUSH
+1230: LD_LOC 13
+1234: PUSH
+1235: EMPTY
+1236: LIST
+1237: ADD
+1238: ST_TO_ADDR
+1239: GO 1267
+1241: LD_INT 1
+1243: NEG
+1244: DOUBLE
+1245: EQUAL
+1246: IFTRUE 1250
+1248: GO 1266
+1250: POP
+// buildquery ( neny BrownLoc , [ OK ] ) ; end ;
+1251: LD_STRING neny BrownLoc
+1253: PPUSH
+1254: LD_STRING OK
+1256: PUSH
+1257: EMPTY
+1258: LIST
+1259: PPUSH
+1260: CALL_OW 99
+1264: GO 1267
+1266: POP
+// end ; if not testcharacters ( Donaldson ) or not checkcharacterset ( Donaldson ) then
+1267: LD_STRING Donaldson
+1269: PPUSH
+1270: CALL_OW 28
+1274: NOT
+1275: PUSH
+1276: LD_STRING Donaldson
+1278: PPUSH
+1279: CALL_OW 29
+1283: NOT
+1284: OR
+1285: IFFALSE 1297
+// lucy = 0 else
+1287: LD_ADDR_LOC 14
+1291: PUSH
+1292: LD_INT 0
+1294: ST_TO_ADDR
+1295: GO 1418
+// begin lucy = createcharacter ( Donaldson ) ;
+1297: LD_ADDR_LOC 14
+1301: PUSH
+1302: LD_STRING Donaldson
+1304: PPUSH
+1305: CALL_OW 34
+1309: ST_TO_ADDR
+// lucyloc = loadvariable ( DonaldsonLoc , - 1 ) ;
+1310: LD_ADDR_LOC 26
+1314: PUSH
+1315: LD_STRING DonaldsonLoc
+1317: PPUSH
+1318: LD_INT 1
+1320: NEG
+1321: PPUSH
+1322: CALL_OW 30
+1326: ST_TO_ADDR
+// case lucyloc of 6 :
+1327: LD_LOC 26
+1331: PUSH
+1332: LD_INT 6
+1334: DOUBLE
+1335: EQUAL
+1336: IFTRUE 1340
+1338: GO 1362
+1340: POP
+// withjmmvip = withjmmvip ^ [ lucy ] ; 7 :
+1341: LD_ADDR_LOC 31
+1345: PUSH
+1346: LD_LOC 31
+1350: PUSH
+1351: LD_LOC 14
+1355: PUSH
+1356: EMPTY
+1357: LIST
+1358: ADD
+1359: ST_TO_ADDR
+1360: GO 1418
+1362: LD_INT 7
+1364: DOUBLE
+1365: EQUAL
+1366: IFTRUE 1370
+1368: GO 1392
+1370: POP
+// notjmmvip = notjmmvip ^ [ lucy ] ; - 1 :
+1371: LD_ADDR_LOC 32
+1375: PUSH
+1376: LD_LOC 32
+1380: PUSH
+1381: LD_LOC 14
+1385: PUSH
+1386: EMPTY
+1387: LIST
+1388: ADD
+1389: ST_TO_ADDR
+1390: GO 1418
+1392: LD_INT 1
+1394: NEG
+1395: DOUBLE
+1396: EQUAL
+1397: IFTRUE 1401
+1399: GO 1417
+1401: POP
+// buildquery ( neny DonaldsonLoc , [ OK ] ) ; end ;
+1402: LD_STRING neny DonaldsonLoc
+1404: PPUSH
+1405: LD_STRING OK
+1407: PUSH
+1408: EMPTY
+1409: LIST
+1410: PPUSH
+1411: CALL_OW 99
+1415: GO 1418
+1417: POP
+// end ; if not testcharacters ( Gladstone ) or not checkcharacterset ( Gladstone ) then
+1418: LD_STRING Gladstone
+1420: PPUSH
+1421: CALL_OW 28
+1425: NOT
+1426: PUSH
+1427: LD_STRING Gladstone
+1429: PPUSH
+1430: CALL_OW 29
+1434: NOT
+1435: OR
+1436: IFFALSE 1448
+// glad = 0 else
+1438: LD_ADDR_LOC 15
+1442: PUSH
+1443: LD_INT 0
+1445: ST_TO_ADDR
+1446: GO 1569
+// begin glad = createcharacter ( Gladstone ) ;
+1448: LD_ADDR_LOC 15
+1452: PUSH
+1453: LD_STRING Gladstone
+1455: PPUSH
+1456: CALL_OW 34
+1460: ST_TO_ADDR
+// gladloc = loadvariable ( GladstoneLoc , - 1 ) ;
+1461: LD_ADDR_LOC 27
+1465: PUSH
+1466: LD_STRING GladstoneLoc
+1468: PPUSH
+1469: LD_INT 1
+1471: NEG
+1472: PPUSH
+1473: CALL_OW 30
+1477: ST_TO_ADDR
+// case gladloc of 6 :
+1478: LD_LOC 27
+1482: PUSH
+1483: LD_INT 6
+1485: DOUBLE
+1486: EQUAL
+1487: IFTRUE 1491
+1489: GO 1513
+1491: POP
+// withjmmvip = withjmmvip ^ [ glad ] ; 7 :
+1492: LD_ADDR_LOC 31
+1496: PUSH
+1497: LD_LOC 31
+1501: PUSH
+1502: LD_LOC 15
+1506: PUSH
+1507: EMPTY
+1508: LIST
+1509: ADD
+1510: ST_TO_ADDR
+1511: GO 1569
+1513: LD_INT 7
+1515: DOUBLE
+1516: EQUAL
+1517: IFTRUE 1521
+1519: GO 1543
+1521: POP
+// notjmmvip = notjmmvip ^ [ glad ] ; - 1 :
+1522: LD_ADDR_LOC 32
+1526: PUSH
+1527: LD_LOC 32
+1531: PUSH
+1532: LD_LOC 15
+1536: PUSH
+1537: EMPTY
+1538: LIST
+1539: ADD
+1540: ST_TO_ADDR
+1541: GO 1569
+1543: LD_INT 1
+1545: NEG
+1546: DOUBLE
+1547: EQUAL
+1548: IFTRUE 1552
+1550: GO 1568
+1552: POP
+// buildquery ( neny GladstoneLoc , [ OK ] ) ; end ;
+1553: LD_STRING neny GladstoneLoc
+1555: PPUSH
+1556: LD_STRING OK
+1558: PUSH
+1559: EMPTY
+1560: LIST
+1561: PPUSH
+1562: CALL_OW 99
+1566: GO 1569
+1568: POP
+// end ; if not testcharacters ( Denis ) or not checkcharacterset ( Denis ) then
+1569: LD_STRING Denis
+1571: PPUSH
+1572: CALL_OW 28
+1576: NOT
+1577: PUSH
+1578: LD_STRING Denis
+1580: PPUSH
+1581: CALL_OW 29
+1585: NOT
+1586: OR
+1587: IFFALSE 1599
+// denis = 0 else
+1589: LD_ADDR_LOC 16
+1593: PUSH
+1594: LD_INT 0
+1596: ST_TO_ADDR
+1597: GO 1720
+// begin denis = createcharacter ( Denis ) ;
+1599: LD_ADDR_LOC 16
+1603: PUSH
+1604: LD_STRING Denis
+1606: PPUSH
+1607: CALL_OW 34
+1611: ST_TO_ADDR
+// denisloc = loadvariable ( DenisLoc , - 1 ) ;
+1612: LD_ADDR_LOC 28
+1616: PUSH
+1617: LD_STRING DenisLoc
+1619: PPUSH
+1620: LD_INT 1
+1622: NEG
+1623: PPUSH
+1624: CALL_OW 30
+1628: ST_TO_ADDR
+// case denisloc of 6 :
+1629: LD_LOC 28
+1633: PUSH
+1634: LD_INT 6
+1636: DOUBLE
+1637: EQUAL
+1638: IFTRUE 1642
+1640: GO 1664
+1642: POP
+// withjmmvip = withjmmvip ^ [ denis ] ; 7 :
+1643: LD_ADDR_LOC 31
+1647: PUSH
+1648: LD_LOC 31
+1652: PUSH
+1653: LD_LOC 16
+1657: PUSH
+1658: EMPTY
+1659: LIST
+1660: ADD
+1661: ST_TO_ADDR
+1662: GO 1720
+1664: LD_INT 7
+1666: DOUBLE
+1667: EQUAL
+1668: IFTRUE 1672
+1670: GO 1694
+1672: POP
+// notjmmvip = notjmmvip ^ [ denis ] ; - 1 :
+1673: LD_ADDR_LOC 32
+1677: PUSH
+1678: LD_LOC 32
+1682: PUSH
+1683: LD_LOC 16
+1687: PUSH
+1688: EMPTY
+1689: LIST
+1690: ADD
+1691: ST_TO_ADDR
+1692: GO 1720
+1694: LD_INT 1
+1696: NEG
+1697: DOUBLE
+1698: EQUAL
+1699: IFTRUE 1703
+1701: GO 1719
+1703: POP
+// buildquery ( neny DenisLoc , [ OK ] ) ; end ;
+1704: LD_STRING neny DenisLoc
+1706: PPUSH
+1707: LD_STRING OK
+1709: PUSH
+1710: EMPTY
+1711: LIST
+1712: PPUSH
+1713: CALL_OW 99
+1717: GO 1720
+1719: POP
+// end ; yamoko = 0 ;
+1720: LD_ADDR_LOC 17
+1724: PUSH
+1725: LD_INT 0
+1727: ST_TO_ADDR
+// if not frank then
+1728: LD_LOC 12
+1732: NOT
+1733: IFFALSE 1886
+// if not testcharacters ( Yamoko ) or not checkcharacterset ( Yamoko ) then
+1735: LD_STRING Yamoko
+1737: PPUSH
+1738: CALL_OW 28
+1742: NOT
+1743: PUSH
+1744: LD_STRING Yamoko
+1746: PPUSH
+1747: CALL_OW 29
+1751: NOT
+1752: OR
+1753: IFFALSE 1765
+// yamoko = 0 else
+1755: LD_ADDR_LOC 17
+1759: PUSH
+1760: LD_INT 0
+1762: ST_TO_ADDR
+1763: GO 1886
+// begin yamoko = createcharacter ( Yamoko ) ;
+1765: LD_ADDR_LOC 17
+1769: PUSH
+1770: LD_STRING Yamoko
+1772: PPUSH
+1773: CALL_OW 34
+1777: ST_TO_ADDR
+// yamokoloc = loadvariable ( YamokoLoc , - 1 ) ;
+1778: LD_ADDR_LOC 29
+1782: PUSH
+1783: LD_STRING YamokoLoc
+1785: PPUSH
+1786: LD_INT 1
+1788: NEG
+1789: PPUSH
+1790: CALL_OW 30
+1794: ST_TO_ADDR
+// case yamokoloc of 6 :
+1795: LD_LOC 29
+1799: PUSH
+1800: LD_INT 6
+1802: DOUBLE
+1803: EQUAL
+1804: IFTRUE 1808
+1806: GO 1830
+1808: POP
+// withjmmvip = withjmmvip ^ [ yamoko ] ; 7 :
+1809: LD_ADDR_LOC 31
+1813: PUSH
+1814: LD_LOC 31
+1818: PUSH
+1819: LD_LOC 17
+1823: PUSH
+1824: EMPTY
+1825: LIST
+1826: ADD
+1827: ST_TO_ADDR
+1828: GO 1886
+1830: LD_INT 7
+1832: DOUBLE
+1833: EQUAL
+1834: IFTRUE 1838
+1836: GO 1860
+1838: POP
+// notjmmvip = notjmmvip ^ [ yamoko ] ; - 1 :
+1839: LD_ADDR_LOC 32
+1843: PUSH
+1844: LD_LOC 32
+1848: PUSH
+1849: LD_LOC 17
+1853: PUSH
+1854: EMPTY
+1855: LIST
+1856: ADD
+1857: ST_TO_ADDR
+1858: GO 1886
+1860: LD_INT 1
+1862: NEG
+1863: DOUBLE
+1864: EQUAL
+1865: IFTRUE 1869
+1867: GO 1885
+1869: POP
+// buildquery ( neny YamokoLoc , [ OK ] ) ; end ;
+1870: LD_STRING neny YamokoLoc
+1872: PPUSH
+1873: LD_STRING OK
+1875: PUSH
+1876: EMPTY
+1877: LIST
+1878: PPUSH
+1879: CALL_OW 99
+1883: GO 1886
+1885: POP
+// end ; if not testcharacters ( Gary ) or not checkcharacterset ( Gary ) then
+1886: LD_STRING Gary
+1888: PPUSH
+1889: CALL_OW 28
+1893: NOT
+1894: PUSH
+1895: LD_STRING Gary
+1897: PPUSH
+1898: CALL_OW 29
+1902: NOT
+1903: OR
+1904: IFFALSE 1916
+// gary = 0 else
+1906: LD_ADDR_LOC 18
+1910: PUSH
+1911: LD_INT 0
+1913: ST_TO_ADDR
+1914: GO 2037
+// begin gary = createcharacter ( Gary ) ;
+1916: LD_ADDR_LOC 18
+1920: PUSH
+1921: LD_STRING Gary
+1923: PPUSH
+1924: CALL_OW 34
+1928: ST_TO_ADDR
+// garyloc = loadvariable ( GaryLoc , - 1 ) ;
+1929: LD_ADDR_LOC 30
+1933: PUSH
+1934: LD_STRING GaryLoc
+1936: PPUSH
+1937: LD_INT 1
+1939: NEG
+1940: PPUSH
+1941: CALL_OW 30
+1945: ST_TO_ADDR
+// case garyloc of 6 :
+1946: LD_LOC 30
+1950: PUSH
+1951: LD_INT 6
+1953: DOUBLE
+1954: EQUAL
+1955: IFTRUE 1959
+1957: GO 1981
+1959: POP
+// withjmmvip = withjmmvip ^ [ gary ] ; 7 :
+1960: LD_ADDR_LOC 31
+1964: PUSH
+1965: LD_LOC 31
+1969: PUSH
+1970: LD_LOC 18
+1974: PUSH
+1975: EMPTY
+1976: LIST
+1977: ADD
+1978: ST_TO_ADDR
+1979: GO 2037
+1981: LD_INT 7
+1983: DOUBLE
+1984: EQUAL
+1985: IFTRUE 1989
+1987: GO 2011
+1989: POP
+// notjmmvip = notjmmvip ^ [ gary ] ; - 1 :
+1990: LD_ADDR_LOC 32
+1994: PUSH
+1995: LD_LOC 32
+1999: PUSH
+2000: LD_LOC 18
+2004: PUSH
+2005: EMPTY
+2006: LIST
+2007: ADD
+2008: ST_TO_ADDR
+2009: GO 2037
+2011: LD_INT 1
+2013: NEG
+2014: DOUBLE
+2015: EQUAL
+2016: IFTRUE 2020
+2018: GO 2036
+2020: POP
+// buildquery ( neny GaryLoc , [ OK ] ) ; end ;
+2021: LD_STRING neny GaryLoc
+2023: PPUSH
+2024: LD_STRING OK
+2026: PUSH
+2027: EMPTY
+2028: LIST
+2029: PPUSH
+2030: CALL_OW 99
+2034: GO 2037
+2036: POP
+// end ; if testvariable ( Epsilon ) then
+2037: LD_STRING Epsilon
+2039: PPUSH
+2040: CALL_OW 27
+2044: IFFALSE 2063
+// zakl = loadvariable ( Epsilon , [ ] ) else
+2046: LD_ADDR_LOC 34
+2050: PUSH
+2051: LD_STRING Epsilon
+2053: PPUSH
+2054: EMPTY
+2055: PPUSH
+2056: CALL_OW 30
+2060: ST_TO_ADDR
+2061: GO 2070
+// msg ( neny Epsilon ) ;
+2063: LD_STRING neny Epsilon
+2065: PPUSH
+2066: CALL_OW 100
+// setresourcevisibility ( 65 , 46 , 1 ) ;
+2070: LD_INT 65
+2072: PPUSH
+2073: LD_INT 46
+2075: PPUSH
+2076: LD_INT 1
+2078: PPUSH
+2079: CALL_OW 441
+// setresourcevisibility ( 56 , 20 , 1 ) ;
+2083: LD_INT 56
+2085: PPUSH
+2086: LD_INT 20
+2088: PPUSH
+2089: LD_INT 1
+2091: PPUSH
+2092: CALL_OW 441
+// x = 0 ;
+2096: LD_ADDR_LOC 35
+2100: PUSH
+2101: LD_INT 0
+2103: ST_TO_ADDR
+// y = 0 ;
+2104: LD_ADDR_LOC 36
+2108: PUSH
+2109: LD_INT 0
+2111: ST_TO_ADDR
+// zakladna = 0 ;
+2112: LD_ADDR_LOC 40
+2116: PUSH
+2117: LD_INT 0
+2119: ST_TO_ADDR
+// for tmp in zakl do
+2120: LD_ADDR_LOC 38
+2124: PUSH
+2125: LD_LOC 34
+2129: PUSH
+2130: FOR_IN
+2131: IFFALSE 2916
+// if validhex ( tmp [ 2 ] - 48 , tmp [ 3 ] - 4 ) = 2 then
+2133: LD_LOC 38
+2137: PUSH
+2138: LD_INT 2
+2140: ARRAY
+2141: PUSH
+2142: LD_INT 48
+2144: MINUS
+2145: PPUSH
+2146: LD_LOC 38
+2150: PUSH
+2151: LD_INT 3
+2153: ARRAY
+2154: PUSH
+2155: LD_INT 4
+2157: MINUS
+2158: PPUSH
+2159: CALL_OW 488
+2163: PUSH
+2164: LD_INT 2
+2166: EQUAL
+2167: IFFALSE 2914
+// case tmp [ 1 ] of b_depot :
+2169: LD_LOC 38
+2173: PUSH
+2174: LD_INT 1
+2176: ARRAY
+2177: PUSH
+2178: LD_INT 0
+2180: DOUBLE
+2181: EQUAL
+2182: IFTRUE 2186
+2184: GO 2356
+2186: POP
+// begin bc_type = tmp [ 1 ] ;
+2187: LD_ADDR_OWVAR 42
+2191: PUSH
+2192: LD_LOC 38
+2196: PUSH
+2197: LD_INT 1
+2199: ARRAY
+2200: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+2201: LD_ADDR_OWVAR 43
+2205: PUSH
+2206: LD_LOC 38
+2210: PUSH
+2211: LD_INT 5
+2213: ARRAY
+2214: ST_TO_ADDR
+// uc_nation = tmp [ 6 ] ;
+2215: LD_ADDR_OWVAR 21
+2219: PUSH
+2220: LD_LOC 38
+2224: PUSH
+2225: LD_INT 6
+2227: ARRAY
+2228: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] - 48 , tmp [ 3 ] - 4 , tmp [ 4 ] ) ;
+2229: LD_ADDR_LOC 39
+2233: PUSH
+2234: LD_LOC 38
+2238: PUSH
+2239: LD_INT 2
+2241: ARRAY
+2242: PUSH
+2243: LD_INT 48
+2245: MINUS
+2246: PPUSH
+2247: LD_LOC 38
+2251: PUSH
+2252: LD_INT 3
+2254: ARRAY
+2255: PUSH
+2256: LD_INT 4
+2258: MINUS
+2259: PPUSH
+2260: LD_LOC 38
+2264: PUSH
+2265: LD_INT 4
+2267: ARRAY
+2268: PPUSH
+2269: CALL_OW 47
+2273: ST_TO_ADDR
+// setbname ( tmp1 , epsilon ) ;
+2274: LD_LOC 39
+2278: PPUSH
+2279: LD_STRING epsilon
+2281: PPUSH
+2282: CALL_OW 500
+// if tmp1 then
+2286: LD_LOC 39
+2290: IFFALSE 2354
+// begin x = x + tmp [ 2 ] - 48 ;
+2292: LD_ADDR_LOC 35
+2296: PUSH
+2297: LD_LOC 35
+2301: PUSH
+2302: LD_LOC 38
+2306: PUSH
+2307: LD_INT 2
+2309: ARRAY
+2310: PLUS
+2311: PUSH
+2312: LD_INT 48
+2314: MINUS
+2315: ST_TO_ADDR
+// y = y + tmp [ 3 ] - 4 ;
+2316: LD_ADDR_LOC 36
+2320: PUSH
+2321: LD_LOC 36
+2325: PUSH
+2326: LD_LOC 38
+2330: PUSH
+2331: LD_INT 3
+2333: ARRAY
+2334: PLUS
+2335: PUSH
+2336: LD_INT 4
+2338: MINUS
+2339: ST_TO_ADDR
+// zakladna = zakladna + 1 ;
+2340: LD_ADDR_LOC 40
+2344: PUSH
+2345: LD_LOC 40
+2349: PUSH
+2350: LD_INT 1
+2352: PLUS
+2353: ST_TO_ADDR
+// end ; end ; b_lab , b_lab_half , b_lab_full :
+2354: GO 2914
+2356: LD_INT 6
+2358: DOUBLE
+2359: EQUAL
+2360: IFTRUE 2376
+2362: LD_INT 7
+2364: DOUBLE
+2365: EQUAL
+2366: IFTRUE 2376
+2368: LD_INT 8
+2370: DOUBLE
+2371: EQUAL
+2372: IFTRUE 2376
+2374: GO 2562
+2376: POP
+// begin bc_type = tmp [ 1 ] ;
+2377: LD_ADDR_OWVAR 42
+2381: PUSH
+2382: LD_LOC 38
+2386: PUSH
+2387: LD_INT 1
+2389: ARRAY
+2390: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+2391: LD_ADDR_OWVAR 43
+2395: PUSH
+2396: LD_LOC 38
+2400: PUSH
+2401: LD_INT 5
+2403: ARRAY
+2404: ST_TO_ADDR
+// bc_kind1 = tmp [ 7 ] ;
+2405: LD_ADDR_OWVAR 44
+2409: PUSH
+2410: LD_LOC 38
+2414: PUSH
+2415: LD_INT 7
+2417: ARRAY
+2418: ST_TO_ADDR
+// bc_kind2 = tmp [ 8 ] ;
+2419: LD_ADDR_OWVAR 45
+2423: PUSH
+2424: LD_LOC 38
+2428: PUSH
+2429: LD_INT 8
+2431: ARRAY
+2432: ST_TO_ADDR
+// uc_nation = tmp [ 6 ] ;
+2433: LD_ADDR_OWVAR 21
+2437: PUSH
+2438: LD_LOC 38
+2442: PUSH
+2443: LD_INT 6
+2445: ARRAY
+2446: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] - 48 , tmp [ 3 ] - 4 , tmp [ 4 ] ) ;
+2447: LD_ADDR_LOC 39
+2451: PUSH
+2452: LD_LOC 38
+2456: PUSH
+2457: LD_INT 2
+2459: ARRAY
+2460: PUSH
+2461: LD_INT 48
+2463: MINUS
+2464: PPUSH
+2465: LD_LOC 38
+2469: PUSH
+2470: LD_INT 3
+2472: ARRAY
+2473: PUSH
+2474: LD_INT 4
+2476: MINUS
+2477: PPUSH
+2478: LD_LOC 38
+2482: PUSH
+2483: LD_INT 4
+2485: ARRAY
+2486: PPUSH
+2487: CALL_OW 47
+2491: ST_TO_ADDR
+// if tmp1 then
+2492: LD_LOC 39
+2496: IFFALSE 2560
+// begin x = x + tmp [ 2 ] - 48 ;
+2498: LD_ADDR_LOC 35
+2502: PUSH
+2503: LD_LOC 35
+2507: PUSH
+2508: LD_LOC 38
+2512: PUSH
+2513: LD_INT 2
+2515: ARRAY
+2516: PLUS
+2517: PUSH
+2518: LD_INT 48
+2520: MINUS
+2521: ST_TO_ADDR
+// y = y + tmp [ 3 ] - 4 ;
+2522: LD_ADDR_LOC 36
+2526: PUSH
+2527: LD_LOC 36
+2531: PUSH
+2532: LD_LOC 38
+2536: PUSH
+2537: LD_INT 3
+2539: ARRAY
+2540: PLUS
+2541: PUSH
+2542: LD_INT 4
+2544: MINUS
+2545: ST_TO_ADDR
+// zakladna = zakladna + 1 ;
+2546: LD_ADDR_LOC 40
+2550: PUSH
+2551: LD_LOC 40
+2555: PUSH
+2556: LD_INT 1
+2558: PLUS
+2559: ST_TO_ADDR
+// end ; end ; b_bunker , b_turret :
+2560: GO 2914
+2562: LD_INT 32
+2564: DOUBLE
+2565: EQUAL
+2566: IFTRUE 2576
+2568: LD_INT 33
+2570: DOUBLE
+2571: EQUAL
+2572: IFTRUE 2576
+2574: GO 2758
+2576: POP
+// begin bc_type = tmp [ 1 ] ;
+2577: LD_ADDR_OWVAR 42
+2581: PUSH
+2582: LD_LOC 38
+2586: PUSH
+2587: LD_INT 1
+2589: ARRAY
+2590: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+2591: LD_ADDR_OWVAR 43
+2595: PUSH
+2596: LD_LOC 38
+2600: PUSH
+2601: LD_INT 5
+2603: ARRAY
+2604: ST_TO_ADDR
+// uc_nation = tmp [ 6 ] ;
+2605: LD_ADDR_OWVAR 21
+2609: PUSH
+2610: LD_LOC 38
+2614: PUSH
+2615: LD_INT 6
+2617: ARRAY
+2618: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] - 48 , tmp [ 3 ] - 4 , tmp [ 4 ] ) ;
+2619: LD_ADDR_LOC 39
+2623: PUSH
+2624: LD_LOC 38
+2628: PUSH
+2629: LD_INT 2
+2631: ARRAY
+2632: PUSH
+2633: LD_INT 48
+2635: MINUS
+2636: PPUSH
+2637: LD_LOC 38
+2641: PUSH
+2642: LD_INT 3
+2644: ARRAY
+2645: PUSH
+2646: LD_INT 4
+2648: MINUS
+2649: PPUSH
+2650: LD_LOC 38
+2654: PUSH
+2655: LD_INT 4
+2657: ARRAY
+2658: PPUSH
+2659: CALL_OW 47
+2663: ST_TO_ADDR
+// if tmp1 then
+2664: LD_LOC 39
+2668: IFFALSE 2688
+// placeweaponturret ( tmp1 , tmp [ 7 ] ) ;
+2670: LD_LOC 39
+2674: PPUSH
+2675: LD_LOC 38
+2679: PUSH
+2680: LD_INT 7
+2682: ARRAY
+2683: PPUSH
+2684: CALL_OW 431
+// if tmp1 then
+2688: LD_LOC 39
+2692: IFFALSE 2756
+// begin x = x + tmp [ 2 ] - 48 ;
+2694: LD_ADDR_LOC 35
+2698: PUSH
+2699: LD_LOC 35
+2703: PUSH
+2704: LD_LOC 38
+2708: PUSH
+2709: LD_INT 2
+2711: ARRAY
+2712: PLUS
+2713: PUSH
+2714: LD_INT 48
+2716: MINUS
+2717: ST_TO_ADDR
+// y = y + tmp [ 3 ] - 4 ;
+2718: LD_ADDR_LOC 36
+2722: PUSH
+2723: LD_LOC 36
+2727: PUSH
+2728: LD_LOC 38
+2732: PUSH
+2733: LD_INT 3
+2735: ARRAY
+2736: PLUS
+2737: PUSH
+2738: LD_INT 4
+2740: MINUS
+2741: ST_TO_ADDR
+// zakladna = zakladna + 1 ;
+2742: LD_ADDR_LOC 40
+2746: PUSH
+2747: LD_LOC 40
+2751: PUSH
+2752: LD_INT 1
+2754: PLUS
+2755: ST_TO_ADDR
+// end ; end ; else
+2756: GO 2914
+2758: POP
+// begin bc_type = tmp [ 1 ] ;
+2759: LD_ADDR_OWVAR 42
+2763: PUSH
+2764: LD_LOC 38
+2768: PUSH
+2769: LD_INT 1
+2771: ARRAY
+2772: ST_TO_ADDR
+// bc_level = tmp [ 5 ] ;
+2773: LD_ADDR_OWVAR 43
+2777: PUSH
+2778: LD_LOC 38
+2782: PUSH
+2783: LD_INT 5
+2785: ARRAY
+2786: ST_TO_ADDR
+// uc_nation = tmp [ 6 ] ;
+2787: LD_ADDR_OWVAR 21
+2791: PUSH
+2792: LD_LOC 38
+2796: PUSH
+2797: LD_INT 6
+2799: ARRAY
+2800: ST_TO_ADDR
+// tmp1 = createandplacebuildingxyd ( tmp [ 2 ] - 48 , tmp [ 3 ] - 4 , tmp [ 4 ] ) ;
+2801: LD_ADDR_LOC 39
+2805: PUSH
+2806: LD_LOC 38
+2810: PUSH
+2811: LD_INT 2
+2813: ARRAY
+2814: PUSH
+2815: LD_INT 48
+2817: MINUS
+2818: PPUSH
+2819: LD_LOC 38
+2823: PUSH
+2824: LD_INT 3
+2826: ARRAY
+2827: PUSH
+2828: LD_INT 4
+2830: MINUS
+2831: PPUSH
+2832: LD_LOC 38
+2836: PUSH
+2837: LD_INT 4
+2839: ARRAY
+2840: PPUSH
+2841: CALL_OW 47
+2845: ST_TO_ADDR
+// if tmp1 then
+2846: LD_LOC 39
+2850: IFFALSE 2914
+// begin x = x + tmp [ 2 ] - 48 ;
+2852: LD_ADDR_LOC 35
+2856: PUSH
+2857: LD_LOC 35
+2861: PUSH
+2862: LD_LOC 38
+2866: PUSH
+2867: LD_INT 2
+2869: ARRAY
+2870: PLUS
+2871: PUSH
+2872: LD_INT 48
+2874: MINUS
+2875: ST_TO_ADDR
+// y = y + tmp [ 3 ] - 4 ;
+2876: LD_ADDR_LOC 36
+2880: PUSH
+2881: LD_LOC 36
+2885: PUSH
+2886: LD_LOC 38
+2890: PUSH
+2891: LD_INT 3
+2893: ARRAY
+2894: PLUS
+2895: PUSH
+2896: LD_INT 4
+2898: MINUS
+2899: ST_TO_ADDR
+// zakladna = zakladna + 1 ;
+2900: LD_ADDR_LOC 40
+2904: PUSH
+2905: LD_LOC 40
+2909: PUSH
+2910: LD_INT 1
+2912: PLUS
+2913: ST_TO_ADDR
+// end ; end ; end ;
+2914: GO 2130
+2916: POP
+2917: POP
+// x = x / ( 0 + zakladna ) ;
+2918: LD_ADDR_LOC 35
+2922: PUSH
+2923: LD_LOC 35
+2927: PUSH
+2928: LD_INT 0
+2930: PUSH
+2931: LD_LOC 40
+2935: PLUS
+2936: DIVREAL
+2937: ST_TO_ADDR
+// y = y / ( 0 + zakladna ) ;
+2938: LD_ADDR_LOC 36
+2942: PUSH
+2943: LD_LOC 36
+2947: PUSH
+2948: LD_INT 0
+2950: PUSH
+2951: LD_LOC 40
+2955: PLUS
+2956: DIVREAL
+2957: ST_TO_ADDR
+// r = 5 ;
+2958: LD_ADDR_LOC 37
+2962: PUSH
+2963: LD_INT 5
+2965: ST_TO_ADDR
+// lidi = withjmmvip ^ notjmmvip ^ otherwith ^ othernot ;
+2966: LD_ADDR_LOC 33
+2970: PUSH
+2971: LD_LOC 31
+2975: PUSH
+2976: LD_LOC 32
+2980: ADD
+2981: PUSH
+2982: LD_LOC 5
+2986: ADD
+2987: PUSH
+2988: LD_LOC 6
+2992: ADD
+2993: ST_TO_ADDR
+// blbecci = [ ] ;
+2994: LD_ADDR_LOC 43
+2998: PUSH
+2999: EMPTY
+3000: ST_TO_ADDR
+// uc_nation = nation_american ;
+3001: LD_ADDR_OWVAR 21
+3005: PUSH
+3006: LD_INT 1
+3008: ST_TO_ADDR
+// if lidi < 4 then
+3009: LD_LOC 33
+3013: PUSH
+3014: LD_INT 4
+3016: LESS
+3017: IFFALSE 3085
+// for i = 1 to ( 4 - lidi ) do
+3019: LD_ADDR_LOC 42
+3023: PUSH
+3024: DOUBLE
+3025: LD_INT 1
+3027: DEC
+3028: ST_TO_ADDR
+3029: LD_INT 4
+3031: PUSH
+3032: LD_LOC 33
+3036: MINUS
+3037: PUSH
+3038: FOR_TO
+3039: IFFALSE 3083
+// begin preparehuman ( rand ( 1 , 2 ) , class_soldier , 5 ) ;
+3041: LD_INT 1
+3043: PPUSH
+3044: LD_INT 2
+3046: PPUSH
+3047: CALL_OW 12
+3051: PPUSH
+3052: LD_INT 1
+3054: PPUSH
+3055: LD_INT 5
+3057: PPUSH
+3058: CALL_OW 380
+// blbecci = blbecci ^ [ createhuman ] ;
+3062: LD_ADDR_LOC 43
+3066: PUSH
+3067: LD_LOC 43
+3071: PUSH
+3072: CALL_OW 44
+3076: PUSH
+3077: EMPTY
+3078: LIST
+3079: ADD
+3080: ST_TO_ADDR
+// end ;
+3081: GO 3038
+3083: POP
+3084: POP
+// lidi = lidi ^ blbecci ;
+3085: LD_ADDR_LOC 33
+3089: PUSH
+3090: LD_LOC 33
+3094: PUSH
+3095: LD_LOC 43
+3099: ADD
+3100: ST_TO_ADDR
+// revealfogarea ( am , celamapa ) ;
+3101: LD_LOC 2
+3105: PPUSH
+3106: LD_INT 1
+3108: PPUSH
+3109: CALL_OW 332
+// placeunitxyr ( john , x , y , r , false ) ;
+3113: LD_LOC 3
+3117: PPUSH
+3118: LD_LOC 35
+3122: PPUSH
+3123: LD_LOC 36
+3127: PPUSH
+3128: LD_LOC 37
+3132: PPUSH
+3133: LD_INT 0
+3135: PPUSH
+3136: CALL_OW 50
+// centernowonunits ( [ john ] ) ;
+3140: LD_LOC 3
+3144: PUSH
+3145: EMPTY
+3146: LIST
+3147: PPUSH
+3148: CALL_OW 87
+// interface_hidden = true ;
+3152: LD_ADDR_OWVAR 54
+3156: PUSH
+3157: LD_INT 1
+3159: ST_TO_ADDR
+// dialogueon ;
+3160: CALL_OW 6
+// wait ( 0 0$0.5 ) ;
+3164: LD_INT 18
+3166: PPUSH
+3167: CALL_OW 67
+// say ( john , D1-JMM-1 ) ;
+3171: LD_LOC 3
+3175: PPUSH
+3176: LD_STRING D1-JMM-1
+3178: PPUSH
+3179: CALL_OW 88
+// sayradio ( powell , D1-Pow-1 ) ;
+3183: LD_LOC 4
+3187: PPUSH
+3188: LD_STRING D1-Pow-1
+3190: PPUSH
+3191: CALL_OW 94
+// if vedci_zdrhli then
+3195: LD_LOC 1
+3199: IFFALSE 3215
+// sayradio ( powell , D1-Pow-1a ) else
+3201: LD_LOC 4
+3205: PPUSH
+3206: LD_STRING D1-Pow-1a
+3208: PPUSH
+3209: CALL_OW 94
+3213: GO 3227
+// sayradio ( powell , D1-Pow-1b ) ;
+3215: LD_LOC 4
+3219: PPUSH
+3220: LD_STRING D1-Pow-1b
+3222: PPUSH
+3223: CALL_OW 94
+// sayradio ( powell , D1-Pow-1c ) ;
+3227: LD_LOC 4
+3231: PPUSH
+3232: LD_STRING D1-Pow-1c
+3234: PPUSH
+3235: CALL_OW 94
+// say ( john , D1-JMM-2 ) ;
+3239: LD_LOC 3
+3243: PPUSH
+3244: LD_STRING D1-JMM-2
+3246: PPUSH
+3247: CALL_OW 88
+// sayradio ( powell , D1-Pow-2 ) ;
+3251: LD_LOC 4
+3255: PPUSH
+3256: LD_STRING D1-Pow-2
+3258: PPUSH
+3259: CALL_OW 94
+// say ( john , D1-JMM-3 ) ;
+3263: LD_LOC 3
+3267: PPUSH
+3268: LD_STRING D1-JMM-3
+3270: PPUSH
+3271: CALL_OW 88
+// sayradio ( powell , D1-Pow-3 ) ;
+3275: LD_LOC 4
+3279: PPUSH
+3280: LD_STRING D1-Pow-3
+3282: PPUSH
+3283: CALL_OW 94
+// say ( john , D1-JMM-4 ) ;
+3287: LD_LOC 3
+3291: PPUSH
+3292: LD_STRING D1-JMM-4
+3294: PPUSH
+3295: CALL_OW 88
+// sayradio ( powell , D1-Pow-4 ) ;
+3299: LD_LOC 4
+3303: PPUSH
+3304: LD_STRING D1-Pow-4
+3306: PPUSH
+3307: CALL_OW 94
+// dialogueoff ;
+3311: CALL_OW 7
+// interface_hidden = false ;
+3315: LD_ADDR_OWVAR 54
+3319: PUSH
+3320: LD_INT 0
+3322: ST_TO_ADDR
+// americani = characterselection (  , 4 , 6 , [ john , huck , sel_changeable , sel_not_hired , sel_change_class ] ^ lidi , [ [ class_scientistic , 2 ] , class_mechanic , class_soldier , [ class_engineer , 1 ] , [ class_sniper , 0 , 1 ] ] ) ;
+3323: LD_ADDR_LOC 7
+3327: PUSH
+3328: LD_STRING 
+3330: PPUSH
+3331: LD_INT 4
+3333: PPUSH
+3334: LD_INT 6
+3336: PPUSH
+3337: LD_LOC 3
+3341: PUSH
+3342: LD_LOC 19
+3346: PUSH
+3347: LD_INT -3
+3349: PUSH
+3350: LD_INT -2
+3352: PUSH
+3353: LD_INT -5
+3355: PUSH
+3356: EMPTY
+3357: LIST
+3358: LIST
+3359: LIST
+3360: LIST
+3361: LIST
+3362: PUSH
+3363: LD_LOC 33
+3367: ADD
+3368: PPUSH
+3369: LD_INT 4
+3371: PUSH
+3372: LD_INT 2
+3374: PUSH
+3375: EMPTY
+3376: LIST
+3377: LIST
+3378: PUSH
+3379: LD_INT 3
+3381: PUSH
+3382: LD_INT 1
+3384: PUSH
+3385: LD_INT 2
+3387: PUSH
+3388: LD_INT 1
+3390: PUSH
+3391: EMPTY
+3392: LIST
+3393: LIST
+3394: PUSH
+3395: LD_INT 5
+3397: PUSH
+3398: LD_INT 0
+3400: PUSH
+3401: LD_INT 1
+3403: PUSH
+3404: EMPTY
+3405: LIST
+3406: LIST
+3407: LIST
+3408: PUSH
+3409: EMPTY
+3410: LIST
+3411: LIST
+3412: LIST
+3413: LIST
+3414: LIST
+3415: PPUSH
+3416: CALL_OW 42
+3420: ST_TO_ADDR
+// americani = americani diff [ 0 ] ;
+3421: LD_ADDR_LOC 7
+3425: PUSH
+3426: LD_LOC 7
+3430: PUSH
+3431: LD_INT 0
+3433: PUSH
+3434: EMPTY
+3435: LIST
+3436: DIFF
+3437: ST_TO_ADDR
+// savecharacters ( americani isect ( otherwith ^ othernot ^ blbecci ) , otherwithJMM ) ;
+3438: LD_LOC 7
+3442: PUSH
+3443: LD_LOC 5
+3447: PUSH
+3448: LD_LOC 6
+3452: ADD
+3453: PUSH
+3454: LD_LOC 43
+3458: ADD
+3459: ISECT
+3460: PPUSH
+3461: LD_STRING otherwithJMM
+3463: PPUSH
+3464: CALL_OW 38
+// savecharacters ( ( otherwith ^ othernot ) diff americani , othernotJMM ) ;
+3468: LD_LOC 5
+3472: PUSH
+3473: LD_LOC 6
+3477: ADD
+3478: PUSH
+3479: LD_LOC 7
+3483: DIFF
+3484: PPUSH
+3485: LD_STRING othernotJMM
+3487: PPUSH
+3488: CALL_OW 38
+// if bobby then
+3492: LD_LOC 8
+3496: IFFALSE 3544
+// if bobby in americani then
+3498: LD_LOC 8
+3502: PUSH
+3503: LD_LOC 7
+3507: IN
+3508: IFFALSE 3534
+// begin savevariable ( 6 , BobbyLoc ) ;
+3510: LD_INT 6
+3512: PPUSH
+3513: LD_STRING BobbyLoc
+3515: PPUSH
+3516: CALL_OW 39
+// savecharacters ( bobby , Bobby ) ;
+3520: LD_LOC 8
+3524: PPUSH
+3525: LD_STRING Bobby
+3527: PPUSH
+3528: CALL_OW 38
+// end else
+3532: GO 3544
+// savevariable ( 7 , BobbyLoc ) ;
+3534: LD_INT 7
+3536: PPUSH
+3537: LD_STRING BobbyLoc
+3539: PPUSH
+3540: CALL_OW 39
+// if cyrus then
+3544: LD_LOC 9
+3548: IFFALSE 3596
+// if cyrus in americani then
+3550: LD_LOC 9
+3554: PUSH
+3555: LD_LOC 7
+3559: IN
+3560: IFFALSE 3586
+// begin savevariable ( 6 , CyrusLoc ) ;
+3562: LD_INT 6
+3564: PPUSH
+3565: LD_STRING CyrusLoc
+3567: PPUSH
+3568: CALL_OW 39
+// savecharacters ( cyrus , Cyrus ) ;
+3572: LD_LOC 9
+3576: PPUSH
+3577: LD_STRING Cyrus
+3579: PPUSH
+3580: CALL_OW 38
+// end else
+3584: GO 3596
+// savevariable ( 7 , CyrusLoc ) ;
+3586: LD_INT 7
+3588: PPUSH
+3589: LD_STRING CyrusLoc
+3591: PPUSH
+3592: CALL_OW 39
+// if lisa then
+3596: LD_LOC 10
+3600: IFFALSE 3648
+// if lisa in americani then
+3602: LD_LOC 10
+3606: PUSH
+3607: LD_LOC 7
+3611: IN
+3612: IFFALSE 3638
+// begin savevariable ( 6 , LisaLoc ) ;
+3614: LD_INT 6
+3616: PPUSH
+3617: LD_STRING LisaLoc
+3619: PPUSH
+3620: CALL_OW 39
+// savecharacters ( lisa , Lisa ) ;
+3624: LD_LOC 10
+3628: PPUSH
+3629: LD_STRING Lisa
+3631: PPUSH
+3632: CALL_OW 38
+// end else
+3636: GO 3648
+// savevariable ( 7 , LisaLoc ) ;
+3638: LD_INT 7
+3640: PPUSH
+3641: LD_STRING LisaLoc
+3643: PPUSH
+3644: CALL_OW 39
+// if cornel then
+3648: LD_LOC 11
+3652: IFFALSE 3700
+// if cornel in americani then
+3654: LD_LOC 11
+3658: PUSH
+3659: LD_LOC 7
+3663: IN
+3664: IFFALSE 3690
+// begin savevariable ( 6 , CornellLoc ) ;
+3666: LD_INT 6
+3668: PPUSH
+3669: LD_STRING CornellLoc
+3671: PPUSH
+3672: CALL_OW 39
+// savecharacters ( cornel , Cornell ) ;
+3676: LD_LOC 11
+3680: PPUSH
+3681: LD_STRING Cornell
+3683: PPUSH
+3684: CALL_OW 38
+// end else
+3688: GO 3700
+// savevariable ( 7 , CornellLoc ) ;
+3690: LD_INT 7
+3692: PPUSH
+3693: LD_STRING CornellLoc
+3695: PPUSH
+3696: CALL_OW 39
+// if frank then
+3700: LD_LOC 12
+3704: IFFALSE 3752
+// if frank in americani then
+3706: LD_LOC 12
+3710: PUSH
+3711: LD_LOC 7
+3715: IN
+3716: IFFALSE 3742
+// begin savevariable ( 6 , FrankLoc ) ;
+3718: LD_INT 6
+3720: PPUSH
+3721: LD_STRING FrankLoc
+3723: PPUSH
+3724: CALL_OW 39
+// savecharacters ( frank , Frank ) ;
+3728: LD_LOC 12
+3732: PPUSH
+3733: LD_STRING Frank
+3735: PPUSH
+3736: CALL_OW 38
+// end else
+3740: GO 3752
+// savevariable ( 7 , FrankLoc ) ;
+3742: LD_INT 7
+3744: PPUSH
+3745: LD_STRING FrankLoc
+3747: PPUSH
+3748: CALL_OW 39
+// if brown then
+3752: LD_LOC 13
+3756: IFFALSE 3804
+// if brown in americani then
+3758: LD_LOC 13
+3762: PUSH
+3763: LD_LOC 7
+3767: IN
+3768: IFFALSE 3794
+// begin savevariable ( 6 , BrownLoc ) ;
+3770: LD_INT 6
+3772: PPUSH
+3773: LD_STRING BrownLoc
+3775: PPUSH
+3776: CALL_OW 39
+// savecharacters ( brown , Brown ) ;
+3780: LD_LOC 13
+3784: PPUSH
+3785: LD_STRING Brown
+3787: PPUSH
+3788: CALL_OW 38
+// end else
+3792: GO 3804
+// savevariable ( 7 , BrownLoc ) ;
+3794: LD_INT 7
+3796: PPUSH
+3797: LD_STRING BrownLoc
+3799: PPUSH
+3800: CALL_OW 39
+// if lucy then
+3804: LD_LOC 14
+3808: IFFALSE 3856
+// if lucy in americani then
+3810: LD_LOC 14
+3814: PUSH
+3815: LD_LOC 7
+3819: IN
+3820: IFFALSE 3846
+// begin savevariable ( 6 , DonaldsonLoc ) ;
+3822: LD_INT 6
+3824: PPUSH
+3825: LD_STRING DonaldsonLoc
+3827: PPUSH
+3828: CALL_OW 39
+// savecharacters ( lucy , Donaldson ) ;
+3832: LD_LOC 14
+3836: PPUSH
+3837: LD_STRING Donaldson
+3839: PPUSH
+3840: CALL_OW 38
+// end else
+3844: GO 3856
+// savevariable ( 7 , DonaldsonLoc ) ;
+3846: LD_INT 7
+3848: PPUSH
+3849: LD_STRING DonaldsonLoc
+3851: PPUSH
+3852: CALL_OW 39
+// if glad then
+3856: LD_LOC 15
+3860: IFFALSE 3908
+// if glad in americani then
+3862: LD_LOC 15
+3866: PUSH
+3867: LD_LOC 7
+3871: IN
+3872: IFFALSE 3898
+// begin savevariable ( 6 , GladstoneLoc ) ;
+3874: LD_INT 6
+3876: PPUSH
+3877: LD_STRING GladstoneLoc
+3879: PPUSH
+3880: CALL_OW 39
+// savecharacters ( glad , Gladstone ) ;
+3884: LD_LOC 15
+3888: PPUSH
+3889: LD_STRING Gladstone
+3891: PPUSH
+3892: CALL_OW 38
+// end else
+3896: GO 3908
+// savevariable ( 7 , GladstoneLoc ) ;
+3898: LD_INT 7
+3900: PPUSH
+3901: LD_STRING GladstoneLoc
+3903: PPUSH
+3904: CALL_OW 39
+// if denis then
+3908: LD_LOC 16
+3912: IFFALSE 3960
+// if denis in americani then
+3914: LD_LOC 16
+3918: PUSH
+3919: LD_LOC 7
+3923: IN
+3924: IFFALSE 3950
+// begin savevariable ( 6 , DenisLoc ) ;
+3926: LD_INT 6
+3928: PPUSH
+3929: LD_STRING DenisLoc
+3931: PPUSH
+3932: CALL_OW 39
+// savecharacters ( denis , Denis ) ;
+3936: LD_LOC 16
+3940: PPUSH
+3941: LD_STRING Denis
+3943: PPUSH
+3944: CALL_OW 38
+// end else
+3948: GO 3960
+// savevariable ( 7 , DenisLoc ) ;
+3950: LD_INT 7
+3952: PPUSH
+3953: LD_STRING DenisLoc
+3955: PPUSH
+3956: CALL_OW 39
+// if yamoko then
+3960: LD_LOC 17
+3964: IFFALSE 4012
+// if yamoko in americani then
+3966: LD_LOC 17
+3970: PUSH
+3971: LD_LOC 7
+3975: IN
+3976: IFFALSE 4002
+// begin savevariable ( 6 , YamokoLoc ) ;
+3978: LD_INT 6
+3980: PPUSH
+3981: LD_STRING YamokoLoc
+3983: PPUSH
+3984: CALL_OW 39
+// savecharacters ( yamoko , Yamoko ) ;
+3988: LD_LOC 17
+3992: PPUSH
+3993: LD_STRING Yamoko
+3995: PPUSH
+3996: CALL_OW 38
+// end else
+4000: GO 4012
+// savevariable ( 7 , YamokoLoc ) ;
+4002: LD_INT 7
+4004: PPUSH
+4005: LD_STRING YamokoLoc
+4007: PPUSH
+4008: CALL_OW 39
+// if gary then
+4012: LD_LOC 18
+4016: IFFALSE 4064
+// if gary in americani then
+4018: LD_LOC 18
+4022: PUSH
+4023: LD_LOC 7
+4027: IN
+4028: IFFALSE 4054
+// begin savevariable ( 6 , GaryLoc ) ;
+4030: LD_INT 6
+4032: PPUSH
+4033: LD_STRING GaryLoc
+4035: PPUSH
+4036: CALL_OW 39
+// savecharacters ( gary , Gary ) ;
+4040: LD_LOC 18
+4044: PPUSH
+4045: LD_STRING Gary
+4047: PPUSH
+4048: CALL_OW 38
+// end else
+4052: GO 4064
+// savevariable ( 7 , GaryLoc ) ;
+4054: LD_INT 7
+4056: PPUSH
+4057: LD_STRING GaryLoc
+4059: PPUSH
+4060: CALL_OW 39
+// if debug then
+4064: LD_LOC 41
+4068: IFFALSE 4077
+// savecampaignfile ( us13_out.txt ) ;
+4070: LD_STRING us13_out.txt
+4072: PPUSH
+4073: CALL_OW 24
+// changemap ( 1 , %_cont ) ;
+4077: LD_STRING 1
+4079: PPUSH
+4080: LD_STRING %_cont
+4082: PPUSH
+4083: CALL_OW 340
+// end ;
+4087: END

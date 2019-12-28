@@ -1,0 +1,547 @@
+@ Hunting grounds
+% Not everything went according to plan. Burlak appeared alone, some of his comrades did not arrive yet, while others are already dead, killed in action. However, it appears that the struggle against American usurpers is going on well and soon Burlak will be able to play more active role in it.
+& S. M. Kirov Base, March 14, 1 NR
+
+// Dialogue  
+
+// Dialogue 1 (immediately after the start of the mission - in S. M. Kirov base)
+$ D1-Kur-1
+- So you are the one they call, Burlak, heh?
+$ D1-Bur-1
+- Yes, comrade commander!
+$ D1-Kur-2
+- You are the mechanic, heh?
+$ D1-Bur-2
+- Yes, comrade commander!
+$ D1-Kur-3
+- Good. You did well, lad. We need lads like you, who don't lose their head under fire. We also need mechanics. So I'm transferring you to L. P. Beria - this is the base where we produce our vehicles. I'm sending private Kovalyuk with you, he's a mechanic as well. Is it understood, heh?
+$ D1-Bur-3
+- Yes, comrade commander!
+$ D1-Kur-4
+- Good. Report to comrade major Platonov, he's the commander of Beria.
+$ D1-Kur-4a
+- [Gnyevko alive] And you can also take comrade corporal Gnyevko with you. He seems to have a crush for you, heh?
+
+# M1
+Add Main Beria
+- Reach the L. P. Beria Base.
+#
+
+// Dialogue 1a (if Burlak returns to Kirov)
+$ D1a-Kur-1
+- [without vehicle] Burlak? What are you doing here, lad? Didn't I tell you to go to Beria, heh? Report to comrade major Platonov at once!
+$ D1a-Kur-1a
+- [with a vehicle (after he delivered the first one)] Burlak? We don't need any more of your wonderful vehicles. So get about your duties now, lad!
+
+// Dialogue 1b (Burlak tries to go North before he gets to Beria)
+$ D1b-Kov-1
+- [alive] We went too far North, Burlak. We have to return. (In-game video, moving south)
+$ D1b-Bur-1
+- [otherwise] I'm definitely too far North already, I have to go south. (In-game video)
+
+// Dialogue 2 (upon arrival to Beria)
+$ D2-Sol1-1
+- Halt! Identify yourself!
+$ D2-Bur-1
+- Mechanic third class, Yuri Burlak reporting for duty, comrade officer! My orders are to report to comrade major Platonov.
+$ D2-Sol1-2
+- OK. I think he's already waiting for you.
+$ D2-Plat-2
+- (when Burlak comes closer to the centre of the base) Comrade Burlak, I suppose.
+$ D2-Bur-2
+- Yes, comrade major! Reporting for duty!
+$ D2-Plat-3
+- Very well, comrade. This place is favoured by arrival of shipments, so we decided to build vehicles here instead of transporting material to Kirov. So you will have to build yourself some design centre, a little shop and then get to work.
+
+// Query MoreInfo (use selective query for the next two dialogues)
+? QMoreInfo
+Do you want to ask major Platonov about some questions?
+-1 Ask about "shipments"
+-2 Ask about "shop"
+-3 Ask about "design centre"
+-4 Ask about nothing
+?
+
+// Dialogue 2a (QMoreInfo-1)
+$ D2a-Bur-1
+- With your leave, comrade, did you mention arrival of shipments?
+$ D2a-Plat-1
+- You must be new around here, I guess. All you can see here was build using shipments our army sends us through TAWAR. Occasionally, you can hear a blast or see a flash. This means a crate of shipment - or one of our guys or Yanks - just arrived. There is no way of telling where or when the next shipment is going to land but we observed that more of them appear here than around Kirov. (Query MoreInfo appears, with options 2-4)
+
+// Dialogue 2b (QMoreInfo-2)
+$ D2b-Bur-1
+- Excuse me, comrade, what kind of shop do you mean?
+$ D2b-Plat-1
+- Just a basic workshop. You will get material we have from the depot, there should be enough there to keep you going. (Query MoreInfo appears, with options 1 and 3-4)
+
+// Dialogue 2c (QMoreInfo-3)
+$ D2c-Bur-1
+- I beg your pardon, comrade major, what kind of design centre?
+$ D2c-Plat-1
+- Well, the eggheads like to call it a laboratory, but it's hardly more then a place where you put together some blueprints you need in the workshop. You won't be able to get any engines running if you don't do this little research first.
+
+// Dialogue 3 (in any case)
+$ D3-Plat-1
+- Good. I am now going to look for the shipments. I'll get back to you when you are finished.
+$ D3-Bur-1
+- Understand, comrade major. With your leave, I'll get to work.
+
+# M2a
+Del Beria
+Add Main Work
+- Build workshop
+Add Main lab
+- Build laboratory
+#
+
+# M2
+Del Work
+Del lab
+Add Main Produce
+- Produce a vehicle in workshop
+#
+
+! Base
+Base
+
+You are now more or less in charge of your first base - comrade major Platonov will give you orders but you have some leeway in executing them. It is therefore important to know how bases work.
+
+The most important building in base is the depot. This is the heart of your base and if you lose it you might as well loose the whole base. All your supplies are stored there and all buildings (e.g. workshops) draw their resources from here. Therefore all other buildings have to be built within certain distance from the depot.
+
+In the upper right corner of the screen you can see a bar showing supplies of material, oil and siberite in depot. It also shows level of power supply and power consumption but we need not to concern us with them now.
+
+[Depot] [Base]
+!
+
+! Depot
+Depot
+
+Depot is the most important building in your base as it stores the resources in your base and also serves as the power central. If the depot is damaged or destroyed, all buildings that require power or resources will cease to operate.
+
+You can change the profession of your men to engineers inside depot - you simply send one of them inside and then click Change to Engineer icon. Then click Exit building icon or right-click anywhere on the map and new engineer will leave the building.
+
+[Depot] [Base]
+!
+
+! Construction
+Construction buildings
+
+In order to build anything you need to have engineers. Send yourself and/or any other men into depot and click "Change to engineer" button. Then order your men out (either right-click anywhere on map or click "Exit Building" button).
+
+Now select an engineer and click Build icon (or press B). Then choose a building you want to construct. You will see a shape of the selected building - move it around the map until you find a place where you want to place it. Use right mouse button to rotate the building  (please note green arrows pointing to its entrances - rotation of the building is important). Use the left mouse button to confirm building.
+
+If the mock building turns red, you cannot build it on that place (probably because it is too far from depot or because the terrain is too uneven there).
+
+[Construction of buildings]
+!
+
+// Dialogue 4 (When shipment appears and Platonov spots it)
+$ D4-Plat-1
+- Comrade Burlak, I've spotted some shipments here. Come over here or send somebody to pick them up! (There should only be enough material for one vehicle at first, so that the player cannot produce more vehicles while he gives the first one to Belkov and his boys.)
+
+! GatheringMaterial
+Gathering Material
+
+The material sent from future by your comrades (familiarly know as "cans" because of uncanny American habit to include cans of Coke in these shipments) appears as plain wooden crates across the map. In order to make use of them, you have to transport them into your depot. Select one of your engineers (if you don't have one, you have to change the profession of one of your men - se [Professions]) and right-click a crate. The engineer will go there, pick up the crate, take it to the depot, return for another crate, and so on until all crates are carried away. There may be a maximum of five crates on one spot.
+!
+
+// Dialogue 5a (Lab finished)
+$ D5a-Bur-1
+- Comrade major, the lab is up and running. We shall now proceed with your orders.
+$ D5a-Plat-1
+- [workshop ready] All is well that ends well, comrade.
+$ D5a-Plat-1a
+- [otherwise] Very well, comrade. Proceed with the workshop.
+
+# M2b
+Out lab
+#
+
+// Dialogue 5b (Workshop finished)
+$ D5b-Bur-1
+- The workshop is ready, comrade major! Shall we get to work here now?
+$ D5b-Plat-1
+- [lab ready] Well done, comrade.
+$ D5b-Plat-1a
+- [otherwise] Didn't I tell you need the laboratory as well, comrade? Get to it now!
+
+# M2b
+Out Work
+#
+
+// Dialogue 6 (Burlak attempts to build something else)
+$ D6-Plat-1
+- What do you think you are doing, comrade Gorky?! Did I order you to build this? Please, get it through your head that it is my orders that get carried out on this base!
+$ D6-Bur-1
+- (engineer abandons building, it is destroyed, material is returned to depot) I am sorry, comrade major! It will not happen again.
+
+// Dialogue 7a (Both workshop and lab ready, oil engine not researched)
+$ D7a-Bur-1
+- Now we have all the facilities we need, comrade major! But we won't be able to fit these vehicles with any engine until we make some experiments in lab.
+$ D7a-Plat-1
+- Very well. Get to it.
+
+// Dialogue 7b (Both workshop and lab ready, oil engine researched)
+$ D7b-Bur-1
+- Now we have everything ready and we can start production. We will be able to build only light reckon vehicles in this simple shop. Still, all our vehicles are better and sturdier than the Yanks crap.
+$ D7b-Plat-1
+- Very well. My congratulations, comrade Gorky. Now build each of you one of these.
+
+! Laboratory
+Laboratory
+You have just constructed your first laboratory. Your can turn your people into scientists there - just send them in and press the "Change the profession button. Scientists can research new technologies inside laboratory and they can also act as medics, healing wounded characters in field. Just click the Heal icon (or press H) and then click the wounded character (if the character is dying (his health bar is red), you can simply right-click him with a scientist selected - healing will be the default command).
+
+To start a research, select a laboratory and then click the Basic research button. You will then see which fields of exploration are available to you. Click one of them and research commences. If you have no scientist in laboratory (e.e. the laboratory is either empty or you have only characters of other professions inside), you will see flashing red icon "Missing scientist".
+
+The first technology you should now research is "Oil power" and then "Oil engine". This will give you the ability to construct oil-powered vehicles in your workshop.
+
+[Laboratory]
+!
+
+! Workshop
+Workshop
+
+You can now operate your first workshop. People can become mechanics here - this works like in other buildings. Mechanics are better drivers (a vehicle driven by a mechanic is faster and deals more damage to enemy than the one driven by, say, soldier). A mechanic is also able to repair a damaged vehicle: just click his Repair icon (or press R) and then click the damaged vehicle.
+
+Only mechanics can operate workshop. If you try to build a vehicle and you have no mechanic inside (i.e. the workshop is either empty or only characters of other professions are in), you will se flashing red icon "Mechanic missing". Until you send some mechanic in, the production will not start.
+
+A workshop can be upgraded to Factory which in turn can be improved by up to five Extensions. These can give you more construction options, but this upgrade is not available in this mission
+[Workshop]
+!
+
+! BuildingVehicles
+Building Vehicles
+You can build vehicles in workshop. If you select it, you can see four drop-down lists: these correspond to four vehicle components - chassis, weapon, control system and engine. At present you have not much choice in constructing vehicles as you have only one available type of chassis, weapon and control system. You do not even have an engine until you research it in a laboratory.
+
+In more advanced missions you will be able to select from more types of components and build many different types of vehicles.
+
+Anyway, once you are satisfied with the vehicle design, just press the Construct Vehicle icon and production starts (presuming that there is a mechanic inside). You will also note that the amount of material in the base decreases. This material is consumed to build the vehicle. When you hover the mouse over Construct Vehicle icon, you will see hint telling you how much material and other resources the vehicle will cost.
+
+[Vehicles]
+!
+
+// Dialogue 8 (Burlak or any of the player controlled men tries to leave base before the objective is fulfilled)
+$ D8-Plat-1
+- Hey, where are you going, comrade? I fear, your task is not finished here, yet. Return immediately to your job. (The question here is whether the game should force player to do so, I think better not)
+
+// Dialogue 9 (Vehicle constructed)
+$ D9-Bur-1
+- Comrade major! We have achieved our planned production!
+$ D9-Plat-1
+- Very well, comrade. Now you can drive it to Kirov, they are waiting for it. Then return here and report to me.
+
+# M3
+Out Produce
+Add Main Drive
+- Drive the vehicle to S. M. Kirov base.
+#
+
+! Driving
+Driving vehicles
+
+Now you have built vehicles, you can drive them. An empty vehicle cannot drive anywhere, you will also note that its side colour is dimmed. In order to be able to control the vehicle, you have to enter it first. Entering a vehicle is quite easy, just select a character and right-click a vehicle (you can also issue the "Move" command, with vehicle as its target). To get off vehicle, just click the "Get off" button on command panel.
+
+You can select vehicles in the same manner as you do other units. You will note that contrary to human units, vehicles have not one, but three bars. The uppermost one (short green) is health bar of the driver. A human in vehicle is better protected against enemy fire than the one without, but he still takes some damage when in combat. The middle bar (longer green) is health bar of vehicle. Just like with humans, when you are in combat this bar will get shorter and turn yellow and then red. Once vehicle goes into red, it is unusable. The driver gets out automatically.
+!
+
+! Fuel
+Refuelling vehicles
+
+The lower bar (longer cyan) shows the level of fuel in the vehicle's tank. Your vehicles use combustion engine that consumes oil. As you drive around, level of fuel steadily decreases. To refuel the vehicle, just right-click a depot, a workshop (or factory) or oil rig. The vehicle will drive there and refuel automatically. When you happen to run dry far from your base, the driver gets out and you have two options: Either you can use a mechanic to push the vehicle back to base (just select the mechanic, right-click the vehicle, and issue commands to vehicles like usual) or you can use an engineer to bring oil to vehicle (select an engineer, click his "Transport" button, click the "Oil" button, click the depot where to take the oil and once the engineer has the canister in his hands, right-click the empty vehicle).
+!
+
+! Repair
+Repairing vehicles
+
+Any mechanic can repair a damaged vehicle. After combat it may be advantageous to order your mechanic to get out of his vehicle. He will automatically start repairing it.
+
+[driving] [repairing] [refuelling]
+!
+
+// Dialogue 10 (Vehicle and Burlak reach Kirov))
+$ D10-Kur-1
+- So you brought us a brand new vehicle, heh? That's going to be a great help to our scouting groups. If we are going to equip our lads with these, the Yanks don't stand a chance, heh.
+$ D10-Bel-1
+- This vehicle looks perfect, I can't wait to see these twin machine guns in action.
+$ D10-Kur-2
+- This should give you the edge you need so the tragic accident like death of comrade Pokryshkin need not happen again. Now go about your duties. (Belkov and his group leave) Now, comrade Gorky, return to L. P. Beria, you surely have a work to do there, heh. (Burlak now leaves. If he goes too much North, dialogue 1b takes place again)
+
+# M4
+Out Drive
+Add Main Return 
+- Return to L. P. Beria base.
+#
+
+// Dialogue 11 (Return to Beria)
+$ D11-Plat-1
+- So we gave comrade Kurin his vehicle and now we can produce some for us. Get about it, Burlak, and when you have enough for each of you, you'll go on reckon mission as well.
+$ D11-Bur-1
+- Yes, comrade major! At once.
+$ D11-Bur-1a
+- [not alone] Let's get to it, comrades. We have a work to do.
+
+# M5
+Del Drive
+Del Return
+Add Main Produce2
+- Produce one vehicle for each man under your command, including yourself.
+#
+
+// Dialogue 12 (Vehicles produced)
+$ D12-Bur-1
+- Comrade Platonov, we have reached our planned quota of production.
+$ D12-Plat-1
+- And in a record-breaking time. I can see the longer you do it, the better you are at it.
+$ D12-Bur-2
+- Yes, these vehicles are like second nature to us now. I think we'll be good at driving them too.
+$ D12-Plat-2
+- Very well. Now you can take out these vehicles for a ride. Go North and explore the unknown areas.
+
+! Skills
+Skills
+
+As you know, you and your comrades can change your profession by entering appropriate buildings and taking appropriate equipment. Corresponding to the four professions there are four skills: combat, mechanical, engineering and science. The higher the skill, the better the character is at given profession - high combat skill allows you to deal more damage to enemy, high mechanical skill makes you produce better vehicles faster and also makes you a better driver, engineer with high skill will build better buildings faster and high science skill is guarantee of faster research and healing.
+
+You can see the values of the skills of your men on the Info panel when you select them as a light dots appearing right to their portrait. You will note that the skill corresponding to the current profession is doubled. That takes into account that the man has appropriate kit for his mission. This means that e.g. a mechanic with mechanical skill 2 will drive a vehicle as effectively as let's say soldier with mechanical skill 4.
+
+[skill]
+!
+
+# M6
+Out Produce2
+Add Main Chart
+- Chart the area North of your position.
+#
+
+// Dialogue 13 (American trap)
+$ D13-ASol-1
+- (into radio) So how are you doing here, bastards? Don't tell me I'm first to come here, or I'll be really angry!
+$ D13-Bel-1
+- Comrade colonel Kurin, we've spotted another dumb Yank. We're going to test our new vehicle on him.
+$ D13-Kur-1
+- Sure, lad. Go ahead.
+$ D13-Bel-2
+- (imitates Pokryshkin's English) Welcome to United States of Pliocene, soldier. Stay put, we'll pick you up.
+
+// Dialogue 14 (Arrival to the forest)
+$ D14-ASol-1
+- (appears from behind couple of trees South of Russians) Welcome, comrades. It's surprise party! (A group of  more soldiers hiding around the place gets up and opens fire.)
+$ D14-Bel-1
+- It's trap! It's trap! Retreat North! (Returns fire and drives toward forest, when he gets there, his vehicle is on fire. He gets out and goes into forest. Other R. soldiers follow. American mechanic comes to damaged vehicle, repairs it and captures it.)
+$ D14-Bel-1a
+- Comrade colonel, we're trapped! We're surrounded by superior American force! We need help!
+$ D14-Kur-1
+- Calm down, lad, there is no such thing as superior American force. Regroup and attack!
+$ D14-Bel-2
+- But...
+$ D14-Kur-2
+- You've heard the order, didn't you, heh? Go about it!
+
+// Dialogue 14a (Can Burlak help?)
+$ D14a-Bur-1
+- Comrade major, with these vehicles we can reach position of comrade Belkov quickly-
+$ D14a-Plat-1
+- Comrade Belkov and his men belong to colonel Kurin and they are no concern of yours or mine. There may be more American forces in this area. Your task is to chart them. Do you understand?
+$ D14a-Bur-2
+- But-
+$ D14a-Plat-2
+- Do you understand?
+$ D14a-Bur-3
+- Yes, comrade major!
+$ D14a-Plat-3
+- Well. If you get in contact with enemy, request permission to attack.
+
+// Dialogue 15 (New American breastwork is spotted or fires at them)
+$ D15-Bur-1
+- Damn, just a moment ago, there was no such thing!
+$ D15-Gny-1
+- [present] The Americans are sly, Burlak. They must have just built it.
+$ D15-Kov-1
+- [otherwise] They must have just built it to cut us from Belkov.
+$ D15-Bur-2
+- [never been on western ridge] There might be a better way than frontal attack here.
+$ D15-Kov-2
+- [reply] What do you mean?
+$ D15-Bur-3
+- [reply] I'd look if there isn't a way how to get there from West.
+
+// Dialogue 16 (When Eastern American breastwork is spotted)
+$ D16-Kov-1
+- [W. bw. not spotted: alt a1] So this is where the Yanks are hiding.
+$ D16-Kov-1a
+- [W. bw. spotted: alt a2] So they've got another hiding spot here.
+$ D16-Bur-1
+- That looks like a good place to build fortifications.
+$ D16-Gny-1
+- [present] Sure, it's a real fortress.
+
+// Query AttackBw (only if: i. Western bw. was spotted; ii. Burlak entered the upper ridge; and iii. QAttackAm didn't take place)
+? QAttackBw
+It might be possible to attack the American position from here, but your order specifically asked for reconnaissance only. What do you want to do?
+-1 Ask for the permission to attack
+-2 Ask for the reinforcements to attack
+-3 Handle situation yourself, do not communicate with base.
+?
+
+// Dialogue 17 (QAttackBw-1)
+$ D17-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. We've discovered a new American position. I request permission to attack.
+$ D17-Plat-1
+- (over radio) Quite eager to get into action, aren't you, Burlak?
+$ D17-Bur-2
+- (into radio) We have a very good position, comrade major. We can take them out like plums from pie and get to aid comrade Belkov and his men.
+$ D17-Plat-2
+- (over radio) Very well, comrade. Permission granted.
+
+// Dialogue 18 (QAttackBw-2)
+$ D18-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. I think we found an opening in American defences. Could we get some reinforcements and attack?
+$ D18-Plat-1
+- (over radio) Trying to play Suvorov, are you, Burlak. Your mission is to reckon Yanks position, not to win the war.
+$ D18-Bur-2
+- (into radio) We are in very good position here. We just need little backup.
+$ D18-Plat-2
+- (over radio) Very well, comrade, I'll send you somebody.
+
+// Dialogue 19 (immediately after Dialogue 17 or 18 or if QAttack-3, when Burlak attacks fortifications)
+$ D19-Gny-1
+- [present: alt a1] What are you up to, Burlak? I don't want to commit suicide!
+$ D19-Bur-1
+- [reply] Shut up, Semyon. Do you want our boys charging it from below, like Pokryshkin did? We can take it out from here, neatly and easily.
+$ D19-Kov-1
+- [otherwise: alt a2] You surely have balls, Burlak. I wonder if attacking this breastwork is such a good idea...
+$ D19-Bur-2
+- [reply] This is not question of balls, this is a matter of brains. Only Yanks could have built a fortification down there so that we can take it to pieces.
+
+// Dialogue 19A (attack on e. bw. from below, query AttackBW didn't take place)
+$ D19A-Gny-1
+- [present: alt a1] What your doing, Burlak? This is the most stupid idea!
+$ D19A-Kov-1
+- [otherwise] This does not seem like a good tactics, Burlak. Isn't there a better way?
+$ D19A-Bur-1
+- There might be a better position but now it is too late to go looking for it. Now simply take them out!
+
+# M7
+Out Chart
+Add Main AttackW
+- Destroy enemy fortifications in West
+#
+
+! Visibility
+Visibility
+Your character's field of vision is not only influenced by the obstacles around him or her but by his or her position as well - if you are standing on higher ground, you can see the enemy while he cannot see you. This is also the case with you and the American breastworks below.
+
+[fog of war] [line of sight]
+!
+
+// Dialogue 20 (Western breastwork destroyed)
+$ D20-Bur-1
+- The Yanks have one place to hide less, comrade major.
+$ D20-Plat-1
+- Excellent, Burlak.
+
+# M8
+Out AttackW
+#
+
+// Query ContMission
+? QContMission
+You have fulfilled the main mission objective. However, you may still wish to help Belkov and his comrades, even if it is not going top make you popular with comrade Platonov. Do you wish to:
+-1 End the mission
+-2 Continue mission
+?
+
+// Query AttackAm (only if: i. Burlak is close to North American position -- Belkov)
+? QAttackAm
+If you proceed further North, you will have to fight Americans, but your order specifically asked for reconnaissance only. What do you want to do?
+-1 Ask for the permission to attack
+-2 Ask for the reinforcements to attack
+-3 Handle situation yourself, do not communicate with base.
+?
+
+// Dialogue 21 (QAttackAm-1)
+$ D21-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. We've assessed the American forces surrounding comrade Belkov and we believe we can handle them. I request permission to attack.
+$ D21-Plat-1
+- (over radio) Try to take back that vehicle of ours, Burlak. Permission granted.
+
+// Dialogue 22 (QAttackAm-2)
+$ D22-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. We are about to make contact with American forces surrounding comrade Belkov. Could we get some reinforcements and attack?
+$ D22-Plat-1
+- [bw. Destroyed & no reinforcements in QAttackBw] (over radio) Very well, comrade. As you took out those American positions, they should get to you easily enough. I'll send you somebody.
+$ D22-Plat-1a
+- [bw. not destroyed] (over radio) Negative, comrade Gorky. You had hard time getting there in vehicles and my guys might not make it.
+$ D22-Plat-1b
+- [bw. Destroyed & reinforcements sent in QattackBw] (over radio) You already have all reinforcements we can spare, comrade Gorky. You can now proceed.
+
+// Dialogue 23 (immediately after Dialogue 21 or 22 or if QAttack-3, when Burlak attacks Americans)
+$ D23-Gny-1
+- [present: alt a1] We should mine our god-damned business, Burlak. This is job for soldiers.
+$ D23-Bur-1
+- [reply] What's the matter with you, Semyon? Are you a coward? We can handle these machines much better than any soldier.
+
+# M9
+Out Chart
+Add Main AttackAm
+- Join forces with comrade Belkov.
+#
+
+// Dialogue 24 (Belkov freed)
+$ D24-Bel-1
+- I'm really glad to see you again, Burlak.
+$ D24-Bur-1
+- Wish I could say the same. Every time we meet, you are in deep shit, Peter. But still, I'm glad you are alive.
+$ D24-Bel-2
+- Thank you.
+$ D24-Bur-2
+- Lieutenant Gorky reporting to L. P. Beria. We've made contact with comrade lieutenant Belkov, comrade major. The American forces in this area were eliminated.
+$ D24-Bur-2a
+- [vehicle recaptured] We have also managed to recapture our vehicle.
+$ D24-Plat-2
+- Very well, comrade.
+$ D24-Plat-2a
+- [bw. not captured] Now you should return to that American fortifications you discovered and take them out as well.
+
+// Dialogue 25 (When Burlak returns to Beria)
+$ D25-Plat-1
+- So what did you found out, boys?
+$ D25-Bur-1
+- [Both American breastworks found] We found two Yanks fortifications in this area, comrade major, one...
+$ D25-Bur-1a
+- [Only one American bw. found] We found only one Yanks fortification in this area, comrade major, it...
+$ D25-Bur-1b
+- [Eastern or Both bw. found] ...is on that knoll to East, and it would be very difficult to attack.
+$ D25-Bur-1c
+- [Both American breastworks found] ...and the another one ...
+$ D25-Bur-1d
+- [Western or Both bw. found]  ...is on that ridge just North of here. I think we would be able to attack them from behind there, and take them out without losses, comrade Platonov.
+$ D25-Plat-2
+- [reply] Very well, comrade Burlak. If you think you can rid us of that Yanks sore, take a couple of soldiers from here and attack it! (Objective Change 3)
+$ D25-Bur-2
+- [no bw. found] Unfortunately, we didn't find anything, yet, comrade major.
+$ D25-Plat-3
+- [no bw. or only Eastern bw. found] I'm sure that there are more Yanks here. You have to be a little bit more daring in your explorations, comrade Burlak.
+
+^ Main
+American fortification destroyed.
+
+| Burlak
+Burlak is dying.
+
+* Initiative
++ Proper initiative showed
+- You were too reckless in your attack. (didn't ask for permission to attack)
+- You were to too careful.(asked for reinforcements)
+*
+
+* Belkov
++ Belkov saved
+- You left comrade Belkov to die
+- You failed to save comrade Belkov.
+*
+
+* NoLosses
++ No losses
+- You lost some of your men.
+*

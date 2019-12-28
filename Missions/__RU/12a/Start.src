@@ -1,0 +1,173 @@
+EXPORT
+Burlak,
+Gossudarov,
+
+MashaVar,
+Masha,
+RealMasha,
+
+you,
+ally,
+usa,
+neutral;
+
+function read_parameters;
+var i,veh;
+begin
+  you:=3;
+  ally:=6;
+  usa:=1;
+  neutral:=0;
+
+  SetAttitude(you,ally,att_friend,true);
+
+  ChangeSideFog(ally,you);
+end;
+
+
+function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then
+    result:=CreateCharacter(ident)
+  else
+    result:=0;
+end;
+
+function create_people;
+  begin
+// ********************** RusAlly *************************************
+    uc_side=ally;
+    uc_nation:=nation_russian;
+
+    Gossudarov:=nacti_osobu('Gossudarov');
+    PlaceUnitXY(Gossudarov,34,30,false);
+    ComHold(Gossudarov);
+// ********************** Russian *************************************
+    uc_side=you;
+    uc_nation:=nation_russian;
+
+    Burlak:=nacti_osobu('Burlak');
+    PlaceUnitXY(Burlak,32,30,false);
+    SetClass(Burlak, 3);
+    ComHold(Burlak);
+end;
+
+function create_masha;
+var veh;
+begin
+  veh:=LoadVariable('Masha',false);
+
+  if veh then
+  begin
+    uc_side:=you;
+    uc_nation:=nation_russian;
+    uc_direction:=2;
+
+    vc_chassis:=veh[1];
+    vc_engine:=veh[2];
+    vc_control:=veh[3];
+    vc_weapon:=veh[4];
+    RealMasha:=true;
+    Masha:=CreateVehicle;
+    SetMark(Masha,1);
+  end
+  else
+  begin
+    uc_side:=you;
+    uc_nation:=nation_russian;
+    uc_direction:=2;
+
+    vc_chassis:=ru_medium_tracked;
+    vc_engine:=engine_siberite;
+    vc_weapon:=ru_gatling_gun;
+    vc_control:=control_manual;
+
+    RealMasha:=false;
+    Masha:=CreateVehicle;
+  end;
+  if GetEngine(Masha)<>engine_siberite then
+    SetFuel(Masha,Rand(70,95));
+  PlaceUnitXY(Masha,26,26,false);
+end;
+
+var i,MashaWanted,Chassis,Weapon;
+
+starting
+begin
+  SA_OnMissionStart;
+  FogOff(false);
+  SetBName(1,'bluekher');
+  IngameOn;
+
+  InitBc;                                      
+  InitHc;
+  InitUc;
+  InitVc;
+
+  read_parameters;
+  create_people;
+  create_masha;
+
+  CenterNowOnXY (33,31);
+
+  ComTurnUnit(Burlak,Gossudarov);
+  ComTurnUnit(Gossudarov,Burlak);
+  Wait(0$1);
+  D_Start;
+  Wait(0$1);
+  if RealMasha then
+  begin
+    case Query('QvehicleM') of // Zítra ráno opustíš základnu. Mùžeš si vzít Mášu nebo si vybrat jiné z vozidel v základnì.
+      1:MashaWanted:=true;
+      2:begin
+          MashaWanted:=false;
+          case Query('QChassisM') of // Dobøe, podíváš se po nìjakém. Jaké by mìlo mít podvozek.
+            1:Chassis:=ru_medium_wheeled;
+            2:Chassis:=ru_medium_tracked;
+            3:Chassis:=ru_heavy_wheeled;
+            4:Chassis:=ru_heavy_tracked;
+          end;
+        end;
+    end;
+  end
+  else
+    case Query('Qchassis') of  // Zítra ráno opustíš základnu. Musíš si najít vhodné vozidlo. Jaký bys chtìl podvozek.
+      1:Chassis:=ru_medium_wheeled;
+      2:Chassis:=ru_medium_tracked;
+      3:Chassis:=ru_heavy_wheeled;
+      4:Chassis:=ru_heavy_tracked;
+    end;
+
+  if NOT MashaWanted OR NOT RealMasha then
+    if Chassis=ru_medium_wheeled OR Chassis=ru_medium_tracked then
+      case Query('Qmedium') of // A jakou bys chtìl zbraò (Tìžký kulomet, Rotaèní kulomet, Dìlo, Raketomet)
+        1:Weapon:=ru_heavy_machine_gun;
+        2:Weapon:=ru_gatling_gun;
+        3:Weapon:=ru_gun;
+        4:Weapon:=ru_rocket_launcher;
+      end
+    else
+      case Query('Qheavy') of  // A jakou bys chtìl zbraò (Tìžký kulomet, Rotaèní kulomet, Dìlo, Raketomet, Tìžké dìlo, Buldozer)
+        1:Weapon:=ru_heavy_machine_gun;
+        2:Weapon:=ru_gatling_gun;
+        3:Weapon:=ru_gun;
+        4:Weapon:=ru_rocket_launcher;
+        5:Weapon:=ru_heavy_gun;
+        6:Weapon:=ru_bulldozer;
+      end;
+
+  SaveVariable([MashaWanted,Chassis,Weapon],'EscapeVehicle_12a');
+  if NOT MashaWanted AND RealMasha then DeleteVariable('Masha');
+
+  Wait(0$2);
+  ChangeMap('%_cont','%_cont');
+  IngameOff;
+end;
+
+
+EXPORT function TheEnd;
+begin
+  YouWin;
+end;
+
+

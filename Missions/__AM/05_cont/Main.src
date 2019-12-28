@@ -1,0 +1,407 @@
+// SIDES
+export you,you2,russians,arabians, neutral;
+// skupiny
+export apemans;
+export oma; // on map arabs (ti co utoci)
+export om;
+export arabs_cars;
+// jednotlivci
+export JMM;
+export Glad;
+
+export Har;
+export Den, Lisa, Frank;
+export Don, Brown;
+export Bobby, Cyrus;
+export Denis;
+
+export Sol1, Sol2, Sci;
+
+export Car1, Car2, Car3;
+
+
+export CameFromXY;
+// game starting
+export map_size_x, map_size_y;
+//export difficulty;
+// game progress
+export first_ape;
+export was_first_attack;
+export away_from_last_attack;
+export first_attack;
+export mine_attack;
+export thief_attack;
+export lonely_attack;
+export next_attack;
+export attacking;
+export attacky;
+
+export opic;
+export cil_mit_1_ape_eng_splnen;
+export cil_mit_5_ape_eng_splnen;
+export zasilka_muze;
+export zasilka_landed;
+export denis_can_come;
+export RadarBuild;
+
+export tvoji_lidi;
+export not_char;
+export opicaci;
+
+export ztraty;
+export uz_je_cas;
+export added_apes;
+export max_added_apes;
+export mat_crates;
+
+export all, used, other;
+export Gamma2Commander;
+
+//------------------------------------------------------------------------------------------------------
+//-------- Main Starting Block -------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+starting
+begin
+    map_size_x:=100;
+    map_size_y:=80;
+
+    prepare_sides;
+    prepare_yours_cars;
+    load_units;
+
+    SetDifficulty;
+
+    apemans:=FilterAllUnits( [[f_nation, nation_nature]] );
+
+// some variables of game progress
+    was_first_attack:=false;
+    first_attack:=false;
+    mine_attack:=false;
+    thief_attack:=false;
+    lonely_attack:=false;
+    next_attack:=false;
+    attacking:=false;
+    attacky:=0;
+
+    CameFromXY:=[[110,31],[106,23],[123,74],[120,74],[74,6],[83,75],[39,4]];
+
+    opic:=0;
+    zasilka_muze:=false;
+    denis_can_come:=false;
+
+    budovy:=[];
+    laboratore:=[];
+    tvoji_lidi:=[];
+
+    ztraty:=0;
+    added_apes:=0;
+    max_added_apes:=10;
+
+    uz_je_cas:=false;
+
+    Dialog1;
+end;
+
+function prepare_yours_cars;
+begin
+
+// initializes unit, human and vehicle creating
+    InitUc;
+    InitHc;
+    InitVc;
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    vc_chassis:=us_light_wheeled;
+    vc_control:=control_manual;
+    vc_engine:=engine_solar;
+    vc_weapon:=us_machine_gun;
+    Car1:=CreateVehicle;
+
+    vc_chassis:=us_light_wheeled;
+    vc_control:=control_manual;
+    vc_engine:=engine_solar;
+    vc_weapon:=us_machine_gun;
+    Car2:=CreateVehicle;
+
+    vc_chassis:=us_medium_wheeled;
+    vc_control:=control_manual;
+    vc_engine:=engine_solar;
+    vc_weapon:=us_cargo_bay;
+    Car3:=CreateVehicle;
+
+    SetCargo([Car3], mat_cans, 100);
+end;
+
+
+function load_units;
+begin
+    InitUc;
+    InitHc;
+    InitVc;
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    JMM:=CreateCharacter('JMM');
+    Glad:=CreateCharacter('Gladstone');
+    Har:=NewCharacter('Harisson');
+    Denis:=NewCharacter('Denis');
+
+
+    If TestCharacters('otherDelta') then
+      used:=CreateCharacterSet('otherDelta')
+    else
+      used:=[];
+
+
+    Lisa:=0;
+    if CheckCharacterSet('Lisa') then
+      If LoadVariable('LisaLoc', 0)=3 then
+          Lisa:=CreateCharacter('Lisa');
+
+    Cyrus:=0;
+    if CheckCharacterSet('Cyrus') then
+      If LoadVariable('CyrusLoc', 0)=3 then
+          Cyrus:=CreateCharacter('Cyrus');
+
+    Bobby:=0;
+    if CheckCharacterSet('Bobby') then
+      If LoadVariable('BobbyLoc', 0)=3 then
+          Bobby:=CreateCharacter('Bobby');
+
+
+
+    Frank:=0;
+    if CheckCharacterSet('Frank') then
+      If LoadVariable('FrankLoc', 0)=3 then
+        Frank:=CreateCharacter('Frank');
+
+    Don:=0;
+    if CheckCharacterSet('Donaldson') then
+      If LoadVariable('DonaldsonLoc', 0)=3 then
+        Don:=CreateCharacter('Donaldson');
+
+    Brown:=0;
+    if CheckCharacterSet('Brown') then
+      If LoadVariable('BrownLoc', 0)=3 then
+        Brown:=CreateCharacter('Brown');
+
+    used:=([JMM,Glad,Lisa,Cyrus,Bobby,Frank,Don,Brown] diff [0])^used;
+    if not UnitFilter(used, [f_class,class_engineer]) then
+       SetClass(JMM, class_engineer);
+end;
+
+FUNCTION prepare_sides;
+begin
+// who is who in this mission
+    you:=1;
+    you2:=4;
+    arabians:=2;
+    russians:=3;
+    neutral:=0;
+
+// starting setting of attitiudes (you remain neutral with anyone as long as you attack him or he attack you)
+    SetAttitude(arabians,you,att_enemy,true);
+end;
+
+export wait_first_attack;
+export utoku;
+FUNCTION SetDifficulty;
+begin
+    wait_first_attack:=[1$20, 0$50, 0$35][difficulty];
+    utoku:=[9,12,19][difficulty];
+end;
+// ------------------------------------------------------
+// tvorba arabu
+export function make_arabs(pocet, unitclass);
+var list, arab, d;
+begin
+     InitUc;
+     InitHc;
+     uc_side:=arabians;
+     uc_nation:=nation_arabian;
+     d:=difficulty-1;
+     while pocet>0 do begin
+           hc_class:=unitclass;
+
+           if Rand(1,10)>=4 then
+              hc_sex:=sex_female
+           else
+              hc_sex:=sex_male;
+
+           case unitclass of
+             class_soldier:    begin
+               hc_attr:=[ Rand(8,10)+d, Rand(8,10)+d ];
+               hc_skills:=[ Rand(2,3)+d,Rand(0,1)+d,Rand(0,1)+d,Rand(0,0)+d ];
+             end;
+             class_engineer:   begin
+               hc_attr:=[ Rand(8,9)+d, Rand(8,9)+d ];
+               hc_skills:=[ Rand(0,1)+d,Rand(2,3)+d,Rand(0,1)+d,Rand(0,0)+d ];
+             end;
+             class_mechanic:   begin
+               hc_attr:=[ Rand(8,9)+d, Rand(8,9)+d ];
+               hc_skills:=[ Rand(0,0)+d,Rand(0,1)+d,Rand(2,3)+d,Rand(0,0)+d ];
+             end;
+             class_scientistic:begin
+               hc_attr:=[ Rand(8,8)+d, Rand(8,8)+d ];
+               hc_skills:=[ Rand(0,1)+d,Rand(0,1)+d,Rand(1,2)+d,Rand(2,3)+d ];
+             end;
+           end;
+
+           arab:=CreateHuman;
+           if list then
+              list:=list^ arab
+           else
+              list:=arab;
+           pocet:=pocet-1;
+     end;
+     result:=list;
+end;
+
+every 0$2 trigger not cil_mit_1_ape_eng_splnen and UnitFilter(apemans, [f_side,neutral])+(max_added_apes-added_apes) < (2-opic) do
+begin
+    Disable(0);
+    YouLost('Apeman');
+end;
+every 0$2 trigger not GetTech(tech_ApePsych, you)=state_researched and not laboratore and KolikCrates<20 and mat_crates=3 do
+begin
+    Disable(0);
+    YouLost('Resources');
+end;
+
+every 0$10 trigger RadarBuild and cil_mit_5_ape_eng_splnen do
+begin
+    wait(0$8);
+    Vyhra;
+end;
+
+export function Save;
+var Delta, tmp, t;
+begin
+    SaveCharacters(JMM, 'JMM');
+
+    if Lisa then begin
+       SaveCharacters(Lisa, 'Lisa');
+       if IsDead(Lisa) then
+          SaveVariable(0, 'LisaLoc');
+    end;
+
+    if Frank then begin
+       SaveCharacters(Frank, 'Frank');
+       if IsDead(Frank) then
+          SaveVariable(0, 'FrankLoc');
+    end;
+
+    if Don then begin
+       SaveCharacters(Don, 'Donaldson');
+       if IsDead(Don) then
+          SaveVariable(0, 'DonaldsonLoc');
+    end;
+
+    if Brown then begin
+       SaveCharacters(Brown, 'Brown');
+       if IsDead(Brown) then
+          SaveVariable(0, 'BrownLoc');
+    end;
+
+    if Glad then begin
+       SaveCharacters(Glad, 'Gladstone');
+       if IsDead(Glad) then
+          SaveVariable(0, 'GladstoneLoc')
+       else
+          SaveVariable(3, 'GladstoneLoc');
+    end;
+
+    if Denis then begin
+       SaveCharacters(Den, 'Denis');
+       if IsDead(Den) then
+          SaveVariable(0, 'DenisLoc')
+       else
+          SaveVariable(3, 'DenisLoc');
+    end;
+
+    if Bobby then begin
+       SaveCharacters(Bobby, 'Bobby');
+       if IsDead(Bobby) then
+          SaveVariable(0, 'BobbyLoc');
+    end;
+
+    if Cyrus then begin
+       SaveCharacters(Cyrus, 'Cyrus');
+       if IsDead(Cyrus) then
+          SaveVariable(0, 'CyrusLoc');
+    end;
+
+    SaveCharacters(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_american]])
+        diff [JMM,Lisa,Frank,Don,Brown,Glad,Den,Bobby,Cyrus,0], 'otherDelta');
+    SaveCharacters(FilterAllUnits([[f_side,you],[f_nation,nation_nature]]), 'opicaci');
+
+  //jeste promena Delta - schileny seznam budov
+  //prvky jsou seznamy tvaru [x,y,direction,building_type,level]
+    tmp:=FilterAllUnits([[f_side,you],[f_type,unit_building]]);
+    Delta:=[];
+    for t in tmp do begin
+      case getbtype(t) of
+        b_lab_basic,b_lab_weapon,b_lab_biological,b_lab_computer,b_lab_opto,b_lab_siberium,b_lab_spacetime:begin end;
+        b_lab,b_lab_half,b_lab_full:Delta:=Delta^[[GetX(t),GetY(t),GetDir(t),GetBType(t),GetBLevel(t),GetLabKind(t,1),GetLabKind(t,2)]];
+        b_bunker,b_turret:Delta:=Delta^[[GetX(t),GetY(t),GetDir(t),GetBType(t),GetBLevel(t),GetBWeapon(t)]];
+        else Delta:=Delta^[[GetX(t),GetY(t),GetDir(t),GetBType(t),GetBLevel(t)]];
+      end;
+    end;
+    SaveVariable(Delta, 'Delta');
+
+    SaveVariable(Researched(you, tech_radar), 'RadarDeveloped');
+end;
+
+export function SetMedals;
+begin
+    AddMedal('Tame', cil_mit_5_ape_eng_splnen);
+
+    case GetTech(tech_Radar, you) of
+         state_researched: AddMedal('Radar', 1);
+           state_disabled: AddMedal('Radar', -1);
+            state_enabled: AddMedal('Radar', -2);
+    end;
+                               
+    if GetTech(tech_Radar, you)=state_disabled then begin
+       AddMedal('buildRadar', -1);
+    end
+    else begin
+       if RadarBuild then
+          AddMedal('buildRadar', 1)
+       else
+          AddMedal('buildRadar', -2);
+    end;
+end;
+
+function KolikCrates;
+var base;
+begin
+    result:=GetCargo(FilterAllUnits([f_side,you]), mat_cans) + GetResourceArea(all_map, mat_cans);
+    base:=FilterAllUnits([f_type,unit_building]);
+    if base then
+       result:=result+GetResourceType(GetBase(base[1]), mat_cans);
+end;
+
+on EndTheMissionRaised(x) do
+begin
+    end_the_mission_allowed := false;
+    Vyhra;
+end;
+export function Vyhra;
+begin
+    Disable(0);
+    SetMedals;
+    GiveMedals('Main');
+    RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_american]]));
+    Save;
+    YouWin;
+end;
+
+
+on UpgradeComplete(build) do
+begin
+  if UnitFilter(build, [[f_btype,b_lab_half]]) then
+    MyHint('UpgradeLab');
+end;

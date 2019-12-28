@@ -1,0 +1,189 @@
+export you;                           // strana hrace
+
+export bur,yash,pop;                 // hrdinove velke ruske expedice
+
+export LabCaptured,
+       Trotskij;
+
+export people;
+
+VAR pom;
+
+// sazeni stromecku do mapy
+function prepare_map;
+var map_env;
+begin
+  map_env:=LoadVariable('Environment',[]);
+  if map_env then
+    PlaceEnvironmentList(map_env);
+end;
+
+// staveni zakladny
+function prepare_base;
+var building,un,
+    x,y,dir,
+    Trotskij;                 // promenna, do ktere se nacte cela struktura zakladny
+VAR weap;
+VAR bui;
+begin
+  uc_side:=You;
+  Trotskij:=LoadVariable('Trotskij',[]);
+
+  for building in Trotskij do
+    begin
+      bui=0;
+
+      bc_type:=building[1];
+      x:=building[2];
+      y:=building[3];
+      dir:=building[4];
+      bc_level:=building[5];
+      uc_nation:=building[6];
+      if building>7 then
+        begin
+          bc_kind1:=building[7];
+          bc_kind2:=building[8];
+        end;
+      if (building+0)=7 then
+        weap:=building[7];
+
+      if bc_type in [b_oil_mine, b_siberite_mine] then
+        SetResourceVisibility(x,y,you);
+
+      bui=CreateAndPlaceBuildingXYD(x,y,dir);
+
+      if bc_type in [b_bunker,b_turret] then
+        if weap<>0 then PlaceWeaponTurret(bui,weap);
+
+    end;
+
+  building:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  for un in building do
+    begin
+      SetResourceType(GetBase(un),mat_cans,500);
+      SetResourceType(GetBase(un),mat_oil,500);
+      SetResourceType(GetBase(un),mat_siberit,500);
+    end;
+end;
+
+
+// priprava jednotek
+function prepare_units;
+var un,depot_list;
+begin
+  bur:=nacti_osobu('Burlak');
+  SetSide(bur,You);
+  yash:=NewCharacter('Yashin');
+  SetSide(yash,You);
+  pop:=NewCharacter('Popov');
+  SetSide(pop,You);
+
+  depot_list:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  if depot_list+0=0
+    then msg('Je to totalne v prdeli a vsichni tu umreme, protoze to Freon nesavuje')
+    else begin
+           PlaceUnitXYR(pop,GetX(depot_list[1]),GetY(depot_list[1]),5,false);
+           PlaceUnitXYR(yash,GetX(depot_list[1]),GetY(depot_list[1]),5,false);
+           PlaceUnitXYR(bur,GetX(depot_list[1]),GetY(depot_list[1]),5,false);
+         end;
+  // dodelat umistovani lidi na mapu v blizkosti zakladny (i do budov nekoho)
+end;
+
+// startovni blok
+starting
+begin
+  You=3;
+
+  prepare_map;   // placuje stromecky
+  prepare_base;
+
+  //pojmenovani zakladny
+    pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom>0 then SetBName(pom[1],'trockij');
+
+  prepare_units;
+
+  narvi_lidi_do_budov;
+
+  // vyrobha atd
+  aktivita_v_zakladne;
+
+  starting_scene;
+
+  wait(0$1);
+  ChangeMap('1','%_cont');
+end;
+
+// nacteni osoby ze savu z predesle mise
+function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then result:=CreateCharacter(ident)
+                              else result:=0;
+end;
+
+// narvani nejakych lidi do budov
+function narvi_lidi_do_budov;
+VAR pom;
+VAR i;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_building]]);
+  for i in pom do
+    case GetBType(i) of
+     b_barracks,b_armoury,b_turret,b_breastwork,b_bunker:posli_do_budovy(i,class_soldier);
+     b_lab,b_lab_half,b_lab_full:posli_do_budovy(i,class_scientistic);
+     b_depot:posli_do_budovy(i,class_engineer);
+     b_factory,b_workshop:posli_do_budovy(i,class_mechanic);
+    end;
+end;
+
+// placni clovicka a posli ho do budovy
+function posli_do_budovy(bud,cl);
+VAR ah;
+begin
+  ah=get_human(get_sex,cl,8,'');
+  PlaceUnitXYR(ah,GetX(bud),GetY(bud),5,false);
+  ComEnterUnit(ah,bud);
+end;
+
+// vraci sex daneho vojaka - sanze na zenskou 1/5
+function get_sex;
+begin
+  if Prob(20) then result=sex_female
+              else result=sex_male;
+end;
+
+// vraci cislo creatnuteho humana
+function get_human(sex,clas,level,name);
+var pom;
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+  pom=CreateHuman;
+  result:=pom;
+end;
+
+function aktivita_v_zakladne;
+VAR pom,pom1;
+VAR ah;
+begin
+  // laboratore
+  pom=FilterAllUnits([[f_side,You],[f_btype,b_lab]]);
+  if pom>0 then ComResearch(pom,tech_Tech2);
+
+  pom=FilterAllUnits([[f_side,You],[f_btype,b_factory]]);
+  if pom>0 then ComConstruct(pom,ru_medium_tracked,engine_combustion,control_manual,ru_gatling_gun);
+
+  // scientista se menici na engineera
+  ah=get_human(get_sex,class_mechanic,8,'');
+  if pom>0 then PlaceUnitXYR(ah,GetX(pom[1]),GetY(pom[1]),5,false);
+  ComWait(ah,0$3);
+  pom1=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom1>0 then begin
+                   AddComEnterUnit(ah,pom1[1]);
+                   AddComChangeProfession(ah,class_engineer);
+                   AddComExitBuilding(ah);
+                   AddComMoveXY(ah,51,13);
+                   AddComMoveXY(ah,100,77);
+                 end;
+
+end;

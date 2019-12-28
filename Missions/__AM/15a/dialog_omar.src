@@ -1,0 +1,183 @@
+export omar_in_contact;                   // prvni kontakt Omara s aliencni zakladnou
+var sib_list;                             // seznam siberitovych zdroju na ruske zakladne (Motherlode)
+
+// Dialogue Omar (some time into mission, if NegotiationOffered = True and OmarKilled = True)
+every 0$2+0$0.4 trigger {(us_researched or ru_researched)} FilterAllUnits([[f_side,ar],[f_type,unit_human],[f_ok]]) = 0 Marked 2 do
+var answer;
+begin
+  Omar_Arrive;
+
+  CenterOnUnits(Omar);//[Omar,MacMillan,Burlak]);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(Omar,'DOmar-Omar-1');
+    case camp of
+  4: Say(MacMillan,'DOmar-JMM-1');
+  6: Say(Burlak,'DOmar-Bur-1');
+    end;
+  Say(Omar,'DOmar-Omar-2');
+    case camp of
+  4: Say(MacMillan,'DOmar-JMM-2');
+  6: Say(Burlak,'DOmar-Bur-2');
+    end;
+  Say(Omar,'DOmar-Omar-3');
+    case camp of
+  4: Say(MacMillan,'DOmar-JMM-3');
+  6: Say(Burlak,'DOmar-Bur-3');
+    end;
+  Say(Omar,'DOmar-Omar-4');
+
+  // Query Accept
+  answer = Query('QAccept');
+    case answer of
+  1: begin
+         case camp of                            // Dialogue QrAccept#1
+       4: Say(MacMillan,'DQrAccept#1-JMM-1');
+       6: Say(Burlak,'DQrAccept#1-Bur-1');
+         end;
+       SetSide(Omar,you);
+       ComStop(Omar);//ComMoveToArea(Omar,ar_base);
+     end;
+  2: begin
+         case camp of                            // Dialogue QrAccept#2
+       4: Say(MacMillan,'DQrAccept#2-JMM-1');
+       6: Say(Burlak,'DQrAccept#2-Bur-1');
+         end;
+     end;
+    end;
+
+  interface_hidden:=false;
+  DialogueOff;
+
+  if answer = 2 then
+       Omar_Leave;
+end;
+
+// prichod omara do aliancni zakladny
+function Omar_Arrive;
+var un;
+begin
+  PlaceUnitArea(Omar,omar_place,false);
+  //SetSide(Omar,ar);
+  repeat
+    ComMoveToArea(Omar,teleport_area);//ar_base);
+    wait(0$1);
+  until omar_in_contact;
+end;
+
+// odchod Omara, pokud o nej aliance neprojevila zajem
+function Omar_Leave;
+begin
+  repeat
+    ComMoveToArea(Omar,omar_place);
+    wait(0$1);
+  until IsInArea(Omar,omar_place);
+  RemoveUnit(Omar);
+end;
+
+
+
+
+
+//--------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------//
+//-----  Omar se nepridava k alianci, pac ho kdysi nakrkli a snazi se znicit Motherlode  -----//
+//--------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------//
+
+// Omar tries infested as much siberite resources as possible
+every 0$3.7 trigger OmarWillTryContaminateMotherlode and ( FilterAllUnits([ [f_side,ru], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]) = 0 or finalize = 2 ) do //Marked 3 do
+var best_sib,see_him;
+begin
+  sib_list:=get_sib_list;                         // nalezeni souradnic vsech siberitovych lozisek v ruske zakladne
+  SetClass(Omar,class_scientistic);  //Only scientists can contaminate
+  PlaceUnitArea(Omar,omar_infested,false);
+  see_him:=false;
+
+  repeat
+  best_sib:=get_best_sib(sib_list);               // nalezeni nejblizsiho loziska vzhledem k Omarovi
+  ComContaminate(Omar,best_sib[1],best_sib[2]);
+    
+  if (not see_him) and See(you,Omar) then
+      begin
+        talking_to_omar;
+        see_him:=true;
+      end;
+
+  wait(0$1);
+  until not IsLive(Omar);
+end;
+
+// Dialogue OmarContam (if Omar tries to contaminate motherlode)
+function talking_to_omar;
+begin
+  //CenterOnUnits([MacMillan,Burlak]);
+  CenterOnUnits(Omar);
+  DialogueOn;
+  interface_hidden:=true;
+
+    case camp of
+  4: Say(MacMillan,'DOmarContam-JMM-1');
+  6: Say(Burlak,'DOmarContam-Bur-1');
+    end;
+  Say(Omar,'DOmarContam-Omar-1');
+    case camp of
+  4: Say(MacMillan,'DOmarContam-JMM-2');
+  6: Say(Burlak,'DOmarContam-Bur-2');
+    end;
+
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// odstranovani infestovanych zdroju ze seznamu siberitovych zdroju v okoli Motherlodu
+on SibDepositContaminated(sib,x,y) do
+var list,un;
+begin
+  {list:=[];
+  for un=1 to sib_list do
+    if not ((sib_list[(un*2)-1]=x) and (sib_list[(un*2)]=y)) then
+      list:=list ^ [ sib_list[(un*2)-1], sib_list[(un*2)] ];
+  sib_list:=list;}
+  InGameOn;
+  CenterOnXY(x,y);
+  PlaceSeeing(x,y,you,-10);
+  wait(0$7);
+  Mission_Failed(5);
+  RemoveSeeing(x,y,you);
+  InGameOff;
+end;
+
+// nalezeni vsech siberitovych lozisek v ruske zakladne
+function get_sib_list;
+var list,un,
+    vysledek;
+begin
+  vysledek:=[];
+  list:=GetListOfResourcesInArea(ru_base);
+  for un=1 to (list div 3) do
+    if list [(un*3)]=source_siberium then
+    vysledek:=vysledek ^ [ list[(un*3)-2], list[(un*3)-1] ];
+
+  result:=vysledek;
+end;
+
+// nalezeni nejblizsiho siberitoveho loziska vzhledem k Omarovi
+function get_best_sib(sib_list);
+var un,min,x,y,dist,
+    vysledek,b;
+begin
+  min:=[-1,-1,-1];
+  for un=1 to (sib_list div 2) do
+    begin
+      x:=sib_list[(un*2)-1];
+      y:=sib_list[(un*2)];
+      dist:=GetDistUnitXY(Omar,x,y);
+      b = HexInfo(x,y);
+      if ((min[3]<0) or (dist < min[3])) and (b = 0 or GetBType(b) = b_siberite_mine) then
+        min:=[x, y, dist];
+    end;
+  vysledek:=[min[1], min[2]];
+  result:=vysledek;
+end;

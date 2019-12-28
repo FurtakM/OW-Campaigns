@@ -1,0 +1,214 @@
+var alien_tower_spoted;
+
+// Dialogue Starting Dialog
+export function starting_scene;
+var check_time;
+begin
+//  CenterNowOnUnits([Burlak,MacMillan]);
+  CenterNowOnXY(75,27);
+  wait(0$1);
+  InGameOn;
+  ComMoveToArea(IsInUnit(Burlak),burlak_panorama_area);
+  ComMoveToArea(IsInUnit(MacMillan),jmm_panorama_area);
+  CenterOnUnits([MacMillan,Burlak]);
+
+  repeat
+    wait(20);
+  until IsInArea(Burlak,burlak_panorama_area) and IsInArea(MacMillan,jmm_panorama_area);
+
+  ComExitVehicle([Burlak,MacMillan]);
+  while IsInUnit(Burlak) or IsInUnit(MacMillan) do
+    wait(5);
+  wait(10);
+  ComMoveToArea(Burlak,burlak_talking_panorama);
+  ComMoveToArea(MacMillan,jmm_talking_panorama);
+  check_time:=TICK;
+  repeat
+    ComHold(FilterUnitsInArea(burlak_talking_panorama,[ [f_side,you] ]));
+    ComHold(FilterUnitsInArea(jmm_talking_panorama,[ [f_side,you] ]));
+    wait(0$1);
+  until (IsInArea(Burlak,burlak_talking_panorama) and IsInArea(MacMillan,jmm_talking_panorama)) or
+        (check_time<(TICK-0$4));
+  ComTurnUnit(MacMillan,Burlak);
+  ComTurnUnit(Burlak,MacMillan);
+  CenterOnXY(77,31);
+  wait(10);
+  InGameOff;
+
+  DialogueOn;
+  interface_hidden:=true;
+
+    case camp of
+  4: begin                             // Dialogue Start-JMM
+       Say(MacMillan,'DStart-JMM-JMM-1');
+       Say(Burlak,'DStart-JMM-Bur-1');
+       Say(MacMillan,'DStart-JMM-JMM-2');
+       Say(Burlak,'DStart-JMM-Bur-2');
+     end;
+  6: begin                             // Dialogue Start-Burlak
+       Say(Burlak,'DStart-Burlak-Bur-1');
+       Say(Macmillan,'DStart-Burlak-JMM-1');
+       Say(Burlak,'DStart-Burlak-Bur-2');
+     end;
+    end;
+
+  SaveForQuickRestart;
+  wait(20);
+  ChangeMissionObjectives('MStart');
+
+  interface_hidden:=false;
+  DialogueOff;
+
+  us_researched:=false;
+  us_researched:=true;
+
+  omar_in_contact:=false;
+  alien_tower_spoted:=false;
+  one_enabled:=false;
+end;
+
+
+
+// Dialogue AlienBase (when Alien base is spotted)
+every 0$2.3 trigger See(you,al_tower) do      // pak zmenit primo na vez
+var un,sol,sci;
+begin
+  repeat
+    wait(0$1);
+  until not FilterAllUnits([ [f_side,ar], [f_type,unit_human], [f_ok], f_not, [f_inside] ]);
+
+  wait(0$1);
+
+  cpu_list:=cpu_list diff ar;
+
+  un:=FilterAllUnits([ [f_side,you], [f_sex,sex_male] ]) diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    sol:=FindMaxSkill(un,skill_combat);
+
+  un:=FilterAllUnits([ [f_side,you], [f_sex,sex_male] ]) diff [MacMillan, Burlak, Roth, Gossudarov, sol, 0];
+  if un then
+    sci:=FindMaxSkill(un,skill_scientistic);
+
+
+  PlaceSeeing(248,183,you,10);
+  CenterOnUnits(al_tower);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(sol,'DAlienBase-Rsol1-1');
+    case camp of
+  4: begin
+       Say(MacMillan,'DAlienBase-JMM-1');
+       Say(Roth,'DAlienBase-Roth-1');
+       if Not IsOK(Roth) then
+         Say(sci,'DAlienBase-Sci1-1');
+     end;
+  6: begin
+       Say(Burlak,'DAlienBase-Bur-1');
+       Say(Gossudarov,'DAlienBase-Gos-1');
+       if Not IsOK(Gossudarov) then
+         Say(sci,'DAlienBase-Sci1-1');
+     end;
+    end;
+
+  SetSide(al_tower,you);
+  RemoveSeeing(248,183,you);
+
+  interface_hidden:=false;
+  DialogueOff;
+  Hint('ArtefactBuilding');
+  alien_tower_spoted:=true;
+end;
+
+
+
+// Dialogue AlieBaseNotReady (a base set up around Alien base, but no "basic" artef technology is researched)
+every 0$4.6 trigger FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_lab], [f_btype,b_lab_half] ], [f_lives,1000] ]) and
+                    alien_tower_spoted do
+var un,sci;
+begin
+  un:=FilterAllUnits([ [f_side,you], [f_sex,sex_male] ]) diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    sci:=FindMaxSkill(un,skill_scientistic);
+
+  CenterOnUnits(al_tower);
+  DialogueOn;
+  interface_hidden:=true;
+
+    case camp of
+  4: if IsOK(Gossudarov) then
+       Say(Gossudarov,'DAlieBaseNotReady-Gos-1')
+     else
+       Say(Roth,'DAlieBaseNotReady-Roth-1');
+  6: if IsOK(Roth) then
+       Say(Roth,'DAlieBaseNotReady-Roth-1')
+     else
+       Say(Gossudarov,'DAlieBaseNotReady-Gos-1');
+    end;
+
+  if not (IsOK(Gossudarov) or IsOK(Roth)) then
+    Say(sci,'DAlieBaseNotReady-RSci1-1');
+
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+// Dialogue ArtefTechnology (when any lab is built)
+every 0$8.7 trigger GetTech(tech_Artifact,you)=state_researched do
+var un,lab,list;
+begin
+  list:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_lab], [f_btype,b_lab_half], [f_btype,b_lab_full] ] ]);
+  lab:=false;
+  for un in list do
+    if GetLives(un)=1000 then
+      lab:=un;
+  if lab then
+    begin
+      Talking_About_Artefact;
+      exit;
+    end;
+  enable;
+end;
+
+export function Talking_About_Artefact;
+var un,ru_sci,us_sci,
+    your_depot;
+begin
+  un:=FilterAllUnits([ [f_side,you], [f_nation,nation_russian], [f_sex,sex_male] ]);
+  un:=un diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    ru_sci:=FindMaxSkill(un,skill_scientistic);
+
+  un:=FilterAllUnits([ [f_side,you], [f_nation,nation_american], [f_sex,sex_male] ]);
+  un:=un diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    us_sci:=FindMaxSkill(un,skill_scientistic);
+
+
+  un:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  if un then
+    your_depot:=un[1];
+
+  CenterOnUnits(Burlak);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(ru_sci,'DArtefTechnology-RSci1-1');
+  Say(Burlak,'DArtefTechnology-Bur-1');
+  Say(ru_sci,'DArtefTechnology-RSci1-2');
+  Say(us_sci,'DArtefTechnology-Sci1-2');
+    case camp of
+  4: Say(MacMillan,'DArtefTechnology-JMM-2');
+  6: Say(Burlak,'DArtefTechnology-Bur-2');
+    end;
+  Say(ru_sci,'DArtefTechnology-RSci1-3');
+
+  if GetDistUnits(your_depot,al_tower)<30 then
+    Say(us_sci,'DArtefTechnology-Sci1-3')
+  else
+    Say(us_sci,'DArtefTechnology-Sci1-3a');
+
+  interface_hidden:=false;
+  DialogueOff;
+end;

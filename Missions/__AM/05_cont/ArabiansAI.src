@@ -1,0 +1,448 @@
+var amici_v;
+var amici_h;
+var amici_b;
+
+on DestinationUnreachable(un) do
+begin
+     if GetSide(un)=arabians then begin
+         if attacking and laboratore then begin
+            ComAgressiveMove(un, GetX(laboratore[1]), GetY(laboratore[1]));
+            AddComAttackUnit(un, laboratore[1]);
+         end
+         else
+            ComMoveToArea(un, border);
+     end;
+end;
+
+every 0$50 do
+begin
+     Wait(wait_first_attack);
+     attacky:=attacky+1;
+     attacking:=true;
+     F_first_attack;
+     oma:=FilterAllUnits([f_side,arabians]);
+end;
+
+every 0$1 do
+var i;
+begin
+     om:=FilterAllUnits([f_side,arabians]);
+     for i in om do
+        if IsIdle(i) then begin
+           RaiseSailEvent(i);
+           ComMoveToArea(i, border);
+        end;
+     enable;
+end;
+
+on SailEvent(x) do
+var k;
+begin
+    k:=0;
+    while k<3 and IsLive(x) do begin
+          wait(0$1);
+          if IsIdle(x) then k:=k+1;
+    end;
+    ComMoveToArea(x, border);
+    AddComWait(x, 0$10);
+    if laboratore then
+       AddComAgressiveMove(x, GetX(laboratore[1]), GetY(laboratore[1]));
+end;
+
+export last_attack_was;
+every 3$50.0 + 3$0 TRIGGER budovy and not attacking do
+begin
+     if difficulty=1 then begin
+        last_attack_was:=tick;
+        WhichAttack;
+        enable;
+     end;
+end;
+every 3$10.0 + 2$0 TRIGGER budovy and not attacking do
+begin
+     if difficulty=2 then begin
+        last_attack_was:=tick;
+        WhichAttack;
+        enable;
+     end;
+end;
+every 2$30.0 + 1$30 TRIGGER budovy and not attacking do
+begin
+     if difficulty=3 then begin
+        last_attack_was:=tick;
+        WhichAttack;
+        enable;
+     end;
+end;
+
+
+function free_cars;
+var i;
+begin
+     for i in FilterAllUnits( [[f_type, unit_vehicle], [f_side, you]] ) do begin
+         if not IsDrivenBy(i) then begin
+            result:=true;
+            break;
+         end;
+     end;
+end;
+function lonely;
+begin
+     result:=FilterAllUnits( [[f_side, you], [f_type, unit_human], [f_dist,depot,16]]);
+end;
+
+// vyber utoku arabu
+function WhichAttack;
+var l;
+begin
+     attacky:=attacky+1;
+     attacking:=true;
+     l:=lonely;
+     case true of
+                  l: F_lonely_attack(l);
+         free_cars  and rand(1,3)=1: F_thief_attack;
+             budovy and rand(1,2)=1: F_mine_attack;
+                else F_next_attack;
+     end;
+     if attacky<utoku then
+        enable;
+     oma:=FilterAllUnits([[f_side,arabians],[f_type,unit_human]]);
+end;
+
+
+// -------------------------
+// removing Arabs from map
+every 0$1.0 do
+var i,a;
+begin
+     oma:=FilterAllUnits([[f_side,arabians],[f_type,unit_human]]);
+
+     if oma then begin
+       a:=oma[rand(1,oma)];
+       if (tick-last_attack_was)>5$0 then
+         ComAttackUnit(oma, NearestUnitToUnit(FilterAllUnits([f_side,you]),oma[Rand(1,oma)]));
+       if (tick-last_attack_was)>7$0 then
+         evade_shortest_way_from_xy(getx(a),gety(a), oma, true, true);
+
+       for i in oma do begin
+           if IsIdle(i) and IsInArea(i, border) then begin
+              if IsInUnit(i) then
+                 arabs_cars:=arabs_cars union UnitFilter(IsInUnit(i), [f_not,[f_weapon,us_cargo_bay]]);
+              RemoveUnit(IsInUnit(i));
+              SetLives(IsInUnit(i), 1000);
+
+              DestroyUnit(i);
+              oma:=oma diff i;
+              away_from_last_attack:=away_from_last_attack+1;
+           end;
+       end;
+     end;
+     enable;
+end;
+
+every 0$2 trigger attacking do
+var aro,ar,uso,us,a,i;
+begin
+     aro:=GetLives(FilterAllUnits([f_side,arabians]));
+     uso:=GetLives(FilterAllUnits([f_side,you]));
+     wait(0$2);
+     while attacking do begin
+       ar:=GetLives(FilterAllUnits([f_side,arabians]));
+       us:=GetLives(FilterAllUnits([f_side,you]));
+
+       if (aro-ar)*1.2 < uso-us then begin
+          a:=FilterAllUnits([f_side,arabians]);
+          for i in a do
+             if GetLives(i)<400 then
+                evade_shortest_way(i, false, true);
+       end;
+
+       wait(0$0.5);
+
+       aro:=ar;
+       uso:=us;
+     end;
+
+     enable;
+end;
+
+every 0$1.0 TRIGGER not oma do
+begin
+     attacking:=false;
+     first_attack:=false;
+     mine_attack:=false;
+     thief_attack:=false;
+     lonely_attack:=false;
+     next_attack:=false;
+     enable;
+end;
+every 0$1 do
+var a;
+begin
+   a:='';
+   if attacking then a:=a & ' attacking';
+   if first_attack then a:=a & ' first';
+   if mine_attack then a:=a & ' mine';
+   if thief_attack then a:=a & ' thief';
+   if lonely_attack then a:=a & ' lonely';
+   if next_attack then a:=a & ' next';
+   debug_strings:=[a];
+   enable;
+end;
+// -------------------------
+// first attack
+
+FUNCTION F_first_attack;
+var i, r, amici, x,y,units, a,b;
+begin
+      r:=Rand(1,CameFromXY);
+      x:=CameFromXY[r][1];
+      y:=CameFromXY[r][2];
+      units:=2;
+
+      a:=make_arabs(units, class_soldier);
+      for i in a do
+         PlaceUnitXYR(i, x,y,5, false);
+
+      r:=Rand(1,CameFromXY);
+      x:=CameFromXY[r][1];
+      y:=CameFromXY[r][2];
+      units:=difficulty+1;
+
+      b:=make_arabs(units, class_soldier);
+      for i in b do
+         PlaceUnitXYR(i, x,y,5, false);
+
+
+      amici_b:=budovy;
+      amici_h:=FilterAllUnits( [f_side, you] );
+      away_from_last_attack:=0;
+      make_mess:=a ^ b;
+
+      if amici_b then
+         ComAgressiveMove(make_mess, GetX(amici_b[1]), GetY(amici_b[1]))
+      else
+         ComAgressiveMove(make_mess, GetX(amici_h[1]), GetY(amici_h[1]));
+
+      was_first_attack:=true;
+      first_attack:=true;
+
+      while see_any(you,make_mess) do
+            wait(0$0.5);
+      //---wait-------
+
+     amici:=FilterAllUnits( [[f_side, you], [f_see, arabians]] );
+     if amici then begin
+        ComAgressiveMove(make_mess, GetX(amici[1]), GetY(amici[1]));
+     end;
+{     else begin
+        ComMoveXY(make_mess, x, y);
+        Wait(0$2.0);
+        evade_shortest_way(make_mess, false, true);
+     end;
+}end;
+
+
+// -------------------------
+// mineattack
+
+var set_charge, make_mess;
+FUNCTION F_mine_attack;
+var i, r, amici, x,y,units, w_b, amici_b;
+begin
+      r:=Rand(1,CameFromXY);
+      x:=CameFromXY[r][1];
+      y:=CameFromXY[r][2];
+      units:=difficulty*2;
+
+      amici_b:=budovy;
+      w_b:=Rand(1, (amici_b+0));
+      if amici_b then begin
+         make_mess:=make_arabs(units, class_soldier);
+         units:=(make_mess+0);
+         for i in make_mess do
+            PlaceUnitXYR(i, x,y,5, false);
+         away_from_last_attack:=0;
+
+         set_charge:=get_live_from_list(make_mess, 0, difficulty);
+         make_mess:=get_live_from_list(make_mess, difficulty, units-difficulty);
+
+         ComAgressiveMove(make_mess, GetX(amici_b[w_b]), GetY(amici_b[w_b]));
+
+         find_easiest_way(GetX(amici_b[w_b]), GetY(amici_b[w_b]), 7, 3, set_charge, you, false);
+         AddComPlaceDelayedCharge(set_charge, GetX(amici_b[w_b]), GetY(amici_b[w_b]), amici_b[w_b]);
+         evade_shortest_way_from_xy(GetX(amici_b[w_b]),GetY(amici_b[w_b]), set_charge, true, true);
+
+         mine_attack:=true;
+         while not see_any(you,make_mess) do
+               wait(0$0.5);
+         //---wait-------
+
+         amici:=FilterAllUnits( [[f_side, you], [f_see, arabians], [f_type, unit_human]] );
+         if amici then begin
+            ComAgressiveMove(make_mess, GetX(amici[1]), GetY(amici[1]));
+            for i:=1 to amici do begin
+              AddComAgressiveMove(make_mess, GetX(amici[i]), GetY(amici[i]));
+            end;
+            evade_shortest_way(make_mess, true, true);
+         end
+         else begin
+            if IsOk(amici_b[w_b]) then
+               ComAgressiveMove(make_mess, GetX(amici_b[w_b]), GetY(amici_b[w_b]));
+            evade_shortest_way(make_mess, true, true);
+         end;
+      end;
+end;
+
+// -------------------------
+// thief attack
+var capcar1, capcar2;
+var steal_car;
+FUNCTION F_thief_attack;
+var i, r, x, y, units, amici3;
+begin
+      r:=Rand(1,CameFromXY);
+      x:=CameFromXY[r][1];
+      y:=CameFromXY[r][2];
+      units:=3+difficulty+attacky div 7+away_from_last_attack div 4;
+
+      amici_v:=FilterAllUnits( [[f_type, unit_vehicle],[f_side, you]] );
+
+      if amici_v then begin
+        make_mess:=make_arabs(units, class_soldier);
+        units:=(make_mess+0);
+        for i in make_mess do
+           PlaceUnitXYR(i, x,y,5, false);
+        away_from_last_attack:=0;
+
+        if difficulty>1 then begin
+          steal_car:=get_live_from_list(make_mess, 0, 2);
+          make_mess:=get_live_from_list(make_mess, 2, units-2);
+        end
+        else begin
+          steal_car:=get_live_from_list(make_mess, 0, 1);
+          make_mess:=get_live_from_list(make_mess, 1, units-1);
+        end;
+
+        ComAgressiveMove(make_mess, GetX(amici_v[1]), GetY(amici_v[1]));
+
+        find_easiest_way(GetX(amici_v[1]), GetY(amici_v[1]), 7, 3, steal_car, you, false);
+        com_queue:=true;
+        AddComEnterUnit(steal_car, amici_v[1]);
+        com_queue:=false;
+        evade_shortest_way_from_xy(GetX(amici_v[1]),GetY(amici_v[1]), steal_car, true, true);
+
+        thief_attack:=true;
+        while not see_any(you,make_mess) do
+              wait(0$0.5);
+        //---wait-------
+
+        amici_b:=FilterAllUnits( [f_type, unit_building] );
+        amici3:=FilterAllUnits( [[f_side, you], [f_see, arabians], [f_type, unit_human]] );
+        if amici3 then begin
+           ComAttackUnit(make_mess, amici3[1]);
+           for i:=2 to amici3 do begin
+             com_queue:=true;
+             ComAttackUnit(make_mess, amici3[i]);
+             com_queue:=false;
+           end;
+           evade_shortest_way(make_mess, true, true);
+        end
+        else begin
+           if amici_b then
+              ComAttackUnit(make_mess, amici_b[1]);
+           evade_shortest_way(make_mess, true, true);
+        end;
+      end;
+end;
+
+// -------------------------
+// lonely attack
+FUNCTION F_lonely_attack(daleko);
+var i, r, x, y, units;
+begin
+     r:=Rand(1,CameFromXY);
+     x:=CameFromXY[r][1];
+     y:=CameFromXY[r][2];
+     units:=1+difficulty;
+
+     if daleko then begin
+        make_mess:=make_arabs(units, class_soldier);
+        units:=(make_mess+0);
+        for i in make_mess do
+           PlaceUnitXYR(i, x,y,5, false);
+        away_from_last_attack:=0;
+        make_mess:=make_mess;
+
+        find_easiest_way(GetX(daleko[1]), GetY(daleko[1]), 7, 3, make_mess, you, true);
+        AddComAttackUnit(make_mess, daleko[1]);
+        if daleko>=2 then begin
+           AddComAttackUnit(make_mess, daleko[2]);
+           if daleko>=3 then begin
+              AddComAttackUnit(make_mess, daleko[3]);
+           end;
+        end;
+        evade_shortest_way(make_mess, true, true);
+
+        attacky:=attacky+1;
+        lonely_attack:=true;
+        attacking:=true;
+     end;
+end;
+
+// -------------------------
+// next attack
+FUNCTION F_next_attack;
+var i, a, r, x, y, units, amici;
+begin
+      r:=Rand(1,CameFromXY);
+      x:=CameFromXY[r][1];
+      y:=CameFromXY[r][2];
+      units:=2+difficulty+away_from_last_attack div 8+attacky div 8;
+
+      make_mess:=make_arabs(units, class_soldier);
+      units:=(make_mess+0);
+      for i in make_mess do
+         PlaceUnitXYR(i, x,y,5, false);
+      away_from_last_attack:=0;
+      make_mess:=make_mess;
+
+      a:=Rand(1,budovy);
+      if budovy then
+         ComAgressiveMove(make_mess, GetX(budovy[a]), GetY(budovy[a]))
+      else
+         ComAgressiveMove(make_mess, GetX(tvoji_lidi[1]), GetY(tvoji_lidi[1]));
+
+      next_attack:=true;
+      attacky:=attacky+1;
+      attacking:=true;
+
+      while not see_any(you, make_mess) do
+         wait(0$0.5);
+
+      amici:=FilterAllUnits( [[f_side, you], [f_see, arabians]] );
+      if amici then begin
+         ComAgressiveMove(make_mess, GetX(amici[1]), GetY(amici[1]));
+      end
+      else begin
+         ComMoveXY(make_mess, x, y);
+         AddComMoveToArea(make_mess, border);
+      end;
+end;
+
+// -----------------------------------------------------
+// kradez auta any time
+every 0$1.0 do
+begin
+    enter_near_vehicle(make_mess, 4, FilterAllUnits([[f_side, you],[f_type, unit_vehicle]]));
+    arabs_cars:=FilterAllUnits([[f_type, unit_vehicle],[f_side, arabians]]);
+    if arabs_cars then begin
+      if GetWeapon(arabs_cars[1])<>us_cargo_bay then begin
+        ComWait(arabs_cars, 0$12);
+        AddComMoveToArea(arabs_cars, border);
+      end
+      else
+        ComMoveToArea(arabs_cars, border);
+    end;
+    enable;
+end;

@@ -1,0 +1,385 @@
+// Hlavní postavy.
+Var Burlak, Bystrov;
+Var Belkov, Gnyevko, Kirilenkova;
+Var Kovalyuk, Scholtze;
+Var Kuzmov;
+Var Karamazov, Petrovova, Gleb, Petrosyan;
+Var Lipshchin, Titov, Dolgov, Xavier;
+Var Oblukov, Kozlov, Kapitsova;
+Var Survivors4;
+Var Bluekher;
+Var Vybrano;
+
+// Køoví.
+Var Inzenyr;
+Var Depot;
+
+
+Function load_char (Ident);
+Begin
+  If TestCharacters (Ident) then
+  Begin
+    Result = CreateCharacter (Ident);
+    If IsDead (Result) then
+    Begin
+      DestroyUnit (Result);
+      Result = 0;
+    End;
+  End else Result = NewCharacter (Ident);
+  SetSide (Result, 3);
+End;
+
+
+Function load_set (Ident);
+Begin
+  If TestCharacters (Ident) then
+  Begin
+    Result = CreateCharacterSet (Ident);
+    SetSide (Result, 3);
+  End else Result = [];
+End;
+
+
+Function load;
+Begin
+  InitUC; InitHC; UC_Side = 3;
+  Bystrov = NewCharacter ('Bystrov');
+  Burlak = load_char ('Burlak');
+  Belkov = load_char ('Belkov');
+  Gnyevko = load_char ('Gnyevko');
+  Kirilenkova = load_char ('Kirilenkova');
+  Kovalyuk = load_char ('Kovalyuk');
+  Scholtze = load_char ('Scholtze');
+  Kuzmov = load_char ('Kuzmov');
+  Karamazov = load_char ('Karamazov');
+  Petrovova = load_char ('Petrovova');
+  Gleb = load_char ('Gleb');
+  Petrosyan = load_char ('Petrosyan');
+  Lipshchin = load_char ('Lipshchin');
+  Titov = load_char ('Titov');
+  Dolgov = load_char ('Dolgov');
+  Xavier = load_char ('Xavier');
+  Oblukov = load_char ('Oblukov');
+  Kozlov = load_char ('Kozlov');
+  Kapitsova = load_char ('Kapitsova');
+  Survivors4 = load_set ('Survivors4');
+End;
+
+
+Function vytvor_rusaka;
+Begin
+  UC_Nation = NATION_RUSSIAN; UC_side = 3;
+  HC_name = '';
+  HC_sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_class = CLASS_SOLDIER;
+  PrepareSoldierSkills (2);
+  Result = CreateHuman;
+End;
+
+
+Function vytvor_inzenyra;
+Begin
+  UC_Nation = NATION_RUSSIAN; UC_side = 3;
+  HC_name = '';
+  HC_sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_class = CLASS_ENGINEER;
+  PrepareEngineerSkills (4);
+  Result = CreateHuman;
+End;
+
+
+Function Intro;
+Var Hlavni, I, Vedlejsi, X, Y, Dum, Count;
+Begin
+  FogOff (true);
+  InGameOn;
+  // Prdnout je na mapu.
+  Dum = najdi_budovu;
+  If Dum then Begin X = GetX (Dum); Y = GetY (Dum); End
+  else Begin X = 41; Y = 33; End;
+  PlaceUnitXYR (Bystrov, X, Y, 7, false);
+  PlaceUnitXYR (Burlak, GetX (Bystrov), GetY (Bystrov) + 10, 6, false);
+  CenterNowOnUnits ([Burlak]);
+  // Nechat je dojít k sobì.
+  ComMoveUnit (Burlak, Bystrov);
+  Count = 0;
+  While (GetDistUnits (Bystrov, Burlak) > 2) and (Count < 10) do
+  Begin
+    Wait (0$1);
+    CenterOnUnits ([Burlak]);
+    ComMoveUnit (Burlak, Bystrov);
+    Wait (0$1);
+    Count = Count + 1;
+  End;
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Wait (0$0.5);
+  ComHold ([Burlak, Bystrov]);
+  CenterOnUnits ([Burlak, Bystrov]);
+  Wait (0$1);
+  // Kecání.
+  create_crates;
+  Say (Burlak, 'DStart-Bur-1');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Bystrov, 'DStart-Bys-1');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Burlak, 'DStart-Bur-2');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Bystrov, 'DStart-Bys-2');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Burlak, 'DStart-Bur-3');
+  collect_crates;
+  Wait (0$1);
+  // Popojít Bystrova.
+  ComMoveXY (Bystrov, GetX (Bystrov) + Rand (2, 6), GetY (Bystrov) + Rand (-2, 2));
+  Wait (0$3);
+  // Nechat je dojít k sobì.
+  ComMoveUnit (Burlak, Bystrov);
+  Count = 0;
+  While (GetDistUnits (Bystrov, Burlak) > 2) and (Count < 10) do
+  Begin
+    Wait (0$1);
+    ComMoveUnit (Burlak, Bystrov);
+    Wait (0$1);
+    Count = Count + 1;
+  End;
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Wait (0$0.5);
+  ComHold ([Burlak, Bystrov]);
+  Wait (0$1);
+  Say (Bystrov, 'DStart-Bys-3');                         
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Burlak, 'DStart-Bur-4');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Bystrov, 'DStart-Bys-4');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Burlak, 'DStart-Bur-5');
+  Wait (0$1);
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Bystrov, 'DStart-Bys-5');
+  ComTurnUnit (Burlak, Bystrov); ComTurnUnit (Bystrov, Burlak);
+  Say (Burlak, 'DStart-Bur-6');
+  // Odchod.
+  AddComWait (Burlak, 0$2);
+  If Dum then AddComEnterUnit ([Bystrov, Burlak], Dum)
+  else AddComMoveXY ([Bystrov, Burlak], 60, 47);
+  Wait (0$5);
+  // Volba lidí.
+  Hlavni = [Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov,
+    Karamazov, Petrovova, Gleb, Petrosyan, Lipshchin, Titov, Dolgov,
+    Xavier, Oblukov, Kozlov, Kapitsova] union Survivors4 diff [0];
+  Vedlejsi = [];
+  For I = Hlavni to 6 do Vedlejsi = Vedlejsi union [vytvor_rusaka];
+  Vybrano = CharacterSelection ('1', 3, 6, [SEL_CHANGE_CLASS, Burlak, SEL_DONT_CHANGE_CLASS, Bystrov, SEL_CHANGE_CLASS, SEL_NOT_HIRED, SEL_CHANGEABLE] ^ Hlavni ^ Vedlejsi, [CLASS_SOLDIER, [CLASS_ENGINEER, 1], CLASS_MECHANIC, CLASS_SCIENTISTIC, [CLASS_BAZOOKER, 0, 2]]);
+  // Uloení.
+  SaveCharacters ([Burlak], 'Burlak');
+  SaveCharacters ([Bystrov], 'Bystrov');
+  If Belkov in Vybrano then SaveVariable (13, 'BelkovLoc');
+  If Belkov then SaveCharacters ([Belkov], 'Belkov');
+  If Gnyevko in Vybrano then SaveVariable (13, 'GnyevkoLoc');
+  If Gnyevko then SaveCharacters ([Gnyevko], 'Gnyevko');
+  If Kirilenkova in Vybrano then SaveVariable (13, 'KirilenkovaLoc');
+  If Kirilenkova then SaveCharacters ([Kirilenkova], 'Kirilenkova');
+  If Kovalyuk in Vybrano then SaveVariable (13, 'KovalyukLoc');
+  If Kovalyuk then SaveCharacters ([Kovalyuk], 'Kovalyuk');
+  If Scholtze in Vybrano then SaveVariable (13, 'ScholtzeLoc');
+  If Scholtze then SaveCharacters ([Scholtze], 'Scholtze');
+  If Kuzmov in Vybrano then SaveVariable (13, 'KuzmovLoc');
+  If Kuzmov then SaveCharacters ([Kuzmov], 'Kuzmov');
+  If Karamazov in Vybrano then SaveVariable (13, 'KaramazovLoc');
+  If Karamazov then SaveCharacters ([Karamazov], 'Karamazov');
+  If Petrovova in Vybrano then SaveVariable (13, 'PetrovovaLoc');
+  If Petrovova then SaveCharacters ([Petrovova], 'Petrovova');
+  If Gleb in Vybrano then SaveVariable (13, 'GlebLoc');
+  If Gleb then SaveCharacters ([Gleb], 'Gleb');
+  If Petrosyan in Vybrano then SaveVariable (13, 'PetrosyanLoc');
+  If Petrosyan then SaveCharacters ([Petrosyan], 'Petrosyan');
+  If Lipshchin in Vybrano then SaveVariable (13, 'LipshchinLoc');
+  If Lipshchin then SaveCharacters ([Lipshchin], 'Lipshchin');
+  If Titov in Vybrano then SaveVariable (13, 'TitovLoc');
+  If Titov then SaveCharacters ([Titov], 'Titov');
+  If Dolgov in Vybrano then SaveVariable (13, 'DolgovLoc');
+  If Dolgov then SaveCharacters ([Dolgov], 'Dolgov');
+  If Xavier in Vybrano then SaveVariable (13, 'XavierLoc');
+  If Xavier then SaveCharacters ([Xavier], 'Xavier');
+  If Oblukov in Vybrano then SaveVariable (13, 'OblukovLoc');
+  If Oblukov then SaveCharacters ([Oblukov], 'Oblukov');
+  If Kozlov in Vybrano then SaveVariable (13, 'KozlovLoc');
+  If Kozlov then SaveCharacters ([Kozlov], 'Kozlov');
+  If Kapitsova in Vybrano then SaveVariable (13, 'KapitsovaLoc');
+  If Kapitsova then SaveCharacters ([Kapitsova], 'Kapitsova');
+  Vedlejsi = Vybrano diff Hlavni;
+  If Vedlejsi then SaveCharacters (Vedlejsi, 'Others_Ru13');
+  Survivors4 = Survivors4 diff Vybrano;
+  SaveCharacters (Survivors4, 'Survivors4');
+  // Konec.
+  Wait (0$2);
+  InGameOff;
+End;
+
+
+Function zakladna;
+Var Bluekher, Spec, Tmp, Base;
+Begin
+  // Nahrát základnu.
+  Bluekher = LoadVariable ('Bluekher', []);
+  SetResourceVisibility (20, 34, 3);
+  SetResourceVisibility (14, 23, 3);
+  If not Bluekher then Bluekher = [[20, 34, 5, B_SIBERITE_MINE, 5, NATION_RUSSIAN, 0, 0], [23, 27, 1, B_DEPOT, 5, NATION_RUSSIAN, 0, 0], [14, 23, 0, B_OIL_MINE, 5, NATION_RUSSIAN, 0, 0], [36, 28, 2, B_LAB_FULL, 5, NATION_RUSSIAN, B_LAB_SPACETIME, B_LAB_SIBERIUM], [49, 37, 4, B_WORKSHOP, 5, NATION_RUSSIAN, 0, 0]];
+  UC_Side = 3;
+  Result = [];
+  For Spec in Bluekher do
+  Begin
+    BC_Type = Spec [4]; BC_Level = Spec [5]; UC_Nation = Spec [6];
+    If BC_Type in [B_LAB, B_LAB_HALF, B_LAB_FULL] then
+    Begin
+      BC_Kind1 = Spec [7];
+      BC_Kind2 = Spec [8];
+    End else Begin
+      BC_Kind1 = 0;
+      BC_Kind2 = 0;
+    End;
+    Tmp = CreateAndPlaceBuildingXYD (Spec [1], Spec [2], Spec [3]);
+    If not Tmp then Continue;
+    If BC_Type in [B_TURRET, B_BUNKER] then PlaceWeaponTurret (Tmp, Spec [7]);
+    Result = Result ^ Tmp;
+  End;
+  // Oznaèit depot názvem.
+  Tmp = UnitFilter (Result, [[F_BTYPE, B_DEPOT]]) union UnitFilter (Result, [[F_BTYPE, B_WAREHOUSE]]);
+  SetBName (Tmp, 'bluekher');
+  For Spec in Tmp do
+  Begin
+    Base = GetBase (Spec);
+    AddResourceType (Base, MAT_CANS, 250);
+    AddResourceType (Base, MAT_OIL, 150);
+  End;
+End;
+
+
+Function krovi;
+Var Postava, Budova;
+Begin
+  // Vytvoøit vìdce v laboratoøi.
+  Budova = najdi_lab;
+  If Budova then
+  Begin
+    Postava = vytvor_postavu (CLASS_SCIENTISTIC);
+    PlaceHumanInUnit (Postava, Budova);
+    AddComResearch (Budova, TECH_TECH1);
+    AddComResearch (Budova, TECH_TECH2);
+    AddComResearch (Budova, TECH_TECH3);
+  End;
+  // Vytvoøit inenıra.
+  Depot = najdi_depot;
+  If Depot then
+  Begin
+    Inzenyr = vytvor_postavu (CLASS_ENGINEER);
+    PlaceHumanInUnit (Inzenyr, Depot);
+  End;
+  // Vytvoøit mechanika v továrnì.
+  Budova = najdi_tovarnu;
+  If Budova then
+  Begin
+    Postava = vytvor_postavu (CLASS_MECHANIC);
+    PlaceHumanInUnit (Postava, Budova);
+    AddComConstruct (Budova, RU_MEDIUM_WHEELED, ENGINE_COMBUSTION, CONTROL_MANUAL, RU_HEAVY_MACHINE_GUN);
+  End;
+End;
+
+
+Function vytvor_postavu (Cls);
+Begin
+  HC_Name = ''; HC_Sex = Rand (1, 2);
+  HC_Class = Cls; PrepareClassSkills (Cls, 6);
+  Result = CreateHuman;
+End;
+
+
+Function najdi_dum (Typ);
+Begin
+  Result = FilterAllUnits ([[F_PLACED], [F_TYPE, UNIT_BUILDING], [F_BTYPE, Typ]]);
+  If Result then Result = Result [1]
+  else Result = 0;
+End;
+
+
+Function najdi_lab;
+Begin
+  Result = FilterAllUnits ([[F_PLACED], [F_TYPE, UNIT_BUILDING], [F_OR, [F_BTYPE, B_LAB], [F_BTYPE, B_LAB_HALF], [F_BTYPE, B_LAB_FULL]]]);
+  If Result then Result = Result [1]
+  else Result = 0;
+End;
+
+
+Function najdi_depot;
+Begin
+  Result = FilterAllUnits ([[F_PLACED], [F_TYPE, UNIT_BUILDING], [F_OR, [F_BTYPE, B_WAREHOUSE], [F_BTYPE, B_DEPOT]]]);
+  If Result then Result = Result [1]
+  else Result = 0;
+End;
+
+
+Function najdi_tovarnu;
+Begin
+  Result = FilterAllUnits ([[F_PLACED], [F_TYPE, UNIT_BUILDING], [F_OR, [F_BTYPE, B_WORKSHOP], [F_BTYPE, B_FACTORY]]]);
+  If Result then Result = Result [1]
+  else Result = 0;
+End;
+
+
+Function najdi_budovu;
+Begin
+  Result = najdi_dum (B_LAB_FULL); If Result then Exit;
+  Result = najdi_dum (B_LAB_HALF); If Result then Exit;
+  Result = najdi_dum (B_LAB); If Result then Exit;
+  Result = najdi_dum (B_DEPOT); If Result then Exit;
+  Result = najdi_dum (B_WAREHOUSE); If Result then Exit;
+  Result = FilterAllUnits ([[F_PLACED], [F_TYPE, UNIT_BUILDING]]);
+  If Result then Result = Result [1]
+  else Result = 0;
+End;
+
+
+Function create_crates;
+Begin
+  If not Depot then Exit;
+  CreateCratesXYR (5, GetX (Depot) + 3, GetY (Depot) - 3, 20, true);
+End;
+
+
+Function collect_crates;
+Var Bedny, Delka, I, X, Y;
+Begin
+  // Zjistit seznam beden.
+  Bedny = GetListOfCratesInArea (Celek);
+  If not Bedny then Exit;
+  // Projít všechny bedny.
+  ComExitBuilding (Inzenyr);
+  Delka = Bedny div 2;
+  For I = 1 to Delka do
+  Begin
+    X = Bedny [2 * I - 1]; Y = Bedny [2 * I];
+    AddComCollect (Inzenyr, X, Y);
+  End;
+  AddComEnterUnit (Inzenyr, Depot);
+End;
+
+
+On VehicleConstructed (Veh, Fact) do
+Begin
+  Wait (0$1);
+  ComMoveXY (Veh, 32, 6);
+  AddComMoveXY (Veh, 3, 3);
+  AddComMoveUnit (Veh, Fact);
+  AddComMoveXY (Veh, 32, 6);
+End;
+
+
+Starting
+Begin
+  // Nahrát postavy.
+  load; zakladna; krovi;
+  Intro;
+  ChangeMap ('%_Cont', '%_Cont');
+End;
+
+

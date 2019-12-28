@@ -1,0 +1,389 @@
+export arabi_time;
+export utocit;
+export last_attack;
+export testing;
+export lev;
+export rusaci_pred_koncem;
+function f_testing;
+begin
+    utocit:=true;//def true
+    last_attack:=true;//def true
+    arabi_time:=0;//def 0// jinak v min // -1 nejdou
+    testing:=false; //def false
+    timer:=3$0;//def 3$0
+    rusaci_pred_koncem:=0$20;//def 0$20
+
+    if not utocit or not last_attack or arabi_time<>0 then begin
+      Msg('testing version');
+      testing:=true;
+    end;
+end;
+every 2$0 do
+begin
+//   tick:=45$0;
+end;
+
+export map_size_x, map_size_y;
+export mhmg, mgg, mg, mrl, hgg, hrl, hhg;
+
+export Powell, JMM, Bobby, Cyrus, Donaldson, Brown, Gary;
+export FSol1, Sol1, Sci1;
+export Eng1, Eng2, Eng3, Eng4, CarE1;
+export Mec1, Mec2, Mec3, Car1, Car2, Car3;
+export Aqr1, Aqr2;
+export Ara1, Ara2, Ara3, Ara4, Ara5, AraCar1, AraCar2, arabi;
+export you, you2, russians, arabians;
+export otherG2, other_survivors;
+export SikorskiDiedIn8;
+export ByloSiberitu;
+export EndSiberit;
+export PoskytnouInformace;
+export NastvalPowella;
+export lidi, lidi_base, lidi_eng;
+export neco_rikaji;
+export timer, TimerEnable;
+export counter_time;
+
+export dialog2byl;
+export KolikMaBytSiberitu;
+export rudepot1, rumine1, depot1;
+
+
+
+function load_units_2;
+var kolik, m, n, i, all, k, placing, o;
+begin
+   InitUc;
+   InitHc;
+   InitVc;
+    kolik:=0;
+
+    Donaldson:=0;
+    Brown:=0;
+    Bobby:=0;
+    Cyrus:=0;
+
+    uc_side:=you;
+    uc_nation:=nation_american;
+    JMM:=CreateCharacter('JMM');
+    SetClass(JMM, class_soldier);
+    Powell:=NewCharacter('Powell');
+
+    uc_side:=you2;
+    uc_nation:=nation_american;
+    all:=[];
+
+    Gary:=NewCharacter('Gary');
+    all:=all^[Gary];
+
+    Cyrus:=0;
+    if CheckCharacterSet('Cyrus') then
+      If LoadVariable('CyrusLoc', 1)=1 then
+        begin
+          Cyrus:=CreateCharacter('Cyrus');
+          SetClass(Cyrus, class_soldier);
+          all:=all^[Cyrus];
+          kolik:=kolik+1;
+        end;
+    Bobby:=0;
+    if CheckCharacterSet('Bobby') then
+      If LoadVariable('BobbyLoc', 1)=1 then
+        begin
+          Bobby:=CreateCharacter('Bobby');
+          SetClass(Bobby, class_soldier);
+          all:=all^[Bobby];
+          kolik:=kolik+1;
+        end;
+
+    Donaldson:=0;
+    if CheckCharacterSet('Donaldson') then
+      If LoadVariable('DonaldsonLoc', 0)=1 then
+        begin
+          Donaldson:=CreateCharacter('Donaldson');
+          all:=all^[Donaldson];
+          kolik:=kolik+1;
+        end;
+    Brown:=0;
+    if CheckCharacterSet('Brown') then
+      If kolik<3 and LoadVariable('BrownLoc', 0)=1 then
+        begin
+          Brown:=CreateCharacter('Brown');
+          all:=all^[Brown];
+          kolik:=kolik+1;
+        end;
+
+    neco_rikaji:=[JMM, Gary, Cyrus, Bobby] diff 0;
+
+    If TestCharacters('other_survivors') then
+      other_survivors:=CreateCharacterSet('other_survivors');
+
+    for i:=(all+0) to 6 do
+    begin
+         if other_survivors then begin
+           all:=all ^ other_survivors[1];
+           other_survivors:=other_survivors diff other_survivors[1];
+         end;
+    end;
+                         
+    for i:=(all+0) to 6 do
+    begin
+         PrepareSoldier(0, 5);
+         all:=all^ CreateHuman;
+    end;
+    PrepareScientist(sex_male, 5);
+    Sci1:=CreateHuman;
+    all:=all^ Sci1;
+
+    placing:=[[93,87], [96,95], [90,94]];
+
+    for k in all do begin
+        o:=Rand(1,3);
+        if GetClass(k)=classtype_scientist then
+           PlaceUnitXYR(k, 89,84, 3, false)
+        else
+           PlaceUnitXYR(k, placing[o][1],placing[o][2], 5, false);
+    end;
+
+    full_forts([fort1, fort2, fort3], UnitFilter(all, [[f_class,class_soldier]]));
+
+    lidi_base:=all;
+    lidi:=lidi union lidi_base;
+    lidi:=lidi ^ JMM;
+
+    DeleteVariable('Delta');
+    DeleteCharacters('Sikorski');
+end;
+
+function SetDifficulty;
+begin
+
+     KolikMaBytSiberitu:=60;
+     EndSiberit:=[150,200,250][difficulty];
+     lev:=[3, 5, 7];
+end;
+
+function prepare_your_units;
+var i,j;
+begin
+     InitUc;
+     InitHc;
+     uc_side:=you2;
+     uc_nation:=nation_american;
+     PrepareEngineer(0, 4);
+     Eng1:=CreateHuman;
+     PrepareEngineer(0, 5);
+     Eng2:=CreateHuman;
+     PrepareEngineer(0, 4);
+     Eng3:=CreateHuman;
+     PrepareEngineer(0, 4);
+     Eng4:=CreateHuman;
+
+     vc_chassis:=us_medium_wheeled;
+     vc_control:=control_manual;
+     vc_engine:=engine_solar;
+     vc_weapon:=us_cargo_bay;
+     vc_fuel_battery:=60;
+     CarE1:=CreateVehicle;
+
+     lidi_eng:=[Eng1, Eng2, Eng3];
+     lidi:=lidi union lidi_eng;
+
+     PrepareMechanic(0, 4);
+     Mec1:=CreateHuman;
+     PrepareMechanic(0, 4);
+     Mec2:=CreateHuman;
+     PrepareMechanic(0, 4);
+     Mec3:=CreateHuman;
+     vc_chassis:=us_medium_wheeled;
+     vc_control:=control_manual;
+     vc_engine:=engine_solar;
+     vc_weapon:=us_cargo_bay;
+     vc_fuel_battery:=60;
+     Car1:=CreateVehicle;
+     Car2:=CreateVehicle;
+     Car3:=CreateVehicle;
+
+end;
+function prepare_arabians_units;
+begin
+     InitUc;
+     InitHc;
+     uc_side:=arabians;
+     uc_nation:=nation_arabian;
+     PrepareSoldier(sex_male, 4);
+     Ara1:=CreateHuman;
+     hc_name:='Louis Gali';
+     PrepareEngineer(sex_male, 5);
+     Ara2:=CreateHuman;
+     InitHc;
+     uc_side:=arabians;
+     uc_nation:=nation_arabian;
+     PrepareSoldier(sex_female, 4);
+     Ara3:=CreateHuman;
+     PrepareMechanic(sex_male, 5);
+     Ara4:=CreateHuman;
+     PrepareMechanic(sex_male, 4);
+     Ara5:=CreateHuman;
+
+     vc_chassis:=ar_half_tracked;
+     vc_control:=control_manual;
+     vc_engine:=engine_combustion;
+     vc_weapon:=ar_flame_thrower;
+     vc_fuel_battery:=9;
+     AraCar1:=CreateVehicle;
+     vc_chassis:=ar_half_tracked;
+     vc_weapon:=ar_cargo_bay;
+     vc_fuel_battery:=9;
+     AraCar2:=CreateVehicle;
+     arabi:=[Ara1, Ara2, Ara3, Ara4, Ara5, AraCar1, AraCar2];
+
+     PlaceHumanInUnit(Ara4, AraCar1);
+     PlaceHumanInUnit(Ara5, AraCar2);
+end;
+function prepare_russians_units;
+begin
+end;
+
+
+starting
+begin
+    f_testing;
+    depot1:=FilterAllUnits([[f_nation,nation_american],[f_btype,b_depot]])[1];
+    rudepot1:=FilterAllUnits([[f_nation,nation_russian],[f_btype,b_depot]])[1];
+    SetBName(depot1,'terminal');
+
+    map_size_x:=70;
+    map_size_y:=140;
+
+    lidi:=[];
+    lidi_base:=[];
+    lidi_eng:=[];
+    neco_rikaji:=[];
+
+    counter_time:=0;
+
+
+    SetDifficulty;
+
+{mhmg, mgg, mg, mrl, hgg, hrl, hhg}
+    mhmg:=1;
+    mgg:=2;
+    mg:=3;
+    mrl:=4;
+    hgg:=5;
+    hrl:=6;
+    hhg:=7;
+
+
+    you:=1;
+    you2:=4;
+    arabians:=2;
+    russians:=3;
+
+    SetBName(RuDepot, 'ovsyenko');
+
+    prepare_your_units;
+    prepare_arabians_units;
+    prepare_russians_units;
+
+    load_units_2;
+    Dialog2;
+end;
+
+export function Save;
+var sibu;
+begin
+    SaveCharacters(JMM, 'JMM');
+
+    if Bobby then begin
+       SaveCharacters(Bobby, 'Bobby');
+       if IsDead(Bobby) then
+          SaveVariable(0, 'BobbyLoc');
+    end;
+
+    if Cyrus then begin
+       SaveCharacters(Cyrus, 'Cyrus');
+       if IsDead(Cyrus) then
+          SaveVariable(0, 'CyrusLoc');
+    end;
+
+    if Brown then begin
+       SaveCharacters(Brown, 'Brown');
+       if IsDead(Brown) then
+          SaveVariable(0, 'BrownLoc');
+    end;
+
+    if Donaldson then begin
+       SaveCharacters(Donaldson, 'Donaldson');
+       if IsDead(Donaldson) then
+          SaveVariable(0, 'DonaldsonLoc');
+    end;
+
+    SaveCharacters(Gary, 'Gary');
+    if IsDead(Gary) then
+       SaveVariable(0, 'GaryLoc');
+
+    sibu:=GetResourceType(GetBase(depot1), mat_siberit);
+    if sibu>300 then
+      sibu:=300;
+    SaveVariable(sibu, 'stoupa9_siberit');
+    SaveVariable((PoskytnouInformace>0), 'stoupa9_informace');
+
+    SaveCharacters(other_survivors, 'other_survivors');
+    SaveCharacters(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_american]])
+        diff [JMM,Donaldson,Brown,Bobby,Cyrus,Gary,0], 'otherWithJMM');
+
+end;
+
+every 0$3 trigger depot1 do
+var sib_dep1;
+begin
+  sib_dep1:=GetResourceType(GetBase(depot1), mat_siberit);
+  if sib_dep1 >= EndSiberit then
+    ChangeMissionObjectives('M2a')
+  else
+    enable;
+end;
+
+export function SetMedals;
+var d, sib_dep1, sib_celkem, i;
+begin
+  d:=difficulty-1;
+  sib_dep1:=GetResourceType(GetBase(depot1), mat_siberit);
+  sib_celkem:=0;
+  for i in FilterAllUnits([[f_side,you],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]) do
+    sib_celkem:=sib_celkem+GetResourceType(GetBase(i), mat_siberit);
+
+  if sib_dep1 >= EndSiberit then
+    AddMedal('MuchSiberite', 1)
+  else
+    if sib_celkem<EndSiberit then
+      AddMedal('MuchSiberite', -1 -2*d)
+    else
+      AddMedal('MuchSiberite', -2 -2*d);
+
+  AddMedal('EarlySiberite', not NastvalPowella);
+  AddMedal('Information', PoskytnouInformace>0);
+end;
+
+export Vyhrano;
+export function Vyhra;
+begin
+ if not Vyhrano then
+    begin
+    Vyhrano:=true;
+    SetMedals;
+    GiveMedals('Main');
+    RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation, nation_american]]));
+    Save;
+    YouWin;
+    ExclusiveOn;
+    WAIT(1);
+    ExclusiveOff;
+    end;
+end;
+
+// for future use
+final
+begin
+end;

@@ -1,0 +1,307 @@
+EXPORT count5;
+EXPORT Brestworks;
+EXPORT RusN_States;
+EXPORT RusN;
+
+
+EXPORT Function InitNorthBase;
+var Un;
+ begin
+  RusN_States= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0];
+  RusN= [RusNSo1, RusNSo2, RusNSo3, RusNSo4, guard1, guard2, RusNE1, RusNSc1, RusNSo5, RusNSo6];
+  count5= 0;
+  Brestworks= [Brw1, Brw2];
+  // 1,2,3,4 ... soldiers
+  // 5,6,7 ... guards
+  // 8 ... engineer
+  // 9 ... scientist
+
+  for Un in RusN do
+    ComRemember(Un);
+
+  if not(IsDead(Brw1)) then ComEnterUnit(Guard1, Brw1);
+  if not(IsDead(Brw2)) then ComEnterUnit(Guard2, Brw2);
+  if not(IsDead(Brw3)) then ComEnterUnit(Guard3, Brw3);
+ end;
+
+
+// Waits until no of units from list_of_units is busy
+EXPORT Function WaitJob(list_of_units, reaction);
+var i, busy;
+ begin
+  wait(2);
+  repeat
+   busy= false;
+   for i in list_of_units do
+    if IsOk(i) then
+     if IsBusy(i) then busy= true;
+   if busy then wait(0$1*reaction);
+  until not(busy);
+ end;
+
+
+// Waits until units from list_of_units are near then dist from target_unit
+Function WaitNearUnit(target_unit, dist, list_of_units, reaction);
+var i, are_near;
+ begin
+   wait(2);
+   repeat
+     are_near= true;
+     for i in list_of_units do
+       if IsOk(i) and IsOk(target_unit) then
+         if GetDistUnits(target_unit, i) > dist then are_near= false;
+     if not(are_near) then wait(0$1*reaction);
+   until are_near;
+ end;
+
+
+// If they are not busty then return to the initial position.
+EVERY 0$1 do
+var Un, hlp;
+ begin
+  hlp= UnitFilter(RusN, [[f_alive], [f_placed]]);
+  RusN= hlp;
+  for Un in RusN do
+    if (GetDistUnits(Un, Dep1)) > Attack_Distance then ComReturn(Un);  // Difficulty
+  if RusN <> 0 then enable;
+ end;
+
+
+// Units ill_units go to physician and then return back
+Function Go_to_physician(ill_unit);
+var start_posX, start_posY;
+ begin
+   if IsOk(RusNSc1) and IsLive(ill_unit) then
+     begin
+       start_posX= GetX(ill_unit);
+       start_posY= GetY(ill_unit);
+
+       ComMoveXY(ill_unit, 54, 16);   
+       AddComMoveUnit(ill_unit, RusNSc1);
+       WaitNearUnit(RusNSc1, 2, [ill_unit], 0.5);
+
+       while(RusN_States[9] <> 0) do wait(1);
+       Replace(RusN_States, 9, 1); // working
+
+       ComHeal(RusNSc1, ill_unit);
+       WaitJob(RusNSc1, 0.5);
+
+       AddComReturn(RusNSc1);
+       AddComHold(RusNSc1);
+
+       Replace(RusN_States, 9, 0);
+       AddComMoveXY(ill_unit, start_posX, start_posY);
+     end;
+ end;
+
+Function Healing_Person(person, lives);
+ begin
+  if GetLives(person) < lives then   // Go to physician
+    begin
+      if person = RusNSo1 then Replace(RusN_States, 1, 2)       // 2 - going to physician
+      else if person = RusNSo2 then Replace(RusN_States, 2, 2)
+      else if person = RusNSo3 then Replace(RusN_States, 3, 2)
+      else if person = RusNSo4 then Replace(RusN_States, 4, 2)
+      else if person = RusNE1 then Replace(RusN_States, 8, 2)
+      else if person = RusNSo5 then Replace(RusN_States, 10, 2)
+      else if person = RusNSo6 then Replace(RusN_States, 11, 2);
+      Go_to_physician(person);
+      if person = RusNSo1 then Replace(RusN_States, 1, 0)       // 0 - free
+      else if person = RusNSo2 then Replace(RusN_States, 2, 0)
+      else if person = RusNSo3 then Replace(RusN_States, 3, 0)
+      else if person = RusNSo4 then Replace(RusN_States, 4, 0)
+      else if person = RusNE1 then Replace(RusN_States, 8, 0)
+      else if person = RusNSo5 then Replace(RusN_States, 10, 0)
+      else if person = RusNSo6 then Replace(RusN_States, 11, 0);
+
+    end;
+ end;
+
+
+// Unit must have at least min hitpoints
+// Returns order of the selected unit.
+Function Select_Unit_With_Min_Lives(list_of_units, at_least);
+var i, j, lives, selected_unit, min;
+ begin
+  selected_unit= 0;
+  j= 0;
+  min= 1000;
+  for i in list_of_units do
+    begin
+      j= j+1;
+      lives= GetLives(i);
+      if (lives > at_least) and (lives < min) then
+        begin
+          min= lives;
+          selected_unit=j;
+        end;
+    end;
+  result= selected_unit;
+ end;
+
+
+// Engineer
+EVERY 0$1 DO
+var un_min_lives;
+ begin
+    case RusN_States[8] of
+     0: begin  // Free
+          Healing_Person(RusNE1, 600);
+
+          if count5= 0 then  // every 5 sec. test of buildings lives
+            begin
+              un_min_lives= Select_Unit_With_Min_Lives(Brestworks, 100);  // At least 100 hitpoints
+              if GetLives(Brestworks[un_min_lives]) < 1000 then
+                begin
+                  ComStop(RusNE1);
+                  ComRepairBuilding(RusNE1, Brestworks[un_min_lives]);
+                  Replace(RusN_States, 8, 1);
+                end;
+            end;
+        end;
+
+     1: begin  // Busy
+          Healing_Person(RusNE1, 600);
+          if not(IsBusy(RusNE1)) then
+            begin
+              ComReturn(RusNE1);
+              Replace(RusN_States, 8, 0);
+            end;
+        end;
+    end;
+
+  if IsLive(RusNE1) then enable;
+ end;
+
+
+// Soldier Guard1
+EVERY 0$1 DO
+ begin
+    case RusN_States[5] of
+     0: if not(IsOk(Brw1)) then
+          Replace(RusN_States, 5, 1);   // Lost of brestwork
+     1: begin
+          if GetLives([guard1]) < Lives_to_Retreat then
+            begin
+              Replace(RusN_States, 5, 2);
+              Go_to_physician(guard1);
+              Replace(RusN_States, 5, 1);
+            end;
+        end;
+    end;
+
+  if IsLive(guard1) then enable;
+ end;
+
+// Soldier Guard2
+EVERY 0$1 DO
+ begin
+    case RusN_States[6] of
+     0: if not(IsOk(Brw2)) then
+          Replace(RusN_States, 6, 1);   // Lost of brestwork
+     1: begin
+          if GetLives([guard2]) < Lives_to_Retreat then
+            begin
+              Replace(RusN_States, 6, 2);
+              Go_to_physician(guard2);
+              Replace(RusN_States, 6, 1);
+            end;
+        end;
+    end;
+
+  if IsLive(guard2) then enable;
+ end;
+
+// Soldier Guard3
+EVERY 0$1 DO
+ begin
+    case RusN_States[7] of
+     0: if not(IsOk(Brw3)) then
+          Replace(RusN_States, 7, 1);   // Lost of brestwork
+     1: begin
+          if GetLives([guard3]) < Lives_to_Retreat then
+            begin
+              Replace(RusN_States, 7, 2);
+              Go_to_physician(guard3);
+              Replace(RusN_States, 7, 1);
+            end;
+        end;
+    end;
+
+  if IsLive(guard3) then enable;
+ end;
+
+
+// Soldier RusNSo1
+EVERY 0$1 DO
+ begin
+   if RusN_States[1] = 0 then
+     Healing_Person(RusNSo1, Lives_to_Retreat);
+
+   if IsLive(RusNSo1) then enable;
+ end;
+
+
+// Soldier RusNSo2
+EVERY 0$1 DO
+ begin
+   if RusN_States[2] = 0 then
+     Healing_Person(RusNSo2, Lives_to_Retreat);
+
+   if IsLive(RusNSo2) then enable;
+ end;
+
+
+// Soldier RusNSo3
+EVERY 0$1 DO
+ begin
+   if RusN_States[3] = 0 then
+     Healing_Person(RusNSo3, Lives_to_Retreat);
+
+   if IsLive(RusNSo3) then enable;
+ end;
+
+
+// Soldier RusNSo4
+EVERY 0$1 DO
+ begin
+   if RusN_States[4] = 0 then
+     Healing_Person(RusNSo4, Lives_to_Retreat);
+
+   if IsLive(RusNSo4) then enable;
+ end;
+
+// Soldier RusNSo5
+EVERY 0$1 DO
+ begin
+   if RusN_States[10] = 0 then
+     Healing_Person(RusNSo5, Lives_to_Retreat);
+
+   if IsLive(RusNSo5) then enable;
+ end;
+
+// Soldier RusNSo6
+EVERY 0$1 DO
+ begin
+   if RusN_States[11] = 0 then
+     Healing_Person(RusNSo6, Lives_to_Retreat);
+
+   if IsLive(RusNSo6) then enable;
+ end;
+
+
+////////////////////////////////////
+
+// Counter
+EVERY 0$1 + 0$0.5 DO
+ begin
+   count5= (count5 +1) mod 5;
+   enable;
+ end;
+
+{
+EVERY 0$1 DO
+ begin
+   debug_strings= [[RusN_States]];
+ end;
+}

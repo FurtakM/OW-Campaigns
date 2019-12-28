@@ -1,0 +1,537 @@
+EXPORT RUSI_ENTER_LIST;
+EXPORT AM_UTOK_1_LIST;
+EXPORT AM_UTOK_2_LIST;
+EXPORT AM_UTOK_3_LIST;
+
+VAR av,ah;
+
+// vyber lidi pro misi
+EXPORT function vyber_lidi_pro_misi;
+VAR lvyber;
+VAR i,j,pom;
+VAR vyber;
+begin
+  uc_nation=nation_russian;
+  uc_side=You;
+
+//  pop=nacti_osobu('Popov');
+
+  pom=[];
+//  bur=nacti_osobu('Burlak');
+  SetSide(bur,You);
+  SetClass(bur,class_mechanic);
+
+//  dol=nacti_osobu('Dolgov');
+  if dol>0 then
+    begin
+      SetClass(dol,class_scientistic);
+      SetSide(dol,You);
+    end;
+//  kapisto=nacti_osobu('Kapitsova');
+  if kapisto>0 then
+    begin
+      SetClass(kapisto,class_scientistic);
+      SetSide(kapisto,You);
+    end;
+//  petro=nacti_osobu('Petrosyan');
+  if petro>0 then
+    begin
+      SetClass(petro,class_scientistic);
+      SetSide(petro,You);
+    end;
+
+  lvyber=[sel_not_changeable,sel_hired,sel_dont_change_class,bur];
+
+  lvyber=lvyber^[sel_not_hired,sel_changeable,sel_change_class];
+
+  if dol>0 then begin
+                  SetSide(dol,You);
+                  SetClass(dol,class_scientistic);
+                  lvyber=lvyber^dol;
+                end;
+  if kapisto>0 then begin
+                      SetSide(kapisto,You);
+                      SetClass(kapisto,class_scientistic);
+                      lvyber=lvyber^kapisto;
+                    end;
+  if petro>0 then begin
+                    SetSide(petro,You);
+                    SetClass(petro,class_scientistic);
+                    lvyber=lvyber^petro;
+                  end;
+  if bel>0 then begin
+                  SetSide(bel,You);
+                  SetClass(bel,class_soldier);
+                  lvyber=lvyber^bel;
+                end;
+  if gny>0 then begin
+                  SetSide(gny,You);
+                  SetClass(gny,class_soldier);
+                  lvyber=lvyber^gny;
+                end;
+  if kiri>0 then begin
+                   SetSide(kiri,You);
+                   SetClass(kiri,class_scientistic);
+                   lvyber=lvyber^kiri;
+                 end;
+  if koval>0 then begin
+                    SetSide(koval,You);
+                    SetClass(koval,class_soldier);
+                    lvyber=lvyber^koval;
+                  end;
+  if schol>0 then begin
+                    SetSide(schol,You);
+                    SetClass(schol,class_scientistic);
+                    lvyber=lvyber^schol;
+                  end;
+  if kuzmov>0 then begin
+                     SetSide(kuzmov,You);
+                     SetClass(kuzmov,class_soldier);
+                     lvyber=lvyber^kuzmov;
+                   end;
+  if karam>0 then begin
+                    SetSide(karam,You);
+                    SetClass(karam,class_soldier);
+                    lvyber=lvyber^karam;
+                  end;
+  if petrov>0 then begin
+                     SetSide(petrov,You);
+                     SetClass(petrov,class_mechanic);
+                     lvyber=lvyber^petrov;
+                   end;
+  if gleb>0 then begin
+                   SetSide(gleb,You);
+                   SetClass(gleb,class_mechanic);
+                   lvyber=lvyber^gleb;
+                 end;
+  if lipsch>0 then begin
+                     SetSide(lipsch,You);
+                     SetClass(lipsch,class_engineer);
+                     lvyber=lvyber^lipsch;
+                   end;
+  if tito>0 then begin
+                   SetSide(tito,You);
+                   SetClass(tito,class_soldier);
+                   lvyber=lvyber^tito;
+                 end;
+  if xavier>0 then begin
+                     SetSide(xavier,You);
+                     SetClass(xavier,class_soldier);
+                     lvyber=lvyber^xavier;
+                   end;
+  if obluk>0 then begin
+                    SetSide(obluk,You);
+                    SetClass(obluk,class_soldier);
+                    lvyber=lvyber^obluk;
+                  end;
+  if kozlov>0 then begin
+                     SetSide(kozlov,You);
+                     SetClass(kozlov,class_soldier);
+                     lvyber=lvyber^kozlov;
+                   end;
+
+
+  if TestCharacters('survivors3') then
+    pom:=CreateCharacterSet('survivors3');
+
+  everybody:=pom;
+  for i in pom do nastav_povolani_podle_skilu(i);
+
+  if pom<pocet_lidi_na_zacatku[difficulty] then
+    for i:=1 to (pocet_lidi_na_zacatku[difficulty] - pom) do
+      pom=pom ^ get_human(get_sex,Rand(1,4),6,'');
+
+  lvyber=lvyber^pom;
+
+  pom=CharacterSelection('Vyber si peopliky',
+                          pocet_lidi_na_zacatku[difficulty],pocet_lidi_na_zacatku[difficulty],
+                          lvyber,
+                          [[class_engineer,1],[class_scientistic,0],[class_mechanic,0],[class_soldier,0]]);
+  everybody:=everybody union pom;
+
+  vyber=[bur];
+  vyber=vyber^pom;
+  result:=vyber;
+end;
+
+// vytvoreni ruskych jednotek pro misi
+EXPORT function create_rusky_konvoj(lidicci);
+VAR pom;
+VAR lpom;
+begin
+  pom=[];
+  lpom=lidicci;
+
+  uc_nation=nation_russian;
+  uc_side=You;
+
+  vc_chassis=masha_l[1];
+  vc_engine=masha_l[2];
+  vc_control=masha_l[3];
+  vc_weapon=masha_l[4];
+  av=CreateVehicle;
+  masha=av;
+  SetMark(masha,1);
+  PlaceHumanInUnit(bur,masha);
+  lpom=lpom diff bur;
+  pom=pom^masha;
+
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_chassis=ru_medium_tracked;
+  vc_weapon=ru_cargo_bay;
+  av=CreateVehicle;
+  PlaceHumanInUnit(lpom[1],av);
+  AddCargo(av,mat_cans,100);
+  pom=pom^av;
+
+  av=CreateVehicle;
+  PlaceHumanInUnit(lpom[2],av);
+  AddCargo(av,mat_cans,50);
+  AddCargo(av,mat_oil,50);
+  pom=pom^av;
+
+  av=CreateVehicle;
+  PlaceHumanInUnit(lpom[3],av);
+  AddCargo(av,mat_cans,20);
+  AddCargo(av,mat_oil,40);
+  AddCargo(av,mat_siberit,20);
+  pom=pom^av;
+
+  vc_weapon=ru_crane;
+  vc_chassis=ru_medium_tracked;
+  av=CreateVehicle;
+  PlaceHumanInUnit(lpom[4],av);
+  pom=pom^av;
+
+  vc_weapon=zbran_na_uvod[difficulty];
+  vc_chassis=chassis_na_uvod[difficulty];
+
+  if difficulty<3 then
+    begin
+      av=CreateVehicle;
+      PlaceHumanInUnit(lpom[5],av);
+      pom=pom^av;
+    end;
+
+  if difficulty<2 then
+    begin
+      av=CreateVehicle;
+      PlaceHumanInUnit(lpom[6],av);
+      pom=pom^av;
+    end;
+
+  RUSI_ENTER_LIST=pom;
+end;
+
+// vraci sex daneho vojaka - sanze na zenskou 1/5
+function get_sex;
+begin
+  if Prob(20) then result=sex_female
+              else result=sex_male;
+end;
+
+// vraci cislo creatnuteho humana
+function get_human(sex,clas,level,name);
+var pom;
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+  pom=CreateHuman;
+  result:=pom;
+end;
+
+// vytvoreni arabaku
+EXPORT function vytvor_araby;
+begin
+  uc_nation=nation_arabian;
+  uc_side=Arabi;
+
+  diet=nacti_osobu('Dietrich');
+  SetSide(diet,Arabi);
+  PlaceUnitXY(diet,76,19,false);
+
+  A2=get_human(sex_male,class_soldier,levely_arabi[difficulty],'');
+  PlaceUnitXY(A2,74,22,false);
+
+  A3=get_human(sex_male,class_engineer,levely_arabi[difficulty],'');
+  PlaceUnitXY(A3,74,21,false);
+
+  A4=get_human(sex_male,class_soldier,levely_arabi[difficulty],'');
+  PlaceUnitXY(A4,75,22,false);
+end;
+
+// nacteni osoby ze savu z predesle mise
+EXPORT function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then result:=CreateCharacter(ident)
+                              else result:=0;
+end;
+
+// vytvoreni amiku na zacatku
+EXPORT function vytvor_amiky;
+begin
+  uc_nation=nation_american;
+  uc_side=Amici;
+
+  Joan=nacti_osobu('Joan');
+  SetClass(Joan,class_scientistic);
+  SetSide(Joan,Amici);
+
+  JMM=nacti_osobu('MacMillan');
+  SetSide(JMM,Amici);
+  SetClass(JMM,class_soldier);
+
+  PlaceUnitXY(Joan,111,41,false);
+
+  ah=get_human(sex_female,class_scientistic,levely_amici[difficulty],'Karin Horak');
+  PlaceUnitXY(ah,107,30,false);
+  VEDCI1=[ah];
+
+  ah=get_human(get_sex,class_scientistic,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,110,32,false);
+  VEDCI1=VEDCI1^ah;
+
+  ah=get_human(sex_female,class_scientistic,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,113,40,false);
+  VEDCI2=[ah];
+
+  ah=get_human(sex_female,class_scientistic,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,112,40,false);
+  VEDCI2=VEDCI2^ah;
+
+  ah=get_human(get_sex,class_scientistic,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,106,43,false);
+  VEDCI3=[ah];
+
+  ah=get_human(get_sex,class_scientistic,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,106,44,false);
+  VEDCI3=VEDCI3^ah;
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]+1,'David Love');
+  PlaceUnitXY(ah,105,29,false);
+  Am_mech=ah;
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]+1,'');
+  PlaceUnitXY(ah,105,30,false);
+  Am_mech=Am_mech^ah;
+
+  prepare_human(get_sex,class_mechanic,levely_amici[difficulty],'');
+  SetSkill(ah,skill_combat,6);
+  ah=CreateHuman;
+  PlaceUnitXY(ah,106,39,false);
+  Am_vyr=ah;
+
+  ah=get_human(sex_male,class_soldier,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,104,39,false);
+  Am_sol=[ah];
+  ah=get_human(sex_male,class_soldier,levely_amici[difficulty],'');
+  PlaceUnitXY(ah,102,44,false);
+  Am_sol=Am_sol^ah;
+
+  ah=get_human(sex_male,class_sniper,levely_amici[difficulty]-2,'');
+  PlaceUnitXY(ah,98,43,false);
+  Am_snipe=ah;
+end;
+
+// prepare ze sailu
+function prepare_human(sex,clas,level,name);
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+end;
+
+// predvytvoreni 1. americkeho utoku !
+EXPORT function create_first_utok;
+VAR pom;
+begin
+  pom=[];
+  uc_nation=nation_american;
+  uc_side=Amici2;
+
+  pom=get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-3,'');
+  vc_chassis=us_medium_tracked;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_weapon=us_double_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  AM_UTOK_1_LIST=pom;
+end;
+
+EXPORT function create_second_utok;
+VAR pom;
+begin
+  pom=[];
+  uc_nation=nation_american;
+  uc_side=Amici2;
+
+  pom=get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-3,'');
+  vc_chassis=us_medium_tracked;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_weapon=us_double_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-3,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  if difficulty>2 then
+    begin
+      ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-3,'');
+      vc_chassis=us_medium_tracked;
+      vc_control=control_manual;
+      vc_engine=engine_solar;
+      vc_weapon=us_gatling_gun;
+      av=CreateVehicle;
+      PlaceHumanInUnit(ah,av);
+      pom=pom^av;
+    end;
+
+  AM_UTOK_2_LIST=pom;
+end;
+
+EXPORT function create_third_utok;
+VAR pom;
+begin
+  pom=[];
+  uc_nation=nation_american;
+  uc_side=Amici2;
+
+  pom=get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+  pom=pom^get_human(get_sex,class_sniper,levely_amici[difficulty],'');
+  if difficulty>2 then pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-2,'');
+  vc_chassis=us_medium_tracked;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_weapon=us_double_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-2,'');
+  vc_chassis=us_heavy_tracked;
+  vc_weapon=us_heavy_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  AM_UTOK_3_LIST=pom;
+end;
+
+
+EXPORT function create_JMM_revange;
+VAR pom,i;
+begin
+  pom=[];
+  uc_nation=nation_american;
+  uc_side=Amici2;
+
+  pom=get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+  pom=pom^get_human(get_sex,class_sniper,levely_amici[difficulty],'');
+  if difficulty>2 then pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-2,'');
+  vc_chassis=us_heavy_tracked;
+  vc_weapon=us_heavy_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  ah=get_human(get_sex,class_mechanic,levely_amici[difficulty]-4,'');
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_gatling_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  if prob(50) then
+    begin
+      av=CreateVehicle;
+      pom=pom^av;
+    end;
+
+  if difficulty>1 then pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+
+  if prob(50) and difficulty>1 then
+    for i=1 to Rand(1,difficulty) do pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty],'');
+
+  result:=pom;
+end;
+
+
+// vytvoreni utoku pred "normalnima utokama"
+EXPORT function create_pre_attack;
+VAR i,pom;
+VAR PC;
+begin
+  pom=[];
+  uc_nation=nation_american;
+  uc_side=Amici2;
+  PC=counter_utoku;
+
+  for i in Rand(1,3)+difficulty do
+    begin
+      pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty]-2,'');
+      counter_utoku=counter_utoku+1;
+    end;
+  PC=PC-1;
+
+  if counter_utoku>10 then
+    begin
+      vc_chassis=us_medium_tracked;
+      vc_engine=engine_combustion;
+      vc_control=control_computer;
+      vc_weapon=[us_light_gun,us_gatling_gun,us_double_gun,us_machine_gun][Rand(1,4)];
+
+      pom=pom^av;
+
+      counter_utoku=counter_utoku-5;
+      PC=PC-10;
+    end;
+
+  if counter_utoku>5 then
+    begin
+      pom=pom^get_human(get_sex,class_soldier,levely_amici[difficulty]+1,'');
+
+      counter_utoku=counter_utoku-1;
+      PC=PC-3;
+    end;
+
+  result:=pom;
+end;
+
+// nastaveni povolani podle nejvyssiho skilu
+function nastav_povolani_podle_skilu(voj);
+VAR comb,eng,sci,mech;
+VAR classa;
+begin
+  mech=GetSkill(voj,skill_mechanical);
+  eng=GetSkill(voj,skill_engineering);
+  sci=GetSkill(voj,skill_scientistic);
+  comb=GetSkill(voj,skill_combat);
+  if comb>=eng and comb>=sci and comb>=mech then classa=class_soldier
+    else
+  if eng>=comb and eng>=mech and eng>=sci then classa=class_engineer
+    else
+  if sci>=eng and sci>=mech and sci>=comb then classa=class_scientistic
+    else
+  if mech>=comb and mech>=eng and mech>=sci then classa=class_mechanic
+    else classa=class_soldier;
+  SetClass(voj,classa);
+end;

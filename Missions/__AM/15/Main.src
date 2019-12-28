@@ -1,0 +1,1419 @@
+// Characters
+EXPORT JMM, Powell, Bobby, Cyrus, Lisa, Frank, Brown, Donaldson, Gladstone, Cornell;
+EXPORT Denis, Joan, Kurt, Yamoko, Gary, Simms, Stevens, Coonie, Burlak, Roth;
+EXPORT Friend, Kozlov, Baker, VanHouten, Vsevolod, Platonov, Kovaljuk;
+EXPORT Omar, Heike;
+
+// Imported/Exported variables
+EXPORT OtherWithJMM, OtherNotJMM;
+EXPORT legion_cheated, kappa_saved, woman_saved, kappa_delayed, Woman_in_am14;
+EXPORT JMM_woman, Woman_alive, Initial_JMM_vehicle, Initial_Woman_vehicle;
+EXPORT BobbyLoc, CyrusLoc, LisaLoc, FrankLoc, BrownLoc, DonaldsonLoc;
+EXPORT VanHoutenLoc, GladstoneLoc, JoanLoc, YamokoLoc;
+EXPORT GaryLoc, DenisLoc, CornellLoc;
+
+// Medals
+EXPORT Roth_Captured;
+EXPORT Russian_project_canceled;
+EXPORT No_Looses;
+
+// Vehicles
+EXPORT JMM_veh, Woman_veh;
+EXPORT Am1_vehicles;
+EXPORT Captured_vehicles;
+
+// American units
+EXPORT All_americans, Named_americans; //
+EXPORT Remaining_Named, Remaining_Powells, Carriers;               // Group of americans
+// Americans1 / Americans
+EXPORT End_of_journey;
+EXPORT JMM_Helpers;
+EXPORT CenterJMM;
+EXPORT Number_of_JMM_Helpers;
+EXPORT True_Americans;
+EXPORT Not_True_Americans;
+
+// Omar            (2)
+EXPORT Omar_Soldiers;
+EXPORT Omar_Scientists;
+EXPORT Omar_Vehicles;
+EXPORT Number_of_Omar_Soldiers;
+EXPORT Number_of_Omar_Hovercrafts;  // [2]
+EXPORT Number_of_Omar_Flamethrowers; // [1]
+EXPORT Number_of_Omar_RocketLaunchers; // [1]
+
+// Arabian units   (1)
+EXPORT All_arabians;
+EXPORT Arabian_soldiers;
+EXPORT Arabian_Engineers;
+EXPORT Arabian_scientists;
+EXPORT Arabian_mechanics;
+EXPORT Arabian_apemens;
+EXPORT Control_Driver;
+EXPORT Arabian_Outside;
+EXPORT New_ArRu_Fact;
+EXPORT Arabian_buildings;
+EXPORT Number_of_Arabian_Soldiers;
+EXPORT Number_of_Arabian_scientists;
+EXPORT Number_of_Arabian_mechanics;
+EXPORT Number_of_Arabian_Engineers;
+
+// Alliance units   (7)
+EXPORT All_alliances;
+EXPORT Alliance_rus_soldiers;
+EXPORT Alliance_am_soldiers;
+EXPORT Alliance_rus_scientists;
+EXPORT Alliance_am_scientists;
+EXPORT Alliance_Explorers;
+EXPORT Captured_Units_of_Alliance;
+EXPORT Explorer1, Explorer2;
+EXPORT Alliance_Doctors;
+EXPORT Number_of_AllAm_Soldiers;
+EXPORT Number_of_AllAm_Scientists;
+EXPORT Number_of_AllRu_Soldiers;
+EXPORT Number_of_AllRu_Scientists;
+
+
+// Russian units   (3)
+EXPORT Russian_soldiers;
+EXPORT Russian_scientists;
+EXPORT Russian_engineers;
+EXPORT Russian_mechanics;             
+EXPORT All_russians;
+EXPORT Rus_doctors;
+EXPORT Russian_Buildings;
+
+// Russians
+EXPORT R1_Attack_Time;
+EXPORT R_attack_time;
+EXPORT R1_Attack_counter;
+EXPORT R_Attack_counter;
+EXPORT R1_Attack_group;
+EXPORT Main_R1_Attack_group;
+EXPORT Main_R_Attack_Group;
+EXPORT R_Attack_Group;
+EXPORT New_Patrol_Group, R1Patrol_group;
+EXPORT R_Patrol_group;
+EXPORT R_Constructed_Attack;
+EXPORT R_Constructed_Patrol;
+EXPORT Behemot_Engineers;
+EXPORT Russian_Behemots;
+EXPORT New_Behemots;
+EXPORT Rus_Attack_Time;
+EXPORT R_New_Attack;
+EXPORT R_New_Patrol;
+EXPORT Number_of_russian_soldiers;
+EXPORT Number_of_russian_scientists;
+EXPORT Number_of_russian_mechanics;
+EXPORT Number_of_russian_engineers;
+
+
+// MARKED
+EXPORT First_JMM_Task;
+EXPORT out_of_base;
+EXPORT Great_ingame_video;
+EXPORT R1_attack;
+EXPORT Protect_Powell;
+EXPORT Talk_Bomba;
+EXPORT Center_on_fight;
+EXPORT JMM_Is_Ready;
+EXPORT Ingame_Run_over;    // This variable chacks if the Great Ingame Video is over
+EXPORT Game_Continue;
+EXPORT Vsevolod_Comes;
+EXPORT Woman_Comes;
+EXPORT Matherlod_Contamined1;
+EXPORT Matherlod_Contamined2;
+EXPORT Matherlod_Contamined3;
+EXPORT Alliance_Captured;
+EXPORT Explorers_Can_Go;
+EXPORT Not_End_of_Alliance;
+EXPORT JMM_has_surrounded;
+EXPORT Friend_Escapes;
+EXPORT Not_Ingame_Run_over;
+EXPORT End_of_m;
+EXPORT Timer;
+EXPORT JMM_Captured;
+
+// Events
+EXPORT Map_am_base, Map_rus_attack, Send_Helpers;
+EXPORT Start_Am1_Base;
+EXPORT Send_Material;
+EXPORT Capture_JMM_Vehicles;
+EXPORT First_Powells_Attack;
+EXPORT Second_Powells_Attack;
+EXPORT Run_JMM_Vehicles;
+EXPORT Rus1_Attack;
+EXPORT Rus_Attack;
+EXPORT Retreat_Report;
+EXPORT JMM_Talk;
+EXPORT Send_Arabian_Back;
+EXPORT Link_Bombs;
+//EXPORT Control_Unit;
+
+// Variables
+EXPORT americans, americans1, russians, russians1,
+       arabians, arabians1, alliance, Explorers_Side; //sides
+EXPORT human_difficulty_skill, apeman_difficulty_skill;
+EXPORT Skip;
+EXPORT Powell_Warning;
+EXPORT Warning_Time;
+EXPORT Time_of_Ingame_Run_Over;  // The time of the GIV end
+EXPORT First_ingame_done;
+EXPORT R1_Attack_Overflow;
+EXPORT Powell_vehicle;
+EXPORT Powell_Attack_Counter;
+EXPORT Center_To_Powell;
+EXPORT Debug_Constant;
+EXPORT R1_Attack_Continues;
+EXPORT Number_of_crates;
+EXPORT Construction_of_Arabian_rocket;
+EXPORT Number_of_Arabian_rocket;
+EXPORT Stevens_Coming_Time;
+EXPORT Woman_Coming_Time;
+EXPORT Alliance_broadcast;
+EXPORT Behemots_broadcast;
+EXPORT Time_of_first_capture;
+EXPORT Really_Kurt;
+EXPORT Time_of_capturing;
+EXPORT Alliance_def_buildings;
+EXPORT Way_of_Explorers;
+EXPORT Step_On_The_Way;        // Of Explorers (alliance)
+EXPORT Explorer_Way_Number;
+EXPORT Number_of_captured_americans;
+EXPORT Alaskite_Bomb_Time;
+EXPORT Arabian_siberite_attack_time;
+EXPORT R_Attack_Overflow;
+EXPORT Russian_Siberite_Attack;
+EXPORT Russian_Siberite_rockets;
+EXPORT Time_to_Think_Over;
+EXPORT The_Last_Time;           // The Last Time which JMM has before russian decide (or not) to do sib. attack
+EXPORT Friend_Accepted;
+EXPORT Friend_Escaped;
+EXPORT Number_of_Behemots;
+EXPORT Time_Of_Crates;         // A time whem the crates starts to arise
+EXPORT Number_of_complete_Behemots;
+EXPORT Behemot_Places;
+EXPORT Behemot_attack_time;
+EXPORT Friend_has_come;
+EXPORT The_Last_Arabian_Attack_Begun;
+EXPORT Friend_has_to_escape;
+EXPORT Wood_registry;
+EXPORT Add_Legion_Objectives;
+EXPORT Starting_Construction_Time;
+EXPORT Heike_Last_Words;
+EXPORT Joan_semafor;
+
+
+
+// Identifiers
+EXPORT Arabian_reg_id;
+EXPORT Arabian_def_id;
+EXPORT Arabian_build_id;
+
+EXPORT Russian1_reg_id;
+EXPORT Russian1_att_id;
+EXPORT Russian1_reg1_id;
+EXPORT Russian1_patr_id;
+
+EXPORT Russian_reg_id;
+EXPORT Russian_att_id;
+EXPORT Russian_patr_id;
+EXPORT Russian_reg_def_id;
+EXPORT Russian_def_id;
+EXPORT Russian_build_id;
+
+EXPORT Alliance_reg_id;
+EXPORT Alliance_def_id;
+EXPORT Alliance_wood_reg_id;
+
+
+Function Set_variables;
+ begin
+  CenterJMM= false;
+  End_of_journey= false;
+  Skip= false;
+  Captured_vehicles= [];
+  R1_Attack_time= 0;
+  R1_Attack_counter= 0;
+  R1_Attack_group= [];
+  Main_R1_Attack_group= [];
+  Main_R_Attack_Group= [];
+  Powell_warning= 0;
+  Warning_Time= 0;
+  Time_of_Ingame_Run_Over= 100$0;
+  First_ingame_done= false;
+  Rus_doctors= [];
+  R1_Attack_Overflow= 0;
+  New_Patrol_Group= 0;
+  R1Patrol_group= 0;
+  R_Patrol_group= 0;
+  Arabian_Outside= 0;
+  Powell_vehicle= 0;
+  Powell_Attack_Counter= 1;
+  Center_To_Powell= false;
+  R1_Attack_Continues= false;  // Nastavi se automaticky true pri kazdem pruchodu pridavani jednotek do makra
+  New_ArRu_Fact= 0;
+  Construction_of_Arabian_rocket= false;
+  Number_of_Arabian_rocket= 1;
+  Alliance_def_buildings= [AllT1, AllT2, AllT3, AllT4, AllT5, AllT7, AllT8]; //, AllBarrA, AllBarrR];
+  True_Americans= [];
+  Not_True_Americans= [];
+  Roth_Captured= false;
+  Russian_project_canceled= true;
+  No_Looses= true;
+  Captured_Units_of_Alliance= [];
+  Way_of_Explorers= [[[183, 160], [142, 131], [120, 104], [95, 71], [78, 62]],
+                     [[182, 155], [173, 136], [156, 94], [126, 73], [95, 71], [78, 62]]];
+  Explorer1= 0; Explorer2= 0;
+  Step_On_The_Way= 1;
+  Explorer_Way_Number= 1;
+  Number_of_captured_americans= 0;
+  R_Attack_Group= [];
+  R_Attack_Overflow= 0;
+  R_Constructed_Attack= [];
+  R_Constructed_Patrol= [];
+  Russian_Siberite_Attack= false;
+  Russian_Siberite_rockets= [RR1];
+  Time_to_Think_Over= 0;
+  The_Last_Time= 0;
+  Friend_Accepted= false;
+  Friend_Escaped= false;
+  Time_Of_Crates= 0;
+  Behemot_Engineers= [];
+  Behemot_Places= [[191, 117], [194, 124], [197, 117], [200, 122], [203, 118],
+                   [206, 126], [210, 127], [208, 122], [213, 124]];
+  Number_of_complete_Behemots= 0;
+  Russian_Behemots= [];
+  New_Behemots= [];
+  JMM_Helpers= [];
+  R_New_Attack= [];
+  R_New_Patrol= [];
+  Friend_has_come= false;
+  The_Last_Arabian_Attack_Begun= false;
+  Friend_has_to_escape= false;
+  Wood_registry= false;
+  Add_Legion_Objectives= false;
+  Starting_Construction_Time= 0;
+  Heike_Last_Words= false;
+  Joan_semafor= false;
+
+                
+  Arabian_reg_id= -1;
+  Arabian_def_id= -1;
+
+  Russian1_reg_id= -1;
+  Russian1_att_id= -1;
+  Russian1_reg1_id= -1;
+  Russian1_patr_id= -1;
+
+  Russian_reg_def_id= -1;
+  Russian_def_id= -1;
+  Russian_reg_id= -1;
+  Russian_att_id= -1;
+  Russian_patr_id= -1;
+  Russian_build_id= -1;
+
+  Alliance_reg_id= -1;
+  Alliance_def_id= -1;
+  Alliance_wood_reg_id= -1;
+
+
+  legion_cheated= LoadVariable('legion_cheated', true);
+  kappa_saved= LoadVariable('kappa_saved', false);
+//  Woman_saved= LoadVariable('woman_saved', false);       // saved and occure in 15. Kappa not saved
+  kappa_delayed= LoadVariable('kappa_delayed', true);
+  Woman_alive= LoadVariable('woman_alive', false);       // alive
+  Initial_JMM_vehicle= LoadVariable('veh_jmm', 0);
+  Initial_Woman_vehicle= LoadVariable('veh_surv', 0);
+  Woman_in_am14= LoadVariable('woman_in_am14', 1);      // 1, 2, 3
+  if Initial_Woman_vehicle > 0 then
+    Woman_saved= true
+  else Woman_saved= false;
+
+  americans= 1;
+  americans1= 4;
+
+  russians= 3;
+  russians1= 6;
+
+  arabians= 8;   // Legie
+  arabians1= 2;  // Sheik Omar
+
+  alliance= 7;
+  Explorers_Side= 5;
+
+  uc_side:=americans1;
+  OtherWithJMM= CreateCharacterSet('OtherWithJMM');
+  OtherNotJMM= CreateCharacterSet('OtherNotJMM');
+
+  BobbyLoc=     LoadVariable('BobbyLoc', 1);
+  CyrusLoc=     LoadVariable('CyrusLoc', 1);
+  LisaLoc=      LoadVariable('LisaLoc', 1);
+  FrankLoc=     LoadVariable('FrankLoc', 1);
+  BrownLoc=     LoadVariable('BrownLoc', 1);
+  DonaldsonLoc= LoadVariable('DonaldsonLoc', 1);
+  VanHoutenLoc= LoadVariable('VanHoutenLoc', 1);
+  GladstoneLoc= LoadVariable('GladstoneLoc', 1);
+  JoanLoc=      LoadVariable('JoanLoc', 1);
+  YamokoLoc=    LoadVariable('YamokoLoc', 1);
+  GaryLoc=      LoadVariable('GaryLoc', 1);
+  DenisLoc=     LoadVariable('DenisLoc', 1);
+  CornellLoc=   LoadVariable('CornellLoc', 1);
+
+
+
+  //Events
+  Map_am_base= 1;
+  Map_rus_attack= 2;
+  Send_Helpers= 3;
+  Send_Material= 4;
+  Capture_JMM_Vehicles= 5;
+  First_Powells_Attack= 6;
+  Second_Powells_Attack= 7;
+  Run_JMM_Vehicles= 8;
+  Rus1_Attack= 9;
+  Retreat_Report= 10;
+  JMM_Talk= 11;
+  Send_Arabian_Back= 12;
+  Link_Bombs= 13;
+  Rus_Attack= 14;
+  JMM_Is_Ready= 15;
+
+  // MARKED
+  First_JMM_Task= 1;
+  disable(First_JMM_Task);
+  out_of_base= 2;
+  disable(out_of_base);
+  Great_ingame_video= 3;
+  disable(Great_ingame_video);
+  R1_attack= 4;
+  disable(R1_attack);
+  Protect_Powell= 5;
+  disable(Protect_Powell);
+  Talk_Bomba= 6;
+  disable(Talk_Bomba);
+  Center_on_fight= 7;
+  disable(Center_on_fight);
+  Not_Ingame_Run_over= 8;
+  enable(Not_Ingame_Run_over);
+  Ingame_Run_over= 9;            // 9 = 10
+  disable(Ingame_Run_over);
+  Game_Continue= 10;
+  disable(Game_Continue);
+  Woman_Comes= 11;
+  Vsevolod_Comes= 12;
+  if (Woman_alive and kappa_saved and woman_saved = false) then // zustala v kape
+    begin
+      disable(Vsevolod_Comes);
+      enable(Woman_Comes);
+    end
+  else if not(kappa_saved) then
+    begin
+      enable(Vsevolod_Comes);
+      disable(Woman_Comes);
+    end
+  else
+    begin
+      disable(Vsevolod_Comes);
+      disable(Woman_Comes);
+    end;
+  Matherlod_Contamined1= 13;
+  disable(Matherlod_Contamined1);
+  Matherlod_Contamined2= 14;
+  disable(Matherlod_Contamined2);
+  Matherlod_Contamined3= 15;
+  disable(Matherlod_Contamined3);
+  Alliance_Captured= 16;
+  disable(Alliance_Captured);
+  Explorers_Can_Go= 17;
+  disable(Explorers_Can_Go);
+  Not_End_of_Alliance= 18;
+  Enable(Not_End_of_Alliance);
+  JMM_has_surrounded= 19;
+  Disable(JMM_has_surrounded);
+  Friend_Escapes= 20;
+  Disable(Friend_Escapes);
+  JMM_Captured= 22;
+  Disable(JMM_Captured);
+  End_of_m= 23;
+  Disable(End_of_m);
+  Timer= 24;
+  Disable(Timer);
+
+  // Buildings
+  Arabian_buildings= [[b_bunker, 56, 28, 0, [ar_rocket_launcher]],
+                      [b_bunker, 53, 25, 0, [ar_gun]],
+                      [b_bunker, 59, 28, 5, [ar_radar]],
+//                      [b_bunker, 41, 15, 0, [ar_gun]],
+//                      [b_bunker, 39, 9, 0, [ar_rocket_launcher]],
+//                      [b_bunker, 42, 12, 0, [ar_rocket_launcher]],
+                      [b_bunker, 35, 4, 0, [ar_radar]],
+                      [b_bunker, 68, 20, 0, [ar_radar]],
+                      [b_depot, 53, 7, 3, []],
+                      [b_siberite_power, 42, 5, 0, []],
+                      [b_siberite_power, 44, 3, 0, []],
+                      [b_siberite_power, 93, 7, 0, []],
+                      [b_siberite_power, 91, 3, 0, []],
+                      [b_barracks, 49, 9, 1, []],
+//                      [b_bunker, 63, 26, 0, [ar_gun]],
+                      [b_bunker, 66, 26, 0, [ar_rocket_launcher]],
+                      [b_bunker, 69, 26, 0, [ar_gun]],
+//                      [b_bunker, 72, 4, 4, [ar_gun]],
+                      [b_bunker, 57, 13, 0, [ar_flame_thrower]],
+                      [b_bunker, 70, 10, 0, [ar_gun]],
+                      [b_bunker, 83, 24, 0, [ar_gun]],
+                      [b_bunker, 88, 27, 0, [ar_rocket_launcher]],
+                      [b_lab_full, 68, 13, 5, [b_lab_siberium, b_lab_weapon]],
+                      [b_factory, 89, 21, 4, []],
+                      [b_barracks, 84, 10, 0, []],
+                      [b_bunker, 88, 13, 0, [ar_gun]],
+                      [b_bunker, 59, 10, 0, [ar_gun]],
+                      [b_bunker, 79, 4, 5, [ar_rocket_launcher]],
+                      [b_warehouse, 84, 4, 2, []],
+//                      [b_siberite_mine, 72, 3, 4, []],
+                      [b_ext_rocket, 93, 21, 4, []],
+                      [b_ext_radar, 89, 18, 3, []],
+                      [b_ext_gun, 92, 24, 5, []],
+                      [b_bunker, 93, 27, 1, [ar_radar]],
+                      [b_bunker, 90, 11, 0, [ar_radar]]];
+
+   Russian_Buildings= [[b_lab_full, 202, 95, 5, [b_lab_siberium, b_lab_weapon]],
+                       [b_barracks, 170, 45, 2, []],
+                       [b_factory, 195, 84, 4, []],
+                       [b_ext_rocket, 191, 80, 2, []],
+                       [b_ext_siberium, 195, 81, 3, []],
+                       [b_ext_computer, 199, 84, 4, []],
+                       [b_ext_gun, 198, 87, 5, []],
+                       [b_ext_track, 195, 88, 0, []],
+                       [b_siberite_power, 190, 66, 1, []],
+                       [b_turret, 182, 58, 1, [ru_rocket]],
+                       [b_turret, 188, 70, 1, [ru_rocket]],
+                       [b_turret, 183, 61, 1, [ru_time_lapser]],
+                       [b_turret, 186, 67, 1, [ru_heavy_gun]],
+                       [b_turret, 185, 64, 1, [ru_gatling_gun]],
+                       [b_warehouse, 175, 56, 3, []],
+                       [b_teleport, 182, 87, 0, []],
+                       [b_teleport, 165, 60, 3, []],
+                       [b_warehouse, 175, 81, 3, []],
+                       [b_barracks, 155, 44, 5, []],
+                       [b_turret, 156, 73, 1, [ru_heavy_gun]],
+                       [b_turret, 158, 76, 0, [ru_rocket_launcher]],
+                       [b_turret, 156, 78, 1, [ru_rocket]],
+                       [b_turret, 160, 86, 0, [ru_heavy_gun]],
+                       [b_bunker, 158, 82, 1, [ru_gatling_gun]],
+                       [b_bunker, 164, 86, 1, [ru_rocket]],
+                       [b_bunker, 161, 81, 1, [ru_rocket_launcher]],
+                       [b_turret, 161, 75, 1, [ru_time_lapser]],
+                       [b_siberite_power, 163, 79, 0, []],
+                       [b_turret, 182, 105, 0, [ru_gatling_gun]],
+                       [b_turret, 161, 93, 1, [ru_heavy_gun]],
+                       [b_turret, 164, 98, 1, [ru_time_lapser]],
+                       [b_turret, 188, 98, 3, [ru_rocket_launcher]],
+                       [b_turret, 200, 98, 0, [ru_gatling_gun]],
+                       [b_siberite_power, 166, 96, 0, []],
+                       [b_turret, 169, 100, 1, [ru_rocket]],
+                       [b_turret, 208, 106, 0, [ru_gatling_gun]],
+                       [b_turret, 196, 107, 0, [ru_rocket]],
+                       [b_siberite_power, 186, 101, 4, []],
+                       [b_siberite_power, 193, 101, 3, []],
+                       [b_siberite_power, 182, 50, 1, []],
+                       [b_siberite_power, 153, 28, 4, []],
+                       [b_siberite_power, 201, 89, 1, []],
+                       [b_turret, 150, 25, 0, [ru_rocket_launcher]],
+                       [b_turret, 151, 31, 0, [ru_heavy_gun]],
+                       [b_bunker, 153, 39, 0, [ru_heavy_gun]],
+                       [b_turret, 157, 41, 1, [ru_time_lapser]],
+                       [b_bunker, 158, 54, 1, [ru_time_lapser]],
+                       [b_turret, 155, 35, 0, [ru_rocket]],
+                       [b_turret, 190, 106, 0, [ru_time_lapser]],
+                       [b_turret, 201, 106, 0, [ru_time_lapser]],
+                       [b_turret, 154, 63, 1, [ru_time_lapser]],
+                       [b_turret, 158, 67, 1, [ru_gatling_gun]],
+                       [b_bunker, 155, 57, 1, [ru_heavy_gun]],
+                       [b_bunker, 158, 62, 1, [ru_rocket]],
+                       [b_turret, 164, 89, 4, [ru_time_lapser]]];
+
+   SetTech(tech_SibFiss, americans, state_disabled);
+ end;
+
+{ Plan: Woman(20) -> Steven(10-25) -> Aliance(5) SibRock(5)-> Behemots(5) ->
+  Capturing(5)
+}
+Function Prepare_difficulty;
+var i;
+ begin
+    ////////////   Attention: Difficulty is directly used in Russians1 and Russians
+    ////////////   in planing of attack groups
+
+                        //  1  2  3 (Difficulty)
+   human_difficulty_skill= [6, 7, 8][Difficulty];
+   apeman_difficulty_skill= [3, 4, 5][Difficulty];
+   Number_of_crates= [7, 5, 4][Difficulty];
+   Number_of_JMM_Helpers= 5;
+
+
+//                   ARABIANS
+   Number_Of_Omar_Soldiers= [2, 4, 5][Difficulty];
+   Number_of_Omar_Hovercrafts= [1, 1, 2][Difficulty];
+   Number_of_Omar_Flamethrowers= [0, 1, 1][Difficulty];
+   Number_of_Omar_RocketLaunchers= [0, 0, 1][Difficulty];
+
+//                   RUSSIANS
+   Number_of_russian_soldiers= [3, 5, 6][Difficulty];
+   Number_of_russian_scientists= [6, 6, 6][Difficulty];  // We need them to run the base
+   Number_of_russian_mechanics= [6, 6, 6][Difficulty];   //
+   Number_of_russian_engineers= [2, 3, 4][Difficulty];
+   Number_of_Behemots= [2, 3, 4][Difficulty];
+
+
+//                    LEGIE
+   Number_of_Arabian_Engineers= [1, 1, 2][Difficulty];
+   Number_of_Arabian_Soldiers= [3, 4, 5][Difficulty];
+   Number_of_Arabian_scientists= [1, 2, 2][Difficulty];
+   Number_of_Arabian_mechanics= [1, 2, 3][Difficulty];
+
+
+//                     ALLIANCE
+   Number_of_AllAm_Soldiers= [4, 4, 4][Difficulty];
+   Number_of_AllAm_Scientists= [4, 4, 4][Difficulty];
+   Number_of_AllRu_Soldiers= [1, 2, 3][Difficulty];
+   Number_of_AllRu_Scientists= [4, 4, 4][Difficulty];
+
+
+//                     TIMES
+// All times are updated after end of Powell's ingame
+   Woman_Coming_Time= [18$0, 18$0, 18$0][Difficulty];
+   Rus_Attack_Time= [35$0, 30$0, 28$0][Difficulty];
+   Stevens_Coming_Time= [35$0, 35$0, 32$0][Difficulty];   // 35, 35, 32
+   Alliance_broadcast= [45$0, 40$0, 35$0][Difficulty];  // SCT + 5$0
+   Arabian_siberite_attack_time= [50$0, 45$0, 40$0][Difficulty];
+   Behemots_broadcast= [55$0, 50$0, 45$0][Difficulty];
+//   Behemots_broadcast= [20$0, 20$0, 20$0][Difficulty];
+   Alaskite_Bomb_Time= [60$0, 55$0, 50$0][Difficulty];  //SCT + 15$0
+   Time_of_first_capture= [65$0, 60$0, 55$0][Difficulty];
+//   Time_of_first_capture= [20$0, 20$0, 20$0][Difficulty];
+   Behemot_attack_time= [70$0, 65$0, 60$0][Difficulty];
+//   Behemot_attack_time= [30$0, 30$0, 30$0][Difficulty];
+
+
+   // Alliance
+   DestroyUnit(GetUnitNumber(222, 179));
+   DestroyUnit(GetUnitNumber(226, 183));
+//   DestroyUnit(GetUnitNumber(,));
+
+   case Difficulty of
+    1: begin
+         // Alliance
+         DestroyUnit(GetUnitNumber(229, 176));
+
+         // Legie
+         DestroyUnit(GetUnitNumber(53, 25));
+         Arabian_buildings= Arabian_buildings diff [[b_bunker, 53, 25, 0, [ar_gun]]];
+         DestroyUnit(GetUnitNumber(70, 10));
+         Arabian_buildings= Arabian_buildings diff [[b_bunker, 70, 10, 0, [ar_gun]]];
+         DestroyUnit(GetUnitNumber(79, 4));
+         Arabian_buildings= Arabian_buildings diff [[b_bunker, 79, 4, 5, [ar_rocket_launcher]]];
+         DestroyUnit(GetUnitNumber(49, 9));
+         Arabian_buildings= Arabian_buildings diff [[b_barracks, 49, 9, 1, []]];
+
+         // Russians
+         DestroyUnit(GetUnitNumber(150, 25));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 150, 25, 0, [ru_rocket_launcher]]];
+         DestroyUnit(GetUnitNumber(155, 35));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 155, 35, 0, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(153, 39));
+         Russian_Buildings= Russian_Buildings diff [[b_bunker, 153, 39, 0, [ru_heavy_gun]]];
+         DestroyUnit(GetUnitNumber(188, 70));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 188, 70, 1, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(188, 98));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 188, 98, 3, [ru_rocket_launcher]]];
+         DestroyUnit(GetUnitNumber(200, 98));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 200, 98, 0, [ru_gatling_gun]]];
+         DestroyUnit(GetUnitNumber(169, 100));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 169, 100, 1, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(164, 86));
+         Russian_Buildings= Russian_Buildings diff [[b_bunker, 164, 86, 1, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(160, 86));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 160, 86, 0, [ru_heavy_gun]]];
+         DestroyUnit(GetUnitNumber(158, 76));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 158, 76, 0, [ru_rocket_launcher]]];
+         DestroyUnit(GetUnitNumber(158, 62));
+         Russian_Buildings= Russian_Buildings diff [[b_bunker, 158, 62, 1, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(155, 57));
+         Russian_Buildings= Russian_Buildings diff [[b_bunker, 155, 57, 1, [ru_heavy_gun]]];
+//         DestroyUnit(GetUnitNumber(,));
+       end;
+    2: begin
+         // Alliance
+         DestroyUnit(GetUnitNumber(224, 176));
+
+         // Legie
+         DestroyUnit(GetUnitNumber(53, 25));
+         Arabian_buildings= Arabian_buildings diff [[b_bunker, 53, 25, 0, [ar_gun]]];
+         DestroyUnit(GetUnitNumber(70, 10));
+         Arabian_buildings= Arabian_buildings diff [[b_bunker, 70, 10, 0, [ar_gun]]];
+         DestroyUnit(GetUnitNumber(79, 4));
+         Arabian_buildings= Arabian_buildings diff [[b_bunker, 79, 4, 5, [ar_rocket_launcher]]];
+
+         // Russians
+         DestroyUnit(GetUnitNumber(155, 35));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 155, 35, 0, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(151 ,31));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 151, 31, 0, [ru_heavy_gun]]];
+         DestroyUnit(GetUnitNumber(169, 100));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 169, 100, 1, [ru_rocket]]];
+         DestroyUnit(GetUnitNumber(158, 76));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 158, 76, 0, [ru_rocket_launcher]]];
+         DestroyUnit(GetUnitNumber(156, 73));
+         Russian_Buildings= Russian_Buildings diff [[b_turret, 156, 73, 1, [ru_heavy_gun]]];
+       end;
+    3: begin
+//         DestroyUnit(GetUnitNumber(,));
+       end;
+   end;
+ end;
+
+EXPORT Function LinkBombs;
+ begin
+   ComEnterUnit(Control_Driver, ArControl);
+   Wait(1);
+   WaitTask(Control_Driver, 1);
+   LinkVehicleToHuman(ArBomb1, Control_Driver);
+   LinkVehicleToHuman(ArBomb2, Control_Driver);
+ end;
+
+
+Function Prepare_Characters;
+var i, Un, hlp, Gamma2Comander, Alpha, New_person, Drivers, Other, Number_of_all,
+     Selected_Unit, New_vehicle;
+
+ begin
+ // AMERICANS
+  uc_nation= nation_american;
+  uc_side= americans;
+
+  // John Macmillan
+  if not debug_constant then
+       JMM= CreateCharacter('JMM')
+  else
+       begin
+            hc_name = 'JMM';
+            JMM = CreateHuman;
+            InitHc;
+       end;
+  if not JMM then
+    BuildQuery('Error: John Macmillan not found!!!',['OK']);
+
+  uc_side= americans1;
+  Powell= NewCharacter('Powell');
+  if not Powell then
+    BuildQuery('Error: Powell not found!!!', ['OK'])
+  else
+    begin
+      SetSkill(Powell, skill_combat, 10);
+      SetSkill(Powell, skill_mechanical, 10);
+      SetSkill(Powell, skill_engineering, 8);
+      SetSkill(Powell, skill_scientistic, 4);
+      SetAttr(Powell, attr_speed, 11);
+      SetAttr(Powell, attr_stamina, 13);
+      PlaceUnitArea(Powell, Center_am_b, false);
+    end;
+
+  Bobby= CreateCharacter('Bobby');
+  if Bobby then
+    begin
+      if BobbyLoc <> 6 then PlaceUnitArea(Bobby, Center_am_b, false);
+    end;
+
+  Cyrus= CreateCharacter('Cyrus');
+  if Cyrus then
+    begin
+      if CyrusLoc <> 6 then PlaceUnitArea(Cyrus, Center_am_b, false);
+    end;
+
+  Lisa= CreateCharacter('Lisa');
+  if Lisa and Woman_in_am14 <> 2 then
+    begin
+      if LisaLoc <> 6 then PlaceUnitArea(Lisa, Center_am_b, false);
+    end;
+
+  Frank= CreateCharacter('Frank');
+  if Frank then
+    begin
+      if FrankLoc <> 6 then PlaceUnitArea(Frank, Center_am_b, false);
+    end;
+
+  Brown= CreateCharacter('Brown');
+  if Brown then
+    begin
+      if BrownLoc <> 6 then PlaceUnitArea(Brown, Center_am_b, false);
+    end;
+
+  Donaldson= CreateCharacter('Donaldson');
+  if Donaldson then
+    begin
+      if DonaldsonLoc <> 6 then PlaceUnitArea(Donaldson, Center_am_b, false);
+    end;
+
+  Gladstone= CreateCharacter('Gladstone');
+  if Gladstone then
+    begin
+      if GladstoneLoc <> 6 then PlaceUnitArea(Gladstone, Center_am_b, false);
+    end;
+
+  Denis= CreateCharacter('Denis');
+  if Denis then
+    begin                                             
+      if DenisLoc <> 6 then PlaceUnitArea(Denis, Center_am_b, false);
+    end;
+
+  Cornell= CreateCharacter('Cornell');
+  if Cornell then
+    begin
+      if CornellLoc <> 6 then PlaceUnitArea(Cornell, Center_am_b, false);
+    end;
+
+  Yamoko= CreateCharacter('Yamoko');
+  if Yamoko then
+    begin
+      if YamokoLoc <> 6 then PlaceUnitArea(Yamoko, Center_am_b, false);
+    end;
+
+  Gary= CreateCharacter('Gary');
+  if Gary then
+    begin
+      if GaryLoc <> 6 then PlaceUnitArea(Gary, Center_am_b, false);
+    end;
+
+  VanHouten= CreateCharacter('VanHouten');
+  if VanHouten then
+    begin
+      if VanHoutenLoc <> 6 then PlaceUnitArea(VanHoutenLoc, Center_am_b, false);
+    end;
+
+  Stevens= CreateCharacter('Stevens');
+  if not(Stevens) then
+    begin
+      PrepareScientist(1, 9);
+      hc_name= 'Baker Smith';
+      Baker= CreateHuman;
+      SetSkill(Baker, skill_scientistic, 8);
+      hc_name= '';
+    end;
+
+  Coonie= CreateCharacter('Coonie');
+  if Coonie and Woman_in_am14 <> 3 then
+    begin
+      DestroyUnit(Coonie);
+    end;
+
+  if not debug_constant then
+       Joan= CreateCharacter('Joan')
+  else
+       begin
+            hc_name = 'Joan';
+            hc_sex = sex_female;
+            Joan = CreateHuman;
+            InitHC;
+       end;
+
+
+
+  All_americans= FilterAllUnits([[f_side, americans1], [f_type, unit_human]]) diff Powell;
+  Named_americans= All_americans;
+
+  if Named_americans > 12 then Number_of_all= Named_americans+8
+  else Number_of_all= 20;
+
+  // OtherNotJMM
+  while (OtherNotJMM <> 0) and (All_Americans < Number_of_all) do
+    begin
+      Selected_unit= FindMaxSumSkill(OtherNotJMM, 0);
+      OtherNotJMM= OtherNotJMM diff Selected_unit;
+      All_Americans= All_americans ^ Selected_unit;
+      PlaceUnitArea(Selected_unit, Center_am_b, false);
+    end;
+
+  if All_americans < Number_of_all then
+    for i= All_americans+1 to Number_of_all do
+      begin
+        case (i mod 4) of
+          0: begin
+               PrepareSoldier(sex_male, 7);
+             end;
+          1: begin
+               PrepareScientist(sex_male, 7);
+             end;
+          2: begin
+               PrepareMechanic(sex_male, 7);
+             end;
+          3: begin
+               PrepareEngineer(sex_male, 7);
+             end;
+        end;
+        New_person= CreateHuman;
+        All_americans= All_americans ^ New_person;
+        PlaceUnitArea(New_person, Center_am_b, false);
+      end;
+  Remaining_Powells= All_americans;
+
+
+
+  // RUSSIANS
+  uc_nation= nation_russian;
+  uc_side= russians;
+
+  // Burlak
+//  Burlak= CreateCharacter('Burlak');
+//  if not Burlak then
+//    BuildQuery('Error: Burlak not found!!!', ['OK'])
+//  else PlaceUnitXY(Burlak, 179, 75, false);
+
+  // Platonov
+  uc_nation= nation_russian;
+  Platonov= NewCharacter('Platonov');
+  if Platonov then
+    begin
+      SetSkill(Platonov, skill_combat, 10);
+      SetSkill(Platonov, skill_engineering, 6);
+      SetSkill(Platonov, skill_mechanical, 10);
+      SetSkill(Platonov, skill_scientistic, 2);
+    end
+  else
+    begin
+//      hc_gallery= 'ru';
+//      hc_face_number= 34;
+      hc_sex= sex_male;
+      hc_class= class_soldier;
+      hc_skills= [10, 6, 10, 3];   // Difficulty
+      hc_attr= [10,10];
+
+      hc_name= 'Platonov';
+      Platonov= CreateHuman;
+      hc_name= '';
+
+      hc_gallery= '';
+    end;
+
+  // Kovaljuk
+  uc_nation= nation_russian;
+  Kovaljuk= NewCharacter('Kovaljuk');
+  if Kovaljuk then
+    begin
+      SetSkill(Kovaljuk, skill_combat, 8);
+      SetSkill(Kovaljuk, skill_engineering, 10);
+      SetSkill(Kovaljuk, skill_mechanical, 4);
+      SetSkill(Kovaljuk, skill_scientistic, 3);
+    end
+  else
+    begin
+//      hc_gallery= 'ru';
+//      hc_face_number= 34;
+      hc_sex= sex_male;
+      hc_class= class_soldier;
+      hc_skills= [8, 10, 4, 3];   // Difficulty
+      hc_attr= [10,10];
+
+      hc_name= 'Kovaljuk';
+      Kovaljuk= CreateHuman;
+      hc_name= '';
+
+      hc_gallery= '';
+    end;
+
+
+  // Soldiers
+  for Un= 1 to Number_of_russian_soldiers do // 6
+    begin
+      if i in [1, 2] then PrepareSoldier(sex_male, human_difficulty_skill)
+      else PrepareSoldier(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Russian_soldiers= Russian_soldiers ^ New_person;
+      PlaceUnitArea(New_person, Center_ru_b, false);
+    end;
+
+  // Scientists
+  for Un= 1 to Number_of_russian_scientists do  // 6
+    begin
+      PrepareScientist(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Russian_scientists= Russian_scientists ^ New_person;
+      PlaceUnitArea(New_person, Center_ru_b, false);
+    end;
+
+  // Engineers
+  for Un= 1 to Number_of_russian_engineers do  // 4
+    begin
+      PrepareEngineer(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Russian_engineers= Russian_engineers ^ New_person;
+      PlaceUnitArea(New_person, Center_ru_b, false);
+    end;
+
+  // Mechanics
+  for Un=1 to Number_of_russian_mechanics do  // 6
+    begin
+      PrepareMechanic(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Russian_Mechanics= Russian_Mechanics ^ New_person;
+      PlaceUnitArea(New_person, Center_ru_b, false);
+    end;
+
+  All_russians= Russian_soldiers ^ Russian_scientists ^ Russian_Engineers ^ Russian_mechanics;
+
+
+  // ARABIANS
+  uc_nation= nation_arabian;
+  uc_side= arabians1;
+
+  // Omar
+  Omar= NewCharacter('Omar');
+  if not(Omar) then
+    begin
+//      msg('Error, Omar not found');
+    end;
+
+  // Mastodont
+{   uc_side= arabians1;
+   uc_nation= nation_arabian;
+   uc_direction= 3;
+
+   vc_chassis= 15;
+   vc_engine= engine_siberite;
+   vc_control= control_rider;
+   vc_weapon= ar_light_gun;
+  Masto= CreateVehicle;}
+  RemoveUnit(Masto);
+
+  PlaceHumanInUnit(Omar, Masto);
+
+  // Heike
+  Heike= NewCharacter('Heike');
+  if Heike then
+    begin
+      SetClass(Heike, class_mortar);
+    end
+  else
+    begin
+//      msg('Error, Heike not found');
+    end;
+
+  // scientists
+  Omar_Scientists= [];
+  for i= 1 to 2 do
+    begin
+      PrepareScientist(0, human_difficulty_skill);
+      New_Person= CreateHuman;
+      Omar_Scientists= Omar_Scientists ^ New_Person;
+    end;
+
+  Omar_Soldiers= [];
+  for i = 1 to Number_Of_Omar_Soldiers do
+    begin
+      PrepareSoldier(0, human_difficulty_skill);
+      New_Person= CreateHuman;
+      if i = 1 then SetClass(New_Person, class_mortar);
+      Omar_Soldiers= Omar_Soldiers ^ New_Person;
+    end;
+
+  for i= 1 to Number_of_Omar_Hovercrafts do
+    begin
+       uc_side= arabians1;
+       uc_nation= nation_arabian;
+       uc_direction= 2;
+
+       vc_chassis= ar_hovercraft;
+       vc_engine= engine_combustion;
+       vc_control= control_manual;
+       vc_weapon= ar_double_machine_gun;
+
+       New_vehicle= CreateVehicle;
+       Omar_vehicles= Omar_vehicles ^ New_vehicle;
+    end;
+
+  for i= 1 to Number_of_Omar_Flamethrowers do
+    begin
+       vc_chassis= ar_half_tracked;
+       vc_engine= engine_combustion;
+       vc_control= control_manual;
+       vc_weapon= ar_flame_thrower;
+
+       New_vehicle= CreateVehicle;
+       Omar_vehicles= Omar_vehicles ^ New_vehicle;
+    end;
+
+  for i= 1 to Number_of_Omar_RocketLaunchers do
+    begin
+       vc_chassis= ar_half_tracked;
+       vc_engine= engine_combustion;
+       vc_control= control_manual;
+       vc_weapon= ar_rocket_launcher;
+
+       New_vehicle= CreateVehicle;
+       Omar_vehicles= Omar_vehicles ^ New_vehicle;
+    end;
+
+  for Un in Omar_vehicles do
+    begin
+       PrepareMechanic(0, human_difficulty_skill);
+       New_Person= CreateHuman;
+       PlaceHumanInUnit(New_Person, Un);
+    end;
+
+
+  // LEGIE
+  uc_nation= nation_arabian;
+  uc_side= arabians;
+
+  // Kurt
+  Kurt= CreateCharacter('Kurt');
+  if Kurt then
+    begin
+      Really_Kurt= true;
+      SetSkill(Kurt, skill_combat, 8);
+      SetSkill(Kurt, skill_engineering, 4);
+      SetSkill(Kurt, skill_mechanical, 3);
+      SetSkill(Kurt, skill_scientistic, 5);
+    end
+  else
+    begin
+      Really_Kurt= false;
+      hc_sex= sex_male;
+      hc_class= class_mechanic;
+      hc_skills= [8, 4, 3, 5];   // Difficulty
+      hc_attr= [10,10];
+      Kurt= CreateHuman;
+    end;
+
+//  PlaceUnitArea(Kurt, Center_ar_b, false);
+//  ComEnterUnit(Kurt, ArDep1);
+
+  // Friend
+  hc_sex= sex_male;
+  hc_class= class_mechanic;
+  hc_skills= [4, 2, 7, 3];   // Difficulty
+  hc_attr= [10,10];
+  hc_name= 'Ali Hadarach';
+  Friend= CreateHuman;
+  hc_name= '';
+
+  // Kozlov
+  uc_nation= nation_russian;
+  Kozlov= NewCharacter('Kozlov');
+  if Kozlov then
+    begin
+      SetSkill(Kozlov, skill_combat, 2);
+      SetSkill(Kozlov, skill_engineering, 8);
+      SetSkill(Kozlov, skill_mechanical, 3);
+      SetSkill(Kozlov, skill_scientistic, 10);
+    end
+  else
+    begin
+      hc_gallery= 'ru';
+      hc_face_number= 34;
+      hc_sex= sex_male;
+      hc_class= class_engineer;
+      hc_skills= [2, 8, 3, 10];   // Difficulty
+      hc_attr= [10,10];
+
+      hc_name= 'Nikita S. Kozlov';
+      Kozlov= CreateHuman;
+      hc_name= '';
+
+      hc_gallery= '';
+    end;
+
+  uc_nation= nation_arabian;
+  // Soldiers
+  for Un = 1 to Number_of_Arabian_Soldiers do  // 8
+    begin
+      if i in [1, 2, 3] then PrepareSoldier(sex_male, human_difficulty_skill -1)
+      else PrepareSoldier(0, human_difficulty_skill -1);
+      New_person= CreateHuman;
+      Arabian_soldiers= Arabian_soldiers ^ New_person;
+      PlaceUnitArea(New_person, Center_ar_b, false);
+    end;
+
+  // Engineers
+  for Un = 1 to Number_of_Arabian_Engineers do
+    begin
+      PrepareEngineer(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      SetSkill(New_person, class_engineer, human_difficulty_skill);
+      Arabian_Engineers= Arabian_Engineers ^ New_person;
+      PlaceUnitArea(New_person, Center_ar_b, false);
+      ComEnterUnit(New_person, ArDep2);
+      DoNotAttack(americans1, New_person);
+  end;
+
+  // Mechanics
+  for Un = 1 to Number_of_Arabian_Mechanics do // 3
+    begin
+      PrepareMechanic(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Arabian_mechanics= Arabian_mechanics ^ New_person;
+      PlaceUnitArea(New_person, Center_ar_b, false);
+      ComEnterUnit(New_person, ArFact);
+    end;
+
+  // Control_Driver
+  PrepareMechanic(0, human_difficulty_skill);
+  New_person= CreateHuman;
+  Control_Driver= New_person;
+  PlaceUnitArea(Control_Driver, Center_ar_b, false);
+  SetSkill(Control_Driver, class_mechanic, 3);
+  RaiseSailEvent(Link_Bombs);
+
+
+  // Scientists
+  for Un= 1 to Number_of_Arabian_Scientists do // 4
+    begin
+      PrepareScientist(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Arabian_scientists= Arabian_scientists ^ New_person;
+      PlaceUnitArea(New_person, Center_ar_b, false);
+    end;
+
+  // Apemans
+  uc_nation= nation_nature;  // Apemens        nation
+  for Un= 1 to 4 do
+    begin
+      PrepareSoldier(0, apeman_difficulty_skill);
+      hc_class= class_apeman_soldier;
+      New_person= CreateHuman;
+      Arabian_apemens= Arabian_apemens ^ New_person;
+      PlaceUnitArea(New_person, Center_ar_b, false);
+      Case Un of
+        1: ComEnterUnit(New_person, ArRad1);
+        2: ComEnterUnit(New_person, ArRad2);
+        3: ComEnterUnit(New_person, ArRad3);
+        4: ComEnterUnit(New_person, ArRad4);
+      end;
+    end;
+
+  All_arabians= Arabian_soldiers ^ Arabian_scientists ^ Arabian_apemens ^ Control_Driver;
+
+
+
+  // ALLIANCE
+  uc_side= alliance;
+  uc_nation= nation_american;
+
+  // Roth
+  Roth= NewCharacter('Roth');
+  if not Roth then
+    BuildQuery('Error: Roth not found!!!', ['OK'])
+  else
+    begin
+      PlaceUnitArea(Roth, Center_al_b, false);
+      ComMoveXY(Roth, 249, 187);
+      AddComTurnXY(Roth, 245, 187);
+    end;
+
+  // Simms
+  Simms= CreateCharacter('Simms');
+  if not(Simms) then
+    begin
+      PrepareScientist(sex_female, 7);
+      Simms= CreateHuman;
+    end;
+  PlaceUnitArea(Simms, Center_al_b, false);
+  ComMoveXY(Simms, 243, 187);
+  AddComTurnXY(Simms, 245, 187);
+
+  // American Soldiers
+  uc_side= alliance;
+  uc_nation= nation_american;
+  Alliance_am_soldiers= [];
+  for Un= 1 to Number_of_AllAm_Soldiers do  // 4
+    begin
+      PrepareSoldier(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Alliance_am_soldiers= Alliance_am_soldiers ^ New_person;
+      PlaceUnitArea(New_person, Center_al_b, false);
+    end;
+
+  // American Scientists
+  uc_side= alliance;
+  uc_nation= nation_american;
+  Alliance_am_scientists= [];
+  for Un= 1 to Number_of_AllAm_Scientists do // 4
+    begin
+      PrepareScientist(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Alliance_am_scientists= Alliance_am_scientists ^ New_person;
+      PlaceUnitArea(New_person, Center_al_b, false);
+    end;
+
+  // Russian Soldiers
+  uc_side= alliance;
+  uc_nation= nation_russian;
+  Alliance_rus_soldiers= [];
+  for Un= 1 to Number_of_AllRu_Soldiers do
+    begin
+      PrepareSoldier(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Alliance_rus_soldiers= Alliance_rus_soldiers ^ New_person;
+      PlaceUnitArea(New_person, Center_al_b, false);
+    end;
+
+  // Russian Scientists
+  uc_side= alliance;
+  uc_nation= nation_russian;
+  Alliance_rus_scientists= [];
+  for Un= 1 to Number_of_AllRu_Scientists do
+    begin
+      PrepareScientist(0, human_difficulty_skill);
+      New_person= CreateHuman;
+      Alliance_rus_scientists= Alliance_rus_scientists ^ New_person;
+      PlaceUnitArea(New_person, Center_al_b, false);
+    end;
+
+
+  // RUSSIANS1
+  uc_side = russians1;
+  uc_nation= nation_russian;
+  Vsevolod= NewCharacter('Vsevolod');
+  if Vsevolod then
+    begin
+      SetSkill(Vsevolod, skill_combat, 6);
+      SetSkill(Vsevolod, skill_engineering, 4);
+      SetSkill(Vsevolod, skill_mechanical, 10);
+      SetSkill(Vsevolod, skill_scientistic, 2);
+      SetClass(Vsevolod, class_mechanic);
+    end
+  else
+    begin
+//      hc_gallery= 'ru';
+//      hc_face_number= 34;
+      hc_sex= sex_male;
+      hc_class= class_mechanic;
+      hc_skills= [6, 4, 10, 2];   // Difficulty
+      hc_attr= [10,10];
+
+      hc_name= 'Vsevolod I. Gorki';
+      Vsevolod= CreateHuman;
+      hc_name= '';
+
+      hc_gallery= '';
+    end;
+
+
+  // JMM + woman + vehicles
+  RevealFogArea(americans, way);
+
+  uc_side= americans;
+  uc_nation= nation_american;
+
+  uc_direction= 0;
+
+  if Initial_JMM_vehicle <> 0 then
+    begin
+      vc_chassis= Initial_JMM_vehicle[1];
+      vc_engine= Initial_JMM_vehicle[2];
+      vc_control= Initial_JMM_vehicle[3];
+      vc_weapon= Initial_JMM_vehicle[4];
+    end
+  else
+    begin
+      vc_chassis= us_medium_tracked;
+      vc_engine= engine_siberite;
+      vc_control= control_manual;
+      vc_weapon= us_light_gun;
+    end;
+
+  JMM_veh= CreateVehicle;
+  SetFuel(Jmm_veh, 100);
+  PlaceHumanInUnit(JMM, JMM_veh);
+  PlaceUnitXY(JMM_veh, 100, 151, false);
+
+  if woman_alive then
+    JMM_woman= [Joan, Lisa, Coonie][Woman_in_am14]
+  else JMM_Woman= 0;
+
+  if woman_saved then
+    begin
+      if Initial_Woman_vehicle <> 0 then
+        begin
+          vc_chassis= Initial_Woman_vehicle[1];
+          vc_engine= Initial_Woman_vehicle[2];
+          vc_control= Initial_Woman_vehicle[3];
+          vc_weapon= Initial_Woman_vehicle[4];
+        end
+      else
+        begin
+          vc_chassis= us_medium_tracked;
+          vc_engine= engine_siberite;
+          vc_control= control_manual;
+          vc_weapon= us_light_gun;
+        end;
+
+      Woman_veh= CreateVehicle;
+      SetFuel(Woman_veh, 100);
+      SetSide(JMM_woman, americans);
+      PlaceUnitXY(Woman_veh, 101, 156, false);
+      PlaceHumanInUnit(JMM_woman, Woman_veh);
+    end;
+
+ end;
+
+
+
+Function Set_marks;
+ begin
+ end;
+
+Function Set_attitudes;
+ begin
+   SetAttitude(americans, americans1, att_friend, true);
+   SetAttitude(russians, russians1, att_friend, true);
+   SetAttitude(arabians, arabians1, att_friend, true);
+
+   SetAttitude(arabians, russians, att_neutral, true);   //???
+   SetAttitude(arabians, russians1, att_neutral, true);  //???
+   SetAttitude(arabians, alliance, att_neutral, true);
+   SetAttitude(russians, alliance, att_neutral, true);
+   SetAttitude(russians1, alliance, att_neutral, true);
+
+   SetAttitude(americans, russians, att_enemy, true);
+   SetAttitude(americans, arabians, att_enemy, true);
+   SetAttitude(americans, alliance, att_enemy, true);
+   SetAttitude(americans1, russians, att_enemy, true);
+   SetAttitude(americans1, arabians, att_enemy, true);
+   SetAttitude(americans1, alliance, att_friend, true);
+
+   // Explorers
+   SetAttitude(Explorers_side, alliance, att_friend, true);
+   SetAttitude(Explorers_Side, americans, att_friend, false);
+   SetAttitude(americans, Explorers_side, att_neutral, false);
+   SetAttitude(Explorers_side, russians, att_neutral, true);
+   SetAttitude(Explorers_side, russians1, att_neutral, true);
+   SetAttitude(Explorers_side, arabians, att_neutral, true);
+ end;
+
+Function Send_units_to_initial_position;
+ begin
+ end;
+
+Function Init;
+ begin
+  RandomizeAll;
+  Set_variables;
+  Prepare_difficulty;
+  Set_marks;
+  Set_attitudes;
+  Prepare_characters;
+  Send_units_to_initial_position;
+ end;
+
+STARTING
+
+ begin
+   Debug_Constant= false;
+   Init;
+   CenterNowOnXY(135, 194);
+   Wait(0$2);
+//   TheLastArabianAttack;
+//   Wait(5$0);
+   CenterJMM= True;
+ end;

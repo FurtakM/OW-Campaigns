@@ -1,0 +1,125 @@
+EXPORT JMM;
+EXPORT Joan_F;
+EXPORT Gary;
+EXPORT Khattam;
+EXPORT Simms;
+EXPORT Cyrus;
+// EXPORT Joan;
+EXPORT Denis;
+EXPORT Powell;
+
+EXPORT Cornel;
+
+EXPORT Ambase;
+EXPORT Amlab;
+EXPORT Amsiblab;
+EXPORT Amelekt;
+
+EXPORT COR_GO;
+
+EXPORT Am_units;
+EXPORT END_ATTACK;
+EXPORT KHATTAM_PADA;
+
+EXPORT Res;
+VAR pom,pom1,i;
+VAR touchzone;
+
+EVERY 0$5 TRIGGER FilterAllUnits([[f_side,You],[f_btype,b_depot]])>0 DO
+begin
+  Ambase:=FilterAllUnits([[f_side,You],[f_and],[f_btype,b_depot]]);
+  Ambase:=Ambase[1];
+end;
+
+EVERY 0$5 TRIGGER FilterAllUnits([[f_side,You],[f_and],[f_btype,b_lab]])>0 DO
+begin
+  Amlab:=FilterAllUnits([[f_side,You],[f_and],[f_btype,b_lab]]);
+  Amlab:=Amlab[1];
+end;
+
+EVERY 0$5 TRIGGER FilterAllUnits([[f_side,You],[f_or,[f_btype,b_lab_full],[f_btype,b_lab_half]]])>0 DO
+VAR je;
+begin
+  je=0;
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_lab_full],[f_btype,b_lab_half]]]);
+  for i in pom do
+    if GetLabKind(i,1)=b_lab_siberium or GetLabKind(i,2)=b_lab_siberium then je=i;
+  if je<>0 then Amsiblab:=je
+           else enable;
+end;
+
+// Cornel
+EVERY 1$0 TRIGGER COR_GO=1 DO
+begin
+  if ZIJE_MIKHAIL then
+    begin
+      create_Cornel;
+      ComMoveXY(Cornel,GetX(JMM),GetY(JMM));
+      COR_GO=2;
+    end;
+end;
+
+// zjistovani americkych jednotek
+EVERY 0$5 DO
+begin
+  Am_units=FilterAllUnits([[f_side,You]]);
+  enable;
+end;
+
+// kontrola jestli neutoci na araby
+EVERY 0$2 DO
+begin
+  for i in Am_units do
+    begin
+      pom=Attacks(i);
+      if pom<>0 then if Getside(pom)=Arabi then END_ATTACK=true;
+    end;
+  enable;
+end;
+
+// khattam odchazi
+EVERY 0$1 TRIGGER KHATTAM_PADA DO
+begin
+  while IsInUnit(Khattam) do
+    begin
+      ComExitBuilding(Khattam);
+      AddComExitVehicle(Khattam);
+      wait(0$1);
+    end;
+  SetSide(Khattam,SideKhat);
+  ComMoveXY(Khattam,128,19);
+  while not IsInArea(Khattam,KHOUT) do wait(0$1);
+  RemoveUnit(Khattam);
+end;
+
+// testovani basi
+EVERY 0$7 do
+begin
+  if not IsOK(Ambase) then
+    begin
+      pom=FilterAllUnits([[f_side,You],[f_and],[f_btype,b_depot]]);
+      if pom>0 then Ambase=pom[1];
+    end;
+  enable;
+end;
+
+// testovani zabrani budovy arabum
+EVERY 0$3 DO
+begin
+  pom=FilterUnitsInArea(Abase,[[f_side,You],[f_and],[f_type,unit_building]]);
+  for i in pom do if GetX(i)=70 and GetY(i)=17 then END_ATTACK=true;
+  enable;
+end;
+
+// zpristupneni technologie na mortar
+EVERY 0$1 DO
+VAR i,pom;
+VAR zabrano;
+begin
+  zabrano=false;
+  pom=FilterAllUnits([[f_side,You],[f_btype,b_barracks]]);
+  for i in pom do
+    if GetNation(i)=nation_arabian then zabrano=true;
+  if zabrano then SetTech(tech_Mortar,You,state_researched);
+  enable;
+end;

@@ -1,0 +1,142 @@
+export depot, laboratore, budovy;
+on BuildingComplete(build) do
+begin
+   budovy:=budovy union build;
+
+   if GetBType(build)=b_lab then
+      laboratore:=laboratore union build;
+
+   if GetBType(build)=b_depot then begin
+      depot:=build;
+      SetBName(build, 'delta');
+   end;
+
+   if GetBType(build)=b_workshop then
+     MyHint('Recycle');
+
+   if GetBType(build)=b_ext_radar then
+     MyHint('Radar');
+end;
+
+on UnitDestroyed(un) do
+begin
+   if un in budovy then
+      budovy:=budovy diff un;
+   if un in laboratore then
+      laboratore:=laboratore diff un;
+   if un in tvoji_lidi then begin
+      tvoji_lidi:=tvoji_lidi diff un;
+      ztraty:=ztraty+1;
+   end;
+   if un in oma then
+      oma:=oma diff un;
+   if un in arabs_cars then
+      arabs_cars:=arabs_cars diff un;
+   if un in apemans then
+      apemans:=apemans diff un;
+
+   if un=JMM then begin
+       Disable(0);
+       YouLost('JMM');
+   end;
+   if UnitFilter(un, [[f_side,you],[f_nation,nation_nature]]) then begin
+      opic:=opic-1;
+   end;
+end;
+
+on VehicleCaptured(vehnew, vehold, origside, hum) do
+begin
+   if origside=you then begin
+      arabs_cars:= arabs_cars union vehnew;
+      evade_shortest_way(vehnew, false, true);
+   end;
+   if origside=arabians then begin
+      arabs_cars:= arabs_cars diff vehold;
+   end;
+end;
+
+every 0$10 do
+      Randomize;
+
+every 0$10 trigger apemans<5 do
+var op;
+begin
+     InitUc;
+     InitHc;
+     uc_nation:=nation_nature;
+     uc_side:=0;
+     hc_class:=class_apeman;
+     hc_agressivity:=Rand(-5,10);
+     hc_sex:=Rand(1,2);
+     op:=CreateHuman;
+
+     case rand(1,4) of
+         1:PlaceUnitXYR(op, 16,1,5, false);
+         2:PlaceUnitXYR(op, 46,1,5, false);
+         3:PlaceUnitXYR(op, 1,23,5, false);
+         4:PlaceUnitXYR(op, 80,1,5, false);
+     end;
+     apemans:=apemans union op;
+     added_apes:=added_apes+1;
+     if added_apes < max_added_apes then
+        enable;
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

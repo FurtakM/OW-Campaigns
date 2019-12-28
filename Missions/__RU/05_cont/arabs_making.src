@@ -1,0 +1,337 @@
+
+every 0$2 do
+var temp1, people, cars;
+begin
+//consts
+   vodni_utok:=6000;
+   normal1_utok:=6001;
+   normal2_utok:=6002;
+   normal3_utok:=6003;
+   normal4_utok:=6004;
+
+
+   apemans:=FilterAllUnits([[f_nation,nation_nature]]);
+// skupiny ruskych jednotek
+   to_defence:=false;
+   to_remote:=false;
+   to_attack:=false;
+   to_cargo:=false;
+   to_scout:=false;
+
+   temp1:=FilterAllUnits([[f_side, arabians]]);
+   ComRemember(temp1);
+
+
+   people:=UnitFilter(temp1, [[f_type,unit_human]]);
+   sol:=UnitFilter(people, [[f_class,class_soldier]]);
+   sci:=UnitFilter(people, [[f_class,class_scientistic]]);
+   mor:=UnitFilter(people, [[f_class,class_mortar]]);
+   mec:=UnitFilter(people, [[f_class,class_mechanic]]);
+   eng:=UnitFilter(people, [[f_class,class_engineer]]);
+
+   cars:=UnitFilter(temp1, [[f_type,unit_vehicle]]);
+   cargo:=[];
+   scout:=[];
+   defence:=[Mastodon];
+   attack:=[];
+
+   fort:=UnitFilter(temp1, [[f_or,[f_btype,b_bunker],[f_btype,b_breastwork]]]);
+   dep1:=UnitFilter(temp1, [[f_btype,b_depot]])[1]+0;
+end;
+
+//jezdi pro krabice
+var zasek_cargo;
+every 0$50 trigger cargo do
+var j, pojedou, new;
+begin
+    uc_side:=arabians;
+    uc_nation:=nation_arabian;
+    PrepareEngineer(0,2);
+
+    SetFuel(cargo, 100);
+    if not HasTask(Cargo[1]) and GetLives(Cargo[1])>=900 and crates>=2 then begin
+       new:=[];
+       pojedou:=find_drivers(cargo[1], eng ^ sol ^ sci ^ mec, false);
+       wait_for_drivers(pojedou, 0$25);
+       if IsDrivenBy(cargo[1]) then
+         zasek_cargo:=1
+       else
+         zasek_cargo:=zasek_cargo+1;
+       if zasek_cargo>5 then
+         PlaceHumanInUnit(CreateHuman,cargo[1]);
+
+       for j:=1 to 2 do begin
+          AddComCollect(pojedou, crates[j][1], crates[j][2]);
+       end;
+       if crates >=3 then
+         for j:=3 to crates do begin
+            new:=new ^ [crates[j]];
+         end;
+       crates:=new;
+       if dep1 then
+         AddComMoveUnit(pojedou, dep1);
+    end;
+    enable;//-----------
+end;
+
+every 0$30 do
+var a;
+begin
+  a:= GetResourceType(Getbase(dep1), mat_cans);
+  if a<100 then
+    SetResourceType(Getbase(dep1), mat_cans, a+100);
+
+  a:= GetResourceType(Getbase(dep1), mat_oil);
+  if a<100 then
+    SetResourceType(Getbase(dep1), mat_oil, a+100);
+  enable;
+end;
+
+every 0$15 trigger IsOk(fact1) and IsIdle(fact1) and ((defence+attack)<(5+difficulty*2)) do
+var a, ec, cm, ac, podvozky,ovladani, def_pod, att_pod, tmec;
+begin
+   ec:=engine_combustion;
+   cm:=control_manual;
+   podvozky:=AvailableChassisList(fact1);
+   ovladani:=AvailableControlList(fact1);
+   if control_remote in ovladani then
+     ac:=control_remote
+   else
+     ac:=cm;
+   att_pod:=ar_half_tracked;
+
+   case true of
+     ar_half_tracked in podvozky : def_pod:=ar_half_tracked;
+     ar_medium_trike in podvozky : def_pod:=ar_medium_trike;
+   end;
+
+   tmec:=UnitFilter(mec, [[f_outside]]);
+   while tmec do begin
+     ComExitVehicle(tmec);
+     AddComEnterUnit(tmec, fact1);
+     DU_wait(tmec);
+     tmec:=UnitFilter(mec, [[f_outside]]);
+   end;
+
+   case true of
+//cargo
+     cargo<1 and CanBeConstructed(fact1, ar_medium_trike, ec, cm, ar_cargo_bay): begin
+         ComConstruct(fact1, def_pod, ec, cm, ar_cargo_bay);
+         to_cargo:=true;
+     end;
+
+//defence
+     defence>=1 and defence<3 and
+     CanBeConstructed(fact1, def_pod, ec, cm, ar_gun): begin
+         ComConstruct(fact1, def_pod, ec, cm, ar_gun);
+         to_defence:=true;
+     end;
+
+     defence>=2 and defence<3 and
+     CanBeConstructed(fact1, def_pod, ec, cm, ar_gatling_gun): begin
+         ComConstruct(fact1, def_pod, ec, cm, ar_gatling_gun);
+         to_defence:=true;
+     end;
+
+     defence<2 and
+     CanBeConstructed(fact1, def_pod, ec, cm, ar_flame_thrower) : begin
+         ComConstruct(fact1, def_pod, ec, cm, ar_flame_thrower);
+         to_defence:=true;
+     end;
+//remote
+     remote<1 and
+     CanBeConstructed(fact1, ar_medium_trike, ec, cm, ar_control_tower): begin
+         ComConstruct(fact1, ar_medium_trike, ec, cm, ar_control_tower);
+         to_remote:=true;
+     end;
+
+//attack
+     tick<20$0 and attack<3 and
+     CanBeConstructed(fact1, ar_hovercraft, ec, ac, ar_light_gun): begin
+         ComConstruct(fact1, ar_hovercraft, ec, ac, ar_light_gun);
+         to_attack:=true;
+     end;
+     tick<20$0 and attack<3 and
+     CanBeConstructed(fact1, att_pod, ec, ac, ar_gatling_gun): begin
+         ComConstruct(fact1, att_pod, ec, ac, ar_gatling_gun);
+         to_attack:=true;
+     end;
+     tick<10$0 and attack<3 and
+     CanBeConstructed(fact1, ar_hovercraft, ec, ac, ar_double_machine_gun): begin
+         ComConstruct(fact1, ar_hovercraft, ec, ac, ar_double_machine_gun);
+         to_attack:=true;
+     end;
+
+     tick>20$0 and tick<40$0 and attack<2 and
+     CanBeConstructed(fact1, att_pod, ec, ac, ar_gun): begin
+         ComConstruct(fact1, att_pod, ec, ac, ar_gun);
+         to_attack:=true;
+     end;
+     tick>20$0 and tick<40$0 and attack<3 and
+     CanBeConstructed(fact1, att_pod, ec, ac, ar_gatling_gun): begin
+         ComConstruct(fact1, att_pod, ec, ac, ar_gatling_gun);
+         to_attack:=true;
+     end;
+
+
+     tick>40$0 and attack<2 and
+     CanBeConstructed(fact1, ar_hovercraft, ec, ac, ar_light_gun): begin
+         ComConstruct(fact1, ar_hovercraft, ec, ac, ar_light_gun);
+         to_attack:=true;
+     end;
+     tick>40$0 and attack<4 and
+     CanBeConstructed(fact1, att_pod, ec, ac, ar_gun): begin
+         ComConstruct(fact1, att_pod, ec, ac, ar_gun);
+         to_attack:=true;
+     end;
+   end;
+   enable;//-----------
+end;
+
+//arabs attacking
+export hover, zbytek;
+every 0$10 trigger ((attack diff brk_cars)>=2) do
+var pouzit;
+begin
+  SetAttitude(you,arabians,att_enemy,true);
+  first_attack:=true;
+  pouzit:=UnitFilter(attack diff brk_cars, [f_not,[f_hastask]]);
+  hover:=UnitFilter(pouzit, [[f_chassis,ar_hovercraft]]);
+  zbytek:=pouzit diff hover;
+  if wait_while then begin
+    wait(3$0);
+    wait_while:=false;
+  end;
+  if hover then RaiseSailEvent(vodni_utok);
+  if zbytek then
+    case Rand(1,2) of
+      1: RaiseSailEvent(normal1_utok);
+      2: RaiseSailEvent(normal2_utok);
+      1: RaiseSailEvent(normal3_utok);
+      2: RaiseSailEvent(normal4_utok);
+    end;
+  enable;
+end;
+
+every 0$3 trigger remote do
+var i;
+begin
+  if mec then
+    for i in remote do
+      if not UnitsInside(i) then begin
+        if not rmec then rmec:=mec[1];
+        ComExitVehicle(rmec);
+        AddComEnterUnit(rmec, i);
+        mec:=mec diff rmec;
+      end;
+  enable;
+end;
+every 0$3 trigger not remote do
+begin
+   mec:=mec union rmec;
+   enable;
+end;
+every 0$3 trigger UnitFilter(attack, [f_not,[f_linked]]) do
+var i;
+begin
+   ComLinkTo(UnitFilter(attack, [f_not,[f_linked]]), rmec);
+   enable;
+end;
+
+
+/////////////////////// UTOKY ///////////////////////
+
+export function f_vodni_utok;
+var path, i;
+begin
+   path:=[[177,126],[149,114],[117,87],[107,99],[81,98],[60,86],[49,72],[37,43],[54,29],[62,27],[54,29],[37,43],[49,72],[60,86],[81,98],[107,99],[117,87],[149,114],[177,126]];
+
+   find_and_wait(UnitFilter(hover, [[f_control,control_manual]]), sol, false, false, 0$50);
+   find_and_wait_r(UnitFilter(hover, [[f_control,control_remote]]), remote, 0$50);
+   for i in path do
+      AddComAgressiveMove(hover, Rand(i[1]-1,i[1]+1),Rand(i[2]-1,i[2]+1));
+end;
+
+export function f_normal1_utok;
+var path, i;
+begin
+   path:=[[102,68],[96,67],[73,55],[69,77],[59,54]];
+
+
+   find_and_wait(UnitFilter(zbytek, [[f_control,control_manual]]), sol, false, false, 0$50);
+   find_and_wait_r(UnitFilter(zbytek, [[f_control,control_remote]]), remote, 0$50);
+   for i in path do
+      AddComAgressiveMove(zbytek, Rand(i[1]-4,i[1]+4),Rand(i[2]-4,i[2]+4));
+end;
+export function f_normal2_utok;
+var path, i;
+begin
+   path:=[[91,61],[79,79],[57,61],[68,48],[64,94]];
+
+
+   find_and_wait(UnitFilter(zbytek, [[f_control,control_manual]]), sol, false, false, 0$50);
+   find_and_wait_r(UnitFilter(zbytek, [[f_control,control_remote]]), remote, 0$50);
+   for i in path do
+      AddComAgressiveMove(zbytek, Rand(i[1]-4,i[1]+4),Rand(i[2]-4,i[2]+4));
+end;
+export function f_normal3_utok;
+var path, i;
+begin
+   path:=[[114,67],[108,67],[102,66],[94,65],[95,79],[91,89],[81,93],[71,83],[61,75],[52,58],[67,71],[70,59],[65,49],[51,45],[65,40],[92,67]];
+
+
+   find_and_wait(UnitFilter(zbytek, [[f_control,control_manual]]), sol, false, false, 0$50);
+   find_and_wait_r(UnitFilter(zbytek, [[f_control,control_remote]]), remote, 0$50);
+   for i in path do
+      AddComAgressiveMove(zbytek, Rand(i[1]-4,i[1]+4),Rand(i[2]-4,i[2]+4));
+end;
+export function f_normal4_utok;
+var path, i;
+begin
+   path:=[[112,68],[98,67],[80,61],[72,61],[62,60],[61,50],[49,38],[52,48],[62,62],[66,78],[74,80]];
+
+
+   find_and_wait(UnitFilter(zbytek, [[f_control,control_manual]]), sol, false, false, 0$50);
+   find_and_wait_r(UnitFilter(zbytek, [[f_control,control_remote]]), remote, 0$50);
+   for i in path do
+      AddComAgressiveMove(zbytek, Rand(i[1]-4,i[1]+4),Rand(i[2]-4,i[2]+4));
+end;
+
+///////////////////// MINY ///////////////////////
+
+export mines;
+every 0$1 do
+var i;
+begin
+   mines:=[];
+   sol:=UnitFilter(sol, [[f_alive]]);
+   for i in sol do
+     if MineOfUnit(i) then
+       mines:=mines ^ [i];
+   enable;
+end;
+
+every 0$30 trigger mines<pocet_min do
+var i, a, s;
+begin
+   s:=UnitFilter(sol, [[f_outside]]);
+   if s then begin
+     i:=s[Rand(1,s)];
+
+     if not MineOfUnit(i) then begin
+        ComRemember(i);
+        a:=RandHexArea(miny, false);
+        AddComPlaceRemoteCharge(i, a[1], a[2],0);
+        AddComReturn(i);
+     end;
+   end;
+   enable;
+end;
+
+every 0$2 trigger mines and FilterUnitsInArea(miny, [[f_side,you]]) and (FilterUnitsInArea(miny, [[f_side,arabians]])<2) do
+begin
+   ComFireExplosives(mines[1]);
+   mines:=mines diff [mines[1]];
+   wait(mezera_mezi_minami);
+   enable;
+end;

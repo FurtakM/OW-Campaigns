@@ -1,0 +1,265 @@
+export spotx,spoty;
+
+export function dialogue_JMM_appears;
+begin
+  InGameOn;
+
+  CenterNowOnXY(78,74);
+  DWait(0$2);
+  PlaceUnitXY(JMM,81,81,true);
+  DWait(0$1);
+  ComMoveXY(tiger1,111,34);
+  DWait(0$1);
+  ComWait(JMM,0$2);
+  AddComMoveXY(JMM,80,83);
+  ComWait(JMM,0$3);
+  AddComMoveXY(JMM,80,78);
+  AddComWait(JMM,0$3);
+  AddComMoveXY(JMM,84,80);
+  AddComWait(JMM,0$2);
+  AddComMoveXY(JMM,83,81);
+  ComMoveXY(JMM,80,77);
+
+  Say(JMM,'D1-JMM-1');
+  DWait(0$0.5);
+  Say(JMM,'D1-JMM-1a');
+  DWait(0$1);
+  Say(JMM,'D1-JMM-1b');
+  DWait(0$0.5);
+  Say(JMM,'D1-JMM-1c');
+  SayRadioNoName(Powell,'D1-Pow-1');
+  Say(JMM,'D1-JMM-2');
+  SayRadioNoName(Powell,'D1-Pow-2');
+  ComMoveXY(JMM,80,77);
+  Say(JMM,'D1-JMM-3');
+  SayRadioNoName(Powell,'D1-Pow-3');
+  SayEffect ('strelba.wav');
+  Say(JMM,'D1-JMM-4');
+
+  SaveForQuickRestart;
+//  PlayMusic('musicdemo1.wav');
+
+  Wait(0$0.5);
+  ChangeMissionObjectives('M1');
+//  Hint('Selection');
+
+  InGameOff;
+end;
+
+// when you meet Cyrus
+
+every 0$1 trigger see(you,Cyrus) and IsOk(Cyrus) do
+  begin
+    if see(russians,JMM) then
+      begin
+        enable;
+        ComAgressiveMove(Cyrus,GetX(JMM),GetY(JMM));
+        exit;
+      end;
+    wait(0$0.3);
+    if see(russians,JMM) then
+      begin
+        enable;
+        ComAgressiveMove(Cyrus,GetX(JMM),GetY(JMM));
+        exit;
+      end;
+    if not see(you,Cyrus) then
+      begin
+        enable;
+        exit;
+      end;
+
+    DialogueOn;
+    CenterOnUnits(Cyrus);
+
+    Say(JMM,'D5-JMM-1');
+    Say(Cyrus,'D5-Cyrus-1');
+    if IsOk(Bobby)and(GetDistUnits(Cyrus,Bobby)<17) then
+      Say(Bobby,'D5-Bobby-1');
+    Say(JMM,'D5-JMM-2');
+
+    DialogueOff;
+
+    SetSide(Cyrus,you);
+    ComStop(Cyrus);
+
+    found:=found^[Cyrus];
+    if secondaryobj then
+      if found>1 then
+        ChangeMissionObjectives('M2c')
+      else
+        ChangeMissionObjectives('M2b');
+
+  end;
+
+// when you meet Bobby
+
+every 0$1 trigger see(you,Bobby) and IsOk(Bobby) do
+  begin
+    if see(russians,JMM) then
+      begin
+        enable;
+        ComAgressiveMove(Bobby,GetX(JMM),GetY(JMM));
+        exit;
+      end;
+    wait(0$0.3);
+    if see(russians,JMM) then
+      begin
+        enable;
+        ComAgressiveMove(Bobby,GetX(JMM),GetY(JMM));
+        exit;
+      end;
+    if not see(you,Bobby) then
+      begin
+        enable;
+        exit;
+      end;
+
+    DialogueOn;
+    CenterOnUnits(Bobby);
+
+    Say(JMM,'D2-JMM-1');
+    Say(Bobby,'D2-Bobby-1');
+    Say(JMM,'D2-JMM-2');
+    Say(Bobby,'D2-Bobby-2');
+    Say(JMM,'D2-JMM-3');
+    Say(Bobby,'D2-Bobby-3');
+    Say(JMM,'D2-JMM-4');
+    Say(Bobby,'D2-Bobby-4');
+    Say(JMM,'D2-JMM-5');
+    Say(Bobby,'D2-Bobby-5');
+    Say(JMM,'D2-JMM-6');
+{    Say(Bobby,'D2-Bobby-6');
+    Say(JMM,'D2-JMM-7');}
+
+    DialogueOff;
+
+    SetSide(Bobby,you);
+    found:=found^[Bobby];
+    if secondaryobj then
+      if found>1 then
+        ChangeMissionObjectives('M2c')
+      else
+        ChangeMissionObjectives('M2b');
+
+    ComMoveXY(Bobby,GetX(JMM),GetY(JMM));
+    Hint('Selection2');
+    Hint('Healthbar');
+  end;
+
+
+every 0$1 trigger IsInArea(JMM,valley)and IsOk(Bobby) and (Bobby in found) do
+  begin
+    if see(russians,JMM) or see(russians,Bobby) then
+      begin
+        wait(0$2);
+        enable;
+        exit;
+      end;
+    Say(JMM,'D2a-JMM-1');
+    if GetDistUnits(JMM,Bobby)<=7 then
+      Say(Bobby,'D2a-Bobby-1');
+    if not terrainhint then
+      begin
+        Hint('terrain');
+        terrainhint:=true;
+      end;
+  end;
+
+every 0$1 trigger IsInArea(JMM,rmessage) do
+  var un,nveh;
+  begin
+    if see(russians,JMM) then
+      begin
+        enable;
+        exit;
+      end;
+
+    DialogueOn;
+
+    SayRadio(cheater,'D4-Rus3-1');
+
+    DialogueOff;
+
+    ChangeMissionObjectives('M3a');
+    SetAreaMapShow(Shw1,0);
+    SetAreaMapShow(Shw2,1);
+
+    wait(0$10);
+
+    DialogueOn;
+
+    SayRadio(Powell,'D4-Pow-1');
+
+    if Query('Q1')=1 then
+      begin
+        Say(JMM,'D4a-JMM-1');
+        spotx:=GetX(JMM);
+        spoty:=GetY(JMM);
+        ComRemember([rveh2,rveh3,rveh4,rveh5]);
+        ComAgressiveMove([rveh2,rveh3,rveh4,rveh5],spotx,spoty);
+        DialogueOff;
+        ChangeMissionObjectives('M3b');
+        SetAreaMapShow(Shw1,1);
+        repeat
+          wait(0$5);
+          nveh:=0;
+          for un in [rveh2,rveh3,rveh4,rveh5] do
+            if GetDistUnitXY(un,spotx,spoty)<10 then
+              nveh:=nveh+1;
+        until nveh>=3;
+        wait(0$20);
+        ComReturn([rveh2,rveh3,rveh4,rveh5]);
+      end
+    else
+      begin
+        DialogueOff;
+        ChangeMissionObjectives('M3b');
+        SetAreaMapShow(Shw1,1);
+      end;
+  end;
+
+every 0$3 trigger (phase>=3) do
+  var i;
+  begin
+    for i:=1 to 10 do
+      begin
+        if see(russians,JMM) then
+          begin
+            enable;
+            exit;
+          end;
+        wait(0$1);
+      end;
+
+    DialogueOn;
+
+    SayRadio(Powell,'D3-Pow-1');
+    Say(JMM,'D3-JMM-1');
+    SayRadio(Powell,'D3-Pow-2');
+    Say(JMM,'D3-JMM-2');
+    SayRadio(Powell,'D3-Pow-3');
+
+    secondaryobj:=true;
+    ChangeMissionObjectives('M2a');
+    if found>0 then
+      if found>1 then
+        ChangeMissionObjectives('M2c')
+      else
+        ChangeMissionObjectives('M2b');
+    ChangeMissionObjectives('M2');
+    SetAreaMapShow(Shw1,1);
+
+    DialogueOff;
+
+    Hint('crawling');
+    if not terrainhint then
+      begin
+        Hint('terrain');
+        terrainhint:=true;
+      end;
+  end;
+
+
+
+

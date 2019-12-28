@@ -1,0 +1,390 @@
+EXPORT Odebirani;
+EXPORT oposoldier;
+EXPORT bum2;
+
+VAR utok1;
+VAR utok1_over;
+VAR utok3_over;
+VAR Veze_2;
+VAr Opr_2;
+
+VAR i,pom,pom1;
+
+// nastaveni pomocnych hodnot
+EVERY 0$0.3 DO
+begin
+  utok1:=false;
+  bum2=false;
+  Veze_2:=[A2_bu1,A2_bu2,A2_bu3,A2_bu4,A2_bu4,A2_bu5,A2_bu6];
+  Opr_2=[JEDNOTKY_BAZE_2_LIST[15],JEDNOTKY_BAZE_2_LIST[16]];
+  pom=vytvor_opravare;
+  Opr_2=Opr_2^pom;
+  Utok1_over=false;
+  utok3_over=false;
+end;
+
+// schovani arabu do budov a pod. - zakladna Ar_base1
+EXPORT function uklid_arabu;
+begin
+  // prvni base
+  ComEnterUnit(zradce1,A1_lab);
+  ComEnterUnit(zradce2,A1_bu1);
+  ComEnterUnit(zradce3,A1_bu2);
+  ComEnterUnit(zradce4,A1_bar);
+  ComEnterUnit(zradce5,A1_bar);
+  ComEnterUnit(A1_vo1,A1_bu3);
+  ComEnterUnit(A1_vo2,A1_dep);
+  ComEnterUnit(A1_vo4,A1_dep);
+  ComEnterUnit(A1_ve1,A1_lab);
+  ComEnterUnit(A1_ve2,A1_lab);
+  ComEnterUnit(zradce6,A1_bu6);
+  ComEnterUnit(zradce7,A1_bu4);
+  ComHold(mrtvola2);
+  ComEnterUnit(A1_en1,A1_dep);
+  ComEnterUnit(A1_me1,A1_tov);
+  ComEnterUnit(A1_me2,A1_tov);
+
+  // 2 baze
+  // polozeni min
+  ComPlaceRemoteCharge(A2_zas1,52,62,0);
+  ComPlaceRemoteCharge(A2_zas2,55,64,0);
+  AddComMoveXY([A2_zas1,A2_zas2],44,24);
+  AddComMoveXY([A2_zas1,A2_zas2],30,11);
+  AddComMoveXY([A2_zas1,A2_zas2],24,37);
+  AddComMoveXY(A2_zas1,40,58);
+  AddComMoveXY(A2_zas2,41,62);
+  AddComCrawl([A2_zas1,A2_zas2]);
+
+  // 3. baze
+  //link aut + ridici remote
+  ComEnterUnit(A3_rme1,A3_rv1);
+  ComEnterUnit(A3_rme2,A3_rv2);
+  ComEnterUnit(A3_rme3,A3_rv3);
+  wait(0$5);
+  ComLinkTo([A3_are1,A3_are2,A3_are3],A3_rme1);
+  ComLinkTo([A3_are4,A3_are5,A3_are6],A3_rme2);
+  ComLinkTo([A3_are7,A3_are8,A3_are9],A3_rme3);
+  // remote past
+  ComPlaceRemoteCharge(A3_zas1,103,19,0);
+  AddComMoveXY(A3_zas1,104,3);
+  AddComCrawl(A3_zas1);
+  AddComTurnXY(A3_zas1,102,8);
+end;
+
+// schovani arabu do budov a pod. - zakladna Ar_base2
+EXPORT function uklid_arabu2;
+begin
+  // druha base
+  // vlezeni do budov
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[1],A2_bu1);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[2],A2_bu2);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[3],A2_bu3);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[4],A2_bu4);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[5],A2_bu5);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[6],A2_bu6);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[17],A2_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[18],A2_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[19],A2_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[20],A2_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[15],A2_dep);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[16],A2_dep);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[7],A2_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[8],A2_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[9],A2_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[10],A2_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[11],A2_lab);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[12],A2_lab);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[23],A2_radar);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[21],A2_nau1);
+  ComEnterUnit(JEDNOTKY_BAZE_2_LIST[22],A2_nau2);
+
+  ComEnterUnit(Opr_2,A2_dep);
+end;
+
+// schovani arabu do budov a pod. - zakladna Ar_base3
+EXPORT function uklid_arabu3;
+begin
+  // 3. base
+  // vlezeni do budov
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[1],A3_bu1);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[2],A3_bu2);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[3],A3_bu3);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[4],A3_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[5],A3_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[6],A3_bar);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[7],A3_dep);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[8],A3_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[9],A3_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[10],A3_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[11],A3_tov);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[12],A3_lab);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[13],A3_lab);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[16],A3_dep);
+  ComEnterUnit(JEDNOTKY_BAZE_3_LIST[17],A3_dep);
+end;
+
+// utok na bazi
+EVERY 0$1 TRIGGER FilterUnitsInArea(Abase1,[[f_side,You]])>0 DO
+begin
+  wait(0$2);
+  ComExitBuilding(A1_vo2);
+  ComExitBuilding([A1_ve1,A1_ve2]);
+  AddComAgressiveMove(A1_ve1,121,147);
+  AddComAgressiveMove(A1_ve1,113,141);
+  AddComEnterUnit(A1_ve1,A1_bu1);
+  ComExitBuilding(A1_en1);
+  ComExitBuilding([A1_me1,A1_me2]);
+  AddComAgressiveMove(A1_me1,123,135);
+  AddComEnterUnit(A1_me1,A1_au2);
+  AddComAgressiveMove(A1_me2,117,125);
+  AddComEnterUnit(A1_me2,A1_au1);
+end;
+
+// protiutok na bazi 1
+EVERY 1$0 TRIGGER A1_dobyta DO
+begin
+  wait(protiutok[difficulty]);
+  ComMoveXY([A2_kam1,A2_kam2,A2_kam3],66,110);
+  ComMoveXY([A2_op1,A2_op2,A2_op3],59,81);
+  ComMoveXY(A2_mor3,91,128);
+  utok1:=true;
+  utok1_over=true;
+end;
+
+// utok cislo 2
+EVERY 1$0 TRIGGER utok1_over DO
+VAR i;
+begin
+  wait(utok_2_doba[difficulty]);
+  for i in Ar_utok3_LIST do PlaceUnitArea(i,Ar_utoky,false);
+  wait(0$1);
+  McMove(1,Ar_utok3_LIST,[[128,91],[128,108],[126,121],[120,123]],[mc_move_wait,mc_move_agressive]);
+end;
+
+// utok cislo 3
+EVERY 0$5 TRIGGER (not IsOK(A2_bu1)) and (not IsOK(A2_bu2)) DO
+VAR i;
+begin
+  for i in Ar_utok2_LIST do PlaceUnitArea(i,Ar_utoky,false);
+  McMove(1,Ar_utok2_LIST,[[128,91],[128,108],[126,121],[120,123]],[mc_move_wait,mc_move_agressive,mc_move_dontcapture]);
+  utok3_over=true;
+end;
+
+
+// utok cislo 4
+EVERY 1$30 DO
+VAR pom,i,pom1;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_weapon,us_cargo_bay],[f_weapon,ar_cargo_bay]]]);
+  for i in Ar_utok4_LIST do PlaceUnitArea(i,Ar_utoky,false);
+  if pom>0 then
+    begin
+      ComAgressiveMove(Ar_utok4_LIST,GetX(pom[1]),GetY(pom[1]));
+      ComAttackUnit(Ar_utok4_LIST,pom[1]);
+    end
+           else McMove(1,Ar_utok2_LIST,[[128,91],[128,108],[126,121],[120,123]],[mc_move_wait,mc_move_agressive,mc_move_dontcapture]);
+end;
+
+
+// utok + kamikadze
+EVERY 0$5 TRIGGER A2_dobyta DO
+begin
+  pom=FilterUnitsInArea(Sber1,[[f_side,Arabi]]);
+  pom1=FilterUnitsInArea(Sber2,[[f_side,Arabi]]);
+  if pom>1 and pom1>2
+    then begin
+           for i in CREATE_AR_PROTIOFENZIVU_LIST do PlaceUnitArea(i,protiEN,false);
+           AddComAgressiveMove([A2_kam1,A2_kam2,A2_kam3],86,107);
+           pom1:=FIlterUnitsInArea(Abase1,[[f_side,You]]);
+           AddComAttackUnit(A2_kam1,NearestUnitToXY(pom1,102,112));
+           AddComAttackUnit(A2_kam2,NearestUnitToXY(pom1,90,121));
+           AddComAttackUnit(A2_kam3,A1_dep);
+           wait(0$30);
+           AddComAgressiveMove(CREATE_AR_PROTIOFENZIVU_LIST,113,125);
+           AddComAgressiveMove([A2_op1,A2_op2,A2_op3],108,119);
+           AddComAgressiveMove(A2_mor3,92,128);
+         end
+    else enable;
+end;
+
+// nastvany oposoldier
+EVERY 0$17 TRIGGER oposoldier=-1 DO
+begin
+  if not See(You,A3_solop) then
+    begin
+      SetClass(A3_solop,class_mechanic);
+      RemoveUnit(A3_solop);
+      pom:=create_auto_pro_solopa;
+      PlaceHumanInUnit(A3_solop,pom);
+      PlaceUnitXY(pom,111,16,false);
+    end;
+end;
+
+// prijat pakt s oposoldierem
+EVERY 1$0 TRIGGER oposoldier=1 DO
+begin
+  ComMoveXY(A3_solop,127,89);
+  ComMoveXY(OpoMike,178,89);
+  enable;
+end;
+
+// predani vozidla oposoldierovi
+EVERY 0$5 TRIGGER oposoldier=1 DO
+begin
+  pom=FilterUnitsInArea(Baziny,[[f_type,unit_vehicle],[f_control,control_manual],[f_weapon,us_cargo_bay]]);
+  if pom=0 then pom=FilterUnitsInArea(Baziny,[[f_type,unit_vehicle],[f_control,control_manual],[f_weapon,ar_cargo_bay]]);
+  if pom=1 then begin
+                  ComEnterUnit(A3_solop,pom[1]);
+                  AddComMoveXY(A3_solop,165,92);
+                  AddComMoveXY(OpoMike,165,92);
+                  oposoldier=2;
+                end
+           else begin
+                  AddComMoveXY([A3_solop,OpoMike],116,23);
+                  enable;
+                end;
+end;
+
+// odebrani oposoldiera z mapy
+EVERY 0$3 TRIGGER oposoldier=2 DO
+begin
+  pom=FilterUnitsInArea(SolopEx,[[f_side,Arabi2]]);
+  if pom>0 then
+    for i in pom do
+      begin
+        if GetType(i)=unit_vehicle then
+          if IsDrivenBy(i)=A3_solop then oposoldier=3;
+        if i=A3_solop then oposoldier=3;
+        RemoveUnit(i);
+      end;
+  enable;
+end;
+
+// odpaleni remotu A2
+EVERY 0$1 DO
+begin
+  pom=FilterUnitsInArea(Calibre1,[[f_side,You]]);
+  if pom>0 then
+    begin
+      while FilterUnitsInArea(Boom1,[[f_side,You]])=0 do wait(0$0.5);
+      ComFireExplosives([A2_zas1,A2_zas2]);
+      AddComMoveXY([A2_zas1,A2_zas2],33,55);
+      AddComWalk([A2_zas1,A2_zas2]);
+      AddComPlaceRemoteCharge(A2_zas1,39,15,0);
+      AddComPlaceRemoteCharge(A2_zas2,37,14,0);
+      AddComMoveXY([A2_zas1,A2_zas2],25,13);
+      while FilterUnitsInArea(Boom1,[[f_side,You]])=0 do wait(0$0.5);
+      ComFireExplosives([A2_zas1,A2_zas2]);
+    end
+  else enable;
+end;
+
+// odpaleni remotu A3
+EVERY 0$1 DO
+begin
+  pom=FilterUnitsInArea(Calibre2,[[f_side,You]]);
+  if pom>0 then
+    begin
+      while FilterUnitsInArea(Boom3,[[f_side,You]])=0 do wait(0$0.5);
+      ComFireExplosives(A3_zas1);
+      bum2:=true;
+      AddComWalk(A3_zas1);
+      pom=FilterUnitsInArea(Abase3,[[f_side,You]]);
+      if pom>0 then begin
+                      AddComPlaceDelayedCharge(A3_zas1,0,0,pom[1]);
+                      AddComEnterUnit(A3_zas1,A3_bar);
+                    end
+               else begin
+                      AddComPlaceRemoteCharge(A3_zas1,102,19,0);
+                      AddComMoveXY(A3_zas1,99,3);
+                      enable;
+                    end;
+    end
+  else enable;
+end;
+
+// oprava vezi v A2
+EVERY 0$2 DO
+begin
+  pom=[];
+  pom1=[];
+  for i in Veze_2 do if GetLives(i)<>1000 then pom=pom^i;
+  for i in Opr_2 do if IsOK(i) then pom1=pom1^i;
+  if pom1>0 and pom>0 then
+    begin
+      if pom+0<=pom1+0 then for i:=1 to pom+0 do begin
+                                                   AddComExitBuilding(pom1[i]);
+                                                   AddComRepairBuilding(pom1[i],pom[i]);
+                                                 end
+                       else for i:=1 to pom1+0 do begin
+                                                    AddComExitBuilding(pom1[i]);
+                                                    AddComRepairBuilding(pom1[i],pom[i]);
+                                                  end;
+    end;
+  enable;
+end;
+
+// placnuti arabu v bazi 2 na mapu
+EVERY 0$1 TRIGGER FilterUnitsInArea(Create2,[[f_side,You]])>0 DO
+begin
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[1],28,39,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[2],23,38,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[3],32,20,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[4],32,17,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[5],38,8,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[6],40,7,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[7],24,8,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[8],26,10,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[9],25,11,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[10],24,10,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[11],31,9,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[12],33,9,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[13],38,40,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[14],36,39,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[15],21,12,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[16],21,13,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[17],23,19,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[18],23,20,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[19],21,19,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[20],24,20,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[22],21,34,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[21],27,17,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_2_LIST[23],28,21,false);
+
+  wait(0$1);
+  uklid_arabu2;
+end;
+
+// placnuti arabu v bazi 3 na mapu
+EVERY 0$1 TRIGGER FilterUnitsInArea(Create3,[[f_side,You]])>0 DO
+begin
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[1],103,11,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[2],108,18,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[3],107,21,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[4],118,11,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[5],118,12,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[6],119,13,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[7],115,9,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[8],119,18,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[9],118,18,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[10],118,17,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[11],118,16,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[12],111,13,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[13],112,12,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[14],113,25,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[15],113,27,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[16],114,9,false);
+  PlaceUnitXY(JEDNOTKY_BAZE_3_LIST[17],114,10,false);
+
+  wait(0$1);
+  uklid_arabu3;
+end;
+
+// upraveni zivotu arabu v prvni bazi pro zjednoduseni
+EXPORT function uprav_zivoty_arabskych_budov;
+begin
+  SetLives(A1_bu3,zivoty_prvni_baze[difficulty]);
+  SetLives(A1_bu1,zivoty_prvni_baze[difficulty]);
+  SetLives(A1_au2,zivoty_prvni_baze[difficulty]);
+  SetLives(A1_vo1,zivoty_prvni_baze[difficulty]);
+end;

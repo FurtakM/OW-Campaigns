@@ -1,0 +1,36 @@
+// NOT USED
+//amici attacking
+export hover, zbytek;
+every 0$10 trigger (tick>20$0 and attack>=2) or attack>=4 do
+begin
+  zbytek:=attack diff hover;
+    case Rand(1,1) of
+      1: RaiseSailEvent(normal1_utok);
+    end;
+end;
+
+every 0$3 do
+var i;
+begin
+   if mec then
+     for i in remote do
+        if not UnitsInside(i) then begin
+           ComEnterUnit(mec[1], i);
+           mec:=mec diff mec[1];
+        end;
+   enable;
+end;
+
+export function f_normal1_utok;
+var path, i;
+begin
+   path:=[[109,66],[96,67]];
+
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   for i in path do
+      AddComAgressiveMove(zbytek, i[1],i[2]);
+end;

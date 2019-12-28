@@ -1,0 +1,158 @@
+every 0$2 trigger FilterUnitsInArea(under_attack, [ [f_side,you] ]) do
+begin
+  enable(7);
+end;
+
+
+// stahnuti vsech nebojovych jednotek z arabske zakladny
+every 0$1 Marked 7 do
+begin
+  ComExitBuilding(origin_others);
+  wait(5);
+  ComMoveToArea(origin_others,base_flee);
+end;
+
+// stahovani arabskych vojaku zranenych na tele i na dusi
+every 0$1 Marked 7 do
+var i,un,list;
+begin
+  list:=origin_def ^ origin_sol ^ north_flamers ^ north_flamers_veh ^ south_flamers ^ south_flamers_veh;
+  for un in list do
+    if GetLives(un)<700 then
+      ComMoveToArea(un,base_flee);
+  enable;
+end;
+
+// posledni krecovita obrana arabske baze
+every 0$1 Marked 7 do
+var un,
+    enemies,         // seznam nepratel v blizkosti zakladny
+    most_dammaged,   // nejvice ponicena nepratelska jednotka
+    list;
+begin
+  enemies:=FilterUnitsInArea(ar_base, [ [f_side,you] ]);
+  if not enemies then
+    enemies:=FilterUnitsInArea(under_attack, [ [f_side,you] ]);
+  if not enemies then
+    begin
+      enable;
+      exit;
+    end;
+
+  // vyber nejposkozenejsi jednotky nad bazinama
+  if difficulty<3 then
+    most_dammaged:=enemies[Rand(1,0+enemies)]
+  else
+    begin
+      most_dammaged:=enemies[1];
+      for un in enemies do
+        if GetLives(un)<GetLives(most_dammaged) then
+          most_dammaged:=un;
+    end;
+
+  list:=[];                                // seznam utokuschopnych jednotek
+  for un in origin_sol do                  // pridani zakladnich vojaku
+    if GetLives(un)>700 then
+      list:=list ^ un;
+  for un in north_flamers_veh do           // pridani severnich flameru k utoku (pokud je nejaky schopny)
+    begin
+      if GetLives(un)>700 then
+        list:=list ^ un;
+    end;
+  for un in south_flamers_veh do           // pridani jiznich flameru k utoku (pokud je nejaky schopny)
+    if GetLives(un)>700 then
+      list:=list ^ un;
+
+  if enemies then
+    ComAttackUnit(list,most_dammaged)
+  else
+    ComMoveToArea(list,ar_base);
+
+  enable;
+end;
+
+// odchytavani prchajicich jednotek
+every 0$1 Marked 7 do
+var un,list;
+begin
+  list:=FilterUnitsInArea(base_flee, [ [f_side,enemy] ]);
+
+  for un in list do
+    if UnitsInside(un) then
+      begin
+        RemoveUnit(IsDrivenBy(un));
+        RemoveUnit(un);
+      end
+    else
+      RemoveUnit(un);
+
+  enable;
+end;
+
+// obsazovani volnych vozidel v arabske zakladne arabskymi bojovniky
+every 0$1 trigger FilterUnitsInArea(ar_base,[ [f_weapon,ar_flame_thrower] ]) Marked 7 do
+var i;
+begin
+  for i=1 to north_flamers_veh do
+    if (GetLives(north_flamers_veh[i])=1000) and not IsDrivenBy(north_flamers_veh[i]) then
+      ComEnterUnit(north_flamers[i],north_flamers_veh[i]);
+
+  for i=1 to south_flamers_veh do
+    if (GetLives(south_flamers_veh[i])=1000) and not IsDrivenBy(south_flamers_veh[i]) then
+      ComEnterUnit(south_flamers[i],south_flamers_veh[i]);
+
+  enable;
+end;
+
+// shaneni ridice pro laserove vozitko
+every 0$1 trigger not IsOK(laser_riders) and IsOK(lasers) Marked 7 do
+var i,free;
+begin
+  for i=1 to north_flamers do                             // rekrutovani dobrovolniku z rad severnich flameru
+    if not IsOK(north_flamers_veh[i]) then
+      begin
+        ComMoveUnit(north_flamers[i],lasers);
+        if IsInUnit(north_flamers[i]) then
+          AddComExitVehicle(north_flamers[i]);
+        if not FilterUnitsInArea(under_attack, [ [f_side,you] ]) then
+          repeat
+            ComEnterUnit(north_flamers[i],lasers);
+            wait(0$1);
+          until IsOK(lasers) or FilterUnitsInArea(under_attack, [ [f_side,you] ]);
+        AddComEnterUnit(north_flamers[i],lasers);
+        exit;
+      end;
+
+  for i=1 to south_flamers do                             // rekrutovani dobrovolniku z rad sjiznich flameru
+    if not IsOK(south_flamers_veh[i]) then
+      begin
+        ComMoveUnit(south_flamers[i],lasers);
+        if IsInUnit(south_flamers[i]) then
+          AddComExitVehicle(south_flamers[i]);
+        if not FilterUnitsInArea(under_attack, [ [f_side,you] ]) then
+          repeat
+            ComEnterUnit(south_flamers[i],lasers);
+            wait(0$1);
+          until IsOK(lasers) or FilterUnitsInArea(under_attack, [ [f_side,you] ]);
+        AddComEnterUnit(south_flamers[i],lasers);
+        exit;
+      end;
+
+  free:=FindMaxSkill(north_flamers ^ south_flamers, skill_mechanical);
+  ComMoveUnit(free,lasers);
+  if IsInUnit(free) then
+    AddComExitVehicle(free);
+  if not FilterUnitsInArea(under_attack, [ [f_side,you] ]) then
+    repeat
+      ComEnterUnit(free,lasers);
+      wait(0$1);
+    until IsOK(lasers) or FilterUnitsInArea(under_attack, [ [f_side,you] ]);
+  AddComEnterUnit(free,lasers);
+
+  enable;
+end;
+
+
+
+
+

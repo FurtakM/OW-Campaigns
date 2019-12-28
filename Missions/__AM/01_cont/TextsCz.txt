@@ -1,0 +1,236 @@
+@ Surprise Party
+% Poruèík John Macmillan se stal èlenem expedice, jejímž cílem je vytìžit a pøenést rozsáhlá ložiska minerálu ze Sibiøe na místo, které za pár miliónù let dostane jméno Aljaška. Jeho prvním úkolem je spojit se s ostatními èleny expedice.
+& Kdesi na Sibiøi, asi 2,000,000 let p.n.l.
+
+// Dialogue 1 (immediately after materialisation)
+$ D1-JMM-1
+- 	Bože! Ještì, že o tomhle neví turisti! (into radio) Tady poruèík John Macmillan, hlásím pøistání. Alfo, slyšíte mì? (pause)
+$ D1-Pow-1
+- 	(noise  in radio) 
+$ D1-JMM-2
+- 	Skvìle, vrátil jsem se milióny let do a nikdo není doma. (into radio) Tady poruèík John MacMillan, Alfo, ...
+$ D1-Pow-2
+- 	(weak, noisy voice over  radio) Drž hubu a hejbni sebou...
+$ D1-JMM-3
+- 	(into radio) Dík za pøivítání... s kým mám tu èest?
+$ D1-Pow-3
+- 	(over  radio) Jestli chceš zùstat na živu, rychle zmiz z místa pøistání. Ještì chvíli kecej, a mùžeme tì odepsat.
+$ D1-JMM-4
+- 	(into radio) Identifikujte se. Kdo jste? (pause)
+$ D1-Pow-4
+- 	(noise  in radio) 
+$ D1-JMM-5
+- 	Do háje...
+
+# M1
+Add Main survive
+- Pøežij
+#
+
+! Selection
+Ovládání jednotek
+Zatím mùžeš ovládat jen jednu postavu, Johna Macmillana. Klepni na nìj levým tlaèítkem, tím jej vybereš. Nad jeho hlavou uvidíš proužek, který indikuje jeho zdravotní stav.
+
+Vybrané jednotce mùžeš zadávat pøíkazy - klepneš-li nìkam pravým tlaèítkem, postava tam pùjde. Klepnutí pravým tlaèítkem na nepøítele znamená útok, doufejme, že to zatím nebudeš potøebovat.
+
+[selection] [default command]
+!
+
+// Dialogue 1R (Russian patrol)
+$ D1R-Rus1-1
+- 	(Russian, with Native titles) Signál pøišel támhle shora.
+$ D1R-Rus2-1
+- 	(Russian, with Native titles) Rychle, než nám uteèe.
+
+// Dialogue 1Ra (moment later, if the Russian arrive at spot and don't see anyone)
+$ D1Ra-Rus2-1
+- 	(Russian, with Native titles) Pozdì... utekl nám, bastard...
+$ D1Ra-Rus2-1a
+- 	(Russian, with Native titles) Žije, ale ne na dlouho. Nikdy neprojde frontovou linií.
+
+// Dialogue 1Rb (only if Russian patrol spots MacMillan and starts to shot him)
+$ D1Rb-Rus1-1
+- 	( Russian, with Native titles) Podívejte, támhle je!
+$ D1Rb-Rus2-1
+- 	(Russian, with Native titles) Zastøelte ho!
+
+// Dialogue 1Rc (after 1Rb, if MacMillan runs away and patrol lost him)
+$ D1Rc-Rus1-1
+- 	(Russian, with Native titles) Sakra... utekl nám, bastard...
+$ D1Rc-Rus2-1
+- 	(Russian, with Native titles) Žije, ale ne na dlouho. Nikdy neprojde frontovou linií.
+
+! Visibility
+Viditelnost
+Tvoje postava vidí jenom to, co je zobrazeno svìtle. Tmavì zobrazené kousky mapy zná, ale nevidí je, takže neví, jestli je na nich nìjaký nepøítel. O èerných oblastech neví vùbec nic.
+
+Povšimni si nepøátel na hranici tvé viditelnosti: oni tì ještì nevidí, zatímco ty je ano. Stojíš totiž výše než oni a  proto dohlédneš dále. Zkus toho ve høe využívat.
+
+[fog of war] [line of sight]
+!
+
+// Dialogue 2 (when John finds a medium wounded American)
+$ D2-Bobby-1
+- 	Poèkej, nestøílej!
+$ D2-JMM-1
+- 	Sakra, málem jsem to zmáèknul. Co se ti stalo?
+$ D2-Bobby-2
+- 	Nevím, prošel jsem eonem a hned po mì zaèali støílet.
+$ D2-JMM-2
+- 	Kdo?
+$ D2-Bobby-3
+- 	Neèekal jsem, až se pøedstaví.
+$ D2-JMM-3
+- 	Potøebuješ ošetøení.
+$ D2-Bobby-4
+- 	Tak jo, pùjdeš napøed a zavoláš nemocnici?
+$ D2-JMM-4
+- 	Musíme najít základnu Alfa.
+$ D2-Bobby-5
+- 	Už jsi s nimi mluvil?
+$ D2-JMM-5
+- 	Tak trochu. Jediný, co vím, že se máme schovat.
+$ D2-Bobby-6
+- 	A pak co?
+$ D2-JMM-6
+- 	Tak to by mì taky zajímalo...
+
+! selection2
+Ovládání více jednotek
+Nyní máš k dispozici druhou postavu, Bobbyho Brandona. Klepneš-li na nìj levým tlaèítkem, vybereš jej a budeš dávat pøíkazy jemu namísto  Macmillana.
+
+Máš-li vybranou nìjakou jednotku, mùžeš pøidržet Shift a levým tlaèítkem klepnout na další - tak budou vybrány obì. Také mùžeš pøidržet levé tlaèítko myši a vybrat jednotky tím, že kolem nich obtáhneš obdélník.
+
+[multiple selection]
+!
+
+! healthbar
+Život jednotky
+Proužek nad hlavou vybrané jednotky znázoròuje její zdravotní stav - je-li zraòována, barevná èára se zkracuje. Dokud je zelená, je postava zdravá nebo jen mírnì zranìná a pomalièku se uzdravuje. 
+
+Je-li žlutá, postava je vážnìji zranìná - její stav je stabilizován, ale nevyléèí se bez lékaøské pomoci. 
+
+Èervená èára znaèí postavu v kritickém stavu. Padne v bezvìdomí na zem a  pomalu umírá. Protože zatím nemáš doktora, který by zastavil krvácení a stabilizoval stav aspoò do žlutého, nemá šanci.
+
+ [healthbar]
+!
+
+// Dialogue 2a (in a small valley )
+$ D2a-JMM-1
+- 	Sakra, takový skály, odsud se nikam dál nedostaneme.
+$ D2a-Bobby-1
+- 	[present] Ale mùžeme se tu na chvíli schovat...
+
+// Dialogue 3 (some five minutes into mission and triggered for faster players)
+$ D3-Pow-1
+- 	(very weak and noisy voice over radio) Jestli jste ještì naživu, poslouchejte. Podle našich informací jste ve stejné oblasti tøi. Držte se pohromadì. Zamiøte na severovýchod, opakuji, na na severovýchod, a my se vás odtud pokusíme vysekat.
+$ D3-JMM-1
+- 	(into radio) Haló?
+$ D3-Pow-2
+- 	Držte se v trávì a vyhýbejte se cestám, nebo vás najdou.
+$ D3-JMM-2
+- 	Co se tu do háje dìje? Kdo jste?
+$ D3-Pow-3
+- 	Plukovník Powell, neztrácejte èas. Sledují rádiové signály, takže se hnìte. Použijte ještì jednou rádio a je po vás.
+
+# M2
+Add Main northeast
+- Dostaò se do pravého horního rohu mapy
+Add Secondary join
+- Zkus se spojit s druhými dvìma v oblasti a prorazit spoleènì
+#
+
+! crawling
+Plížení
+Vojáci se mohou plížit. Vyber je a najdi na ovládacím panelu ikonku plížit (nebo stiskni C - crawl). Když budeš chtít vojáka zase postavit, klepni na ikonku jít (nebo stiskni W - walk). 
+
+Plížící se voják je mnohem hùøe vidìt než stojící, ale zase je velmi pomalý. Mùžeš tedy své vojáky plížením skrývat, ale kdyby je odhalili a oni museli utíkat, rozhodnì jim nejprve dej rozkaz jít, jinak daleko nedolezou.
+
+ [crawling]
+!
+
+! terrain
+Schùdnost terénu
+Když klepneš pravým tlaèítkem na nìjaké místo na mapì, vybrané postavy se tam pokusí pøesunout. Vyhýbají se pøitom stromùm a neschùdnému terénu - pøíliš strmým svahùm a skalám. 
+
+Pokud tì zajímá, který terén je schùdný a který nikoliv, ještì než tam postavy pošleš, mùžeš vybrat postavu a klepnout na ikonku jít na ovládacím panelu (nebo stisknout M - move). Kurzor se zmìní a èeká, až zadáš cíl. Když jím budeš pohybovat nad terénem, ukáže ti, jestli je dané místo schùdné èi nikoliv.
+
+[terrain] [commands]
+!
+
+// Dialogue 4 (when John reaches a certain area in the centre of map)
+$ D4-Rus3-1
+- 	(over radio, speaks English with suspiciously perfect accent) Zamiøte pøímo na sever. Posíláme vám naproti pátrací skupinu.
+$ D4-Pow-1
+- 	(weaker and noisier signal over radio) Neposlouchejte je, je to past! Pokraèujte na severovýchod, opakuji severovýchod.
+
+# M3
+Add Alternative north
+- Dostaò se do støedu horního okraje mapy.
+#
+
+// Query 1 (after this objective change)
+? Q1
+Nejsi si jist, co máš vlastnì dìlat. Zkusíš navázat kontakt vysílaèkou?
+- Yes
+- No
+?
+
+// Dialogue 4a (if player selects first option)
+$ D4a-JMM-1
+- 	Tady MacMillan, potvrïte instrukce.... Opakuji, potvrïte instrukce, ... sakra, slyší mì nìkdo?
+
+// Dialogue 4b (if dialogue 4 took place and John gets to North edge of map)
+$ D4b-JMM-1
+- 	Zatracenì, je to past. Mohl jsem to tušit...
+
+// Dialogue 5 (when John finds another wounded American)
+$ D5-Cyrus-1
+- 	Do prdele, to jsem rád, že vás vidím. Nevíte náhodou, kde je ten zasranej severovýchod?
+$ D5-Bobby-1
+- 	[present] Já ne, ale tady poruèík má kompas.
+$ D5-JMM-1
+- 	Poèkej ... ty jsi Cyrus Parker, že? Vítej na palubì.
+
+// Dialogue 6 (when Americans meet guards blocking their way to northeast)
+$ D6-FRus1-1
+- 	(Russian with native subtitles) Máme tady nìjaké Amerièany... Potøebujeme pomoc.
+$ D6-JMM-1
+- 	Konec skrývání, na nì.
+$ D6-Cyrus-1
+- 	[present] Jasnì, nakopem jim prdel.
+$ D6-Bobby-1
+- 	[present] Rozkaz, pane.
+
+// Dialogue 6a (when Americans beat guards)
+$ D6a-JMM-1
+- 	Na nic neèekat, rychle padáme...
+
+// Query 2 (when JMM is in target area and some of his men are too far)
+? Q2
+Nìkteøí z tvých mužù ještì nedorazili do cílové oblasti.
+- Poèkáš na nì
+- Necháš je jít samotné
+?
+
+| JMM
+John Macmillan umírá.
+
+^ MAIN
+Cíl dosažen
+
+* JMM
++ John Macmillan zachránìn.
+*
+
+* Bobby
++ Bobby Brandon zachránìn.
+- Nenašel jsi jednoho muže.
+- Bobby Brandon byl zabit.
+*
+
+* Cyrus
++ Cyrus Parker zachránìn.
+- Nenašel jsi jednoho muže.
+- Cyrus Parker byl zabit.
+*

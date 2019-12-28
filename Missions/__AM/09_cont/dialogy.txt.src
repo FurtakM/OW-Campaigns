@@ -1,0 +1,450 @@
+@ Siberite!
+% John played a key role in the most successful US operation so far, performing a daring attack deep in the heart of Russian territory and repelling the counterattack that followed. However, the Russians remain the superior force, partly due to their ability to mine and utilise Siberite.
+
+// Dialogue 1 (immediately after the start of the mission)
+$ D1-Pow-1
+- (sarcastic) Major Macmillan, I'm going to give you a chance to demonstrate your great tactical thinking.
+$ D1-JMM-1
+- What do you want from me General?
+$ D1-Pow-2
+- My forces have captured a Siberite deposit seventeen miles south-east of Alpha...
+$ D1-JMM-2
+- That's nowhere near you. The operation should have been run from here...
+$ D1-Pow-3
+- (angry) I decide what happens where! (change of pace) We succeeded where you may have failed, we attacked a Russian mine and now we have it under our control.
+$ D1-JMM-3
+- So why do you need me?
+$ D1-Pow-4
+- I want you to hold the fort for a while. And as the Russians left they did a little damage.
+$ D1-JMM-4
+- You mean the mine isn't operating?
+$ D1-Pow-5
+- It won't be a lot of work Macmillan. I'm sure you can handle it.
+$ D1-JMM-5
+- I'll need engineers. How many people from Gamma can I take?
+$ D1-Pow-6
+- Nobody, Macmillan. All the personnel and technology you need you'll get from Alpha.
+$ D1-Pow-6a
+- [Sikorski survived mission 8: alt a1] You'll command the unit of late major Sikorski.
+$ D1-Pow-6b
+- [alt a1] Major Sikorski was killed in action. It was an accident.
+$ D1-Pow-6c
+- [Sikorski died in mission 8: alt a2] You'll command the unit of the late captain Truman.
+$ D1-Pow-6d
+- [alt a2] Captain Truman was killed in action. It was an accident.
+$ D1-JMM-6
+- I see.
+$ D1-JMM-6a
+- Did any Russians escape from your daring raid on the mine sir?
+$ D1-Pow-7
+- Unfortunately one or two took the stores of Siberite with them.
+$ D1-JMM-7
+- Then I suppose they might be back with a few friends.
+$ D1-Pow-8
+- (sarcastic) Razor sharp Macmillan! Of course you can expect a counter attack. And keep your eyes open for shipments, we're expecting a few.
+$ D1-JMM-8
+- Is that all?
+$ D1-Pow-9
+- I think that's enough. We wouldn't want to overburden you would we. Get to it Major.
+
+// Dialogue 1a
+$ D1a-Lisa-1
+- How come the boss never clears up his own shit?
+$ D1a-FSol1-1
+- How come the boss never clears up his own mess?
+$ D1a-Frank-1
+- He's got us to do it for him.
+$ D1a-Sol1-1
+- We're here to do it for him.
+$ D1a-Lisa-2
+- If we'd taken the mine it'd still be in one piece.
+$ D1a-FSol1-2
+- If we'd captured the mine it'd still be in one piece.
+$ D1a-Frank-2
+- And the Russians wouldn't be.
+$ D1a-Sol1-2
+- Unlike the Russians.
+$ D1a-Lisa-3
+- Powell's no idea what he's doing...
+$ D1a-FSol1-3
+- Powell's just a dipshit...
+$ D1a-JMM-3
+- That's enough! Powell gives the orders; it's our job to follow them.  Let's move it!
+
+// Dialogue 1b
+$ D1b-Lisa-1
+- Take care Major.
+$ D1b-Glad-1
+- Watch yourself John, it's not an easy job.
+$ D1b-Joan-1
+- Please be careful.
+$ D1b-Don-1
+- Wish we were coming with you sir.
+
+# M1
+Add Main join
+- Join the soldiers who captured the mine.
+Add Main mine
+- Recommence Siberite mining
+#
+
+# M1a
+Out join
+#
+
+# M2
+Out mine
+Add Secondary Siberite
+- Mine as much Siberite as possible.
+#
+
+# M2a
+Out Siberite
+#
+
+// Dialogue 2
+$ D2-JMM-1
+- What's going on here?
+$ D2-Eng1-1
+- Orders from general Powell, sir. Building a terminal. We'll be loading Siberite onto trucks here. Can't get any closer to the mine.
+$ D2-JMM-2
+- OK, so you're the engineers from Alpha. I'm Major Macmillan. You gonna tell me that heap of shit is all the supplies we've got right?
+$ D2-Eng1-2
+- Yes, sir.
+$ D2-JMM-3
+- Great! OK. Take some crates and come with me. The mine's somewhere to the South.
+$ D2-JMM-3a
+- Good to see you guys. I'm Major John Macmillan. I'm in command here now.
+$ D2-Gary-3
+- Sgt. Grant reporting Major. The guys and I heard a lot about you.
+$ D2-Bobby-3
+- [present] It was all good, believe me Major.
+$ D2-Cyrus-3
+- [present] Good to see you again Major. Sure need you here.
+$ D2-JMM-4
+- OK, so fill me in Gary. What's the situation?
+$ D2-Gary-4
+- Couple of counter attacks by the Russians, nothing we couldn't handle.
+$ D2-Cyrus-4
+- [present] But when they bring their buddies we're up shit creek. We got no Siberite no machines, we're dead men.
+$ D2-Sol1-4
+- [otherwise] But when they bring their buddies we're in deep shit. Without Siberite or machines we're good as dead.
+$ D2-JMM-5
+- OK, take it easy. We've got some gear from Alpha over by the terminal, where the Siberite's going. It's not much but it'll to do for now.
+$ D2-FEng1-5
+- We need tracked vehicles or we'll be carrying that stuff and the Siberite on our backs. That's got to be the priority.
+$ D2-JMM-6
+- That's going to mean building a factory.
+$ D2-FEng1-6
+- It'll be worth it. With a bulldozer we could plough a track to the north.
+$ D2-Eng1-6
+- When Russians left, they did a thorough job of it. I don't have a clue where their mine used to be.
+$ D2-JMM-7
+- This means we need a lab as well, otherwise we'll never find the place.
+$ D2-Gary-7
+- What do you say Major? Do we make our base around here or up at the terminal?
+$ D2-FEng1-7
+- There's more space there, sir.
+$ D2-Sol1-7
+- What the hell do we do that for!? If we're up there the Russians can walk straight back in the mine and what's Powell gonna say about that?
+$ D2-JMM-8
+- End of discussion! I'm in command here, I'll decide.
+
+// Dialogue 3 (seven minutes in the mission)
+$ D3-Pow-1
+- Major Macmillan, this is General Powell. What's your situation?
+$ D3-JMM-1
+- [dialogue 2 took place] I've taken command of the engineers and soldiers. We're about to start mining.
+$ D3-JMM-1a
+- [dialogue 2 didn't take place] I've taken command of the engineers. We're heading toward the mine.
+$ D3-JMM-1b
+- But we need more resources. We should get the mine running with what we've got but it isn't gonna secure the base as well.
+$ D3-Pow-2
+- Sorry to hear you can't manage, Macmillan. Don't worry, there'll be more trucks there in fifteen minutes. But I don't want them wasting the journey back. I want at least 60 Siberite crystals at the terminal when they get there.
+
+# M3
+Add Secondary temp
+- Transport at least 60 Siberite crystals to the terminal
+#
+
+# M3a
+Out temp
+#
+
+# M3b
+Del temp
+#
+
+// Dialogue 4 (after 15 minutes)
+$ D4-Mech1-1
+- Here comes Santa! We got a sack with your name on it.
+$ D4-JMM-1
+- Thanks guys. Take it to the depot.
+$ D4-Mech1-2
+- And you better have something for us.  We go back with no Siberite you'll be off the boss's Christmas list.
+
+// Dialogue 5
+$ D5-JMM-1
+- No problem. We got it all for you. Sorry we didn't wrap it.
+
+// Query Wait (if you don't have enough material in north depot)
+? QWait
+You don't have 60 Siberite crystals yet. What are you going to do?
+-1 ask the mechanic to wait five minutes
+-2 send your apologies to general Powell.
+-3 Tell the mechanic and Powell to go to hell.
+?
+
+// Dialogue 5a (QWait-1)
+$ D5a-JMM-1
+- Take a breather in the depot guys. We'll have your Siberite in five minutes.
+
+// Dialogue 5b
+$ D5b-JMM-1
+- Tell Powell we're doing what we can but it's gonna be Easter before he gets it.
+
+// Dialogue 5c
+$ D5c-JMM-1
+- Tell Powell to screw himself. How are we gonna mine Siberite before you bring the gear?
+
+// Dialogue 6 (when trucks leaves)
+$ D6-Mech1-1
+- [there is enough Siberite] We're on our way, major. This truck loads gonna make Powell's Christmas.
+$ D6-Mech1-1a
+- [there is not enough Siberite] We're on our way Major. We'll take what you got but don't expect a card off the General.
+$ D6-Mech1-1b
+- [there is no Siberite] We're off then Macmillan.  But when Powell hears about this he's gonna be pissed.
+
+// Dialogue 7 (after mining some Siberite)
+$ D7-Sci1-1
+- Major, when we were cleaning the Siberite ore we came across some strange material.
+$ D7-JMM-1
+- What's so strange doc?
+$ D7-Sci1-2
+- It appears to have been fused at tremendous temperatures, and the bonding that's going on here just doesn't fit with the real world. It shouldn't even exist.
+$ D7-JMM-2
+- So how come it does?
+$ D7-Sci1-3
+- It's been made that way. This is a product of the same race that built the EON.
+$ D7-JMM-3
+- We should look into it further. But there's no time now. Store the samples and keep them safe. We don't want the Russians getting hold of them.
+
+// Dialogue 8 (over radio - some 15 minutes before the end of mission)
+$ D8-Ar1-1
+- (over radio) Hi, where is Commanding officer?
+$ D8-JMM-1
+- This is Major Macmillan. Identify yourself.
+$ D8-Ar1-2
+- (over radio) Hey Major, big boss man, yes?
+$ D8-JMM-2
+- Who are you?
+$ D8-Ar1-3
+- (over radio) I'm fairy godmother. You got trouble coming, Russian trouble. You need help.
+$ D8-JMM-3
+- (sarcastic) Sure, and we're gonna get it off some bastard terrorist!
+$ D8-Ar1-4
+- (over radio) We have trouble Major, you not need to know more. Russians cause it, same ones who come for your blood.
+$ D8-JMM-4
+- Get to the point.
+$ D8-Ar1-5
+- (over radio) Maybe, we help each other then Russians lose for once. They cut us off from our friends, now we need fuel for vehicles, you can give some to us, yes?
+$ D8-JMM-5
+- Depends what you're gonna do for us.
+$ D8-Ar1-6
+- (over radio, weakly) Tell him, Lois.
+$ D8-Ar2-6
+- (over radio) Hi, I'm engineer, weapon specialist. As far as I know, your army doesn't use mortars - I think it could be useful for you now, yes?
+$ D8-JMM-6
+- How many you gonna give us?
+$ D8-Ar2-7
+- (over radio, weakly) I do not have box full Major,  I have knowledge. With resources I can prepare production quickly for you.
+
+// Query Barracks
+? QBarracks
+Arabian mercenaries are offering to build specialised barracks to train mortarmen. It will cost you two full fuel tanks and the crates required to build the barracks. Will you:
+-1 Accept.
+-2 Refuse, because you can't waste crates and oil
+-3 Refuse, because you don't believe the Arabian.
+?
+
+// Dialogue 8a (QBarracks-1)
+$ D8a-JMM-1
+- OK. But double cross me and you're blood on the walls you got that?
+$ D8a-Ar1-1
+- Yes, sir. We're with you in one minute.
+
+// Dialogue 8b (QBarracks-2)
+$ D8b-JMM-1
+- No deal Sheikh. We can fight our own battles, we can't gamble resources on you.
+$ D8b-Ar1-1
+- Wait, wait. Russians will kill us.  You give half tank only we give you useful intelligence. Please!
+
+// Query Info
+? QInfo
+Arabian mercenaries are offering intelligence and asking for help. Will you:
+- Accept
+- Reject
+?
+
+// Dialogue 8b1 (QInfo-1)
+$ D8b1-JMM-1
+- OK. Half a tank, but don't screw me around or your dead anyway.
+$ D8b1-Ar1-1
+- Thanks boss. We come now.  Don't shoot.
+
+// Dialogue 8b2 (QInfo-2)
+$ D8b2-JMM-1
+- You shoot us in the back then ask for help. No way shit brain.
+$ D8b2-Ar1-1
+- Bastard! Russians will kill you and we shall meet in hell!
+
+// Dialogue 8c (QBarracks-3)
+$ D8c-JMM-1
+- I never cut a deal with terrorists and I ain't starting now.
+$ D8c-Ar1-1
+- You are noble man and stupid. Russians will kill you like dog.
+
+// Dialogue 9a (if player has not enough oil)
+$ D9a-FAr1-1
+- Hey, this not enough!
+$ D9a-JMM-1
+- This is an army base not a gas station. You'll just have to wait.
+
+// Dialogue 9a2 (if player has not enough oil after while)
+$ D9a2-Ar1-1
+- We can't sit with empty tanks between you and Russians. Just give half a tank... We can give you some useful intelligence.
+
+// Dialogue 9a3 (if player has not enough oil for too long)
+$ D9a3-Ar1-1
+- Sorry, boss, it takes too long. We're waiting here and there ain't enough oil. We had deal but you broke it.. We're leaving.
+
+// Dialogue 9b (after refuelling, if player want mortars and has not enough crates to build or upgrade armoury)
+$ D9b-Ar2-1
+- No can do yanky man, I need crates for barracks.
+$ D9b-Ar2-1a
+- (if armoury is build but not upgraded) No can do yanky man, you want mortars you need crates for upgrade.
+$ D9b-JMM-1
+- Hold on, we hadn't planned for this.
+
+// Dialogue 9c (if player has not enough crates too long)
+$ D9c-Ar1-1
+- Sorry Major boss, time to go, you take too long.
+$ D9c-JMM-1
+- You ain't going nowhere without fuel.
+$ D9c-Ar1-2
+- You give! Not our fault you take too long.
+$ D9c-FAr1-2
+- Give them something else. If we don't go we will die.
+$ D9c-Ar1-3
+- OK. I have good intelligence. I give to you for fuel. Good deal.
+
+// Dialogue 9d (if arabian barracks are built)
+$ D9d-Ar2-1
+- OK. So we are done. Now you can give your men mortars.
+$ D9d-Ar1-1
+- And we can go. It is good we work together. No other way to beat Russians. They know too much about Siberite now.
+$ D9d-JMM-1
+- So what do they know?
+$ D9d-Ar1-2
+- Information has a price commander. It cost us dear. It must cost you also.
+
+// Query Info2 (only lines the player has enough resources for appear)
+? QInfo2
+Arabians know something which could be useful. They may tell you in exchange for resources. Do you want to offer them:
+-1 20 Siberite crystals
+-2 50 crates
+-3 80 barrels of oil
+-4 Nothing
+?
+
+// Query InfoNothing (if the player has nothing)
+? QInfoNothing
+Arabians know something, which could be useful. They may tell you in exchange for resources. Pity you've nothing in your depot right now.
+-1 OK.
+?
+
+// Dialogue 9e (QInfo2-1 to QInfo2-3)
+$ D9e-Ar1-1
+- OK. That's good we don't return empty.
+
+// Dialogue 9f (QInfo2-4)
+$ D9f-Ar1-1
+- So we are leaving. Have fun with Russians.
+
+// Dialogue 10a (after 8b1 and refuelling, after 9c or after 9e )
+$ D10a-JMM-1
+- (depending on situation) OK, so what info's worth two full tanks?
+$ D10a-Ar1-1
+- We discover Russians advance incredibly in Siberite research. They do many special projects. We saw one - they produce missiles to warp space-time. We were yards from their test range.
+$ D10a-Ar2-1
+- They fired into a pile of rocks. They vanished to return in different places, scattered yards away. Battle formation can be destroyed by this.
+$ D10a-FAr1-1
+- And there was the other weapon...
+$ D10a-Ar2-2
+- A decelerator. A man stood with tank coming towards him, he fires bazooka and it moves slower and slower...
+$ D10a-FAr1-2
+- It was not power failure it caused, the tank fired and the shell moved as in slow motion also. It was time that changed.
+$ D10a-Ar1-2
+- And while it is moving so slowly the guy moves lever on bazooka to fire normal weapon at tank . It explodes into fireball.
+$ D10a-JMM-2
+- I paid you two tanks for this bullshit!
+$ D10a-Ar1-3
+- It shows how far behind Russians you are that you don't believe us. They have done this and more. That is why we must join forces. They have the means to destroy us all.
+$ D10a-JMM-3
+- Just get in your motors and move. Whatever shit the Russians throw at us we ain't joining sides with you guys.
+
+// Dialogue 11a (any time the player attacks allied Arabians)
+$ D11a-Ar1-1
+- You bastard! Now you pay!  (Arabians blows up charges that they placed near depot just to be sure)
+
+// Dialogue 11b (if the player refuses to cooperate with Arabians, then two soldiers will try to put remote controlled charges to the mine a few minutes later - this dialog appears if they manage to set them off)
+$ D11b-Ar1-1
+- (over radio) July 4th comes late this year! Next time you remember to treat me good Major boss.
+
+// Dialogue 12 (some 40 minutes in the mission)
+$ D12-Pow-1
+- Macmillan, there's a massive Russian force headed your way. Consider your mission complete and withdraw north. I repeat, retreat to the terminal now!
+
+// Dialogue 13 (Siberite detection research completed)
+$ D13-Sci1-1
+- Major, we've discovered a way to detect Siberite deposits.
+$ D13-JMM-1
+- Good work. Let's find the deposit in the base then we can look for a better deposit in the area. How big is this thing?
+$ D13-Sci1-2
+- Any scientist can carry one on their own and go looking.
+
+# M4
+Chg Siberite
+- Transport the mined Siberite to the terminal.
+#
+
+// Query E (when JMM is in target area and some of his men are too far)
+? QE
+Not all your men have arrived at the destination. Do you want to:
+- Wait for them
+- Continue without them
+?
+
+| JMM
+John Macmillan died
+
+| Mine
+You haven't mined any Siberite
+
+^ Main
+Withdrawal completed
+
+* MuchSiberite
+- You did not mine 200 crystals of Siberite
++ Large quantity of Siberite
+*
+
+* EarlySiberite
++ Early Siberite to Powell
+- You have angered General Powell.
+*
+
+* Information
++ Important information
+- You have missed an opportunity to gain important information.
+*

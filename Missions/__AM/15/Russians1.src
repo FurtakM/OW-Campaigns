@@ -1,0 +1,624 @@
+// Russian attacks from left and bottom
+
+// chassis, engine, control, weapon
+
+Function PrepareAndCreateVehicleR1P(number, chassis, engine, control, weapon);
+var veh, i, person;
+ begin
+   uc_side= russians1;
+   uc_direction= 0;
+   uc_nation= nation_russian;
+
+   for i= 1 to number do
+     begin
+       vc_chassis= chassis;
+       vc_control= control;
+       vc_engine= engine;
+       vc_weapon= weapon;
+       veh= CreateVehicle;
+       New_Patrol_Group= New_Patrol_Group ^ veh;
+
+       if control= control_manual then
+         begin
+           PrepareMechanic(0, 7+Difficulty);
+           Person= CreateHuman;
+           PlaceHumanInUnit(Person, veh);
+           New_Patrol_Group= New_Patrol_Group ^ Person;
+         end;
+     end;
+ end;
+
+
+Function PrepareAndCreateVehicleR1(number, chassis, engine, control, weapon);
+var veh, i, person;
+ begin
+   uc_side= russians1;
+   uc_direction= 0;
+   uc_nation= nation_russian;
+
+   for i= 1 to number do
+     begin
+       vc_chassis= chassis;
+       vc_control= control;
+       vc_engine= engine;
+       vc_weapon= weapon;
+       veh= CreateVehicle;
+       R1_Attack_Group= R1_Attack_Group ^ veh;
+
+       if control= control_manual then
+         begin
+           PrepareMechanic(0, 7+Difficulty);
+           Person= CreateHuman;
+           PlaceHumanInUnit(Person, veh);
+           R1_Attack_Group= R1_Attack_Group ^ Person;
+         end;
+     end;
+ end;
+
+Function GetRandomVehicle(time);
+var Rand_Veh, Selected, Credits, Probab, engine;
+ begin
+   Selected= false;
+
+   if time <= 2 then engine= engine_combustion
+   else engine= engine_siberite;
+
+   repeat
+     Probab= Rand(1, 100);
+
+     case time of
+       1: Rand_Veh= [1, 2, 3, 4][Rand(1, 4)];
+       2: Rand_Veh= [1, 2, 3, 4, 5, 6][Rand(1, 6)];
+       3: Rand_Veh= [3, 4, 5, 6, 7][Rand(1, 5)];
+       4: Rand_Veh= [3, 4, 5, 6, 7, 8][Rand(1, 6)];
+       5: Rand_Veh= [4, 5, 6, 7, 8, 9][Rand(1, 6)];
+       6: Rand_Veh= [5, 6, 7, 8, 9, 10, 11, 12][Rand(1, 8)];
+     end;
+
+     case Rand_Veh of
+       ///////////////   1   ////////////
+       1: begin
+            if (time <= 1 and Probab < 60) or
+               (time <= 3 and Probab < 20) then
+              begin
+                Selected= true;
+                Credits= 3;
+                PrepareAndCreateVehicleR1(1,  // Heavy machine gun
+                  ru_medium_tracked, engine, control_computer, ru_heavy_machine_gun);
+              end;
+          end;
+
+       2: begin
+            if (time <= 1 and Probab < 80) or
+               (time <= 3 and Probab < 30) then
+              begin
+                Selected= true;
+                Credits= 4;
+                PrepareAndCreateVehicleR1(1,  // Heavy machine gun / Heavy
+                  ru_heavy_tracked, engine, control_computer, ru_heavy_machine_gun);
+              end;
+          end;
+
+
+       4: begin
+            if (time <= 1 and Probab < 100) or
+               (time <= 3 and Probab < 80) or
+               (time > 3 and Probab < 40) then
+              begin
+                Selected= true;
+                Credits= 5;
+                PrepareAndCreateVehicleR1(1,  // Gattling
+                  ru_medium_tracked, engine, control_computer, ru_gatling_gun)
+              end;
+          end;
+
+       3: begin
+            if (time <= 1 and Probab < 100) or
+               (time <= 3 and Probab < 40) then
+              begin
+                Selected= true;
+                Credits= 5;
+                PrepareAndCreateVehicleR1(1,  // Gun
+                  ru_medium_tracked, engine, control_computer, ru_gun)
+              end;
+          end;
+
+
+       5: begin
+              Selected= true;
+              Credits= 7;
+              PrepareAndCreateVehicleR1(1,  // Gattling / Heavy
+                ru_heavy_tracked, engine, control_computer, ru_gatling_gun)
+          end;
+
+       6: begin
+            if (time <= 1 and Probab < 100) or
+               (time <= 3 and Probab < 60) or
+               (time > 3 and Probab < 20) then
+              begin
+                Selected= true;
+                Credits= 7;
+                PrepareAndCreateVehicleR1(1,  // Gun / Heavy
+                  ru_heavy_tracked, engine, control_computer, ru_gun)
+              end;
+          end;
+
+       7: begin
+              Selected= true;
+              Credits= 11;
+              PrepareAndCreateVehicleR1(1,  // Heavy Gun
+                ru_heavy_tracked, engine, control_computer, ru_heavy_gun);
+          end;
+
+       8: begin
+              Selected= true;
+              Credits= 9;
+              PrepareAndCreateVehicleR1(1,  // Rocket Launcher
+                ru_medium_tracked, engine, control_computer, ru_rocket_launcher);
+          end;
+
+       9: begin
+              Selected= true;
+              Credits= 11;
+              PrepareAndCreateVehicleR1(1,  // Rocket launcher / Heavy
+                ru_heavy_tracked, engine, control_computer, ru_rocket_launcher);
+          end;
+
+      //////////////////   4   ///////////////////
+      10,11: begin
+              Selected= true;
+              Credits= 15;
+              PrepareAndCreateVehicleR1(1,  // Rocket
+                ru_heavy_tracked, engine, control_computer, ru_rocket);
+          end;
+
+      12: begin
+              Selected= true;
+              Credits= 15;
+              PrepareAndCreateVehicleR1(1,  // Rocket
+                ru_heavy_tracked, engine, control_computer, ru_rocket);
+          end;
+
+     end;
+
+   until Selected;
+
+   Result= Credits;
+ end;
+
+Function GenerateGroup(Credits, time); // front - 1= R1, 2= R
+var Used_Credits;
+ begin
+   repeat
+     Used_Credits= Used_Credits+ GetRandomVehicle(time);
+   until Credits < Used_Credits;
+   result= Used_Credits;
+ end;
+
+
+// The function generates units for attack and places it to R1_Attack_Group
+Function GenerateAttackingGroup;   // Attack number
+var Power, Next_time, Number_of_units, Person, veh, i,
+    Used_Credits, Credits, Strength_of_attack;
+ begin
+   Power= Rand(1,3); // Low, medium, high
+   Number_of_units= Rand(1,2); // Low, high
+   R1_Attack_Group= [];
+
+   if tick < 6$0 then
+     begin
+       case R1_Attack_Counter of
+         1: begin
+//              BuildQuery('Phase A',['OK']);
+              PrepareAndCreateVehicleR1(1,  // Gun
+                ru_medium_tracked, engine_combustion, control_computer, ru_gun);
+
+              PrepareAndCreateVehicleR1(1,  // Gattling
+                ru_medium_tracked, engine_combustion, control_computer, ru_gatling_gun);
+
+              R1_attack_time= [0$40, 0$30, 0$20][Difficulty];
+            end;
+
+         2: begin
+              PrepareAndCreateVehicleR1([2, 3, 4][Difficulty],  // Gattling
+                ru_medium_tracked, engine_combustion, control_computer, ru_gatling_gun);
+
+              R1_attack_time= [3$0, 3$00, 3$00][Difficulty];
+            end;
+
+         3: begin
+              PrepareAndCreateVehicleR1(2,  // Gun
+                ru_heavy_tracked, engine_combustion, control_computer, ru_gun);
+
+              PrepareAndCreateVehicleR1(1,  // Gattling
+                ru_medium_tracked, engine_combustion, control_computer, ru_gatling_gun);
+              R1_attack_time= [2$50, 2$20, 2$0][Difficulty];
+            end;
+
+         else begin
+                Credits= [8, 11, 14][Difficulty];
+                Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 1); // Time = 1
+                R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+                R1_attack_time= [2$50, 2$20, 2$0][Difficulty];
+                if R1_attack_time > 6$0 then R1_Attack_Counter= 0;
+              end;
+       end;
+     end
+
+   else if tick < 14$0 then
+     begin
+//       BuildQuery('Phase B',['OK']);
+       case R1_Attack_Counter of
+         1: begin
+              case Difficulty of
+                1,2: PrepareAndCreateVehicleR1(3,
+                       ru_heavy_tracked, engine_siberite, control_computer, ru_gun);
+                3:   PrepareAndCreateVehicleR1(1,  // Rocket Launcher
+                       ru_medium_tracked, engine_siberite, control_computer, ru_rocket_launcher);
+              end;
+              R1_attack_time= [1$50, 1$20, 1$30][Difficulty];
+            end;
+
+         else begin
+              Credits= [14, 18, 22][Difficulty];
+              Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 2);   // Time = 2
+              R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+              R1_attack_time= [3$30, 3$0, 2$40][Difficulty];
+              if R1_attack_time > 14$0 then R1_Attack_Counter= 0;
+              end;
+       end;
+     end
+
+   else if tick < 25$0 then
+     begin
+        Credits= [8, 10, 12][Difficulty];
+        Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 3);   // Time = 3
+        R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+        R1_attack_time= [2$0, 1$50, 1$40][Difficulty];
+        if R1_attack_time > 25$0 then R1_Attack_Counter= 0;  // This need not be called because of ingame_video...
+     end
+
+   else if tick < Rus_Attack_time then
+     begin
+        Credits= [14, 18, 22][Difficulty];
+        Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 4);
+        R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+        R1_attack_time= [4$0, 3$30, 3$10][Difficulty];
+     end
+
+   else if tick < Stevens_Coming_Time then
+     begin
+        Credits= [18, 22, 26][Difficulty];
+        Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 5);
+        R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+        R1_attack_time= [4$3, 4$0, 3$30][Difficulty];
+     end
+
+   else if tick < Alaskite_Bomb_Time then
+     begin
+        Credits= [22, 27, 32][Difficulty];
+        Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 5);   // Time = 3
+        R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+        R1_attack_time= [4$0, 3$30, 3$10][Difficulty];
+     end
+
+   else if tick > Alaskite_Bomb_Time then
+     begin
+        Strength_of_attack= Rand(1,7);
+        Credits= [6, 8, 10][Difficulty]*Strength_of_attack;
+        Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 6);
+        R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+        R1_attack_time= [1$0, 1$0, 1$0][Difficulty]*Strength_of_attack;
+     end;
+ 
+ end;
+
+   //////////   Patrol Group  //////////
+Function GeneratePatrolingGroup;  // R1_Attack_Counter
+ begin
+   New_Patrol_Group= [];
+   if R1_Attack_Counter > 2 then  // The time when the patrolling starts
+     begin
+       R1Patrol_group= UnitFilter(R1Patrol_group, [f_alive]);
+
+       PrepareAndCreateVehicleR1P(1-R1Patrol_Group,
+                     ru_medium_tracked, engine_siberite, control_computer, ru_heavy_machine_gun);
+     end;
+ end;
+
+
+EXPORT Function Rus1Attack;
+var Un, Am_units, Attack_area,
+    Area_changed, Hlp_R1_Attack_Group, Hlp_New_Patrol_Group,
+    temp_list, spawn_at_Arrival1;
+ begin
+   Hlp_R1_Attack_Group= R1_Attack_Group;
+   Hlp_New_Patrol_Group= New_Patrol_Group;
+
+   if tick < 12$0 then
+     begin
+       for Un in Hlp_R1_Attack_Group do
+         PlaceUnitArea(Un, Arrival1, false);
+       for Un in Hlp_New_Patrol_Group do
+         PlaceUnitArea(Un, Arrival1, false);
+
+         spawn_at_Arrival1 = true;
+     end
+
+   else  // The attacks come from all directions
+     begin
+       if Rand(0,1) then  // Attack from the canyon
+         begin
+           for Un in Hlp_R1_Attack_Group do
+             PlaceUnitArea(Un, Arrival1, false);
+           for Un in Hlp_New_Patrol_Group do
+             PlaceUnitArea(Un, Arrival1, false);
+
+           spawn_at_Arrival1 = true;
+         end
+
+       else              // Attack from behind the river
+         begin
+           for Un in Hlp_R1_Attack_Group do
+             PlaceUnitArea(Un, Arrival2, false);
+           for Un in Hlp_New_Patrol_Group do
+             PlaceUnitArea(Un, Arrival2, false);
+
+           spawn_at_Arrival1 = false;
+
+           //if Rand(0,1) then
+           //  begin
+           //    ComAgressiveMove(Hlp_R1_Attack_Group, 160, 138);
+           //    AddComAgressiveMove(Hlp_R1_Attack_Group, 113, 105);
+
+               //ComAgressiveMove(Hlp_New_Patrol_Group, 160, 138);
+               //AddComAgressiveMove(Hlp_New_Patrol_Group, 113, 105);
+
+           //    WaitTask(Hlp_R1_Attack_Group ^ Hlp_New_Patrol_Group, 1);
+           //  end;
+
+         end;
+     end;
+
+
+   Main_R1_Attack_Group= Main_R1_Attack_Group ^ Hlp_R1_Attack_Group;
+   Main_R1_Attack_Group= UnitFilter(Main_R1_Attack_Group, [f_alive]);
+
+
+   //////////    Select appropriate area   ////////////
+
+   Area_changed= false;
+   if FilterUnitsInArea(JMM_Hill, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= JMM_Hill;
+     end
+   else if FilterUnitsInArea(Am_Base, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Am_Base;
+     end
+   else if FilterUnitsInArea(Ar_Base, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Ar_Base;
+     end
+   else if FilterUnitsInArea(Plan3, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Plan3;
+     end
+   else if FilterUnitsInArea(Plan1, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Plan1;
+     end
+   else if FilterUnitsInArea(Plan5, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Plan5;
+     end
+   else if FilterUnitsInArea(Plan2, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Plan2;
+     end
+   else if FilterUnitsInArea(Plan4, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Plan4;
+     end
+   else if FilterUnitsInArea(Plan6, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Plan6;
+     end
+   else if FilterUnitsInArea(Aliance_Base, [f_side, americans]) > 0 then
+     begin
+       Area_changed= true;
+       attack_area= Aliance_Base;
+     end;
+
+
+   //Sending many units far away, even with a macro, will cause laggy behaviour. Manually move the vehicles
+   //closer to the target area first (only for selected areas - the "Plan?" areas are unlikely).
+   temp_list = Hlp_R1_Attack_Group ^ Hlp_New_Patrol_Group;
+   case attack_area of
+        JMM_Hill: begin
+             if spawn_at_Arrival1 then
+                  begin
+                       //No movement needed
+                  end
+             else
+                  begin
+                       ComAgressiveMove(temp_list, 163, 181);
+                       AddComAgressiveMove(temp_list, 175, 165);
+                       AddComAgressiveMove(temp_list, 160, 138);
+                       AddComAgressiveMove(temp_list, 138, 121);
+                       AddComAgressiveMove(temp_list, 113, 105);
+                  end;
+        end;
+        Am_Base: begin
+             if spawn_at_Arrival1 then
+                  begin
+                       ComAgressiveMove(temp_list, 86, 123);
+                  end
+             else
+                  begin
+                       ComAgressiveMove(temp_list, 163, 181);
+                       AddComAgressiveMove(temp_list, 175, 165);
+                       AddComAgressiveMove(temp_list, 160, 138);
+                       AddComAgressiveMove(temp_list, 138, 121);
+                       AddComAgressiveMove(temp_list, 113, 105);
+
+                       AddComAgressiveMove(temp_list, 99, 83);
+                       AddComAgressiveMove(temp_list, 83, 62);
+                  end;
+        end;
+        Ar_Base: begin
+             if spawn_at_Arrival1 then
+                  begin
+                       ComAgressiveMove(temp_list, 86, 123);
+                       AddComAgressiveMove(temp_list, 71, 101);
+                       AddComAgressiveMove(temp_list, 58, 77);
+                       AddComAgressiveMove(temp_list, 66, 61);
+                  end
+             else
+                  begin
+                       ComAgressiveMove(temp_list, 163, 181);
+                       AddComAgressiveMove(temp_list, 175, 165);
+                       AddComAgressiveMove(temp_list, 160, 138);
+                       AddComAgressiveMove(temp_list, 138, 121);
+                       AddComAgressiveMove(temp_list, 113, 105);
+
+                       AddComAgressiveMove(temp_list, 108, 82);
+                       AddComAgressiveMove(temp_list, 99, 59);
+                  end;
+        end;
+        Aliance_Base: begin
+             if spawn_at_Arrival1 then
+                  begin
+                       ComAgressiveMove(temp_list, 96, 163);
+                       AddComAgressiveMove(temp_list, 120, 179);
+                       AddComAgressiveMove(temp_list, 141, 179);
+                       AddComAgressiveMove(temp_list, 163, 179);
+                  end
+             else
+                  begin
+                       ComAgressiveMove(temp_list, 163, 179);
+                  end;
+        end;
+   end;
+
+   WaitTask(temp_list, 1);
+
+
+   /////////////   McRegistry for MCAttack   ////////////
+
+   if not(ExistMc(Russian1_reg_id)) then
+     begin
+       Russian1_reg_id= McRegistry(russians1, [[mc_reg_refresh_time, 0$2],
+                                                [mc_reg_area_to_guard, attack_area],
+                                                 -mc_reg_only_important,
+                                                 mc_reg_ignore_fog,
+                                                 mc_reg_buildings]);
+     end
+
+   else if Area_changed then
+     begin
+       McRegistryChangeOptions(Russian1_reg_id, [[mc_reg_area_to_guard, attack_area]]);
+     end;
+
+   //////////    McAttack   /////////
+
+   if not(ExistMc(Russian1_att_id)) then
+     begin
+       Russian1_att_id= McAttack(100, Russian1_reg_id, Main_R1_Attack_Group,
+                                               [[mc_retreat_area_vehicles, retreat1],
+                                                [mc_retreat_area_people, retreat1],
+                                                [mc_retreat_lives_vehicles, 600],
+                                                [mc_retreat_lives_people, 600],
+                                                 mc_no_stop]);
+     end
+   else
+     begin
+       AddMcUnits(Russian1_att_id, Hlp_R1_Attack_Group);
+     end;
+
+   ////////////   McRegistry for McPatrol   /////////////
+
+   if not(ExistMc(Russian1_reg1_id)) then
+     begin
+       Russian1_reg1_id= McRegistry(russians1, [[mc_reg_refresh_time, 0$4],
+                                                [mc_reg_area_to_guard, attack_area],
+                                                 -mc_reg_only_important]);
+     end
+
+   else if Area_changed then
+     begin
+       McRegistryChangeOptions(Russian1_reg1_id, [[mc_reg_area_to_guard, attack_area]]);
+     end;
+
+   //////////////   McPatrol   ///////////////
+
+   if not(ExistMc(Russian1_patr_id)) and (Hlp_New_Patrol_Group <> 0) then
+     begin
+       R1Patrol_group= Hlp_New_Patrol_Group;
+       Russian1_patr_id= McPatrol(100, Russian1_reg1_id, Hlp_New_Patrol_Group, [mc_no_stop]);
+     end
+
+   else
+     begin  // Replenish
+       R1Patrol_group= R1Patrol_group ^ Hlp_New_Patrol_Group;
+       if Hlp_New_Patrol_Group <> 0 then AddMcUnits(Russian1_patr_id, Hlp_New_Patrol_Group);
+     end;
+
+
+ end;
+
+
+  // Remove the ill units
+EVERY 0$1 DO
+var Un, ill;
+ begin
+   ill= FilterUnitsInArea(OutComming, [[f_side, russians1], f_not, [f_lives, 600]]);
+   ill= ill ^ FilterUnitsInArea(arrival2, [[f_side, russians1], f_not, [f_lives, 600]]);
+   if ill > 0 then
+     begin
+       Main_R1_Attack_Group= Main_R1_Attack_Group diff ill;
+       RemoveMcUnits(Russian1_att_id, ill);
+       for Un in ill do
+         DestroyUnit(Un);
+     end;
+   enable;
+ end;
+
+// The main loop of R1 attack
+// MARKED 4 - R1_attack
+EVERY 0$1 MARKED 4 DO
+ begin
+   disable;
+
+//    R1_attack_time= tick;
+   if Main_R1_Attack_Group < 50 then
+     begin
+       R1_Attack_Counter= R1_Attack_Counter+1;
+       GenerateAttackingGroup;
+       GeneratePatrolingGroup;
+       Wait(R1_attack_time);
+       while R1_Attack_Continues = false do
+         Wait(0$1);
+       RaiseSailEvent(Rus1_Attack);
+       Wait(1);
+     end;
+//   else debug_strings=['Almost 50 units in R1'];
+
+   enable;
+ end;
+{
+// MARKED 4 - R1_attack
+Every 0$1 DO
+ begin
+  debug_strings= [['Time'], [(tick div 35) mod 60], [tick div (35*60)], ['Woman_Coming_Time'], [Woman_Coming_Time]];
+  enable;
+ end;}

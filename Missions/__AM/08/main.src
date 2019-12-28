@@ -1,0 +1,1674 @@
+export rus,amer,amer_reinf;
+export dying;
+//export difficulty;
+
+var ruboilm0,ruboilp0,ruboilp1,rubwrks0,rubfact0,rubbrid0,rubbunk0,rubbunk1,rubarmr0;
+var rubdepo0;
+var ruv0,ruhmech1,ruv1,ruhmech2,ruv2,ruhmech3;
+var rusove;
+var amv0,amv1;
+
+function prepare_units;
+var tmp;
+begin
+  amer=1;
+  amer_reinf=4;
+  rus=3;
+  dying = [];
+  inituc;
+  inithc;
+  initvc;
+  initbc;
+//----americani-----------------------------------------
+  from_prev_mis;
+//  commoveunit(amhmech0,ambfact0);
+//  complaceweapon(ambbunk1,us_machine_gun);
+//  complaceweapon(ambbunk0,us_gatling_gun);
+                                  
+  case difficulty of
+    3:begin
+      vc_chassis=us_light_wheeled;
+      vc_weapon=us_light_gun;
+    end;
+    2:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_double_gun;
+    end;
+    1:begin
+      vc_chassis=us_medium_tracked;
+      vc_weapon=us_double_gun;
+    end;
+  end; //case
+  vc_control=control_remote;
+  vc_engine=engine_combustion;
+  amv0=createvehicle;
+  setdir(amv0,3);
+  placeunitxyr(amv0,50,23,3,false);
+  case difficulty of
+    3:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_gatling_gun;
+    end;
+    2:begin
+      vc_chassis=us_medium_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+    1:begin
+      vc_chassis=us_heavy_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_remote;
+  vc_engine=engine_combustion;
+  amv1=createvehicle;
+  setdir(amv1,2);
+  placeunitxyr(amv1,56,24,3,false);
+//  while isinunit(amhmech1)<>ambctwr0 do begin wait(0$0.5) end;
+//  LinkVehicleToHuman(amv0,amhmech1);
+//  LinkVehicleToHuman(amv1,amhmech1);
+  //combuild(amhengi0,b_oil_mine,38,3,2);
+
+//zdechliny
+  preparesoldier(sex_male,3);
+  tmp=createhuman;
+  setlives(tmp,250);
+  setdir(tmp,3);
+  placeunitxy(tmp,50,43,false);
+
+
+  uc_side = 0;
+  preparesoldier(sex_male,3);
+  tmp=createhuman;
+  setlives(tmp,10);
+  setdir(tmp,5);
+  placeunitxy(tmp,62,28,false);
+
+  preparesoldier(sex_male,3);
+  tmp=createhuman;
+  setlives(tmp,10);
+  setdir(tmp,5);
+  placeunitxy(tmp,58,28,false);
+
+  setlives(ambbrwr2,hranice_umirani);
+  setlives(ambbrwr0,hranice_zraneni);
+  setlives(ambbunk3,hranice_umirani+1);
+//troska
+  uc_side = 1;
+  vc_control=control_manual;
+  tmp=createvehicle;
+  setdir(tmp,2);
+  setlives(tmp,49);
+  placeunitxy(tmp,45,39,false);
+
+//----rusove--------------------------------------------
+//     rubdepo0=combuild(ruhengi0,b_depot,90,87,3);
+  //comhold(ruhmecho);
+  uc_nation=nation_russian;
+  uc_side=rus;
+
+//depot
+  bc_type=b_depot;
+  bc_level=4;
+  rubdepo0=createandplacebuildingxyd(90,85,3);
+  setresourcetype(getbase(rubdepo0),mat_cans,500);
+  setresourcetype(getbase(rubdepo0),mat_oil,20);
+
+  commovexy(ruhscie0,87,94);
+  ruboilm0=combuild(ruhengi1,b_oil_mine,106,97,0);
+  ruboilp0=combuild(ruhengi0,b_oil_power,99,97,0);
+  rubbunk0=combuild(ruhengi2,b_bunker,75,74,2);
+
+  preparemechanic(sex_male,5);
+  //hc_name='Robert Cupin';
+  ruhmech1=createhuman;
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_tracked;
+      vc_weapon=ru_gatling_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_tracked;
+      vc_weapon=ru_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_tracked;
+      vc_weapon=ru_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv0=createvehicle;
+  setdir(ruv0,5);
+  placeunitxy(ruv0,66,83,false);
+  placehumaninunit(ruhmech1,ruv0);
+
+  preparemechanic(sex_male,4);
+  //hc_name='Matvej Jepancincev';
+  ruhmech2=createhuman;
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv1=createvehicle;
+  setdir(ruv1,5);
+  placeunitxy(ruv1,82,77,false);
+  placehumaninunit(ruhmech2,ruv1);
+
+  //hc_name='Katya Charitonov';
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+      preparemechanic(sex_female,2);
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+      preparemechanic(sex_female,3);
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+      preparemechanic(sex_female,4);
+    end;
+  end; //case
+  ruhmech3=createhuman;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv2=createvehicle;
+  setdir(ruv2,0);
+  placeunitxy(ruv2,66,68,false);
+  placehumaninunit(ruhmech3,ruv2);
+
+  case difficulty of
+    1:begin
+      setskill([ruhsold1,ruhsold2,ruhsold4],skill_combat,3);
+      setskill([ruhsold3,ruhsold5],skill_combat,3);
+      setskill([ruhsold0],skill_combat,3);
+    end;
+    2:begin
+      setskill([ruhsold1,ruhsold2,ruhsold4],skill_combat,5);
+      setskill([ruhsold3,ruhsold5],skill_combat,4);
+      setskill([ruhsold0],skill_combat,5);
+    end;
+    3:begin
+      setskill([ruhsold1,ruhsold2,ruhsold4],skill_combat,7);
+      setskill([ruhsold3,ruhsold5],skill_combat,6);
+      setskill([ruhsold0],skill_combat,7);
+    end;                                        
+  end; //case
+  rusove=[ruhsold0,ruhsold1,ruhsold2,ruhsold3,ruhsold4,ruhsold5,ruv0,ruv1,ruv2];
+  comremember(rusove);
+
+//troska
+  tmp=createvehicle;
+  setdir(tmp,5);
+  setlives(tmp,87);
+  placeunitxy(tmp,53,49,false);
+
+
+end;
+
+
+function selektnuta_budova;
+var tmp;
+begin
+  tmp=filterallunits([[f_side,amer],[f_type,unit_building]]);
+  if isselected(tmp) then result=true
+  else result=false;
+end;
+
+every 0$0.3 trigger selektnuta_budova do hint('BuildingLevel');
+
+
+function dialog1;
+begin
+//     ingame_video=true;
+//     stop_action=true;
+  ingameon;
+//  centernowonunits(amhsold0);
+  centernowonxy(44,40);//53,31);
+  dwait(0$1);
+  case gamma2commander of
+    1:say{radio}(lucy,'D1-Don-1');
+    2:say{radio}(brown,'D1-Brown-1');
+    3:say{radio}(vanh,'D1-VanH-1');
+  end;
+  sayradio(rh,'D1-Har-1');
+  case gamma2commander of
+    1:say{radio}(lucy,'D1-Don-2');
+    2:say{radio}(brown,'D1-Brown-2');
+    3:say{radio}(vanh,'D1-VanH-2');
+  end;
+  sayradio(rh,'D1-Har-2');
+  ingameoff;
+  SaveForQuickRestart;
+  wait(0$1);
+  ChangeMissionObjectives('M1');
+  music_class=music_auto;
+//     ingame_video=false;
+//     stop_action=false;
+end;
+
+//--------------------------------------------------------------------------
+//--------Start Block-----------Start Block-----------Start Block-----------
+//--------------------------------------------------------------------------
+var supply;
+//var tmp;
+var first_time;
+export retreat;
+export poskoz,pacienti; //repaired;
+var pocet_lidi,chciplo;
+var t2rest; //cas do prvniho ruskeho utoku
+export hr_lidi,hr_auta; //hranice zivotu na utek rusaku z boje
+export mpora; //Maximal Power for One Russian Attack (== no. of vehicles)
+export prebytek;
+export healeri;
+var aiv_met,dialcb_delayed,sikishere,cperiode;
+export debug;
+var maxsikjmmdist,revealed;
+var bunk0_lev,bunk1_lev;
+starting
+begin
+  music_class=music_combat;
+  revealed=0;
+  rubfact0=0;
+  healeri=[ruhscie0,ruhscie1];
+  disable(03);
+  disable(27);
+  countdist=0;
+  totalatt=0;
+  setbname(amware0,'gamma');
+//  difficulty=querydifficulty;
+  //debug_strings=['^ffff00a',difficulty];
+  bunk0_lev=[2,5,7][difficulty];
+  bunk1_lev=[2,5,7][difficulty];
+  debug=false; //true;
+  if debug then msg('Bacha debug je ON!');
+  case difficulty of
+    1:begin                       
+      hr_lidi=450;
+      hr_auta=430;
+      mpora=2;
+      t2rest=2$0;
+      cperiode=2$0;
+      supply=23;
+    end;
+    2:begin
+      hr_lidi=490;
+      hr_auta=500;
+      mpora=3;
+      t2rest=1$10;
+      cperiode=2$15;
+      supply=19;
+    end;
+    3:begin
+      hr_lidi=550;
+      hr_auta=570;
+      mpora=4;
+      t2rest=0;
+      cperiode=2$30;
+      supply=17;
+    end;
+  end;
+  maxsikjmmdist=13; //13 neni moc
+  jmm_zbabelec=false;
+  aiv_met=[];
+  dialcb_delayed=false;
+  sikishere=false;
+//  tmp=0;
+  retreat=-1;
+  poskoz=[];
+  rusove0=[];
+  prebytek=[];
+  pacienti=[];
+  //repaired=[];
+  first_time=true;
+  gunext_ready=false;
+  randomize;
+  amer=1;
+  RevealFogArea(amer,celamapa);
+  prepare_units;
+  pocet_lidi=7;
+  chciplo=0;
+  dialog1;
+end;
+
+//creates crates
+{every 5$0 do
+begin
+  createcratesanywhere(rand(4,5),true);
+end;}
+
+every 0$15 do
+begin
+  cper=cperiode;
+  createcratesarea(rand(4,5),dropzone,true);
+end;
+
+every 1$10 do createcratesarea(rand(4,5),dropzone,true);
+
+var cper;
+every 0$15+1$45 do
+begin
+  cper=cper-0$15;
+  if cper=0 then begin
+    if createcratesarea(rand(4,5),dropzone,true) then begin
+      if (supply>1) then begin
+        supply=supply-1;
+        enable;
+      end;
+      cper=cperiode;
+    end
+    else enable;
+  end
+  else enable;
+end;
+
+every 0$7 do
+begin
+  randomize;
+  enable;
+end;
+
+on humandestroyed(manik,side,nation,x,y,direction,sex,class) do
+  if (side=amer) and (class in [class_soldier,class_engineer,class_mechanic,class_scientistic,class_sniper,class_bazooker]) then chciplo=chciplo+1;
+
+//  /-----------------------------------\
+//  |let's build that damn russian base |
+//  \-----------------------------------/
+every 0$1+0$1 trigger isok(ruboilp0) and not isconstructed(ruboilp0) do
+begin
+  rubwrks0=combuild(ruhengi0,b_workshop,76,93,1);
+end;
+
+every 0$1+0$1 trigger isok(ruboilm0) and not isconstructed(ruboilm0) do
+begin
+  rubbrid0=combuild(ruhengi1,b_lab,73,79,2);
+end;
+
+every 0$1+0$1 trigger isok(rubbunk0) and not isconstructed(rubbunk0) do
+begin
+  rubarmr0=combuild(ruhengi2,b_armoury,99,88,3);
+end;
+
+
+every 0$1+0$1 trigger isok(rubbrid0) and not isconstructed(rubbrid0) do
+begin
+  comupgrade(rubdepo0);
+  comupgradelab(rubbrid0,b_lab_weapon);
+  rubbunk1=combuild(ruhengi1,b_bunker,72,84,2);
+end;
+ 
+every 0$1+0$1 trigger isok(rubarmr0) and not isconstructed(rubarmr0) do
+begin
+  comupgrade(rubarmr0);
+  ruboilp1=combuild(ruhengi2,b_oil_power,95,97,0);
+end;
+
+every 0$1+0$1 trigger isok(rubwrks0) and not isconstructed(rubwrks0) do
+begin
+     //sync;
+  wait(0$2);
+  commoveunit(ruhmech0,rubwrks0);
+  wait(0$3);
+     //async;
+  comupgrade(rubwrks0);
+  rubfact0=rubwrks0;
+end;
+
+on upgradecomplete(un) do
+  if un=rubfact0 then commoveunit(ruhmech0,un);
+
+every 0$1+0$1 trigger isok(rubbunk1) and not isconstructed(rubbunk1) and isok(rubfact0) and not isconstructed(rubfact0) and isinunit(ruhmech0)=rubfact0 and gunext_ready do
+begin
+  setblevel(rubbunk1,bunk1_lev);
+  case difficulty of
+    1:complaceweapon(rubbunk1,ru_heavy_machine_gun);
+    2:complaceweapon(rubbunk1,ru_gatling_gun);
+    3:complaceweapon(rubbunk1,ru_gatling_gun);
+  end;
+  rusove=rusove diff [ruhsold1];
+  commoveunit(ruhsold1,rubbunk1);
+end;
+
+every 0$1+0$1 trigger isok(rubbunk0) and not isconstructed(rubbunk0) and isok(rubfact0) and not isconstructed(rubfact0) and isinunit(ruhmech0)=rubfact0 and gunext_ready do
+begin
+  setblevel(rubbunk0,bunk0_lev);
+  case difficulty of
+    1:complaceweapon(rubbunk0,ru_gun);
+    2:complaceweapon(rubbunk0,ru_gun);
+    3:complaceweapon(rubbunk0,ru_heavy_gun);
+  end;
+  rusove=rusove diff [ruhsold0];
+  commoveunit(ruhsold0,rubbunk0);
+end;
+
+var b_ext_tr;
+every 0$1+2$0 trigger isok(rubfact0) and not isconstructed(rubfact0) do
+begin
+  combuild(ruhengi0,b_ext_gun,73,90,2);
+  combuild(ruhengi1,b_ext_track,76,95,0);
+end;
+
+var gunext_ready;
+
+on buildingcomplete(rub) do
+  if getside(rub)=rus then
+    if unitfilter(rub,[[f_btype,b_ext_track]]) then combuild(ruhengi1,b_turret,103,89,3)
+    else if unitfilter(rub,[[f_btype,b_turret]]) then complaceweapon(rub,ru_gatling_gun)
+    else if getbtype(rub)=b_ext_gun then gunext_ready=true;
+
+
+every 2$30 do
+begin
+  com_queue=true;
+  commoveunit(ruhengi0,rubdepo0);
+  commoveunit(ruhengi0,rubdepo0);
+  com_queue=false;
+end;
+
+//rusaci se vraceji
+var rusove_mimo;
+var pom_rumi;
+function rusove_mimo_bazi;
+begin
+  pom_rumi=rusove diff filterunitsinarea(rubase,[[f_type,unit_human],[f_ok]]);
+  rusove_mimo=pom_rumi diff filterunitsinarea(rubase,[[f_type,unit_vehicle],[f_ok]]);
+  result=rusove_mimo;
+end;
+
+every 0$1 trigger rusove_mimo_bazi do
+begin
+  if retreat>=0 then exit;
+  comreturn(rusove_mimo);
+  enable;
+end;
+
+
+//todle se stara o omezeni poctu vozidel v jednom utoku
+function manage_prebytek(zaklad);
+var bz,bzz;
+begin
+  bzz=[];
+  for bz in rusove0 do
+    if gettype(bz)=unit_vehicle then begin
+      rusove0=rusove0 diff [bz];
+      bzz=bzz^[bz];
+    end;            
+  for bz=1 to (0+bzz) do
+    if bz<=(mpora-zaklad) then rusove0=rusove0^[bzz[bz]]
+    else prebytek=prebytek^[bzz[bz]];
+end;
+
+///\/\/\/\/\/\/\/\/\/\
+//   rusaci otravuji
+//--------------------
+export rusove0;
+every 0$2+1$18 do
+begin
+  if t2rest>0 then begin
+    t2rest=t2rest-0$2;
+//    buildquery(t2rest,['OK']);
+    enable;
+  end
+  else begin
+    if debug then msg('utok 1 v 1:30');  //DEBUG!!!
+    manage_prebytek(1);
+    rusove0=[ruhsold2,ruhsold3,ruv2];
+    rusove=rusove diff rusove0;
+    comagressivemove(rusove0,53,46);
+  end;
+end;
+
+every 0$1+2$0 trigger (t2rest<=0) and (not isok(ambbunk0)) and (not isok(ambbunk1)) do
+begin
+  comagressivemove(rusove0,63,43);
+end;
+
+every 0$1+2$30 trigger (t2rest<=0) and (not isok(ambbunk0)) and (not isok(ambbunk1)) and (not isok(ambbrwr0)) do
+begin
+  comagressivemove(rusove0,49,33);
+end;
+
+//dalsi utok
+every 6$0 do
+begin
+  case difficulty of
+    1:t2rest=2$0;
+    2:t2rest=1$0;
+    3:t2rest=0;
+  end;
+end;
+
+var ruhsold6,ruhsold7;
+var ruv3,ruhmech4,ruv4,ruhmech5;
+every 0$2+6$28 do
+begin
+  if t2rest>0 then begin
+    t2rest=t2rest-0$2;
+    enable;
+  end
+  else begin
+    if retreat>=0 then exit;
+    if debug then msg('utok 2 v 6:30');  //DEBUG!!!
+    rusove0=unitfilter(rusove0,[[f_ok]]);
+
+//     hc_galery='Ru';
+    uc_nation=nation_russian;
+    uc_side=rus;
+    preparesoldier(sex_male,5);
+//     hc_face_number=
+    //hc_name='Anatolij Trajkov';
+    hc_sex=sex_male;
+//     hc_face_number=
+    ruhsold6=createhuman;
+    preparesoldier(sex_male,5);
+    //hc_name='Valentin Gavrilyuk';
+    ruhsold7=createhuman;
+//    case difficulty of
+//      1:preparemechanic(sex_female,2);
+//      2:preparemechanic(sex_female,3);
+//      3:preparemechanic(sex_female,4);
+//    end;
+//    hc_name='Ilja Krivokrasov';
+//    ruhmech4=createhuman;
+    case difficulty of
+      1:preparemechanic(sex_female,3);
+      2:preparemechanic(sex_female,3);
+      3:preparemechanic(sex_female,4);
+    end;
+    //hc_name='Larisa Zaicev';
+    ruhmech5=createhuman;
+
+    case difficulty of
+      1:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_heavy_machine_gun;
+       end;
+      2:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_gun;
+       end;
+      3:begin
+        vc_chassis=ru_heavy_wheeled;
+        vc_weapon=ru_gun;
+       end;
+    end; //case
+    vc_control=control_computer;
+    vc_engine=engine_combustion;
+    ruv3=createvehicle;
+    setdir(ruv3,5);
+    placeunitxy(ruv3,119,91,false);
+//    placehumaninunit(ruhmech4,ruv3);
+
+    case difficulty of
+      1:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_heavy_machine_gun;
+      end;
+      2:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_gatling_gun;
+      end;
+      3:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_gun;
+      end;
+    end; //case
+    vc_control=control_manual;
+    vc_engine=engine_combustion;
+    ruv4=createvehicle;
+    setdir(ruv4,5);
+    placeunitxy(ruv4,123,94,false);
+    placehumaninunit(ruhmech5,ruv4);
+ 
+    setdir(ruhsold6,5);setdir(ruhsold7,5);
+    placeunitxyr(ruhsold6,121,93,3,false);
+    placeunitxyr(ruhsold7,121,93,3,false);
+ 
+    manage_prebytek(2);
+    rusove0=rusove0 union [ruhsold6,ruhsold7,ruv3,ruv4];
+    comagressivemove(rusove0,74,67);
+  end;
+end;
+                 
+every 0$1+6$55 trigger (t2rest<=0) and (not (unitfilter(rusove0,[[f_ok]]) diff filterunitsinarea(wayarea1,[[f_side,rus]]))) do
+begin
+
+//     comattackunit(rusove0,ambbunk0);
+  comagressivemove(rusove0,57,41);
+  wait(0$20);
+//     comattackunit(rusove0,ambbunk1);
+  comagressivemove(rusove0,47,38);
+  wait(0$10);
+//     comattackunit(rusove0,ambbrwr0);
+  comagressivemove(rusove0,64,38);
+  wait(0$10);
+//     comattackunit(rusove0,ambbrwr1);
+  comagressivemove(rusove0,45,29);
+  wait(0$7);
+//     comattackunit(rusove0,ambbunk2);
+  comagressivemove(rusove0,45,20);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk3);
+  comagressivemove(rusove0,56,20);
+  wait(0$7);
+//     comattackunit(rusove0,ambctwr0);
+  comagressivemove(rusove0,48,15);
+  wait(0$10);                         
+//     comattackunit(rusove0,ambfact0);
+  comagressivemove(rusove0,52,9);        
+
+end;
+
+
+//a jeste jeden
+var ruhsold8,ruhsold9;
+var ruv5,ruhmech6,ruv6,ruhmech7;
+every 11$30 do
+begin
+  if retreat>=0 then exit;
+  if debug then msg('utok 3 v 11:30');  //DEBUG!!!
+  rusove0=unitfilter(rusove0,[[f_ok]]);
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+  preparesoldier(sex_male,5);
+//     hc_face_number=
+     //hc_name='Valentin Baranov';
+//     hc_face_number=
+  ruhsold8=createhuman;
+  preparesoldier(sex_female,6);
+  //hc_name='Vanda Charitonov';
+  ruhsold9=createhuman;
+//     case difficulty of
+//       1:preparemechanic(sex_female,3);
+//       2:preparemechanic(sex_female,4);
+//       3:preparemechanic(sex_female,5);
+//     end;
+//     hc_name='Darya Lazutin';
+//     ruhmech6=createhuman;
+  case difficulty of
+    1:preparemechanic(sex_male,3);
+    2:preparemechanic(sex_male,4);
+    3:preparemechanic(sex_male,5);
+  end;
+     //hc_name='Jurij Smolinsky';
+  ruhmech7=createhuman;
+
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_computer;
+  vc_engine=engine_combustion;
+  ruv5=createvehicle;
+  setdir(ruv5,5);              
+  placeunitxyr(ruv5,119,91,5,false);
+  //placehumaninunit(ruhmech6,ruv5);
+
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_heavy_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv6=createvehicle;
+  setdir(ruv6,5);
+  placeunitxyr(ruv6,123,94,5,false);
+  placehumaninunit(ruhmech7,ruv6);
+
+  setdir(ruhsold8,5);setdir(ruhsold9,5);
+  placeunitxyr(ruhsold8,121,93,3,false);
+  placeunitxyr(ruhsold9,121,93,3,false);
+
+  manage_prebytek(2);
+  rusove0=rusove0 union [ruhsold8,ruhsold9,ruv5,ruv6];
+  comagressivemove(rusove0,71,63);
+end;
+
+               
+every 0$1+11$55 trigger not (unitfilter(rusove0,[[f_ok]]) diff filterunitsinarea(wayarea1,[[f_side,rus]])) do
+begin
+//     comattackunit(rusove0,ambbunk0);
+  comagressivemove(rusove0,57,41);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk1);
+  comagressivemove(rusove0,47,38);
+  wait(0$5);
+//     comattackunit(rusove0,ambbrwr0);
+  comagressivemove(rusove0,64,38);
+  wait(0$10);
+//     comattackunit(rusove0,ambbrwr1);
+  comagressivemove(rusove0,45,29);
+  wait(0$5);
+//     comattackunit(rusove0,ambbunk2);
+  comagressivemove(rusove0,45,20);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk3);
+  comagressivemove(rusove0,56,20);
+  wait(0$5);
+//     comattackunit(rusove0,ambctwr0);
+  comagressivemove(rusove0,48,15);
+  wait(0$10);
+//     comattackunit(rusove0,ambfact0);
+  comagressivemove(rusove0,52,9);
+
+end;
+
+//a jeste dalsi
+var ruhsolda,ruhsoldb;
+var ruv7,ruhmech8,ruv8;
+every 15$0 do
+begin
+  if retreat>=0 then exit;
+  if debug then msg('utok 4 v 15:00');  //DEBUG!!!
+  rusove0=unitfilter(rusove0,[[f_ok]]);
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+  preparesoldier(sex_male,5);
+//     hc_face_number=
+  hc_name='';
+//     hc_face_number=
+  ruhsolda=createhuman;
+  preparesoldier(sex_female,6);
+  hc_name='';
+  ruhsoldb=createhuman;
+
+  case difficulty of
+    1:preparemechanic(sex_male,3);
+    2:preparemechanic(sex_male,4);
+    3:preparemechanic(sex_male,5);
+  end;
+  hc_name='';
+  ruhmech8=createhuman;
+
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv8=createvehicle;
+  setdir(ruv8,5);
+  placeunitxyr(ruv8,119,91,5,false);
+  placehumaninunit(ruhmech8,ruv8);
+
+  case difficulty of
+      1:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_gatling_gun;
+      end;
+      2:begin
+        vc_chassis=ru_medium_wheeled;
+        vc_weapon=ru_gun;
+      end;
+      3:begin
+        vc_chassis=ru_heavy_wheeled;
+        vc_weapon=ru_heavy_gun;
+      end;
+  end; //case
+  vc_control=control_computer;
+  vc_engine=engine_combustion;
+  ruv7=createvehicle;
+  setdir(ruv7,5);
+  placeunitxyr(ruv7,123,94,5,false);
+
+  setdir(ruhsolda,5);setdir(ruhsoldb,5);
+  placeunitxyr(ruhsolda,121,93,3,false);
+  placeunitxyr(ruhsoldb,121,93,3,false);
+
+  manage_prebytek(2);
+  rusove0=rusove0 union [ruhsolda,ruhsoldb,ruv7,ruv8];
+  comagressivemove(rusove0,57,67);
+end;
+
+
+every 0$1+15$25 trigger not (unitfilter(rusove0,[[f_ok]]) diff filterunitsinarea(wayarea2,[[f_side,rus]])) do
+begin
+//     comattackunit(rusove0,ambbunk0);
+  comagressivemove(rusove0,57,41);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk1);
+  comagressivemove(rusove0,47,38);
+  wait(0$5);
+//     comattackunit(rusove0,ambbrwr0);
+  comagressivemove(rusove0,64,38);
+  wait(0$10);
+//     comattackunit(rusove0,ambbrwr1);
+  comagressivemove(rusove0,45,29);
+  wait(0$5);
+//     comattackunit(rusove0,ambbunk2);
+  comagressivemove(rusove0,45,20);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk3);
+  comagressivemove(rusove0,56,20);
+  wait(0$5);
+//     comattackunit(rusove0,ambctwr0);
+  comagressivemove(rusove0,48,15);
+  wait(0$10);
+//     comattackunit(rusove0,ambfact0);
+  comagressivemove(rusove0,52,9);
+
+end;
+
+//grrr miliony malych utoku
+var ruhsoldc,ruhsoldd;
+var ruv9,ruhmech9,ruhmecha,ruva,ruvb;    
+every 21$0 do
+begin
+  if retreat>=0 then exit;
+  if debug then msg('utok 5 v 21:00');  //DEBUG!!!
+  rusove0=unitfilter(rusove0,[[f_ok]]);
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+  preparesoldier(sex_male,5);
+//     hc_face_number=
+  hc_name='';
+//     hc_face_number=
+  ruhsoldc=createhuman;
+  preparesoldier(sex_female,6);
+  hc_name='';
+  ruhsoldd=createhuman;
+
+  case difficulty of
+    1:preparemechanic(sex_male,3);
+    2:preparemechanic(sex_male,4);
+    3:preparemechanic(sex_male,5);
+  end;
+  hc_name='';
+  ruhmech9=createhuman;
+  case difficulty of
+    2:preparemechanic(sex_female,3);
+    3:preparemechanic(sex_female,5);
+  end;
+  hc_name='';
+  if difficulty>1 then ruhmecha=createhuman
+  else ruhmecha=0;
+
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv9=createvehicle;
+  setdir(ruv9,5);
+  placeunitxyr(ruv9,119,91,5,false);
+  placehumaninunit(ruhmech9,ruv9);
+
+  case difficulty of
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  if difficulty>1 then ruva=createvehicle
+  else ruva=0;
+  setdir(ruva,5);
+  placeunitxyr(ruva,119,91,5,false);
+  placehumaninunit(ruhmecha,ruva);
+
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_heavy_gun;
+    end;
+  end; //case
+  vc_control=control_computer;
+  vc_engine=engine_combustion;
+  ruvb=createvehicle;
+  setdir(ruvb,5);
+  placeunitxyr(ruvb,123,94,5,false);
+
+  setdir(ruhsoldc,5);setdir(ruhsoldd,5);
+  placeunitxyr(ruhsoldc,121,93,3,false);
+  placeunitxyr(ruhsoldd,121,93,3,false);
+
+  if difficulty>1 then manage_prebytek(3)
+  else manage_prebytek(2);
+  rusove0=rusove0 union [ruhsoldc,ruhsoldd,ruv9,ruva,ruvb] diff [0];
+  comagressivemove(rusove0,57,67);
+end;
+
+
+every 0$1+21$25 trigger not (unitfilter(rusove0,[[f_ok]]) diff filterunitsinarea(wayarea2,[[f_side,rus]])) do
+begin
+//     comattackunit(rusove0,ambbunk0);
+  comagressivemove(rusove0,57,41);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk1);
+  comagressivemove(rusove0,47,38);
+  wait(0$5);
+//     comattackunit(rusove0,ambbrwr0);
+  comagressivemove(rusove0,64,38);
+  wait(0$10);
+//     comattackunit(rusove0,ambbrwr1);
+  comagressivemove(rusove0,45,29);
+  wait(0$5);
+//     comattackunit(rusove0,ambbunk2);
+  comagressivemove(rusove0,45,20);
+  wait(0$10);
+//     comattackunit(rusove0,ambbunk3);
+  comagressivemove(rusove0,56,20);
+  wait(0$5);
+//     comattackunit(rusove0,ambctwr0);
+  comagressivemove(rusove0,48,15);
+  wait(0$10);
+//     comattackunit(rusove0,ambfact0);
+  comagressivemove(rusove0,52,9);
+
+end;
+
+
+//---------------dialogy------------dialogy--------------dialogy------------
+//dialog2 - reinf from gamma3
+every 0$30 do
+begin
+  placeunitxyr(posilya[1],79,3,3,false);
+  placeunitxyr(posilya[2],80,2,3,false);
+  pocet_lidi=pocet_lidi+2;
+  commovexy(posilya,77,16);
+  wait(0$7);
+  commovexy(posilya,68,21);
+  wait(0$7);
+  commovexy(posilya,55,15);
+  wait(0$7);
+  centeronunits(posilya);
+  dialogueon;
+  if glad and (gladloc=3) then say(glad,'D2-Glad-1')
+  else if getsex(posilya[2])=sex_male then say(posilya[2],'D2-Sol1-1')
+  else say(posilya[2],'D2-FSol1-1');
+  case gamma2commander of
+    1:say(lucy,'D2-Don-1');
+    2:say(brown,'D2-Brown-1');
+    3:say(vanh,'D2-VanH-1');
+  end;
+  dialogueoff;
+end;
+
+
+//dialog3 (MacMillan returns)
+every 0$5{+10$0} do
+var tmp,tmpch;
+begin
+  return_time=return_time-0$5;
+  if return_time<=0 then begin
+    john=john_;
+    placeunitxyr(posilyb[1],77,4,3,false);
+    placeunitxyr(posilyb[2],77,4,3,false);
+    placeunitxyr(posilyb[3],77,4,3,false);
+    placeunitxyr(posilyb[4],77,4,3,false);
+    placeunitxyr(posilyb[5],77,4,3,false);
+    pocet_lidi=pocet_lidi+5;
+    commovexy(posilyb,77,16);
+    wait(0$7);
+    commovexy(posilyb,69,20);
+    wait(0$7);
+//    commovexy([john,frank,lisa,amhsold3,amhsold4],55,15);
+//    wait(0$7);
+    centeronunits(posilyb);
+    dialogueon;
+    say(john,'D3-JMM-1');
+    tmpch=0;
+    case gamma2commander of
+      1:if islive(lucy) then say(lucy,'D3-Don-1') else tmpch=1;
+      2:if islive(brown) then say(brown,'D3-Brown-1') else tmpch=1;
+      3:if islive(vanh) then say(vanh,'D3-VanH-1') else tmpch=1;
+    end;
+    if tmpch then case gamma2commander of
+      1:begin
+        tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]);
+        if tmp then begin
+          say(tmp[1],'D3-Sol1-1');
+          say(tmp[1],'D3-Sol1-1c');
+          say(john,'D3-JMM-2');
+        end;
+      end;
+      2:begin
+        tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]);
+        if tmp then begin
+          say(tmp[1],'D3-Sol1-1a');
+          say(tmp[1],'D3-Sol1-1c');
+          say(john,'D3-JMM-2');
+        end;
+      end;
+      3:begin
+        tmp=filterunitsinarea(ambase,[[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff john;
+        if tmp>0 then begin
+          say(tmp[1],'D3-Sol1-1b');
+          say(tmp[1],'D3-Sol1-1c');
+          say(john,'D3-JMM-2');
+        end
+        else begin
+          tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff john;
+          if tmp>0 then begin
+            say(tmp[1],'D3-Sol1-1b');
+            say(tmp[1],'D3-Sol1-1c');
+            say(john,'D3-JMM-2');
+          end;
+        end;
+      end;
+    end; //case
+
+    wait(0$1);
+    if joan > 0 then begin  //If Joan wasn't killed in a former mission
+    if islive(joan) then begin
+      say(joan,'D3a-Joan-1');
+      say(john,'D3a-JMM-1');
+    end
+    else
+    if islive(lucy) then begin
+      say(john,'D3b-JMM-1');
+      say(lucy,'D3b-Don-1');
+      say(john,'D3b-JMM-2');
+      if isok(lisa) then say(lisa,'D3b-Lisa-2');
+    end
+    else if islive(brown) then begin
+      say(john,'D3b-JMM-1');
+      say(brown,'D3b-Brown-1');
+      say(john,'D3b-JMM-2');
+      if isok(lisa) then say(lisa,'D3b-Lisa-2');
+    end
+    else if islive(vanh) then begin
+      say(john,'D3b-JMM-1');
+      say(vanh,'D3b-VanH-1');
+      say(john,'D3b-JMM-2');
+      if isok(lisa) then say(lisa,'D3b-Lisa-2');
+    end
+    else begin
+      tmp=filterunitsinarea(ambase,[[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff john;
+      if tmp=0 then tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff john;
+      if tmp>0 then begin
+        say(john,'D3b-JMM-1');
+        say(tmp[1],'D3b-Sol1-1');
+        say(john,'D3b-JMM-2');
+        if isok(lisa) then say(lisa,'D3b-Lisa-2');
+      end;
+    end;
+    end;
+
+    if dialcb_delayed then begin
+      tmp=filterunitsinarea(ambase,[[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff john;
+      if tmp>0 then begin
+        say(tmp[1],'DCa-Sol1-1');
+        say(john,'DCb-JMM-1');
+        say(tmp[1],'DCb-Sol1-1');
+        say(john,'DCb-JMM-2');
+      end
+      else begin
+        tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_placed],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff john;
+        if tmp>0 then begin
+          say(tmp[1],'DCa-Sol1-1');
+          say(john,'DCb-JMM-1');
+          say(tmp[1],'DCb-Sol1-1');
+          say(john,'DCb-JMM-2');
+        end;
+      end;
+      hint('ComputerCapturing');
+    end;
+    dialogueoff;
+  end
+  else enable;
+end;
+
+//dialog 4
+every 0$1+16$0 do
+begin
+  dialogueon;
+  sayradio(powel,'D4-Pow-1');
+  say(john,'D4-JMM-1');
+  sayradio(powel,'D4-Pow-2');
+  say(john,'D4-JMM-2');
+  sayradio(powel,'D4-Pow-3');
+  dialogueoff;
+end;
+
+//dialog 4a
+every 0$1+17$0 do
+begin
+  dialogueon;
+  sayradio(powel,'D4a-Pow-1');
+  dialogueoff;
+end;
+
+
+//reinforcements amer_reinf
+var amhsoldb,amhsoldd,amhmecha,amhmechb,amhmechc,amva,amvb,amvc,amvd;
+var reinf_us;
+every 0$1+25$0 do
+begin
+  changesidefog(amer_reinf,amer);
+//     hc_galery='US';
+  uc_nation=nation_american;
+  uc_side=amer_reinf;
+  hc_class=class_soldier;
+//     hc_face_number=
+     //preparesoldier(sex_male,3);
+     //hc_name='Jeremy Sikorski';
+     //amhsolda=createhuman;
+  case difficulty of
+    3:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_machine_gun;
+    end;
+    2:begin
+      vc_chassis=us_medium_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+    1:begin
+      vc_chassis=us_heavy_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  amvd=createvehicle;
+  setdir(amvd,2);
+  placeunitxyr(amvd,15,2,7,false);
+  placehumaninunit(amhsolda,amvd);
+
+  preparesoldier(sex_male,4);
+     //hc_name='Billy Kean';
+  amhsoldb=createhuman;
+  placeunitxyr(amhsoldb,15,2,7,false);
+  case difficulty of
+    1:preparemechanic(sex_female,5);
+    2:preparemechanic(sex_female,4);
+    3:preparemechanic(sex_female,3);
+  end;
+    //hc_name='April Ryan';
+  amhmecha=createhuman;
+  case difficulty of
+    1:preparemechanic(sex_female,4);
+    2:preparemechanic(sex_female,4);
+    3:preparemechanic(sex_female,3);
+  end;
+    //hc_name='Sandra Kingsbury';
+  amhmechc=createhuman;
+  preparemechanic(sex_male,5);
+     //hc_name='Alex Just';
+  amhmechb=createhuman;
+  preparesoldier(sex_male,5);
+     //hc_name='Sam Steep';
+  amhsoldd=createhuman;
+  placeunitxyr(amhsoldd,15,2,7,false);
+
+  case difficulty of
+    3:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_machine_gun;
+    end;
+    2:begin
+      vc_chassis=us_medium_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+    1:begin
+      vc_chassis=us_heavy_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  amva=createvehicle;
+  setdir(amva,2);
+  placeunitxyr(amva,15,2,7,false);
+  placehumaninunit(amhmecha,amva);
+
+  case difficulty of           
+    3:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_light_gun;
+    end;
+    2:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_light_gun;
+    end;
+    1:begin
+      vc_chassis=us_medium_tracked;
+      vc_weapon=us_double_gun;
+    end;
+  end; //case  
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  amvb=createvehicle;
+  setdir(amvb,2);
+  placeunitxyr(amvb,15,2,7,false);
+  placehumaninunit(amhmechb,amvb);
+
+  case difficulty of
+    3:begin
+      vc_chassis=us_medium_wheeled;
+      vc_weapon=us_gatling_gun;
+    end;
+    2:begin
+      vc_chassis=us_heavy_tracked;
+      vc_weapon=us_gatling_gun;
+    end;
+    1:begin
+      vc_chassis=us_heavy_tracked;
+      vc_weapon=us_double_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  amvc=createvehicle;
+  setdir(amvc,2);
+  placeunitxyr(amvc,15,2,7,false);
+  placehumaninunit(amhmechc,amvc);
+
+  reinf_us=[amhsoldb,amhsoldd,amva,amvb,amvc,amvd];
+  sikishere=true;
+  comagressivemove(reinf_us,36,30);
+end;
+
+var time2go;
+every 0$1+25$20 trigger not (unitfilter(reinf_us,[[f_ok]]) diff filterunitsinarea(wayarea0,[[f_side,amer_reinf],[f_ok]])) do
+var tmp;
+begin
+  commovexy(reinf_us,53,24);
+  wait(0$11);
+  tmp=tick;
+  dialogueon;
+  say(amhsolda,'D5-Sik-1');
+{  if chciplo<=3 then say(john,'D5-JMM-1')
+  else if pocet_lidi-9>=chciplo then say(john,'D5-JMM-1a')
+  else say(john,'D5-JMM-1b');}
+  if chciplo<=3 then say(john,'D5-JMM-1a')
+  else say(john,'D5-JMM-1b');
+  say(amhsolda,'D5-Sik-2');
+  case query('QSikorski') of
+    1:begin
+      time2go=tmp+1$0;
+      say(amhsolda,'D5a-Sik-1');
+    end;
+    2:begin
+      time2go=tmp+5$0;
+      say(amhsolda,'D5b-Sik-1');
+    end;
+    3:begin
+      time2go=tmp+5$0;
+      say(amhsolda,'D5c-Sik-1');
+      say(john,'D5c-JMM-1');
+      say(amhsolda,'D5c-Sik-2');
+    end;
+  end;
+  dialogueoff;
+  display_strings=['#Am08-1',time2go];
+  enable(37);
+end;
+
+every 0$1 marked 37 do
+var tmp;
+begin
+  tmp=time2go-tick;
+  if tmp<0 then tmp=0;
+  display_strings=['#Am08-1',tmp];
+  if tmp>0 then enable
+  else display_strings=[];
+end;
+
+//dialogue 6
+var combat_started;
+every 0$1+26$20 trigger tick>=time2go do
+var ntmp;
+begin
+// no tak dobra, umazu nejaky prebytecny rusky vozitka
+  manage_prebytek(1);
+  commovetoarea(prebytek,ar_exit_);
+  enable(27);
+
+  dialogueon;
+  say(amhsolda,'D6-Sik-1');
+  changemissionobjectives('M2');
+  dialogueoff;
+  combat_started=tick+0$13;
+  comagressivemove(reinf_us,63,63);  
+  wait(0$11);
+  comattackunit(reinf_us,rubbunk0);     
+end;
+
+every 0$1 marked 27 do
+var tmp,tmp_;
+begin
+  tmp=filterunitsinarea(ar_exit_,[[f_side,rus]]);
+  for tmp_ in tmp do destroyunit(tmp_);
+  prebytek=prebytek diff tmp;
+
+  if prebytek then begin
+    enable;
+    commovetoarea(prebytek,ar_exit_);
+  end;
+end;
+
+
+function utoci(un);
+var tmp,tmp_,tmp__;
+begin
+  tmp=0;
+  if isinunit(un) then
+{    if getbtype(un)=b_control_tower then begin
+      tmp_=filterallunits([[f_side,amer],[f_control,control_remote]]);
+      for tmp__ in tmp_ do if iscontroledby(tmp__)=un then tmp=tmp or wantstoattack(tmp__);
+    end
+    else}
+    if gettype(isinunit(un))=unit_vehicle then tmp=wantstoattack(isinunit(un))
+    else tmp=0
+  else tmp=wantstoattack(un);
+  if tmp then result=1 else result=0;
+end;
+
+//dialogue 7
+var jmm_zbabelec;
+every 0$1+26$21 trigger tick>=time2go and (tick>=combat_started) and filterunitsinarea(rubaserng,[[f_side,amer_reinf]]) do
+var tmp;
+begin
+  dialogueon;
+  say(amhsolda,'D7-Sik-1');
+  jmm_zbabelec=false;
+  //if isinarea(john,rubaserng) then say(amhsolda,'D7a-Sik-1')
+  tmp=nearestunittounit(filterallunits([[f_side,rus],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]),john);
+  if (getdistunits(john,amhsolda)<=maxsikjmmdist) or utoci(john) or (getdistunits(john,tmp)<=maxsikjmmdist) or isinarea(john,rubaserng) then
+    say(amhsolda,'D7a-Sik-1')
+  else begin
+    say(amhsolda,'D7b-Sik-1');
+    jmm_zbabelec=true;
+  end;
+  dialogueoff;
+  enable(03);
+end;
+
+var countdist,totalatt;
+every 0$0.3 marked 03 do
+var tmp;
+begin
+  if debug then debug_strings=[totalatt,countdist];
+  if retreat>=0 then exit;
+  tmp=nearestunittounit(filterallunits([[f_side,rus],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]),john);
+  totalatt=totalatt+((getdistunits(john,amhsolda)<=maxsikjmmdist) or utoci(john) or (getdistunits(john,tmp)<=maxsikjmmdist) or isinarea(john,rubaserng));
+  countdist=countdist+1;
+  enable;
+end;
+
+
+//dialog C - takova ta saskarna s tim AI vozitkem
+on unitgoestored(un) do
+begin
+//  debuglog('aiv_met_ev');
+//  debuglog(un);
+  if (getside(un)=rus) and (gettype(un)=unit_vehicle) and (getcontrol(un)=control_computer) then aiv_met=[getx(un),gety(un)];
+end;
+
+every 0$0.7 trigger aiv_met do
+var tmp1,dc_time,tmp2,sizes;
+begin
+  sizes=[5,7,10,14,20,50];
+//  debuglog('aiv_met_trig');
+//  debuglog(aiv_met);
+  dc_time=tick;
+//  if not see(amer,aiv_met) then exit;
+  if debug then msg(aiv_met);
+  tmp2=1;
+  tmp1=filterallunits([[f_side,amer],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);
+  if not tmp1 then begin tmp2=2;tmp1=filterallunits([[f_side,amer],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);end;
+  if not tmp1 then begin tmp2=3;tmp1=filterallunits([[f_side,amer],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);end;
+  if not tmp1 then begin tmp2=4;tmp1=filterallunits([[f_side,amer],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);end;
+  if not tmp1 then begin tmp2=5;tmp1=filterallunits([[f_side,amer],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);end;
+  if not tmp1 then begin tmp2=6;tmp1=filterallunits([[f_side,amer],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);end;
+  if not tmp1 then begin tmp2=7;tmp1=filterallunits([[f_side,amer],f_not,[f_nation,nation_nature],f_not,[f_type,unit_building]]);end;
+  if tmp1 then begin
+    tmp1=tmp1[1];
+    case gettype(tmp1) of
+      unit_human:tmp1=tmp1;
+      unit_vehicle:begin
+        case getcontrol(tmp1) of
+          control_manual:tmp1=isdrivenby(tmp1);
+          control_remote:tmp1=iscontroledby(tmp1);
+          else exit;
+        end;
+      end;
+      else exit;
+    end;
+//    debuglog(tmp1);
+    centernowonxy(aiv_met[1],aiv_met[2]);
+    wait(0$1);
+    dialogueon;
+    if getsex(tmp1)=sex_male then say(tmp1,'DC-Sol1-1')
+    else say(tmp1,'DC-FSol1-1');
+    if dc_time<(return_time+0$5) then begin dialcb_delayed=true;dialogueoff;end
+    else begin
+      if getsex(tmp1)=sex_female then begin
+        if tmp2<=6 then tmp1=filterallunits([[f_side,amer],[f_sex,sex_male],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature]]) diff [john]
+        else tmp1=filterallunits([[f_side,amer],[f_sex,sex_male],f_not,[f_nation,nation_nature]]) diff [john];
+        while not tmp1 and (tmp2<6) do begin tmp2=tmp2+1;tmp1=filterallunits([[f_side,amer],[f_sex,sex_male],[f_distxy,aiv_met[1],aiv_met[2],sizes[tmp2]],f_not,[f_nation,nation_nature]]) diff [john];end;
+        if tmp1 then tmp1=tmp1[1] else tmp1=john;
+      end;
+      say(john,'DCb-JMM-1');
+      say(tmp1,'DCb-Sol1-1');
+      say(john,'DCb-JMM-2');
+      dialogueoff;
+      wait(0$0.5);
+      hint('ComputerCapturing');
+    end;
+  end;
+end;
+
+
+// retreat of remaining russian units
+every 0$1 trigger unitfilter(filterallunits([[f_side,rus],[f_ok]]),[f_or,[f_type,unit_human],[f_type,unit_vehicle]])<=7 do
+begin
+  retreat=5;
+  disable(17);
+  commovetoarea(filterallunits([[f_side,rus],[f_ok],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]),ar_exit);
+  changesidefog(rus,amer);
+  setattitude(rus,amer,att_friend,false);
+  commovetoarea(filterunitsexceptarea(dropzone,[[f_or,[f_side,amer],[f_side,amer_reinf]],[f_ok]{,[f_type,unit_human]}]),ar_exit_AM);
+  ingame_video=true;
+  interface_hidden=true;
+  centeronunits(zbytek);
+end;
+
+var zbytek;
+var i,pompoc;
+every 0$0.7 do
+var zbytek2;
+begin
+  case retreat of
+    -1:begin
+      enable;
+    end;
+    4:begin
+      pompoc=pompoc+1;
+      zbytek=filterallunits([[f_side,rus],[f_ok],[f_or,[f_type,unit_human],[f_and,[f_type,unit_vehicle],[f_occupied]]]]);
+      zbytek2=filterunitsinarea(ar_exit,[[f_side,rus],[f_ok]]);
+      zbytek=zbytek diff zbytek2;
+      for i in zbytek2 do destroyunit(i);
+      if zbytek then begin
+        centeronunits(zbytek);
+        enable;
+        if pompoc=3 then begin commovetoarea(zbytek,ar_exit);addcommovexy(zbytek,126,98);pompoc=0;end
+      end
+      else begin
+        ingame_video=false;
+        interface_hidden=false;
+      end;
+    end;
+    else begin
+      disable(17);
+      zbytek=filterunitsinarea(ar_exit,[[f_side,rus],[f_ok]]);
+      for i in zbytek do destroyunit(i);
+      retreat=retreat-1;
+      pompoc=0;
+      enable;
+    end;
+  end;
+end;
+
+{
+every 0$1+0 trigger seearea(amer,sees_ru_1) do revealed=revealed+1;
+every 0$1+0 trigger seearea(amer,sees_ru_2) do revealed=revealed+1;
+every 0$1+0 trigger seearea(amer,sees_ru_3) do revealed=revealed+1;
+every 0$1+0 trigger seearea(amer,sees_ru_4) do revealed=revealed+1;
+every 0$1+0 trigger seearea(amer,sees_ru_5) do revealed=revealed+1;
+}
+// ending conditions
+every 0$1+1$0 trigger {(revealed=5) and} not filterallunits([[f_side,rus],[f_ok],[f_type,unit_human]]) do
+begin
+  exclusiveon;
+  stop_action=true;
+  if (totalatt*5)<countdist then
+    if islive(amhsolda) then sayradio(powel,'D8b-Pow-1')
+    else sayradio(powel,'D8a-Pow-1')
+  else if islive(amhsolda) then say(amhsolda,'D9-Sik-1');
+  stop_action=false;
+  exclusiveoff;
+  wait(0$0.5);
+  if (totalatt*5)<countdist then youlost('Dismissed')
+  else begin
+    addmedal('nothing1',1);
+    addmedal('nothing2',1);
+    addmedal('perfect',1);
+    givemedals('Main');
+    rewardpeople(filterallunits([[f_alive],[f_side,amer],[f_type,unit_human],[f_not,[f_nation,nation_nature]]]));
+    saveitall;
+    youwin;
+  end;
+end;
+
+every 0$1 trigger john and not islive(john) do
+begin
+  wait(0$1);
+  youlost('JMM');
+end;
+
+every 0$1+3 trigger not filterallunits([[f_side,amer],[f_type,unit_human],[f_ok],f_not,[f_nation,nation_nature]]) do
+  youlost('Destroyed');
+
+//test chciplosti Sikorskeho a spol.
+every 0$3+30$1 trigger sikishere and (tick>combat_started) do
+var tmp,tmq;
+begin
+  tmq=true;
+  for tmp in reinf_us do 
+    tmq=tmq and (not islive(tmp) or isdying(tmp));
+  if tmq {and ((totalatt*2)<countdist)} then begin
+    dialogueon;
+    sayradio(powel,'D8c-Pow-1');
+    dialogueoff;
+    youlost('Dismissed');
+  end else enable;
+end;
+
+every 0$1 trigger not filterallunits([[f_side,amer],[f_type,unit_building]]) do
+begin
+  wait(0$3);
+  youlost('Destroyed');
+end;
+
+// New evenets
+
+// Building Area Block
+On Command(com) do
+var i, j, temp, x, y, typeTask;
+begin
+        for i in FilterAllUnits([[f_side,amer],[f_type,unit_human]]) do
+            if GetTaskList(i) > 0 then
+               for j = 1 to GetTaskList(i) do
+               begin
+
+                    temp = GetTaskList(i)[j][4];
+                    x = GetTaskList(i)[j][2];
+                    y = GetTaskList(i)[j][3];
+                    typeTask = GetTaskList(i)[j][1];
+
+                    if x > 0 and y > 0 and typeTask = 'B' and InArea(x, y, BlockBuildArea) then SetTaskList(i, []);
+               end;   
+end;
+
+// Don't block escape area
+function return_am;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(ar_exit,[[f_side,amer]]);
+  ComMoveToArea(pom,ar_exit_AM);
+end;
+
+EVERY 0$1 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(ar_exit,[[f_side,amer],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  if pom>0 then
+    begin
+      return_am;
+    end;
+  enable;
+end;

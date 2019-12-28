@@ -1,0 +1,298 @@
+var amen_;
+
+export function prepare_americans;
+var tmp;
+begin
+  uc_side=am;
+  uc_nation=nation_american;
+//osadka bunkru
+  preparesoldier(sex_male,ams0_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,80,19,1,false);
+  comenterunit(tmp,ambunk00);
+  ams0=tmp;
+  preparesoldier(sex_male,ams1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,94,26,1,false);
+  comenterunit(tmp,ambunk01);
+  ams1=tmp;
+  preparesoldier(sex_male,ams2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,103,27,1,false);
+  comenterunit(tmp,ambunk02);
+  ams2=tmp;
+  preparesoldier(sex_male,ams3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,116,24,1,false);
+  comenterunit(tmp,ambunk03);
+  ams3=tmp;
+  preparesoldier(sex_male,ams4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,113,4,1,false);
+  comenterunit(tmp,ambunk04);
+  ams4=tmp;
+
+//osadka barracksu
+  preparesoldier(sex_male,ams_1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,88,15,1,false);
+  comenterunit(tmp,ambarr00);
+  ams_1=tmp;
+  preparesoldier(sex_male,ams_2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,88,15,1,false);
+  comenterunit(tmp,ambarr00);
+  ams_2=tmp;
+  preparehuman(sex_male,class_soldier,ams_3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,88,15,1,false);
+  comenterunit(tmp,ambarr00);
+  ams_3=tmp;
+  preparehuman(sex_male,class_sniper,ams_4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,88,15,1,false);
+  comenterunit(tmp,ambarr00);
+  ams_4=tmp;
+
+//mechanik do control toweru
+  preparemechanic(sex_female,amm0_sk);
+  amm0=createhuman;
+  placeunitxyr(amm0,97,11,1,false);
+  comenterunit(amm0,amcntw00);
+
+//vozitka
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  vc_chassis=amv1_ch;
+  vc_weapon=amv1_wp;
+  amv1=createvehicle;
+  setdir(amv1,3);
+  placeunitxy(amv1,76,14,false);
+  preparemechanic(sex_male,amm1_sk);
+  amm1=createhuman;
+  placehumaninunit(amm1,amv1);
+
+  vc_chassis=amv2_ch;
+  vc_weapon=amv2_wp;
+  amv2=createvehicle;
+  setdir(amv2,2);
+  placeunitxy(amv2,84,19,false);
+  preparemechanic(sex_male,amm2_sk);
+  amm2=createhuman;
+  placehumaninunit(amm2,amv2);
+
+  vc_chassis=amv3_ch;
+  vc_weapon=amv3_wp;
+  amv3=createvehicle;
+  setdir(amv3,4);
+  placeunitxy(amv3,91,23,false);
+  preparemechanic(sex_male,amm3_sk);
+  amm3=createhuman;
+  placehumaninunit(amm3,amv3);
+
+  vc_chassis=amv4_ch;  //musi byt tracked
+  vc_weapon=amv4_wp;
+  amv4=createvehicle;
+  setdir(amv4,2);
+  placeunitxy(amv4,105,26,false);
+  preparemechanic(sex_male,amm4_sk);
+  amm4=createhuman;
+  placehumaninunit(amm4,amv4);
+
+  vc_chassis=amv5_ch;
+  vc_weapon=amv5_wp;
+  amv5=createvehicle;
+  setdir(amv5,3);
+  placeunitxy(amv5,110,24,false);
+  preparemechanic(sex_male,amm5_sk);
+  amm5=createhuman;
+  placehumaninunit(amm5,amv5);
+
+  vc_chassis=amv6_ch;
+  vc_weapon=amv6_wp;
+  amv6=createvehicle;
+  setdir(amv6,2);
+  placeunitxy(amv6,115,11,false);
+  preparemechanic(sex_male,amm6_sk);
+  amm6=createhuman;
+  placehumaninunit(amm6,amv6);
+
+  doprovoda=[amv1,amv2,amv3];
+  comremember(doprovoda);
+
+//snipers
+  preparehuman(sex_male,class_sniper,amsn0_sk);
+  amsn0=createhuman;
+  placeunitxyr(amsn0,71,9,1,false);
+  comhold(amsn0);
+  preparehuman(sex_male,class_sniper,amsn1_sk);
+  amsn1=createhuman;
+  placeunitxyr(amsn1,97,27,1,false);
+  comhold(amsn1);
+  preparehuman(sex_male,class_sniper,amsn2_sk);
+  amsn2=createhuman;
+  placeunitxyr(amsn2,116,19,1,false);
+  comhold(amsn2);
+
+//engineer in depot
+  prepareengineer(sex_female,9);
+  tmp=createhuman;
+  placeunitxyr(tmp,86,8,1,false);
+  comenterunit(tmp,amware00);
+  prepareengineer(sex_female,9);
+  amen_=createhuman;
+  placeunitxyr(amen_,86,8,1,false);
+  comremember(amen_);
+  comenterunit(amen_,amware00);
+  setresourcevisibility(64,17,am);
+
+//engineers
+  prepareengineer(sex_male,ame0_sk);
+  ame0=createhuman;
+  placeunitxyr(ame0,80,18,1,false);
+  comhold(ame0);
+  prepareengineer(sex_male,ame1_sk);
+  ame1=createhuman;
+  placeunitxyr(ame1,95,26,1,false);
+  comhold(ame1);
+  prepareengineer(sex_male,ame2_sk);
+  ame2=createhuman;
+  placeunitxyr(ame2,102,27,1,false);
+  comhold(ame2);
+  prepareengineer(sex_male,ame3_sk);
+  ame3=createhuman;
+  placeunitxyr(ame3,115,23,1,false);
+  comhold(ame3);
+  prepareengineer(sex_male,ame4_sk);
+  ame4=createhuman;
+  placeunitxyr(ame4,113,7,1,false);
+  comhold(ame4);
+
+//scientisto-mechanici
+  preparescientist(sex_female,amsm0_sk);
+  amsm0=createhuman;
+  placeunitxyr(amsm0,77,6,1,false);
+  comenterunit(amsm0,amlabf00);
+
+  preparemechanic(sex_male,amsm1_sk);
+  amsm1=createhuman;
+  placeunitxyr(amsm1,77,6,1,false);
+  setclass(amsm1,class_scientistic);
+  comenterunit(amsm1,amlabf00);
+
+  preparescientist(sex_female,amsm2_sk);
+  amsm2=createhuman;
+  placeunitxyr(amsm2,77,6,1,false);
+  comenterunit(amsm2,amlabf00);
+
+  preparemechanic(sex_male,amsm3_sk);
+  amsm3=createhuman;
+  placeunitxyr(amsm3,77,6,1,false);
+  setclass(amsm3,class_scientistic);
+  comenterunit(amsm3,amlabf00);
+
+  preparescientist(sex_female,amsm4_sk);
+  amsm4=createhuman;
+  placeunitxyr(amsm4,77,6,2,false);
+  comenterunit(amsm4,amlabf00);
+
+  preparemechanic(sex_male,amsm5_sk);
+  amsm5=createhuman;
+  placeunitxyr(amsm5,77,6,2,false);
+  setclass(amsm5,class_scientistic);
+  comenterunit(amsm5,amlabf00);
+
+//init seznamu budov k oprave
+  inzinyri=[ame0,ame1,ame2,ame3,ame4];
+  comremember(inzinyri);
+  opravujte=[[amturr00,ambunk00,ambarr00],[ambarr00,ambunk01],[ambunk02],[ambunk03,amturr01],[amturr01,ambunk04]];
+  //opravujese=[];
+
+  americani=filterallunits([[f_side,am],[f_type,unit_human]]);
+  pocet_americanu=0+americani;
+
+end;
+export pocet_americanu,americani;
+
+var opravujte;
+//var opravujese;
+var inzinyri;
+every 0$3 do
+var tmp,tmp2,tmp3,oprav,buds,lives;
+begin
+  for tmp=1 to 0+opravujte do begin
+    buds=[];
+    lives=[];
+    for tmp2 in opravujte[tmp] do
+      if (getlives(tmp2)<hranice_zdravi) {and not (tmp2 in opravujese)} then begin
+        buds=buds^[tmp2];
+        lives=lives^[getlives(tmp2)];
+        //opravujese=opravujese^[tmp2];
+      end;
+    tmp2=sortlistbylistasc(buds,lives);
+    if tmp2 then begin
+      comrepairbuilding(inzinyri[tmp],tmp2[1]);
+      for tmp3=2 to 0+tmp2 do addcomrepairbuilding(inzinyri[tmp],tmp2[tmp3]);
+      addcomreturn(inzinyri[tmp]);
+      addcomhold(inzinyri[tmp]);
+    end;
+  end;
+  enable;
+end;
+
+
+//vyzkum siberitoky             //DODELAT
+every 20$1 trigger not am_surr do   //was 20$1  //debugrem!!
+begin
+  wait(before_sib_res);
+  comresearch(amlabf00,tech_sibfiss); //trva to cca 12.6min
+//  settech(tech_sibfiss,am,state_researched);
+//  amsibdeveldone=true;
+//  addresourcetype(getbase(amware00),mat_siberit,100);
+
+end;
+
+//vyroba siberitovky
+every 0$3.1+7 trigger amsibdeveldone do
+var tmp;
+begin
+  if debug then msg('am: deme stavet siberitofku');
+  tmp=[amsm0,amsm1,amsm2,amsm3,amsm4,amsm5];
+  comexitbuilding(tmp);
+  addcomenterunit(tmp,amfact00);
+  addcomchangeprofession(tmp,class_mechanic);
+  comconstruct([amfact00],us_morphling,engine_siberite,control_remote,us_siberium_rocket);
+
+end;
+
+
+//postavit dul v motherlode  //64,17
+var doprovoda;
+every 0$10+10$0 marked 07 do  //debugrem!!!
+var tmp;
+begin
+  amdoustavit=amdoustavit-1;
+  tmp=hexinfo(64,17);
+  if not amdoustavit and tmp<=0 then begin
+    if debug then msg('am: deme stavet dul');
+    combuild([amen_],b_siberite_mine,64,17,0);    //DODELAT
+    //addcomreturn(amen_);                       //co dyz cipne?
+    while isinarea(amen_,ambase)do wait(0$1);
+    commoveunit(doprovoda,amen_);
+    enable(11);
+    addcomenterunit([amen_],amware00);
+    amdoustavit=rand(amdoustavit_min,amdoustavit_max);
+  end
+  else enable;
+end;
+
+every 0$10+10$5 marked 11 do //debugrem!!
+begin
+  while islive(amen_) and not isinarea(amen_,ambase) do wait(0$1);
+  comreturn(doprovoda);
+  if islive(amen_) then comenterunit([amen_],amware00);
+end;
+
+
+

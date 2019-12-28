@@ -1,0 +1,41 @@
+var remove_bunkers,       // seznam bunkru pro odebrani v jednotivych obtiznostech
+    remove_soldiers,      // seznam zakopniku pro odebrani v jednotivych obtiznostech
+    remove_drivers,       // seznam ridicu pro odebrani v jednotivych obtiznostech
+    remove_vehicles;      // seznam vozidel pro odebrani v jednotivych obtiznostech
+
+
+export function fix_difficulty;
+begin
+  remove_bunkers:=[ [bunker2,bunker3,bunker5,bunker6],
+                    [bunker2,bunker5]
+                  ];
+
+  remove_soldiers:=[ [guard2,guard3,guard5,guard6],
+                     [guard2,guard5]
+                   ];
+
+  remove_drivers:=[ [ru_drivers[1],ru_drivers[3],ru_drivers[5],ru_drivers[7],],
+                    [ru_drivers[2],ru_drivers[4],ru_drivers[6]]
+                  ];
+
+  remove_vehicles:=[ [ru_trucks[1],ru_trucks[3],ru_trucks[5],ru_trucks[7],],
+                     [ru_trucks[2],ru_trucks[4],ru_trucks[6]]
+                   ];
+
+  if difficulty<3 then
+    begin
+      fce_remove_units(remove_soldiers[difficulty]);
+      fce_remove_units(remove_bunkers[difficulty]);
+      fce_remove_units(remove_drivers[difficulty]);
+      fce_remove_units(remove_vehicles[difficulty]);
+    end;
+end;
+
+
+
+function fce_remove_units(list);
+var un;
+begin
+  for un in list do
+    RemoveUnit(un);
+end;

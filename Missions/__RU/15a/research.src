@@ -1,0 +1,378 @@
+// Nemenne promenne
+var tech_list,                        // seznam zakladnich technologii
+    weap_list,                        // seznam weapon technologii
+    sib_list,                         // seznam siberitovych technologii
+    comp_list,                        // seznam computerovych technologii
+    opto_list,                        // seznam optoelektronickych technologii
+    bio_list,                         // seznam bio technologii
+    space_list;                       // seznam space_time technologii
+
+var utech_basic,                      // basic technology upgrade
+    utech_weap,                       // weapon technology upgrade
+    utech_sib,                        // siberite technology upgrade
+    utech_comp,                       // computer technology upgrade
+    utech_bio,                        // biotechnology upgrade
+    utech_space,                      // spacetime technology upgrade
+    utech_opto;                       // optoelectronic technology upgrade
+
+var basic_tech,                       // seznam vsech zakladnich technologii
+    upgrade_tech;                     // seznam upgradu technologii
+
+var first_technology,                 // seznam technologii dulezitych pro zacatek
+    last_technology,                  // sennam nejmene dulezitych technologii (budou se vynalezat jako posledni)
+    recomended_technology;            // kdyz uz jsou vynalezene first technologie, je velka sance na tyto technologie
+
+// Promenne, ktere se v prubehu meni
+export scientistic_wanted;            // mira touhy po vedcich (0-nepotrebuju, 5-MOOC POTREBUJEME)
+
+var all_invented;                     // promena hlidajici, jestli je uz vse vynalezeno
+                                      // - bude muset byt seznam, pro kazdou stranu vlastni polozka
+
+//--------------------------------//
+//----- INICIALIZACE VYVOJE  -----//
+export function init_research;
+begin
+  // ident vynalezenych technologii pro vsechny strany
+  all_invented:=[false, false, false, false, false, false, false, false];
+
+  // zakladni technologie v neupgradovane laboratori (nezalezi na narodnosti)
+  tech_list:=[ tech_SolPow, tech_SolEng, tech_OilPow, tech_OilEng, tech_SibDet,
+               tech_ApeLang, tech_ApePsych, tech_ApeAgres ];
+
+  // technologie ve weapon labu
+  weap_list:=[ tech_Gatling, tech_Gun, tech_Explos, tech_AdvMet, tech_Rocket, tech_AdvRocket, tech_Bazooka,
+               tech_Mortar, tech_AdvChassis, tech_Soporific, tech_Flame, tech_Behemoth, tech_SelfDest ];
+
+  // technologie v sib labu
+  sib_list:=[ tech_SibPow, tech_SibEng, tech_SibFiss ];
+
+  // technologie v compu labu
+  comp_list:=[ tech_AI, tech_AdvAI, tech_Virus, tech_TargTeleport ];
+
+  // technologie v opto labu
+  opto_list:=[ tech_Radar, tech_LasSight, tech_RemCont, tech_Laser, tech_MatDet, tech_PartInvis,
+               tech_RemCharge ];
+
+  // technologie v bio labu
+  bio_list:=[ tech_ApeNeural, tech_ApeBrain, tech_StimDrugs, tech_BioDet ];
+
+  // technologie v spacetime labu
+  space_list:=[ tech_TauField, tech_Lapser, tech_LimTeleport, tech_TauRad, tech_SpacAnom ];
+
+
+  // ulozeni vsech neupgradovanych technologii do jednoho listu
+  basic_tech:=[tech_list, weap_list, sib_list, comp_list, bio_list, space_list, opto_list];
+
+  // seznam upgradu jednotlivych technologii
+
+  utech_basic:=[tech_Tech1, tech_Tech2, tech_Tech3];          // basic technology upgrade
+  utech_weap:=[tech_Weap1, tech_Weap2, tech_Weap3];           // weapon technology upgrade
+  utech_sib:=[tech_Sib1, tech_Sib2, tech_Sib3];               // siberite technology upgrade
+  utech_comp:=[tech_Comp1, tech_Comp2, tech_Comp3];           // computer technology upgrade
+  utech_bio:=[tech_Bio1, tech_Bio2, tech_Bio3];               // biotechnology upgrade
+  utech_space:=[tech_ST1, tech_ST2, tech_ST3];                // spacetime technology upgrade
+  utech_opto:=[tech_Opto1, tech_Opto2, tech_Opto3];           // optoelectronic technology upgrade
+
+end;
+
+function init_upgrade_by_nations(side_nation);
+begin
+  // tyhle 3 technologie upravit podle narodnosti a podle stylu hry
+  first_technology:=[tech_SolPow, tech_OilPow, tech_OilEng, tech_SibDet, tech_SibPow, tech_AI, tech_AdvAI];
+  last_technology:=[tech_ApeBrain, tech_Flame, tech_Soporific, tech_SibFiss];
+  recomended_technology:=[tech_Gun, tech_Tech1, tech_Comp1, tech_Tech2, tech_Comp2, tech_Tech3, tech_Comp3];
+
+    case side_nation of
+  1: upgrade_tech:=[ utech_basic, utech_weap, utech_sib, utech_comp, utech_opto];
+  2: upgrade_tech:=[ utech_basic, utech_weap, utech_sib, utech_bio, utech_opto];
+  3: upgrade_tech:=[ utech_basic, utech_weap, utech_sib, utech_comp, utech_space];
+    end;
+end;
+
+
+//----------------------------------------------//
+//-----  ZJISTOVANI NECINNOSTI LABORATORI  -----//
+every 0$5.5 do
+var un,
+    active_side,                                      // prave zpracovavana strana
+    active_nation,                                    // narodnost prave zpracovavane strany
+    lab_list,                                         // seznam laboratori
+    still_researching;                                // indikace, zda alespon jedna laborator vynaleza
+begin
+
+  for active_side in cpu_list do
+    begin
+      still_researching:=false;
+      lab_list:=get_labs(active_side);
+
+      for un in lab_list do
+        if BuildingStatus(un)=bs_working then
+          still_researching:=true;
+
+      active_nation:=GetCPUNation(active_side);
+
+      if (not still_researching) and active_nation then  // pokud zadna z laboratori nevynaleza, pak se spusti novy vyzkum
+        start_new_research(active_side,active_nation);
+    end;
+
+ if (cpu_list) and (not all_cpu_invented) then
+    enable;
+end;
+
+
+//-----------------------------------------------------------------//
+//-----  KONTROLA VYNALEZENI VSECH TECHNOLOGII U VSECH STRAN  -----//
+function all_cpu_invented;
+var un,
+    vysledek;
+begin
+  vysledek:=true;
+  for un in cpu_list do
+    if not all_invented[un] then
+      begin
+        vysledek:=false;
+        break;
+      end;
+  result:=vysledek;
+end;
+
+//-------------------------------------------//
+//-----  ZJISTENI DOSTUPNYCH LABORATORI -----//
+function get_labs(side);
+var lab_list;                                         // seznam laboratori
+begin
+  lab_list:=FilterAllUnits([ [f_side,side], [f_or, [f_btype,b_lab_full], [f_btype,b_lab]] ]);
+  result:=lab_list;
+end;
+
+
+//-----------------------------------------------//
+//-----  MAIN RESEARCH DISTRIBUTING MODULE  -----//
+function start_new_research(side,nation);
+var lab_list,               // seznam laboratori
+    possible,               // seznam vhodnych druhu technologii (dle typu laboratori)
+    to_research,            // dalsi technologie na vyzkum
+    lab,                    // a laborator ve ktere so to bude vynalezat
+    scientistic;            // seznam vedcu pridelenych k vyzkumu
+begin
+  scientistic:=request_people(side,class_scientistic,1);   // !!!!!!!!! DODELAT PRIORITU
+  lab_list:=get_labs(side);                                // zjistuje dostupne laboratore
+  init_upgrade_by_nations(nation);                         // inicializace upgradu technologii pro jednotlive narody
+
+  possible:=get_possible_research(side);                   // zjistuje upgrady laboratori (weapon, siberit, ...)
+  to_research:=select_next_technology(side,possible);      // vybere dalsi vyzkum podle moznosti laboratori
+  lab:=research_possible(side,to_research);                // vybere pozadovanou laborator
+  if lab then                                              // jenom pojistka ze je vse v poradku
+    begin
+      transfer_scientistic(scientistic,lab);               // presune vedce do zadane laboratore
+      begin_of_research(lab,to_research);                  // prikaz dane laboratori pro vyzkum
+    end;
+end;
+
+//------
+function get_possible_research(side);                      // zjistuje upgrady laboratori (weapon, siberit, ...)
+var un,vysledek,
+    lab_list,                  // seznam laboratori
+    upgrade;                   // seznam upgradu jednotlivych laboratori
+begin
+  vysledek:=[];
+  upgrade:=[];
+  lab_list:=get_labs(side);
+
+  for un in lab_list do
+    upgrade:=upgrade ^ GetLabKind(un,1) ^ GetLabKind(un,2);
+
+  for un in upgrade do
+    vysledek:=vysledek ^ (un-8);
+
+  result:=vysledek;
+end;
+
+//------
+function shake_it_baby(list);
+var vysledek,pom,i,n;
+begin
+  vysledek:=[];
+  for i=1 to list do
+    begin
+      n:=Rand(1,list);
+      pom:=list[n];
+      list:=Delete(list,n);
+      vysledek:=vysledek ^ pom;
+    end;
+  result:=vysledek;
+end;
+
+//------
+function GetBasicTechnology;                          // vyber druhu technologii, ve kterych je jeste co vynalezat
+var list,un,                                          // vytvori jednoduchy seznam poskladany z nahodneho poradi zakladnich
+    vysledek;                                         // technologii
+begin
+  list:=[];
+  for un in basic_tech do
+    if un then
+      list:=list ^ [un];
+
+  if list>1 then                                      // zamichani poradi technologii ktere muzu vynalezat
+    vysledek:=shake_it_baby(list);
+
+  result:=vysledek;
+end;
+
+//------
+function GetUpgradeTechnology;                        // vyber druhu technologii, ve kterych je jeste co vynalezat
+var list,un,                                          // viz GetbasisTechnology
+    vysledek;
+begin
+  vysledek:=[];
+  list:=[];
+  for un in upgrade_tech do
+    if un then
+      list:=list ^ [un];
+
+  vysledek:=shake_it_baby(list);
+
+  result:=vysledek;
+end;
+
+//------
+function select_next_technology(side,possible);            // vybere dalsi vyzkum podle moznosti laboratori
+var un,pom,
+    new,               // promenna zjistujici, jestli se potrebuje postavit novy lab;
+    vysledek,
+    select;            // seznam vsech druhu technologii ve kterych je jeste co vynalezat
+begin
+  new:=true;
+  vysledek:=[];
+  select:=[];
+
+  // FIRST TECHNOLOGY
+  for un in first_technology do                       // uprednostnovani dominantnich technologii
+    begin
+      pom:=research_possible(side,un);
+      if pom then
+        begin
+          vysledek:=un;
+          break;
+        end;
+    end;
+  if not first_technology then                        // zjistovani, zda je potreba postavit novy lab (nebo upgrade)
+    new:=false;
+
+
+  // RECOMENDED TECHNOLOGY
+  if not vysledek and (Rand(0,10)<3) then
+    for un in recomended_technology do                // vyber z doporucenych technologii, pokud uz nejsou dominantni
+      begin
+        pom:=research_possible(side,un);
+        if pom then
+          begin
+            vysledek:=un;
+            break;
+          end;
+      end;
+  if not recomended_technology then
+    new:=false;
+
+
+  // BASIC TECHNOLOGY
+  if not vysledek then
+    begin
+      select:=GetBasicTechnology;
+      for un in select do
+        begin
+          pom:=[];
+          if not un in last_technology then
+            pom:=research_possible(side,un);
+          if pom then
+            begin
+              vysledek:=un;
+              break;
+            end;
+        end;
+    end;
+  if not select then
+    new:=false;
+
+
+  // UPGRADE TECHNOLOGY
+  if not vysledek then
+    begin
+      select:=GetUpgradeTechnology;
+      for un in select do
+        begin
+          pom:=[];
+          if not un in last_technology then
+            pom:=research_possible(side,un);
+          if pom then
+            begin
+              vysledek:=un;
+              break;
+            end;
+        end;
+    end;
+  if not select then
+    new:=false;
+
+
+  // LAST TECHNOLOGY
+  if not vysledek  then
+    for un in last_technology do                      // vyber z doporucenych technologii, pokud uz nejsou dominantni
+      begin
+        pom:=research_possible(side,un);
+        if pom then
+          begin
+            vysledek:=un;
+            break;
+          end;
+      end;
+  if not last_technology then
+    new:=false;
+
+
+  if not (vysledek or new) then
+    begin
+      all_invented:=Insert(all_invented,side,true);
+      all_invented:=Delete(all_invented,side+1);
+    end;
+
+  result:=vysledek;
+end;
+
+//------
+function research_possible(side,tech);                // zjistovani seznamu laboratori, ve kterych se da tech vynalezat
+var un,vysledek,
+    lab_list;                                         // seznam laboratori
+begin
+  lab_list:=get_labs(side);
+
+  if GetTech(tech,side) in [state_disabled, state_researched] then
+    vysledek:=[]
+  else
+    for un in lab_list do
+      if CanBeResearched(un,tech) then
+        vysledek:=vysledek ^ un;
+
+  result:=vysledek;
+end;
+
+//------
+function transfer_scientistic(scients,to_lab);    // presune vedce do zadane laboratore
+var un,i;
+begin
+  i=1;
+  to_lab:=to_lab diff [0];
+  for un in scients do
+    begin
+      ComEnterUnit(un,to_lab[(i mod to_lab)+1]);
+      i:=i+1;
+    end;
+  AddComChangeProfession(scients,class_scientistic);
+end;
+
+//------
+function begin_of_research(lab,to_research);          // prikaz dane laboratori pro vyzkum
+begin
+  ComResearch(lab,to_research);
+end;
+

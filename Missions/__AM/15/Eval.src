@@ -1,0 +1,166 @@
+///////////////////////////////////////////////////////
+///////////////   Evaluation   ////////////////////////
+///////////////////////////////////////////////////////
+
+// Powell is killed by JMM
+// MARKED 8 Not_Ingame_Run_over
+EVERY 0$1 TRIGGER IsDead(Powell) MARKED 8 DO
+ begin
+   YouLost('Surrender');
+   ExitGame;
+ end;
+
+// MARKED 22 JMM_Captured
+EVERY 0$1 MARKED 22 DO
+ begin
+   YouLost('JMMCaptured');
+   ExitGame;
+ end;
+
+// MARKED 19 - JMM_has_surrounded
+EVERY 0$1 MARKED 19 DO
+ begin
+   YouLost('Surrender');
+   ExitGame;
+ end;
+
+// MARKED 2 - out_of_base
+EVERY 0$1 MARKED 2 DO
+ begin
+   YouLost('Dismissed');
+   ExitGame;
+ end;
+
+// EOM - JMM is death
+EVERY 0$5 TRIGGER IsDead(JMM) do
+ begin
+  YouLost('JMM');
+  ExitGame;
+ end;
+
+// MARKED 13 - Matherlod_Contamined1;
+EVERY 0$5 MARKED 13 DO
+ begin
+   Wait(0$5);
+   YouLost('Motherlode1');
+   ExitGame;
+ end;
+
+// MARKED 14 - Matherlod_Contamined2;
+EVERY 0$5 MARKED 14 DO
+ begin
+   Wait(0$5);
+   YouLost('Motherlode2');
+   ExitGame;
+ end;
+
+// MARKED 15 - Matherlod_Contamined3;
+EVERY 0$5 MARKED 15 DO
+ begin
+   Wait(0$7);
+   YouLost('Motherlode3');
+   ExitGame;
+ end;
+
+////////// Mission succeeds ///////////
+
+
+
+// MARKED 23 - End_of_m
+EVERY 0$1 MARKED 23 DO
+ begin
+   DialogueON;
+   Say(JMM, 'D20-JMM-1');
+   if IsOk(Joan) and GetSide(Joan) = americans then
+     Say(Joan, 'D20-Joan-1');
+   if IsOk(Lisa) and GetSide(Lisa) = americans then
+     Say(Lisa,'D20-Lisa-1');
+   if IsOk(Donaldson) and GetSide(Donaldson) = americans then
+     Say(Donaldson,'D20-Don-1');
+   if IsOk(Cornell) and GetSide(Cornell) = americans then
+     Say(Cornell,'D20-Corn-1');
+   if IsOk(Denis) and GetSide(Denis) = americans then
+     Say(Denis,'D20-Den-1');
+   if IsOk(Bobby) and GetSide(Bobby) = americans then
+     Say(Bobby,'D20-Bobby-1');
+   if IsOk(Gladstone) and GetSide(Gladstone) = americans then
+     Say(Gladstone,'D20-Glad-1');
+   if IsOk(Cyrus) and GetSide(Cyrus) = americans then
+     Say(Cyrus,'D20-Cyrus-1');
+   if IsOk(Stevens) and GetSide(Stevens) = americans then
+     Say(Stevens,'D20-Huck-1');
+   if IsOk(Brown) and GetSide(Brown) = americans then
+     Say(Brown,'D20-Brown-1');
+   if IsOk(Gary) and GetSide(Gary) = americans then
+     Say(Gary,'D20-Gary-1');
+   if IsOk(Coonie) and GetSide(Coonie) = americans then
+     Say(Coonie,'D20-Con-1');
+   if IsOk(Kurt) and GetSide(Kurt) = americans then
+     Say(Kurt,'D20-Kurt-1');
+   if IsOk(Yamoko) and GetSide(Yamoko) = americans then
+     Say(Yamoko,'D20-Yam-1');
+   if IsOk(Frank) and GetSide(Frank) = americans then
+     Say(Frank,'D20-Frank-1');
+   DialogueOFF;
+
+   if Roth_Captured then
+     AddMedal('Roth', 1)
+   else
+     begin
+       If IsOk(Roth) then AddMedal('Roth', -2)
+       else AddMedal('Roth', -1);
+     end;
+
+   AddMedal('Project', Russian_project_canceled);
+   AddMedal('NoLosses', No_Looses);
+
+   SA_OnMissionComplete;
+    GiveMedals('MAIN');
+
+   SaveCharacters(JMM,'JMM');
+   if IsLive(Cyrus) then
+     SaveCharacters(Cyrus, 'Cyrus');
+   if IsLive(Bobby) then
+     SaveCharacters(Bobby, 'Bobby');
+   if IsLive(Lisa) then
+     SaveCharacters(Lisa, 'Lisa');
+   if IsLive(Frank) then
+     SaveCharacters(Frank, 'Frank');
+   if IsLive(Donaldson) then
+     SaveCharacters(Donaldson, 'Donaldson');
+   if IsLive(Brown) then
+     SaveCharacters(Brown, 'Brown');
+   if IsLive(Denis) then
+     SaveCharacters(Denis, 'Denis');
+   if IsLive(Gladstone) then
+     SaveCharacters(Gladstone, 'Gladstone');
+   if IsLive(Yamoko) then
+     SaveCharacters(Yamoko, 'Yamoko');
+   if IsLive(Cornell) then
+     SaveCharacters(Cornell, 'Cornell');
+   if IsLive(Joan) then
+     SaveCharacters(Joan,'Joan');
+   if IsLive(Kurt) then
+     SaveCharacters(Kurt,'Kurt');
+   if IsLive(Gary) then
+     SaveCharacters(Gary,'Gary');
+   if IsLive(Stevens) then
+     SaveCharacters(Stevens,'Stevens');
+   if IsLive(Coonie) then
+     SaveCharacters(Coonie,'Coonie');
+   if IsLive(Baker) then
+     SaveCharacters(Baker,'Baker');
+   if IsLive(VanHouten) then
+     SaveCharacters(VanHouten,'VanHouten');
+
+   SaveCharacters(FilterAllUnits([[f_alive], [f_side, americans], [f_type, unit_human]])
+                  diff [JMM, Cyrus, Bobby, Lisa, Frank, Donaldson, Brown, Denis, Gladstone,
+                        Yamoko, Cornell, Joan, Kurt, Gary, Stevens, Coonie, Baker, VanHouten]
+                  , 'Am15Winners');
+
+   YouWin;
+   ExitGame;
+ end;
+
+
+

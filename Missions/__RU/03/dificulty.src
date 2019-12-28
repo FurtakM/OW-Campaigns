@@ -1,0 +1,68 @@
+EXPORT level_bw_e;
+EXPORT schol_find_amikama;
+EXPORT levely_amici;
+EXPORT posily1;
+EXPORT posily11;
+EXPORT posily2;
+EXPORT posily3;
+EXPORT posily4;
+EXPORT utok_na_omikron;
+EXPORT levely_ruske_posily;
+EXPORT levely_am_budov;
+EXPORT muze_projit_posil;
+EXPORT muze_prezit_posil;
+
+EXPORT BELKOV_SAVED;
+EXPORT STAV_UTOKU;
+
+
+// nastaveni konstant obtiznosti
+EXPORT function set_difficulty;
+begin
+  BELKOV_SAVED=LoadVariable('belkov_saved',0);
+  STAV_UTOKU=LoadVariable('utok_stav',3);
+
+  level_bw_e=[2,3,4];
+  schol_find_amikama=[11$0,9$0,7$0];
+  levely_amici=[2,3,4];
+  posily1=[13$00,11$00,10$00];
+  posily11=[5$0,4$0,3$0];
+  posily2=[10$0,8$0,5$0];
+  posily3=[11$0,8$30,5$0];
+  posily4=[8$0,7$0,5$0];
+  utok_na_omikron=[55$0,45$0,35$0] [difficulty];
+  levely_ruske_posily=[4,3,2];
+  levely_am_budov=[0,1,2];
+  muze_projit_posil=[8,8,6];
+  muze_prezit_posil=[2,5,100];
+
+  cas=[0,':',0];
+end;
+
+
+
+// hodiny
+EXPORT cas;
+EVERY 0$10 DO
+VAR pom;
+begin
+  if cas[3]+10=60 then cas=cas[1]+1^cas[2]^0
+                  else cas=cas[1]^cas[2]^cas[3]+10;
+  debug_strings=[cas];
+  enable;
+end;
+
+// pojmenovani zakladen
+EXPORT function pojmenovani_zakladen;
+VAR pom;
+begin
+  SetBName(RU1_dep,'kirov');
+  pom=FilterUnitsInArea(Ru2_base,[[f_side,You],[f_btype,b_depot]]);
+  if pom>0 then SetBName(pom[1],'beria');
+  SetBName(Am_dep,'omikron');
+end;
+
+EXPORT function pojmenovani_kaganoviche(base);
+begin
+  SetBName(base,'kagan');
+end;

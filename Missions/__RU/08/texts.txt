@@ -1,0 +1,304 @@
+$ DStart-Pop-1
+- (over radio) Comrade Gorky, this is the area chosen for L. D. Trotsky. This base must be exemplary, sustain total functionality and be large enough to accommodate the majority. Oil and Alaskite supplies must be substantial. Is it clear? 
+$ DStart-Bur-1
+- (into radio) Understood, comrade colonel. We will ensure the base is the pride of every Russian soldier.
+$ DHeike-Pop-1
+- Now you have the depot, we send you the prisoner from New Kabul, Heike Steyer. Keep an eye on her! (a car driven by Heike appears, she has the player's colour and he can normally control her).
+$ DHeikeKilled-Hke-1
+- You will rot in hell for this!
+$ DMercHelp-Kurt-1
+- (speaks from a place that's hidden in fog, or far away) Hello, comrade! I am Kurt, I wish to do deal with you.
+$ DMercHelp-Bur-1
+- You are enemy. I'll kill you before I deal with you.
+$ DMercHelp-Kurt-2
+- I am enemy no longer. Sheikhs deceived us, I and few friends no longer their puppets. We help you.
+$ DMercHelp-Bur-2
+- In exchange for what?
+$ DMercHelp-Kurt-3
+- Your prisoner, Heike. Release her and we will help you train mortarmen and build barracks for them.
+$ DQrMerc#1-Bur-1
+- We have all info we need from your woman. If you still want her we have a deal.
+$ DQrMerc#1-Kurt-1
+- Good. But do not think to trap us comrade, many would die to avenge our deaths.
+$ DQrMerc#2-Bur-1
+- (into radio) Colonel Popov, some fugitives from Arabian camp offer me their services in exchange for the prisoner. What is your view?
+$ DQrMerc#2-Pop-1
+- (over radio) It is your decision. Your task is simply to make L. D. Trotsky the best base in the Pliocene world.
+$ DQrMerc#2-Bur-2
+- All right Kurt, you have a deal.
+$ DQrMerc#3-Bur-1
+- Red Army never deals with mercenary scum. Leave now or die.
+$ DMercRefuseBuild-Kurt-1
+- No, comrade! Our agreement is clear, mortarmen barracks for Heike.
+$ DMercCompleted-Kurt-1
+- This is our part complete. Now you take Heike to the big rock to the west. Somebody will be waiting for her. (If player does that, set MercAccepted = True)
+$ DMercPopov-Pop-1
+- What are you saying!? You release the prisoner!?
+$ DMercPopov-Bur-1
+- It meant we could improve the base, comrade colonel, this is our mission!
+$ DMercPopov-Pop-2
+- For this time I will forgive you comrade. Never do such a thing again without consulting me.
+$ DMercAmbush-Kurt-1
+- I knew we should never trust commies. You'll pay for this with your balls comrade.
+$ DMercAttack-Kurt-1
+- Enjoy that comrade!? Unless you want more take Heike to the big rock to the west. It is up to you. (Attacks continue until all mercenaries are eliminated or until player releases Heike. If he does, set MercAccepted = True).
+$ DMercDeceived-Kurt-1
+- You are a cheating bastard! One day I shall tear your guts from your body and feed them to you!
+$ DArabianRequest-Diet-1
+- (over radio) This is Dietrich Genscher, from United Preservation Force. The Arabs! Tell me comrade, since when did Red Army employs mercenaries.
+$ DArabianRequest-Bur-1
+- (into radio) Go screw yourself Genscher.
+$ DArabianRequest-Diet-2
+- (over radio) I am not fond of these deserters comrade. I shall make an example of them. You hand them over I will pay you well.
+$ DQrHandOver#1-Bur-1
+- (into radio) Very well, Herr Genscher. Send an unarmed vehicle.
+$ DQrHandOver#1-Diet-1
+- (over radio) Good. I see you are not too stupid, comrade Gorky. (Set MercHandedOver = True)
+$ DQrHandOver#2-Bur-1
+- (into radio) They might have betrayed you Herr Geschner, but I will not betray them.
+$ DQrHandOver#2-Diet-1
+- (over radio) Then comrade Burlak, you are dumber bastard than I thought!
+$ DQrHandOver#2-Bur-2
+- (into radio) We will discover who is smartest on the battlefield.
+$ DHandOverCome-ASol1-1
+- I am sent by major Genscher. Where are the deserters?
+$ DHandOverCome-Kurt-1
+- Shit! The commie bastard betrayed us! Run!
+$ DHandOverSpoiled-Diet-1
+- I never should have trusted you, you commie bastard! You’ll pay for this a thousand times.
+$ DLegionFormed-Hke-1
+- This is Heike Steyer, comrade commander.
+$ DLegionFormed-Bur-1
+- What do you want Heike? Did you miss us!?
+$ DLegionFormed-Hke-2
+- I am now part of the Legion, a group of disenchanted mercenaries. We are now, what you might call ‘independent’.
+$ DLegionFormed-Bur-2
+- So? Have you come to offer us discount rates!?
+$ DLegionFormed-Hke-3
+- We talk principle then price. Americans are coming for you Burlak.  You pay us and we can hold them to the North.
+$ DQrLegion#1-Bur-1
+- OK. I know you keep your word to us, so I'll give you crates, but if you betray me the entire Red Army will be after your blood. (Set MercPaid = True)
+$ DQrLegion#2-Bur-1
+- Don’t push it Heike. The Red Army does not hire mercenaries to fight it’s battles. Just be glad we let you live.
+$ DFiringRange-Kuz-1
+- [present: alt a1] Comrade commander, we must make every bullet count now. A firing range would improve our shooting skills.
+$ DFiringRange-Obl-1
+- [otherwise: alt a2] Comrade commander, to beat Yanks we must improve shootings skills. We could build a gallery.
+$ DFiringRange-Bur-1
+- It is true, the harder the practice the easier the battle. What do you have in mind?
+$ DFiringRange-Kuz-2
+- [alt a1] We can use this area (camera pans)… and barrels from the depot for targets.
+$ DFiringRange-Obl-2
+- [alt a2] We could use this area (camera pans)… and barrels from depot for targets. I think our other comrades will be pleased.
+$ DQrShootingGallery#1-Bur-1
+- It sounds a good idea. I will tell you when you can practice.
+$ DQrShootingGallery#2-Bur-1
+- There is too much work already comrade. Our shooting is good enough.
+$ DHunting-Bel-1
+- [alive: alt a1] Comrade, hunting would be good practice for battle.
+$ DHunting-Kar-1
+- [alive: alt a2] Our work here is almost complete, comrade commander. We could go hunting for target practice.
+$ DHunting-Koz-1
+- [alive: alt a3] Between us we have built the most magnificent base, comrade Gorky. I suggest we reward ourselves with recreation - hunting! It’s also good target practice for the soldiers.
+$ DHunting-Bur-1
+- I suppose it is possible.
+$ DHunting-Bel-2
+- [alt a1] There’s plenty of game here. And it’s more fun than the firing range!
+$ DHunting-Kar-2
+- [alive: alt a2] There's plenty of game around here. I for one would like to try.
+$ DHunting-Koz-2
+- [alive: alt a3] There are woods here with wild animals. And we could put some decent food on the table! What do you say?
+$ DQrHunting#1-Bur-1
+- I have too much work myself. You can go. But do not be long.
+$ DQrHunting#2-Bur-1
+- There is still too much work to do. Forget about hunting.
+$ DFreeTime-Ptr-1
+- [alive: alt a1] Comrade Gorky, I am exhausted. I request temporary leave!
+$ DFreeTime-Kir-1
+- [alive: alt a2] Comrade commander, we’ve been working many hours, and I cease to be efficient now. Could I take a temporary leave?
+$ DFreeTime-Kap-1
+- [otherwise: alt a3] Comrade commander, the results of research are fascinating. The possibilities are endless. But I am too exhausted to work quickly now. May I take temporary leave? Not for long I promise! 
+$ DFreeTime-Kuz-1
+- [alive: alt b1] Comrade commander, excuse me for a minute, will you? I… er, I have a pressing business to attend to.
+$ DFreeTime-Gny-1
+- [alive: alt b2] I would like to request temporary leave also, comrade commander. Would it be possible?
+$ DFreeTime-Tit-1
+- [alive: alt b3] Burlak, do you think you can do without me for a short while now? I'll be back soon.
+$ DFreeTime-Obl-1
+- [alive: alt b4] Comrade commander, I respectfully ask for temporary leave. Is it OK with you, comrade Gorky?
+$ DQrFreeTime#1-Bur-1
+- All right, you two. But not for long!
+$ DQrFreeTime#2-Bur-1
+- Is our work here finished? No. When it is, we can rest, not before.
+$ DMasha-Koz-1
+- Comrade major, we now have many kinds of weapons produced. We would like you to select a vehicle as your own. It will bring hope to our soldiers when they know you are present. It will also strike fear in the enemy.
+$ DMasha2-Bur-1
+- (moved) Thank you comrades. I hope I won't disappoint you. My tank will be called Masha and always be in the frontline!
+$ DAI-Sch-1
+- [alive: alt a1] Comrade commander, the Americans use a computer to drive their vehicles. I've explored this and have a working prototype ready.
+$ DAI-Kap-1
+- [otherwise: alt a2] Comrade commander, I've noticed the Yanks developed vehicles that drive themselves, using computers. I've tried to do the same and prototype is now ready.
+$ DAI-Bur-1
+- How good it is?
+$ DAI-Sch-2
+- [alt a1] A lot better than the Yankee crap, but not nearly as good as vehicle driven by mechanic. I am sure we can improve it.
+$ DAI-Kap-2
+- [alt a2] Not so good, I am afraid, but not expensive either. It could be better with a little more work.
+$ DSpontTelep-Sch-1
+- [alive: alt a1] (v. excited) Comrade commander! We've made tremendous discovery. We can force the Alaskite to transport large objects great distances
+$ DSpontTelep-Kap-1
+- [otherwise: alt a2] Comrade commander, we've discovered a completely new property of Alaskite. When stimulated correctly it can transport large objects considerable distance.
+$ DSpontTelep-Bur-1
+- Could we send tanks into enemy base?
+$ DSpontTelep-Sch-2
+- [alt a1] Not yet, maybe later. For now we can get broken vehicles out of enemy fire. Many lives are lost trying to repair them during battle. We call this spontaneous transportation – requires only small device.
+$ DSpontTelep-Kap-2
+- [alt a2] Ah, we are not quite there yet. But I observed drivers being killed repairing their vehicles in the middle of battle. So I devised simple device to move vehicle out of combat, we call this spontaneous transportation.
+$ DSpontTelep-Bur-2
+- Sounds excellent. I would like to try it. 
+$ DAmAttackStart-Pop-1
+- (over radio) Your task is almost finished Gorky, but there are Yanks heading your way. Show them what the Red Army can do!
+$ DAmAttackStart-Bur-1
+- [MercPaid = True: alt a1] Here come the Americans. Seems as though Legion aren’t as good as they think.
+$ DAmAttackStart-Glb-1
+- [alive, reply] I knew it. Dealing with mercenaries is always a bad idea. You lost 50 crates for nothing!
+$ DAmAttackStart-Bur-2
+- [MercPaid = False: alt a2] Here are the Americans. (quiet) Come on Yanks, we are waiting for you.
+$ DAmAttackFin-Bel-1
+- [alive: alt a1] I hope they enjoyed their visit to L. D. Trotsky.
+$ DAmAttackFin-Gny-1
+- [alive: alt a2] They learnt what Trotsky stands for. Victory over imperialist bastards!
+$ DAmAttackFin-Tit-1
+- [alive: alt a3] So the base is baptised by blood.
+$ DAmAttackFin-Lip-1
+- [alive: alt a4] So the first attack on our new base is over. And we are victorious!
+$ DAmAttackFin-Kar-1
+- [alive: alt a5] The base is no virgin any more!
+$ DAmAttackFin-Obl-1
+- [alive: alt a6] That was the first attack. There will be more.  We can count on it.
+$ DAmAttackFin-Bur-1
+- [alive: alt a7] Victory is ours. Thank you, comrades. This base must never be taken.
+$ DAmAttackFin-Pop-1
+- Good work, comrade Burlak. (mission accomplished)
+# MStart
+Add main Buildings
+- Build all available upgraded buildings, all specialised labs, factories with all extensions, and three automatic turrets with different weapons.
+Add main Weapons
+- Use all available weapons for vehicles.
+Add main Techno
+- Research all available technologies.
+#
+# MBuildings
+Del Buildings
+Add Main Buildings
+- Build all available upgraded buildings, all specialised labs, factories with all extensions, and three automatic turrets with different weapons.
+Dnd
+#
+# Mweapons
+Del Weapons
+Add Main Weapons
+- Use all available weapons for vehicles.
+Dnd
+#
+# MBuildingsDone
+Out Buildings
+#
+# MWeaponsDone
+Out Weapons
+#
+# MTechnoDone
+Out Techno
+#
+? QMerc
+The mercenary leader offers to build the barracks for training of mortarmen in your base. Do you want to:
+- Accept the offer.
+- Ask your superiors.
+- Reject the offer.
+?
+? QHandOver
+The Arab commander offers you 100 crates, 100 crystals of Alaskite, and 100 barrels of oil if you hand over the mercenaries who built the mortarmen barracks. Will you:
+- Accept the offer.
+- Reject the offer.
+?
+? QSendHeike
+Do you want to send Heike to the big rock to the West?
+- Yes.
+- No.
+?
+? QLegion
+Legion commander, Heike Steyer, offers you help for 50 crates. Will you:
+- Accept the offer.
+- Reject the offer.
+?
+? QShootingGallery
+Your soldiers would like to practice shooting using oil barrels as targets. Do you approve?
+- Yes.
+- No.
+?
+? QHunting
+Your men would like to go hunting. Will you let them?
+- Yes.
+- No.
+?
+? QFreeTime
+Some of your people would like to take a short break. Will you let them?
+- Yes.
+- No.
+?
+? QMasha
+Your men think that you should have a unique vehicle. Try those that are available.
+- OK.
+?
+? QMashaQuery
+So how about this vehicle? Do you want to make it your personal one?
+- Yes.
+- Not yet.
+?
+? QMashaQuery2
+And this one? Is it better? Do you want to make it your personal vehicle?
+- Yes.
+- No.
+?
+# MMasha
+Add main Masha
+- Select your personal vehicle.
+#
+# MMashaDone
+Out Masha
+#
+# MAI
+Add main AI
+- Build at least one computer controlled vehicle.
+#
+# MAIDone
+Out AI
+#
+# MTele
+Add main Tele
+- Test limited spontaneous teleportation.
+#
+# MTeleDone
+Out Tele
+#
+^ Main
+Base completed.
+| Burlak
+Burlak is dead.
+* ArtisticImpression
++ Beautiful base.
+- N/A
+*
+* Speed
++ Base built quickly.
+- It took you too long to build the base.
+*
+* FavouriteCommander
++ Your people like you.
+- You lost some of your men.
+- Your men say that you are too harsh.
+- Some of your men say you allow favouritism.
+*
+* ArabBarracks
++ Arab Barracks built
+- You failed to add Arab barracks to your base
+*

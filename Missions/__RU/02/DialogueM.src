@@ -1,0 +1,302 @@
+var
+  PlayingLooped;
+
+export function play_dialog_15;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  CenterOnXY(60,52);
+  DialogueOn;
+  say(Bur,'D15-Bur-1'); //- What!? This was not here earlier!
+  if IsOK(Gny) then
+    say(Gny,'D15-Gny-1') //- [present] The Yankees aren't stupid, Bur. They will have built it quickly.
+  else
+    if not BelkovFreed and IsOK(Kov) then
+      say(Kov,'D15-Kov-1') //- [otherwise] They will have built it just to stop us reaching Bel.
+    else
+      Wait(0$5);
+  if not InWest then
+  begin
+    say(Bur,'D15-Bur-2'); //- [never been on western ridge] There might be a better way than frontal attack here.
+    if IsOK(Kov) then
+      say(Kov,'D15-Kov-2') //- [reply] Like what?
+    else
+      wait(0$5);
+    say(Bur,'D15-Bur-3'); //- [reply] We should see if there is a way to get there from the West.
+  end;
+  DialogueOff;
+  CenterOnUnits(BurlakComp);
+  playing:=false;
+end;
+
+export function play_dialog_qwbw1;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Bur,'D17-Bur-1'); //- (into radio) This is Gorky, calling Beria. We've discovered a new American position. I request permission to attack.
+  say(Plat,'D17-Pla-1'); //- (over radio) Eager to be a hero, aren't you?
+  say(Bur,'D17-Bur-2'); //- (into radio) We have a very good position, comrade major. We can pick them off easily and aid comrade Bel and his men.
+  say(Plat,'D17-Pla-2'); //- (over radio) Very well, comrade Gorky. Permission granted.
+  playing:=false;
+end;
+
+export function play_dialog_qwbw2;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Bur,'D18-Bur-1'); //- (into radio) This is Gorky, calling Beria. I think we found an opening in American defences. Could we have reinforcements to assist an attack.
+  say(Plat,'D18-Pla-1'); //- (over radio) Want to play the hero do you, Bur? Your job is establishing Yanks position, not making yourself into a martyr.
+  say(Bur,'D18-Bur-2'); //- (into radio) We are in very good position here. We just need backup.
+  say(Plat,'D18-Pla-2'); //- (over radio) All right, comrade, I'll send you somebody.
+  playing:=false;
+end;
+
+export function play_dialog_19;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  if IsOK(Gny) then
+  begin
+    say(Gny,'D19-Gny-1'); //- [present: alt a1] Are you crazy Bur? You will get us all killed!
+    say(Bur,'D19-Bur-1'); //- [reply] Do you want our boys charging from below and getting slaughtered like Pokryshkin? We can take it out from here, nice and clean.
+  end
+  else if IsOK(Kov) then
+  begin
+    say(Kov,'D19-Kov-1'); //- [otherwise: alt a2] You have balls like a bull, Bur! A big  bull.
+    say(Bur,'D19-Bur-2'); //- [reply] This is only matter of brains. Yanks are so stupid they have built a bunker there just so we can take it to pieces.
+  end;
+  playing:=false;
+end;
+
+export function play_dialog_19a;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  if IsOK(Gny) then
+    say(Gny,'D19A-Gny-1') //- [present: alt a1] What are you doing, Burlak? This is stupid idea!
+  else if IsOK(Kov) then
+    say(Kov,'D19A-Kov-1');  //- [otherwise] This does not seem good tactics. Isn't there a better way?
+  playing:=false;
+end;
+
+export function play_dialog_16;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  CenterOnXY(90,57);
+  DialogueOn;
+  if IsOK(Kov) then
+    if not WBWSpotted then
+      say(Kov,'D16-Kov-1')  //- [W. bw. not spotted: alt a1] So this is where the Yanks are hiding.
+    else
+      say(Kov,'D16-Kov-1a'); //- [W. bw. spotted: alt a2] So - another little hiding place!
+  say(Bur,'D16-Bur-1'); //- That looks a good site to build fortifications.
+  if IsOK(Gny) then
+    say(Gny,'D16-Gny-1'); //- [present] Sure, looks easy to defend.
+  DialogueOff;
+  CenterOnUnits(BurlakComp);
+  playing:=false;
+end;
+
+export function play_dialog_20;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Bur,'D20-Bur-1'); //- The Yanks have one place less to hide, comrade major.
+  say(Plat,'D20-Pla-1'); //- Excellent, Bur.
+  playing:=false;
+end;
+
+export function play_dialog_20a;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Bur,'D20a-Bur-1'); //- The Yanks have one less hiding place, comrade major.
+  say(Plat,'D20a-Pla-1'); //- Good work, Bur.
+  playing:=false;
+end;
+
+export function play_dialog_qAtAm1;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Bur,'D21-Bur-1'); //- (into radio) This is Gorky, calling Beria. We've assessed the American forces surrounding comrade Bel and we believe we can handle them. I request permission to attack.
+  say(Plat,'D21-Pla-1'); //- (over radio) Permission granted comrade Bur. Try and recover the vehicle.
+  playing:=false;
+end;
+
+export function play_dialog_qAtAm2;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Bur,'D22-Bur-1'); //- (into radio) This is Gorky, calling Beria. We are about to make contact with American forces surrounding comrade Bel. Could you send reinforcements for an attack?
+  if (not Reinforcements) and (WBWDestroyed) then
+    say(Plat,'D22-Pla-1') //- [bw. Destroyed & no reinforcements in QAttackBw] (over radio) Very well, comrade. As you took out those American positions, they should get to you easily enough. I will send support.
+  else if (Reinforcements) and (WBWDestroyed) then
+    say(Plat,'D22-Pla-1b') //- [bw. Destroyed & reinforcements sent in QattackBw] (over radio) You have all reinforcements we can spare, comrade Gorky. You must proceed.
+  else
+    say(Plat,'D22-Pla-1a'); //- [bw. not destroyed] (over radio) Negative, comrade Gorky. You had hard time getting there in vehicles, others might not make it at all.
+  playing:=false;
+end;
+
+export function play_dialog_23;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  if IsOK(Gny) then
+  begin
+    say(Gny,'D23-Gny-1'); //- [present: alt a1] We should mind our own business, Bur. This is a job for soldiers.
+    say(Bur,'D23-Bur-1'); //- [reply] We can handle these machines better than any soldier. Only a coward would do nothing. You are not a coward are you?
+  end;
+  playing:=false;
+end;
+
+export function play_dialog_24;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  if not IsOK(Bel) then
+  begin
+    Msg('Bel is killed. Please report this bug. Mission will now be terminated.');
+    konec_mise;
+  end;
+  say(Bel,'D24-Bel-1'); //- I am very glad to see you Bur!
+  if BELKOV_MRTVY then
+    say(Bur,'D24-Bur-1a')  //- [Bel died in previous mission] I only wish I could have done the same  for your brother.
+  else
+    say(Bur,'D24-Bur-1'); //- [Bel did not die in previous mission] I cannot say the same Bel. Every time we meet, you are in deep shit!
+  say(Bel,'D24-Bel-2'); //- Thank you Bur. You have saved my life.
+  say(Bur,'D24-Bur-2'); //- We've still got to get back! (into radio) Lieutenant Gorky reporting to L. P. Beria. The American forces in this area were eliminated and we've made contact with comrade lieutenant Bel.
+  if (GetSide(auto_belkov) = you) then
+  begin
+    say(Bur,'D24-Bur-2a'); //- [vehicle recaptured] We have also managed to recapture our vehicle.
+  end;
+  say(Plat,'D24-Pla-2'); //- Very well, comrade.
+  if WBWSpotted and (not WBWDestroyed) then
+  begin
+    say(Plat,'D24-Pla-2a');  //- [bw. not captured] Now you should return to the American bunker and wipe them out too. (Objective Change 3)
+  end;
+  playing:=false;
+end;
+
+export function play_dialog_25;
+var
+  SomethingNew;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Plat,'D25-Pla-1');  //- So, did you learn anything useful, boys?
+  SomethingNew:=false;
+  if (WBWSpotted) and (not WBWDestroyed) and (not WBWReported) and (EBWSpotted) and (not EBWDestroyed) and (not EBWReported) then
+  begin
+    say(Bur,'D25-Bur-1');  //- [Both American breastworks found] We found two Yankee bunkers in this area, comrade major. One is on that knoll to East and would be difficult to attack; the other is on the ridge just North of here.
+    WBWReported:=true;
+    EBWReported:=true;
+    SomethingNew:=true;
+  end;
+  if EBWSpotted and (not EBWDestroyed) and (not EBWReported) then
+  begin
+    say(Bur,'D25-Bur-1a');  //- [Eastern American bw. found] We found only one Yankee bunker in this area, comrade major, on that knoll to East. It would be very hard to attack.
+    EBWReported:=true;
+    SomethingNew:=true;
+  end;
+  if WBWSpotted and (not WBWDestroyed) and (not WBWReported) then
+  begin
+    say(Bur,'D25-Bur-1b');  //- [Western bw. found] We found only one Yankee bunker in this area, comrade major. It is on the ridge just North of here.
+    say(Bur,'D25b-Bur-1');  //- [not destroyed] I think we would be able to attack them from behind there, and take them without casualties, comrade Plat.
+    WBWReported:=true;
+    SomethingNew:=true;
+  end;
+  if (not SomethingNew) then
+    say(Bur,'D25-Bur-1c');  //- [no bw. found] I am afraid we learnt nothing yet comrade major.
+  playing:=false;
+end;
+
+export function play_dialog_25a;
+var
+  SomethingNew;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Plat,'D25a-Pla-1');  //- Was this a little more productive use of fuel?
+  SomethingNew:=false;
+  if WBWSpotted and (not WBWDestroyed) and (not WBWReported) then
+  begin
+    say(Bur,'D25a-Bur-1b');  //- [w. bw.] We discovered a Yankee bunker on that ridge just North of here, comrade major.
+    say(Bur,'D25b-Bur-1');  //- [not destroyed] I think we would be able to attack them from behind there, and take them without casualties, comrade Plat.
+    WBWReported:=true;
+    SomethingNew:=true;
+  end;
+  if EBWSpotted and (not EBWDestroyed) and (not EBWReported) then
+  begin
+    say(Bur,'D25a-Bur-1a');  //- [e. bw.] We found a Yankee bunker, comrade major. It is on that knoll to East, an attack would be hazardous.
+    EBWReported:=true;
+    SomethingNew:=true;
+  end;
+  if (not SomethingNew) then
+    say(Bur,'D25a-Bur-1');  //- [nothing] We found nothing new, comrade major.
+  playing:=false;
+
+{  if (WBWSpotted) and (not WBWDestroyed) and (EBWSpotted) and (not EBWDestroyed) then
+  begin
+    say(Bur,'D25a-Bur-1b');  //- [w. bw.] We discovered a Yankee bunker on that ridge just North of here, comrade major.
+    say(Bur,'D25a-Bur-1a');  //- [e. bw.] We found a Yankee bunker, comrade major. It is on that knoll to East, an attack would be hazardous.
+  end
+  else if (EBWSpotted and not(EBWDestroyed)) then
+    say(Bur,'D25a-Bur-1a')  //- [e. bw.] We found a Yankee bunker, comrade major. It is on that knoll to East, an attack would be hazardous.
+  else if (WBWSpotted and not(WBWDestroyed)) then
+    say(Bur,'D25a-Bur-1b')  //- [w. bw.] We discovered a Yankee bunker on that ridge just North of here, comrade major.
+  else if (not WBWSpotted) and (not EBWSpotted) then
+    say(Bur,'D25a-Bur-1')  //- [nothing] We found nothing new, comrade major.
+  else
+    Msg('Error in handling dialog 25a. Please report this as a bug.');}
+end;
+
+export function play_dialog_25b;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  say(Plat,'D25b-Pla-1');  //- [reply] Very well, comrade Bur. If you think you can rid us of that Yankee sore, take a couple of soldiers and attack it! And I hope you are right! (Objective Change 3)
+  playing:=false;
+end;
+
+export function play_dialog_25c;
+begin
+  while playing do
+    wait(0$1);
+  playing:=true;
+  if (not WBWSpotted) then
+    say(Plat,'D25c-Pla-1')  //- [no bw. or only Eastern bw. found] There are more Americans here comrade Gorky, I feel them everywhere. You will have to look a little harder.
+  else
+    say(Plat,'D25c-Pla-1a');  //- [not all fog revealed] There are still some dark spots on the map, comrade Bur. Take your vehicles and search there.
+  playing:=false;
+end;
+
+every 0$5 do
+begin
+  if Playing then
+    PlayingLooped:=PlayingLooped+1
+  else
+    PlayingLooped:=0;
+  if PlayingLooped>=30 then
+  begin
+    msg('Playing too long. Possible bug. Please report.');
+    Playing:=false;
+  end;
+  enable
+end;

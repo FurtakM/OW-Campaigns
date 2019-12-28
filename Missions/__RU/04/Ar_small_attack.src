@@ -1,0 +1,189 @@
+export function prepare_small_arabian_attack;
+var j;
+begin
+  sm_attack1:=[];
+  sm_attack2:=[];
+  sm_attack3:=[];
+
+  for j:=1 to (0+attack_count) do // creating of arabian attack
+  begin
+    uc_side:=arab;
+    uc_nation:=nation_arabian;
+    uc_direction:=2;                                      
+    hc_name:='';
+    PrepareHuman(0,class_soldier,Rand(2,5));
+
+    sm_attack1:=sm_attack1 union CreateHuman;
+
+    uc_side:=arab;
+    uc_nation:=nation_arabian;
+    uc_direction:=3;
+    hc_name:='';
+    PrepareHuman(0,class_soldier,Rand(2,5));
+
+    sm_attack2:=sm_attack2 union CreateHuman;
+
+    uc_side:=arab;
+    uc_nation:=nation_arabian;
+    uc_direction:=3;
+    hc_name:='';
+    hc_basic_skills:=[0,0,0,0];
+    hc_skills:=[0,0,0,0];
+    hc_class:=class_soldier;
+
+    sm_attack3:=sm_attack3 union CreateHuman;
+  end;
+end;
+
+every 0$2 marked 11 do  // placing of small arabian attack
+begin
+  sm_pocet1_2:=sm_pocet1_2+1;
+
+  PlaceUnitXY(sm_attack1[sm_pocet1_2],19,2,false);
+  ComMoveToArea(sm_attack1[sm_pocet1_2],PaloukArea);
+
+  PlaceUnitXY(sm_attack2[sm_pocet1_2],103,1,false);
+  ComMoveToArea(sm_attack2[sm_pocet1_2],EnterArea);
+
+  if sm_pocet1_2<attack_count then
+    enable
+  else
+  begin
+    disable;
+    make_small_attack;
+  end;
+end;
+
+
+function make_small_attack;
+var my_filter,i,at1,at2,distance,un,un_mem;
+begin
+  ComAgressiveMove(sm_attack1,33,28);
+  ComAgressiveMove(sm_attack2,98,7);
+  Wait(0$20);
+  AddComAgressiveMove(sm_attack1,31,57);
+  AddComAgressiveMove(sm_attack2,80,24);
+  Wait(0$20);
+  AddComAgressiveMove(sm_attack1,40,71);
+  AddComAgressiveMove(sm_attack2,90,39);
+  Wait(0$20);
+  AddComAgressiveMove(sm_attack1,79,81);
+  AddComAgressiveMove(sm_attack2,101,62);
+  Wait(0$20);
+
+  my_filter:=FilterUnitsInArea(KnollArea,[f_side,you]);
+
+  if my_filter=0 then
+  begin
+    AddComAgressiveMove(sm_attack1,73,138);
+    AddComAgressiveMove(sm_attack2,73,138);
+    enable(12);
+  end
+  else
+  begin
+    enable(17);
+    enable(13);
+  end;
+  Wait(0$20+attack_offset);
+  enable(10);
+end;
+
+every 0$0.9 marked 12 do // Units BreakThruing in ExitArea
+var my_filter;
+begin
+  my_filter:=FilterUnitsInArea(BreakThruArea,[f_side,arab]);
+
+  if my_filter+0>0 then YouLost('ArabBreakthrough');
+
+  enable;
+end;
+               
+every 0$0.9 marked 13 do // Arabian units in ExitArea
+var my_filter,un;
+begin
+  my_filter:=FilterUnitsInArea(KnollArea,[f_side,you]);
+
+  if (0+my_filter)=0 then
+  begin
+    for un in sm_attack1 do
+      if isok(un) then AddComAgressiveMove(un,73,138);
+    for un in sm_attack2 do
+      if isok(un) then AddComAgressiveMove(un,73,138);
+    enable(12);
+    Disabled13:=true;
+  end;
+
+  if not Disabled13 then enable;
+end;
+
+every 0$1 marked 15 do // Killing Gaydar
+begin
+  Wait(Gaydar_wait);
+  if NOT IsDead(Gaydar) AND sm_pocet3<attack_count then
+  begin
+    sm_pocet3:=sm_pocet3+1;
+    PlaceUnitXY(sm_attack3[sm_pocet3],19,2,false);
+    ComMoveToArea(sm_attack3[sm_pocet3],PaloukArea);
+    Wait(10);
+    AddComAttackUnit(sm_attack3[sm_pocet3],Gaydar);
+    enable;
+  end
+  else
+    disable;
+end;
+
+every 0$1 marked 17 do
+var my_filter,un1,un2,distance,un_mem;
+begin
+  my_filter:=FilterUnitsInArea(KnollArea,[f_side,you]);
+
+  if my_filter<>[] then
+  begin
+    for un1 in sm_attack1 do
+    begin
+      if IsOK(un1) then
+      begin
+        distance:=GetDistUnits(un1,my_filter[1]);
+        un_mem:=my_filter[1];
+        for un2 in my_filter do
+        begin
+          if distance > GetDistUnits(un1,un2) then
+          begin
+            distance:=GetDistUnits(un1,un2);
+            un_mem:=un2;
+          end;
+          Wait(3);
+        end;
+        ComAttackUnit(un1,un2);
+      end
+      else
+        sm_attack1:=sm_attack1 diff un1;
+    end;
+
+    for un1 in sm_attack2 do
+    begin
+      if IsOK(un1) then
+      begin
+        distance:=GetDistUnits(un1,my_filter[1]);
+        un_mem:=my_filter[1];
+        for un2 in my_filter do
+        begin
+          if distance > GetDistUnits(un1,un2) then
+          begin
+            distance:=GetDistUnits(un1,un2);
+            un_mem:=un2;
+          end;
+          Wait(3);
+        end;
+        ComAttackUnit(un1,un2);
+      end
+      else
+        sm_attack2:=sm_attack2 diff un1;
+    end;
+  end;
+
+  if sm_attack1=[] AND sm_attack2=[] then
+    disable
+  else
+    enable;
+end;

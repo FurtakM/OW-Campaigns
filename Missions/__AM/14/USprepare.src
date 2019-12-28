@@ -1,0 +1,78 @@
+export us_trucks;
+export number_us_trucks;
+export heavy_trucks,medium_trucks,light_trucks;
+
+export function prepare_us_base;
+var un,i;
+begin
+  number_us_trucks:=4;
+  light_trucks:=Rand(1,(number_us_trucks div 2));
+  heavy_trucks:=Rand(0,(number_us_trucks div 2));
+  medium_trucks:=number_us_trucks-(light_trucks+heavy_trucks);
+
+  us_trucks:=[];
+
+  uc_nation=nation_american;
+  uc_side=neutral;
+
+  // Creating one cargo bay medium truck
+  uc_direction:=Rand(0,5);
+  vc_chassis:=us_medium_wheeled;
+  vc_control:=control_remote;
+  vc_engine:=engine_solar;
+  vc_weapon:=us_cargo_bay;
+  un:=CreateVehicle;
+  PlaceUnitXY(un,84,119,false);
+  us_trucks:=us_trucks^un;
+
+  // Creating some light trucks
+  for i:=1 to light_trucks do
+    begin
+      uc_direction:=Rand(0,5);
+      vc_chassis:=us_light_wheeled;
+      vc_control:=control_remote;
+      vc_engine:=engine_solar;
+      vc_weapon:=us_light_gun;
+      un:=CreateVehicle;
+      PlaceUnitArea(un,place_trucks,false);
+      us_trucks:=us_trucks^un;
+    end;
+
+  // Creating some medium trucks
+  for i:=1 to medium_trucks do
+    begin
+      uc_direction:=Rand(0,5);
+      if (i mod 2)=1 then
+        begin
+          vc_chassis:=us_medium_wheeled;
+          vc_weapon:=us_gatling_gun;
+        end
+      else
+        begin
+          vc_chassis:=us_medium_tracked;
+          vc_weapon:=us_double_gun;
+        end;
+      vc_control:=control_remote;
+      vc_engine:=engine_combustion;
+      un:=CreateVehicle;
+      PlaceUnitArea(un,place_trucks,false);
+      us_trucks:=us_trucks^un;
+    end;
+
+  // Creating some heavy trucks
+  for i:=1 to heavy_trucks do
+    begin
+      uc_direction:=Rand(0,5);
+      vc_chassis:=us_heavy_tracked;
+      vc_control:=control_remote;
+      if (i mod 2)=1 then
+        vc_engine:=engine_siberite
+      else
+        vc_engine:=engine_combustion;
+      vc_weapon:=us_heavy_gun;
+      un:=CreateVehicle;
+
+      PlaceUnitArea(un,place_trucks,false);
+      us_trucks:=us_trucks^un;
+    end;
+end;

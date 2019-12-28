@@ -1,0 +1,261 @@
+// Hlavní modul.
+
+
+// Triggery.
+// 11: Pøíchod druhých uprchlíkù z Legie.
+// 12: Kontrola, zda má Rus èím zaplatit za suroviny.
+// 13: Odchod uprchlíkù zpìt do základny legie.
+// 14: Kontrola, zda uprchlíci vidí Rusa - pak bude dialog.
+// 15: Timeout náklaïákù, než odjedou bez zboží.
+// 16: Kontrola popjíždìní konvoje.
+// 21: Èekání na dialog Spy.
+// 31: Èasovaè na arabský útok.
+// 32: Pøesun zpìt do základny.
+// 33: Kontrola na vyrobení dálkového ovládadla.
+
+// Události.
+// 101: byla ukonèena kontaminace.
+// 103: bylo dokonèeno lákání opic.
+// 104: ArMech* dokonèil opravu aut.
+// 105: ArSci* dokonèil léèení.
+// 111: koupení lidé dorazili k Rusákovi.
+// 112: uprchlící dorazili k Rusákovi.
+// 113: LeMech* dokonèil opravu aut.
+// 114: LeSci* dokonèil léèení.
+// 115: Mám pøebarvit náklaïáky na Legii.
+
+
+// Strany.
+Export side_Neutral, side_Ru, side_Ar, side_Le, side_Upr;
+// Postavy.
+Export Burlak;
+Export Belkov, Gnyevko, Kirilenkova;
+Export Kovalyuk, Scholtze;
+Export Kuzmov;
+Export Karamazov, Petrovova, Gleb, Petrosyan;
+Export Lipshchin, Titov, Dolgov, Xavier;
+Export Oblukov, Kozlov, Kapitsova;
+Export Ostatni;
+Export Masha;
+// Jen pøes rádio.
+Export Gladkov, GladkovFake;
+// Hlavní postavy Legie.
+Export Heike, Farmer, Bergkamp;
+// Hlavní postavy Arabù.
+Export Abdul, Omar;
+// Loadované promìnné.
+Export MercPaid, MercAccepted, MercHandedOver, BehemothSeen;
+Export HeikeKilled, OmarKilled;
+// Tyhle postavy má Burlak k ruce.
+Export Rusove, Rusove2;   
+
+
+Function load_char (Ident);
+Begin
+  If TestCharacters (Ident) then Result = CreateCharacter (Ident)
+  else Result = NewCharacter (Ident);
+End;
+
+
+Function load_set (Ident);
+Begin
+  If TestCharacters (Ident) then Result = CreateCharacterSet (Ident)
+  else Result = [];
+End;
+
+
+Function vytvor_gladkova;
+Begin
+  UC_Nation = NATION_RUSSIAN; UC_side = side_Ru;
+  HC_name = ''; HC_sex = SEX_MALE;
+  HC_class = CLASS_SOLDIER; PrepareSoldierSkills (7);
+  Result = CreateHuman;
+End;
+
+
+Function load;
+Var MashaSpec;
+Begin
+  AutoEnemy = false;
+  // Promìnné.
+  MercPaid = LoadVariable ('MercPaid', false);
+  MercAccepted = LoadVariable ('MercAccepted', false);
+  MercHandedOver = LoadVariable ('MercHandedOver', false);
+  BehemothSeen = LoadVariable ('BehemothSeen', false);
+  HeikeKilled = LoadVariable ('HeikeKilled', false);
+  OmarKilled = LoadVariable ('OmarKilled', false);
+  // Legie.
+  UC_Side = side_Le; UC_Nation = NATION_ARABIAN;
+  Heike = load_char ('Heike');
+  Farmer = load_char ('Farmer');
+  Bergkamp = load_char ('Bergkamp');
+  // Arabové.
+  UC_Side = side_Ar;
+  Abdul = load_char ('Abdul');
+  If not OmarKilled then Omar = load_char ('Omar');
+  // Jen pøes rádio.
+  UC_Side = side_Ru; UC_Nation = NATION_RUSSIAN;
+  Gladkov = load_char ('Gladkov');
+  If not Gladkov then GladkovFake = vytvor_gladkova;
+  // Charaktery.
+  Burlak = load_char ('Burlak');
+  If LoadVariable ('GlebLoc', 0) = 14 then Gleb = load_char ('Gleb');
+  If LoadVariable ('BelkovLoc', 0) = 14 then Belkov = load_char ('Belkov');
+  If LoadVariable ('GnyevkoLoc', 0) = 14 then Gnyevko = load_char ('Gnyevko');
+  If LoadVariable ('KirilenkovaLoc', 0) = 14 then Kirilenkova = load_char ('Kirilenkova');
+  If LoadVariable ('KovalyukLoc', 0) = 14 then Kovalyuk = load_char ('Kovalyuk');
+  If LoadVariable ('ScholtzeLoc', 0) = 14 then Scholtze = load_char ('Scholtze');
+  If LoadVariable ('KuzmovLoc', 0) = 14 then Kuzmov = load_char ('Kuzmov');
+  If LoadVariable ('KaramazovLoc', 0) = 14 then Karamazov = load_char ('Karamazov');
+  If LoadVariable ('PetrovovaLoc', 0) = 14 then Petrovova = load_char ('Petrovova');
+  If LoadVariable ('GlebLoc', 0) = 14 then Gleb = load_char ('Gleb');
+  If LoadVariable ('PetrosyanLoc', 0) = 14 then Petrosyan = load_char ('Petrosyan');
+  If LoadVariable ('LipshchinLoc', 0) = 14 then Lipshchin = load_char ('Lipshchin');
+  If LoadVariable ('TitovLoc', 0) = 14 then Titov = load_char ('Titov');
+  If LoadVariable ('DolgovLoc', 0) = 14 then Dolgov = load_char ('Dolgov');
+  If LoadVariable ('XavierLoc', 0) = 14 then Xavier = load_char ('Xavier');
+  If LoadVariable ('OblukovLoc', 0) = 14 then Oblukov = load_char ('Oblukov');
+  If LoadVariable ('KozlovLoc', 0) = 14 then Kozlov = load_char ('Kozlov');
+  If LoadVariable ('KapitsovaLoc', 0) = 14 then Kapitsova = load_char ('Kapitsova');
+  Ostatni = load_set ('Others_Ru14'); DeleteCharacters ('Others_Ru14');
+  // Masha.
+  MashaSpec = LoadVariable ('Masha', []);
+  If MashaSpec = 0 then Masha = 0
+  else Begin
+    UC_Nation = NATION_RUSSIAN; UC_Side = side_Ru;
+    VC_Chassis = MashaSpec [1]; VC_Engine = MashaSpec [2];
+    VC_Control = MashaSpec [3]; VC_Weapon = MashaSpec [4];
+    If (VC_Weapon = 0) or (VC_Control = 0) or (VC_Engine = 0) or (VC_Chassis = 0) then Masha = 0
+    else Begin
+      Masha = CreateVehicle;
+      SetMark (Masha, 1);
+    End;
+  End;
+  // Seznam všech postav.
+  Rusove = ([Gleb, Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov, Karamazov, Petrovova,
+    Gleb, Petrosyan, Lipshchin, Titov, Dolgov, Xavier, Oblukov, Kozlov, Kapitsova] union Ostatni)
+    diff [0];
+  Rusove2 = [];
+  // Nastavení strany.
+  SetSide ([Burlak], side_Ru);
+  SetSide (Rusove, side_Ru);
+End;
+
+
+Function save_char (Handle, Ident);
+Begin
+  If Handle then SaveCharacters ([Handle], Ident);
+End;
+
+
+Function save;
+Var MashaSpec, Survivors4, O, Opice;
+Begin
+  // Promìnné.
+  SaveVariable (LegieZnicena, 'LegionDestroyed');
+  // Masha.
+  If Masha and IsOk (Masha) and (GetSide (Masha) = side_Ru) then
+  Begin
+//    MashaSpec = [GetChassis (Masha), GetEngine (Masha), GetControl (Masha), GetWeapon (Masha)];
+//    SaveVariable (MashaSpec, 'Masha');
+  End else DeleteVariable ('Masha');
+  // Postavy.
+  save_char (Burlak, 'Burlak');
+  save_char (Gleb, 'Gleb');
+  save_char (Belkov, 'Belkov');
+  save_char (Gnyevko, 'Gnyevko');
+  save_char (Kirilenkova, 'Kirilenkova');
+  save_char (Kovalyuk, 'Kovalyuk');
+  save_char (Scholtze, 'Scholtze');
+  save_char (Kuzmov, 'Kuzmov');
+  save_char (Karamazov, 'Karamazov');
+  save_char (Petrovova, 'Petrovova');
+  save_char (Gleb, 'Gleb');
+  save_char (Petrosyan, 'Petrosyan');
+  save_char (Lipshchin, 'Lipshchin');
+  save_char (Titov, 'Titov');
+  save_char (Dolgov, 'Dolgov');
+  save_char (Xavier, 'Xavier');
+  save_char (Oblukov, 'Oblukov');
+  save_char (Kozlov, 'Kozlov');
+  save_char (Kapitsova, 'Kapitsova');
+  // Ostatní postavy.
+  save_char (Abdul, 'Abdul');
+  save_char (Farmer, 'Farmer');
+  save_char (Heike, 'Heike');
+  // Survivors4.
+  Survivors4 = load_set ('Survivors4');
+  O = Rusove diff [0, Burlak, Gleb, Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov, Karamazov, Petrovova,
+    Gleb, Petrosyan, Lipshchin, Titov, Dolgov, Xavier, Oblukov, Kozlov, Kapitsova];
+  Opice = UnitFilter (Rusove, [[F_OR, [F_CLASS, CLASS_APEMAN], [F_CLASS, CLASS_APEMAN_SOLDIER], [F_CLASS, CLASS_APEMAN_ENGINEER], [F_CLASS, CLASS_APEMAN_KAMIKAZE]]]);
+  O = O diff Opice;
+  SaveCharacters (Survivors4 union O, 'Survivors4');
+End;
+
+
+// Pøidání medailí.
+Function dej_medaile;
+Begin
+  If not RusMaOtraveno then AddMedal ('Siberite', 1)
+  else If RusMaSiberit then AddMedal ('Siberite', -1)
+  else AddMedal ('Siberite', -2);
+  If BehemothBuilt then AddMedal ('Behemoth', 1)
+  else AddMedal ('Behemoth', -1);
+  If MenLost <= 2 then AddMedal ('LittleLosses', 1)
+  else AddMedal ('LittleLosses', -1);
+End;
+
+
+// Konec mise.
+Export Function vyhral;
+Var Lidi, Opice;
+Begin
+  // Medaile.
+  dej_medaile;
+  GiveMedals ('Main');
+  // Seznam lidí.
+  Lidi = FilterAllUnits ([[F_SIDE, side_Ru], [F_TYPE, UNIT_HUMAN], [F_ALIVE]]);
+  Opice = UnitFilter (Lidi, [[F_OR, [F_CLASS, CLASS_APEMAN], [F_CLASS, CLASS_APEMAN_SOLDIER], [F_CLASS, CLASS_APEMAN_ENGINEER], [F_CLASS, CLASS_APEMAN_KAMIKAZE]]]);
+  RewardPeople (Lidi diff Opice);
+  // Uložit.
+  save;
+  // Konec mise.
+  YouWin;
+End;
+
+
+Function set_attitudes;
+Begin
+  SetAttitude (side_Ru, side_Upr, ATT_NEUTRAL, true);
+  SetAttitude (side_Le, side_Upr, ATT_FRIEND, true);
+  SetAttitude (side_Ar, side_Upr, ATT_FRIEND, true);
+  SetAttitude (side_Le, side_Ar, ATT_FRIEND, true);
+End;
+
+
+Starting
+Begin
+  // Hlavní inicializace.
+  RandomizeAll;
+  InitUC; InitBC; InitVC; InitHC;
+  // Strany.
+  side_Neutral = 0;
+  side_Ru = 3;
+  side_Ar = 2;
+  side_Upr = 7;
+  side_Le = 8;
+  set_attitudes;
+  // Naètení z pøedchozí mise.
+  load;
+  // Ostatní moduly.
+  init_difficulty;
+  init_nature;
+  init_suroviny;
+  init_legion;
+  init_arabi;
+  init_rusove;
+  // Úvodní animace.
+  uvod;
+End;
+
+

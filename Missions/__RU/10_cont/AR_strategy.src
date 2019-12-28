@@ -1,0 +1,168 @@
+// AI minoveho pole  ;-))
+export mine_xy;
+
+every 0$1 trigger FilterUnitsInArea(minefield, [ [f_side,you] ]) and mines_list Marked 1 do
+var un,list,mine,
+    dist,        // vzdalenost na kterou se ma reagovat
+    pom_list;    // nahradni seznam min, ktere zatim nevybuchly
+begin
+  list:=FilterUnitsInArea(minefield, [ [f_side,you] ]);
+  pom_list:=[];
+  for un in list do
+    begin
+      if GetType(un)=unit_human then
+        dist:=3
+      else
+        dist:=4;
+      for mine=1 to (mines_list div 2) do
+        if GetDistXY(mines_list[(mine*2)-1],mines_list[(mine*2)],GetX(un),GetY(un))<dist then
+          begin
+            LaunchMineAtPos(mines_list[(mine*2)-1],mines_list[(mine*2)],enemy);
+            if not first_mine_exploded then
+              begin
+                first_mine_exploded:=true;
+                mine_xy:=[mines_list[(mine*2)-1],mines_list[(mine*2)]];
+              end;
+          end
+        else
+          pom_list:=pom_list ^ mines_list[(mine*2)-1] ^ mines_list[(mine*2)];           // razeni nevybuchlych bomb
+      mines_list:=pom_list;
+      pom_list:=[];
+    end;
+  enable;
+end;
+
+// AI severniho mortarmana
+every 0$1 trigger FilterUnitsInArea(warning_north,[ [f_side,you] ]) or (GetLives(mortarman[1])<600) Marked 1 do
+begin
+  ComExitBuilding(mortarman[1]);
+  wait(1);
+  if IsOK(mortarman_veh[1]) then
+    ComEnterUnit(mortarman[1],mortarman_veh[1]);
+  wait(2);
+  repeat
+    AddComMoveToArea(mortarman[1],flee_north);
+    wait(20);
+  until (not IsOK(mortarman[1])) or
+         IsInArea(IsInUnit(mortarman[1]),flee_north) or IsInArea(mortarman[1],flee_north);
+  if IsOK(mortarman_veh[1]) then
+    begin
+      RemoveUnit(mortarman[1]);
+      RemoveUnit(mortarman_veh[1]);
+    end
+  else
+    if IsOK(mortarman[1]) then
+      RemoveUnit(mortarman[1]);
+end;
+
+// AI stredopolnich mortarmanu
+every 0$1 trigger FilterUnitsInArea(south_flee,[ [f_side,you] ]) Marked 1 do             // enemy nearby
+var i,un;
+begin
+  Disable(2);     // uz neni potreba hlidat zivoty mortarmanum, kdyz prchaji
+  un:=FilterUnitsInArea(on_the_hill,[ [f_type,unit_human] ]);
+  un:=un ^ UnitsInside(mortar_bunkers[2]) ^ UnitsInside(mortar_bunkers[3]);
+  ComExitBuilding(un);
+  wait(1);
+  for i=2 to 3 do
+    if mortarman[i] in un then
+      begin
+        ComEnterUnit(mortarman[i],mortarman_veh[i]);
+        wait(1);
+        AddComMoveToArea(mortarman[i],another_flee_north);
+      end;
+
+  repeat
+    for i=2 to 3 do
+      begin
+        AddComMoveToArea(mortarman[i],another_flee_north);
+        if IsInArea(mortarman_veh[i],another_flee_north) then
+          begin
+            RemoveUnit(mortarman[i]);
+            RemoveUnit(mortarman_veh[i]);
+          end;
+        if IsInArea(mortarman[i],another_flee_north) then
+          RemoveUnit(mortarman[i]);
+      end;
+    wait(15);
+  until not (IsOK(mortarman[2]) or IsOK(mortarman[3]));
+end;
+
+every 0$1 trigger GetLives(mortarman[2])<600 Marked 2 do                                 // low HP mortarman 2
+begin
+  ComExitBuilding(mortarman[2]);
+  wait(1);
+  ComEnterUnit(mortarman[2],mortarman_veh[2]);
+
+  repeat
+    AddComMoveToArea(mortarman[2],another_flee_north);
+    wait(15);
+  until (not IsOK(mortarman[2])) or
+         IsInArea(IsInUnit(mortarman[2]),another_flee_north) or IsInArea(mortarman[3],another_flee_north);
+
+  if IsOK(mortarman_veh[2]) then
+    begin
+      RemoveUnit(mortarman[2]);
+      RemoveUnit(mortarman_veh[2]);
+    end
+  else
+    if IsOK(mortarman[2]) then
+      RemoveUnit(mortarman[2]);
+end;
+
+every 0$1 trigger GetLives(mortarman[3])<600 Marked 2 do                                 // low HP mortarman 3
+begin
+  ComExitBuilding(mortarman[3]);
+  wait(1);
+  ComEnterUnit(mortarman[3],mortarman_veh[3]);
+
+  repeat
+    AddComMoveToArea(mortarman[3],another_flee_north);
+    wait(15);
+  until (not IsOK(mortarman[3])) or
+         IsInArea(IsInUnit(mortarman[3]),another_flee_north) or IsInArea(mortarman[3],another_flee_north);
+
+  if IsOK(mortarman_veh[3]) then
+    begin
+      RemoveUnit(mortarman[3]);
+      RemoveUnit(mortarman_veh[3]);
+    end
+  else
+    if IsOK(mortarman[3]) then
+      RemoveUnit(mortarman[3]);
+end;
+
+// AI severniho snipera
+every 0$1 trigger (GetLives(snipers[1])<600) or FilterUnitsInArea(warning_sniper_north,[ [f_side,you] ]) Marked 1 do
+begin
+  ComExitBuilding(snipers[1]);
+  wait(1);
+  repeat
+    AddComMoveToArea(snipers[1],sniper_flee);
+    wait(20);
+  until (not IsOK(snipers[1])) or IsInArea(snipers[1],sniper_flee);
+  if IsOK(snipers[1]) then
+    RemoveUnit(snipers[1]);
+end;
+
+// AI severovychodniho snipera
+every 0$1 trigger (GetLives(snipers[3])<650) or FilterUnitsInArea(another_warning_sniper,[ [f_side,you] ]) Marked 1 do
+begin
+  ComExitBuilding(snipers[3]);
+  wait(1);
+  ComEnterUnit(snipers[3],snipers_veh[1]);
+
+  repeat
+    AddComMoveToArea(snipers[3],another_sniper_flee);
+    wait(15);
+  until (not IsOK(snipers[3])) or
+         IsInArea(snipers[3],another_sniper_flee) or IsInArea(IsInUnit(snipers[3]),another_sniper_flee);
+  if IsOK(snipers_veh[1]) then
+    begin
+      RemoveUnit(snipers[3]);
+      RemoveUnit(snipers_veh[1]);
+    end
+  else
+    if IsOK(snipers[3]) then
+      RemoveUnit(snipers[3]);
+end;

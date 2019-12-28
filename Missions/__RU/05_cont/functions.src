@@ -1,0 +1,254 @@
+export function get_x_best(num, skill, mclass);
+var i, lidi, skills;
+begin
+    if mclass then
+      lidi:=FilterAllUnits([[f_side,arabians],[f_type,unit_human],[f_class, mclass]])
+    else
+      lidi:=FilterAllUnits([[f_side,arabians],[f_type,unit_human]]);
+    skills:=[];
+    result:=[];
+    for i in lidi do
+        skills:=skills ^ GetSkill(i, skill);
+    SortListByListDesc(lidi, skills);
+    if num=0 then
+       num:=(lidi+0);
+    if num>lidi then
+       num:=lidi+0;
+    for i:=1 to num do
+        result:=result ^ lidi[i];
+end;
+
+
+//vynecha apemany
+//vybere prvniho z skupiny lidi se zadanym pohlavim sex (0=obe)
+//a zadanym Hclass (0=jakykoliv)
+{export function SayAny(lidi, ident, side, sex, Hclass, index);
+var kdo;
+begin
+     kdo:=WhoSayAny(lidi, side, sex, Hclass, index);
+     if kdo then
+        result:=Say(kdo, ident)
+     else
+        result:=false;
+end;}
+export function WhoSayAny(lidi, side, sex, Hclass, index);
+begin
+     lidi:=UnitFilter(lidi, [[f_alive],[f_type,unit_human],[f_side,side],f_not,[f_nation,nation_nature]]);
+     if sex<>0 then
+        lidi:=UnitFilter(lidi, [f_sex,sex]);
+
+     if Hclass<>0 then
+        lidi:=UnitFilter(lidi, [f_class,Hclass]);
+
+     if index<=0 then index:=1;
+
+     if lidi>=index then
+        result:=lidi[index]
+     else
+        result:=0;
+end;
+
+
+export function see_any(strana, sez);
+var i;
+begin
+     result:=[];
+     for i in sez do
+         if See(strana,i) then begin
+            result:=result ^ [i];
+         end;
+     ;
+end;
+
+export function TalkOn;
+begin
+//     stop_talking:=true;
+end;
+export function TalkOff;
+begin
+//     stop_talking:=false;
+end;
+
+// vrati lidi z arey vcetene tech co jsou v jednotkach v arei
+export function FilterHumansInArea(area, filter);
+var inbase, i;
+begin
+     result:=[];
+     inbase:=FilterUnitsInArea(area, []);
+     for i in inbase do begin
+         if GetType(i)=unit_building or GetType(i)=unit_vehicle then begin
+            result:=result ^ UnitsInside(i);
+         end
+         else begin
+            result:=result ^ i;
+         end;
+     end;
+     result:=UnitFilter(result diff 0, filter);
+end;
+
+// posle drivers enter cars //take_out jdou ven z jinych aut a budov
+export function find_drivers(cars, drivers, take_out);
+var empty, free, i, konec;
+begin
+     cars:=UnitFilter(cars, [f_alive]);
+     if take_out then
+       drivers:=UnitFilter(drivers, [[f_alive]])
+     else
+       drivers:=UnitFilter(drivers, [[f_alive],[f_outside]]);
+
+     empty:=[];
+     free:=[];
+
+     for i in cars do
+       if not IsDrivenBy(i) then
+         empty:=empty ^ [i];
+
+     for i in drivers do
+       if not (IsInUnit(i) in cars) then
+         free:=free ^ [i];
+
+     if empty <= free then
+       konec:=empty
+     else
+       konec:=free;
+
+     result:=cars diff empty;
+
+     for i:=1 to konec do begin
+       ComEnterUnit(free[i], empty[i]);
+       result:=result ^ empty[i];
+     end;
+end;
+
+export function wait_for_drivers(cars, cas);
+var i, vsichni_ready, pockat;
+begin
+     pockat:=tick+cas;
+     while not vsichni_ready and tick<pockat do begin
+           vsichni_ready:=true;
+           for i in cars do
+               if not IsDrivenBy(i) then
+                  vsichni_ready:=false;
+
+           wait(0$1.0);
+     end;
+end;
+
+//
+export function find_and_wait(cars, drivers, take_out, change, cas);
+var empty, full, free, i, konec, mytick;
+begin
+  mytick:=tick+cas;
+
+  cars:=UnitFilter(cars, [[f_alive]]);
+
+  drivers:=UnitFilter(drivers, [[f_alive],[f_outside]]);
+  if take_out then
+    drivers:=drivers ^ UnitFilter(drivers, [[f_alive],[f_inside]])
+  else
+
+  empty:=UnitFilter(cars, [[f_empty],[f_alive]]);
+  repeat
+    full:=UnitFilter(cars, [[f_occupied],[f_alive]]);
+    if change then
+      ComExitVehicle(inside_units(full) diff drivers);
+
+    for i in drivers do
+      if not (IsInUnit(i) in cars) then
+        if GetType(IsInUnit(i))=unit_vehicle then
+          ComExitVehicle(i)
+        else
+          ComExitBuilding(i);
+
+    free:=UnitFilter(drivers, [[f_outside],[f_alive]]);
+
+    i:=1;
+    while i<=free and i<=empty do begin
+      if not free[i] in DU_units then ComEnterUnit(free[i], empty[i]);
+      i:=i+1;
+    end;
+
+    wait(0$1);
+    empty:=UnitFilter(cars, [[f_empty],[f_alive]]);
+  until not empty or tick>mytick;
+end;
+
+
+export function find_remotes(cars, mechs, remotes);
+var cas, i;
+begin
+     while remotes > mechs do
+        delete(remotes, 1);
+     for i:=1 to remotes do
+        ComEnterUnit(mechs[i], remotes[i]);
+end;
+export function wait_for_remotes(cars, remotes, cas);
+var c, unlinked, i;
+begin
+     c:=tick+cas;
+     while tick<c and (not (inside_units(remotes)+0)=remotes) do
+        wait(0$1);
+
+     unlinked:=cars;
+     for i in remotes do begin
+        ComLinkTo(unlinked, UnitsInside(i));
+        unlinked:=unlinked diff UnitsLinked(UnitsInside(i));
+     end;
+end;
+//
+export function find_and_wait_r(cars, remote, cas);
+var linked, unlinked, i, konec, mytick, rmecs, max;
+begin
+  mytick:=tick+cas;
+
+  rmecs:=inside_units(remote);
+  max:=0;
+  for i in rmecs do
+    max:=max+GetSkill(i, skill_mechanical);
+
+  while mytick<tick and (unlinked or linked<max or max=0) do begin
+    rmecs:=inside_units(remote);
+    max:=0;
+    for i in rmecs do
+      max:=max+GetSkill(i, skill_mechanical);
+
+    linked:=UnitFilter(cars, [[f_linked]]);
+    unlinked:=linked diff unlinked;
+    wait(0$1);
+  end;
+end;
+
+
+
+// vrati seznam jednotek v jednotkach
+export function inside_units(uns);
+var i;
+begin
+   result:=[];
+   for i in uns do
+      result:=result ^ UnitsInside(i);
+end;
+
+
+// slouci seznamy
+export function add(list, list1);
+begin
+     if list=0 then
+        list:=[];
+     if list1=0 then
+        list1:=[];
+     result:=list ^ list1;
+end;
+
+export hinty_co_byli;
+export function MyHint(ident);
+begin
+  if not hinty_co_byli then
+    hinty_co_byli:=[];
+  if not (ident in hinty_co_byli) then begin
+    hinty_co_byli:=hinty_co_byli ^ ident;
+    Hint(ident);
+  end;
+end;
+
+

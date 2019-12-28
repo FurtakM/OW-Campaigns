@@ -1,0 +1,706 @@
+EXPORT konstanta_utoceni;
+VAR hint_bw;
+
+// uvodni zadani hodnot
+EVERY 0$0.1 DO
+begin
+  konstanta_utoceni=0;
+  hint_bw=false;
+end;
+
+// uvodni pokec
+EXPORT function uvodni_pokec;
+VAR vyber;
+begin
+  wait(0$2);
+
+  ComTurnUnit(bur,kur);                                       
+  ComTurnUnit(kur,bur);
+  if BELKOV_SAVED
+    then
+      begin
+        Say(kur,'D1b-Kur-1');
+        Say(bel,'D1b-Bel-1');
+        Say(kur,'D1b-Kur-2');
+      end
+    else
+      begin
+        Say(kur,'D1a-Kur-1');
+        Say(bur,'D1a-Bur-1');
+        if STAV_UTOKU=3 then Say(kur,'D1a-Kur-2a')
+                        else Say(kur,'D1a-Kur-2');
+        Say(kur,'D1a-Kur-2b');
+        Say(bur,'D1a-Bur-2');
+      end;
+  Say(kur,'D2-Kur-1');
+  Say(bur,'D2-Bur-1');
+  Say(kur,'D2-Kur-2');
+  Say(bur,'D2-Bur-2');
+  Say(kur,'D2-Kur-3');
+  Say(pop,'D2-Pop-3');
+  Say(kur,'D2-Kur-4');
+  Say(bur,'D2-Bur-4');
+  Say(kur,'D2-Kur-5');
+  Say(bur,'D2-Bur-5');
+  Say(kur,'D2-Kur-6');
+  vyber=vyber_characteru;
+  if bel in vyber then RemoveUnit(bel)
+                  else Setside(bel,You2);
+  if IsOK(kov) then RemoveUnit(kov);
+  if IsOK(gny) then RemoveUnit(gny);
+  RemoveUnit(bur);
+  prebarveni_druhe_baze;
+  ChangeSideFog(You3,You);
+  placni_unity(vyber);
+  CenterOnUnits(vyber);
+  RevealFogArea(You,Wth);
+  wait(0$2);
+  ChangeMissionObjectives('M1');
+  hint_bw=true;
+  Hint('Oil');
+  Hint('Upgrading');
+  InGameOff;
+end;              
+
+// oil source nalezeno
+EVERY 0$1 TRIGGER GetResourceVisibility(57,89,You)>0 DO
+begin
+  CenterOnXY(57,89);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(bur,'D2a-Bur-1');
+  SayRadio(kur,'D2a-Kur-1');
+  RU_videl_oil=true;
+  interface_hidden:=false;
+  Hint('OilSpoted');
+  DialogueOff;
+end;
+
+// pryc mission objectives stavba 3. zakladny
+EVERY 0$3 TRIGGER RU_videl_oil and FilterAllUnits([[f_side,You],[f_btype,b_depot]])>1 DO
+VAR pom,pom1;
+VAR i;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_btype,b_depot]]);
+  pom1=[];
+  for i in pom do if GetDistUnitXY(i,56,88)<30 then pom1=pom1^i;
+  if pom1>0 then begin
+                   while IsConstructed(pom1[1]) do wait(0$5);
+                   ChangeMissionObjectives('M2');
+                   pojmenovani_kaganoviche(pom1[1]);
+                 end
+            else enable;
+end;
+
+// workshop upgrade na factor
+EVERY 0$2 TRIGGER FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_factory]])>0 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_factory]]);
+  pom=pom[1];
+  while IsConstructed(pom)<>0 do wait(0$2);
+  CenterNowOnUnits(pom);
+  interface_hidden:=true;
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_oil_power]]);
+  if pom=0 then
+    begin
+      DialogueOn;
+      Say(bur,'D3aa-Bur-1');
+      if IsOK(schol)
+        then begin
+               Say(schol,'D3aa-Sch-1');
+               Say(bur,'D3aa-Bur-2');
+             end
+        else begin
+               pom=GetPeople(sex_male,class_scientistic,[bur]);
+               if pom>0 then begin
+                               Say(pom[1],'D3aa-Sci1-1');
+                               Say(bur,'D3aa-Bur-2');
+                             end;
+             end;
+    end;
+  ChangeMissionObjectives('M3');
+  Hint('Factory');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// hint armoury
+EVERY 0$5 TRIGGER FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_armoury]])>0 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_armoury]]);
+  while IsConstructed(pom[1])<>0 do wait(0$5);
+  Hint('Armoury');
+end;
+
+// hint breastwork
+EVERY 0$3 TRIGGER hint_bw DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_breastwork]]);
+  Hint('bunkers');
+end;
+
+// dialog pri prichodu doktora scholtzeho
+EXPORT function dialog_scholtze_enter;
+begin
+  CenterOnUnits(schol2);
+  DialogueOn;
+  interface_hidden:=true;
+  SayRadio(schol2,'D4-Sch-1');
+  Say(bur,'D4-Bur-1');
+  ChangeMissionObjectives('M4');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// dialog po nalezeni scholtzeho
+EXPORT function dialog_scholtze_nalezen;
+begin
+  CenterOnUnits(schol2);
+  DialogueOn;
+  interface_hidden:=true;
+  if IsOK(schol2) then begin
+                         Say(schol2,'D4a-Sch-1');
+                         Say(bur,'D4a-Bur-1');
+                         Say(schol2,'D4a-Sch-2');
+                         ChangeMissionObjectives('MScholtzeOut');
+                       end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// uvideli americke posily a nemaji jeste bazi s olejem
+EVERY 0$1 TRIGGER am_posily_videny_rusakama and FilterAllUnits([[f_side,You],[f_btype,b_depot]])=1 marked 201 DO
+VAR pom;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  CenterOnUnits(Am_posily);
+  pom=GetPeople(sex_male,class_soldier,[bur,gny,kov]);
+  if pom=0 then pom=GetPeople(sex_male,class_soldier,[bur]);
+  if pom>0 then
+    begin
+      Say(pom[1],'D3a-RSol1-1');
+      Say(bur,'D3a-Bur-1');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// ziskavani lidi podle povolani
+function GetPeople(sex,povolani,diffseznam);
+VAR pom,pom1,pom2,pom3,pom4;
+begin
+  pom1=FilterAllUnits([[f_side,You],[f_class,class_scientistic],[f_sex,sex]]);
+  pom2=FilterAllUnits([[f_side,You],[f_class,class_mechanic],[f_sex,sex]]);
+  pom3=FilterAllUnits([[f_side,You],[f_class,class_engineer],[f_sex,sex]]);
+  pom4=FilterAllUnits([[f_side,You],[f_class,class_soldier],[f_sex,sex]]);
+
+  case povolani of
+   class_scientistic:pom=pom1;
+   class_mechanic:pom=pom2;
+   class_engineer:pom=pom3;
+   class_soldier:pom=pom4;
+  end;
+
+  if povolani<>class_scientistic then pom=pom^pom1;
+  if povolani<>class_mechanic then pom=pom^pom2;
+  if povolani<>class_engineer then pom=pom^pom3;
+  if povolani<>class_soldier then pom=pom^pom4;
+
+  result:= pom diff diffseznam;
+end;
+
+// ziskavani lidi podle povolani
+function GetPeopleSide(side,sex,povolani,diffseznam);
+VAR pom,pom1,pom2,pom3,pom4;
+begin
+  pom1=FilterAllUnits([[f_side,side],[f_class,class_scientistic],[f_sex,sex]]);
+  pom2=FilterAllUnits([[f_side,side],[f_class,class_mechanic],[f_sex,sex]]);
+  pom3=FilterAllUnits([[f_side,side],[f_class,class_engineer],[f_sex,sex]]);
+  pom4=FilterAllUnits([[f_side,side],[f_class,class_soldier],[f_sex,sex]]);
+
+  case povolani of
+   class_scientistic:pom=pom1;
+   class_mechanic:pom=pom2;
+   class_engineer:pom=pom3;
+   class_soldier:pom=pom4;
+  end;
+
+  if povolani<>class_scientistic then pom=pom^pom1;
+  if povolani<>class_mechanic then pom=pom^pom2;
+  if povolani<>class_engineer then pom=pom^pom3;
+  if povolani<>class_soldier then pom=pom^pom4;
+
+  result:= pom diff diffseznam;
+end;
+
+// uvideli americke posily a maji uz bazi s olejem
+EVERY 0$1 TRIGGER am_posily_videny_rusakama and FilterAllUnits([[f_side,You],[f_btype,b_depot]])>1 DO
+VAR pom;
+begin
+  disable(201);                             // disable vetve, ze nemaji bazi
+  DialogueOn;
+  interface_hidden:=true;
+  CenterOnUnits(Am_posily);
+  pom=GetPeople(sex_male,class_soldier,[bur,gny,kov]);
+  if pom=0 then pom=GetPeople(sex_male,class_soldier,[bur]);
+  if pom>0 then
+    begin
+      Say(pom[1],'D3b-RSol1-1');
+      if IsOK(gny) then begin
+                          Say(gny,'D3b-Gny-1');
+                          Say(bur,'D3b-Bur-1');
+                        end
+                   else
+      if ISOK(kov) then Say(kov,'D3b-Kov-1')
+                   else Say(pom[1],'D3b-RSol1-2');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// dotaz na pocet aut pred utokem na Omicron
+EXPORT function dialog_otazka_poctu_aut;
+VAR pom;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  Say(kur,'D5-Kur-1');
+  pom=Query('QVehicles');
+  case pom of
+   1:begin
+       Say(bur,'D6a-Bur-1');
+       Say(kur,'D6a-Kur-1');
+     end;
+   2:begin
+       Say(bur,'D6b-Bur-1');
+       Say(kur,'D6b-Kur-1');
+       Say(bur,'D6b-Bur-2');
+     end;
+   3:begin
+       Say(bur,'D6c-Bur-1');
+       Say(kur,'D6c-Kur-1');
+       Say(bur,'D6c-Bur-2');
+       KurinAddTime = 1;
+     end;
+  end;
+  interface_hidden:=false;
+  DialogueOff;
+  result:=pom;
+end;
+
+// hlaska pri prodlouzenem casu ... uz se musi jet !
+EXPORT function hlaska_omicron;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  Say(kur,'D6c-Kur-2');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// mission objectives - utok na omicron
+EVERY 0$1 TRIGGER stav_omikron=3 DO
+begin
+  CheckVehicles;
+  ChangeMissionObjectives('M5');
+  SetAreaMapShow(Om_zone1,1);
+  CheckVehicles;
+end;
+
+// setkani pred omikronem
+EXPORT function dialog_pred_omicronem;
+VAR pom;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  Say(bur,'D7-Bur-1');
+  SayRadio(kur,'D7-Kur-1');
+  setkani_om:=true;
+  ChangeMissionObjectives('M5a');
+  SetAreaMapShow(Om_zone1,0);
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// ruske hlaseni o arabech z vychodu     omic_half.dest v modulu amici
+EVERY 0$5 TRIGGER stav_omikron=4 and omicron_half_destroyed DO
+VAR pom;
+begin
+  popov_ven;
+  DialogueOn;
+  interface_hidden:=true;
+  pom=create_kecajici_amik;
+  SayRadio(pom,'D8-Sol1-1');
+  if IsOK(kov) then Say(kov,'D8-Kov-1')
+               else begin
+                      pom=GetPeople(sex_male,class_soldier,[bur,gny]);
+                      if pom=0 then GetPeopleSide(You2,sex_male,class_soldier,[kur,pop,bel]);
+                      Say(pom[1],'D8-RSol1-1');
+                    end;
+  if IsOK(gny) then Say(gny,'D8-Gny-1')
+               else begin
+                      pom=GetPeople(sex_male,class_soldier,[bur,gny]);
+                      if pom>1 then Say(pom[2],'D8-RSol2-1');
+                    end;
+  interface_hidden:=false;
+  DialogueOff;
+  stahnuti_amiku;
+  stav_omikron=5;
+end;
+
+// prvni varovani o arabech - Grishko        omic_near_dest v modulu amici
+EVERY 0$5 TRIGGER stav_omikron=5 {and omicron_near_destroyed} DO
+VAR gri;
+begin
+  setkani_om = false;
+  gri=create_grishko;
+  CenterOnUnits(gri);
+  DialogueOn;
+  interface_hidden:=true;
+  SayRadio(gri,'D9-Gri-1');
+  SayRadio(kur,'D9-Kur-1');
+  wait(0$2);
+  SayRadio(gri,'D9-Gri-2');
+  SayRadio(kur,'D9-Kur-2');
+  SayRadio(gri,'D9-Gri-3');
+  SayRadio(kur,'D9-Kur-3');
+  interface_hidden:=false;
+  DialogueOff;
+  wait(0$20);
+  stav_omikron=6;
+  zastaveni_rusaku;
+  utok_arabu;
+end;
+
+// kecy pred znicenim kirova
+EXPORT function kecy_behem_utoku_arabu;
+begin
+  stav_omikron=7;
+  SayRadio(kur,'D9a-Kur-1');
+  Say(bur,'D9a-Bur-1');
+  SayRadio(kur,'D9a-Kur-2');
+  posilani_arabskych_hlidek=true;
+  manage_ruske_computery_zpet;
+end;
+
+// setkani s popovem a kecy
+EVERY 0$1 TRIGGER stav_omikron=8 and get_lidi_popov_area>0 DO
+VAR pom,pom1;
+begin
+  pom=get_lidi_popov_area;
+  pom=pom[1];
+  pom1=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+  ComStop(pom1);
+  ArDontAttackPlayer(true);
+  InGameOn;
+  CenterOnUnits([pop]);
+  ComMoveUnit(pop,pom);
+  while GetDistUnits(pop,pom)>4 do wait(0$1);
+  ComTurnUnit(pom,pop);
+  CenterOnUnits([pop]);
+  InGameOff;
+  DialogueOn;
+  interface_hidden:=true;
+  if GetDistUnits(pop,bur)<=10 then dialog_popov_s_burlakem
+                               else dialog_popov_bez_burlaka;
+  stav_omikron=9;
+  interface_hidden:=false;
+  DialogueOff;
+  totalni_ukonceni_mise_v_ingame_videu;
+end;
+
+// dialog popova s burlakem kdyz jdou na pomoc kirovu
+function dialog_popov_s_burlakem;
+begin
+  Say(bur,'D10a-Bur-1');
+  Say(pop,'D10a-Pop-1');
+  Say(bur,'D10a-Bur-2');
+  Say(pop,'D10a-Pop-2');
+  Say(bur,'D10a-Bur-3');
+  Say(pop,'D10a-Pop-3');
+  Say(bur,'D10a-Bur-4');
+  Say(pop,'D10a-Pop-4');
+  Say(bur,'D10a-Bur-5');
+  Say(pop,'D10a-Pop-5');
+end;
+
+// dialog pomoci kirovu, kdyz tam nejde burlak
+function dialog_popov_bez_burlaka;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Pop_area,[[f_side,You],[f_type,unit_human],[f_sex,sex_male]]);
+  if pom=0 then exit;
+  Say(pom,'D10b-RSol1-1');
+  Say(pop,'D10b-Pop-1');
+  Say(pom,'D10b-RSol1-2');
+  SayRadio(pop,'D10b-Pop-2');
+  Say(bur,'D10b-Bur-2');
+  SayRadio(pop,'D10b-Pop-3');
+  Say(bur,'D10b-Bur-3');
+  SayRadio(pop,'D10b-Pop-4');
+  Say(bur,'D10b-Bur-4');
+  SayRadio(pop,'D10b-Pop-5');
+end;
+
+// pokud zautoci na Omikron drive, nez by mel
+EVERY 0$1 TRIGGER stav_omikron in [0,1,2,3] DO
+VAR pom,i,upoz,
+    pom1,pom2,pom3;
+VAR dr_pom1,dr_pom2,dr_pom3;
+VAR dr_pom;
+begin
+  upoz=false;
+  pom=FilterUnitsInArea(Om_attack,[[f_side,You], f_not, [f_type,unit_building]]);
+  dr_pom=FilterUnitsInArea(Om_attack,[[f_side,You],[f_type,unit_building]]);
+  for i in dr_pom do pom=pom union UnitsInside(i);
+  if pom then
+    for i in pom do
+      if Getside(Attacks(i))=Amici then upoz=true;
+  if upoz then
+    begin
+      DialogueOn;
+      interface_hidden:=true;
+      if IsOK(gny) then begin
+                          Say(gny,'D11-Gny-1');
+                          Say(bur,'D11-Bur-1');
+                        end
+                   else SayRadio(kur,'D11-Kur-1');
+      interface_hidden:=true;
+      DialogueOff;
+      InGameOn;
+      repeat
+        pom1=FilterUnitsInArea(om_at_1,[[f_side,you], f_not, [f_type,unit_building]]);
+        dr_pom1=FilterUnitsInArea(om_at_1,[[f_side,you],[f_type,unit_building]]);
+        pom2=FilterUnitsInArea(om_at_2,[[f_side,you], f_not, [f_type,unit_building]]);
+        dr_pom2=FilterUnitsInArea(om_at_2,[[f_side,you],[f_type,unit_building]]);
+        pom3=FilterUnitsInArea(om_at_3,[[f_side,you], f_not, [f_type,unit_building]]);
+        dr_pom3=FilterUnitsInArea(om_at_3,[[f_side,you],[f_type,unit_building]]);
+        ComMoveToArea(pom1,om_ven_3);
+        for i in dr_pom1 do
+          begin
+            dr_pom=UnitsInside(i);
+            ComExitBuilding(dr_pom);
+            AddComMoveToArea(dr_pom,om_ven_1);
+          end;
+        ComMoveToArea(pom2,om_zone);
+        for i in dr_pom2 do
+          begin
+            dr_pom=UnitsInside(i);
+            ComExitBuilding(dr_pom);
+            AddComMoveToArea(dr_pom,om_ven_2);
+          end;
+        ComMoveToArea(pom3,om_zone);
+        for i in dr_pom3 do
+          begin
+            dr_pom=UnitsInside(i);
+            ComExitBuilding(dr_pom);
+            AddComMoveToArea(dr_pom,om_ven_3);
+          end;
+        wait(0$3);
+      until not (pom1 or pom3 or pom3);
+      wait(0$4);
+
+      if dr_pom3 then
+         for i in dr_pom3 do
+             KillUnit(i);
+
+      InGameOff;
+    end;
+  enable;
+end;
+
+// dialog pokud se snazi utect z omikronu drive nez znici kirov
+EVERY 1 TRIGGER stav_omikron in [4,5,6] DO
+VAR pom,pom1,pom2,i,AreaNotCleared, firstDialog;
+begin
+enable;
+  pom=FilterUnitsInArea(Om_ven,[[f_type, unit_human],[f_or,[f_side,3],[f_side,You3]]]);
+  pom2=pom2=FilterUnitsInArea(Om_ven,[[f_type, unit_vehicle],[f_or,[f_side,3],[f_side,You3]]]);
+ { for i in pom2 do
+   if UnitsInside(i) <> 0 then pom= pom^i;
+  if pom>0 then
+    begin
+//      InGameOn;
+      posli_lidi_zpet_omicron;
+      wait(0$1);
+      Say(kur,'D12-Kur-1');
+      AreaNotCleared=1;
+      while AreaNotCleared do
+        begin
+          wait(0$2);
+          posli_lidi_zpet_omicron;
+          pom=FilterUnitsInArea(Om_ven,[[f_type, unit_human],[f_or,[f_side,You],[f_side,You3]]]);
+          pom2=FilterUnitsInArea(Om_ven,[[f_type, unit_vehicle],[f_or,[f_side,You],[f_side,You3]]]);
+          for i in pom2 do if UnitsInside(i) <> 0 then pom= pom^i;
+          if pom>0 then AreaNotCleared=1 else AreaNotCleared=0;
+        end;
+//      InGameOff;
+    end;
+  enable;     }
+
+
+  if pom or pom2 then
+  begin
+    ComMoveXY(pom, 62, 16);
+    ComMoveXY(pom2, 62, 16);
+    if KurinDialog = 0 then begin KurinDialog = 1; Say(kur,'D12-Kur-1');  end;
+  end;
+
+end;
+
+// hlaska pokud lhal s poctem aut
+EXPORT function hlaska_lhani;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  Say(kur,'D6d-Kur-1');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// dialog upozorneni a prodlouzeni casu
+EXPORT function dialog_upoz;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  SayRadio(kur,'D7a-Kur-1');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// kileni pratel - konec
+EVERY 0$1 DO
+VAR pom,i;
+VAR Ru_Units;
+begin
+  Ru_Units=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+  for i in Ru_Units do
+    begin
+      pom=Attacks(i);
+      if pom<>0 then if Getside(pom) in [You2,You3] then konstanta_utoceni=konstanta_utoceni+1;
+      if pom=pop or pom=kur then konstanta_utoceni=konstanta_utoceni+10;
+    end;
+  if konstanta_utoceni<10 then enable;
+end;
+
+// ukonceni mise kvuli kileni vlastnich
+EVERY 0$1 TRIGGER konstanta_utoceni>=10 DO
+begin
+  konec_mise_utok;
+end;
+
+// dialog chcipnuti schotlzeho
+EXPORT function dialog_scholtze_umrel;
+VAR i,pom,pom1;
+begin
+  pom=0;
+  DialogueOn;
+  interface_hidden:=true;
+  ForceSay(schol2,'D4b-Sch-1');
+  pom=FilterAllUnits([[f_side,Amici],[f_type,unit_human]]);
+  pom1=NearestUnitToUnit(pom,schol2);
+  if pom1<>0 then SayNoName(pom1,'D4b-Sol1-1');
+  pom1=NearestUnitToUnit(pom diff pom1,pom1);
+  SayNoName(pom1,'D4b-Sol2-1');
+  ForceSay(schol2,'D4b-Sch-2');
+  Say(bur,'D4b-Bur-2');
+  SetLives(schol2,0);
+  ChangeMissionObjectives('MScholtzeDel');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// zabiti_scholtzeho
+On UnitGoesToRed(un) do
+begin
+  if un=schol2 then if kecy_scholtze_nalezen then exit
+                                             else dialog_scholtze_umrel;
+end;
+
+// Burlak about wheels
+// Added 27.12.19
+Every 0$2 trigger FilterUnitsInArea(noTracksArea, [[f_side, You], [f_or, [f_chassis, ru_medium_wheeled], [f_chassis, ru_heavy_wheeled], [f_chassis, us_light_wheeled], [f_chassis, us_medium_wheeled]]]) and stav_omikron in [0,1,2,3] do
+begin
+CenterOnXY(38, 58);
+Say(bur,'D5a-Bur-1');
+End;
+
+// Destroy every player building in Kirov
+// Added 27.12.19
+On BuildingStarted(b, builder) do
+begin
+if b in FilterUnitsInArea(restrictedArea, [f_side, 3]) then
+   RemoveUnit(b);
+End;
+
+// filter na upgrade laboratory aby sel hint o elektrarne
+EVERY 0$3 TRIGGER FilterAllUnits([[f_side,You],[f_btype,b_oil_power]])>0 DO
+VAR pom;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_btype,b_oil_mine]]);
+  if pom>0 then
+    begin
+      while IsConstructed(pom[1])<>0 do wait(0$1);
+      Hint('PowerPlant');
+    end
+           else enable;
+end;
+
+// dostavi 2. depot - hiont na transport
+EVERY 0$5 TRIGGER FilterAllUnits([[f_side,You],[f_btype,b_depot]])>1 DO
+VAR pom,pom1;
+VAR i;
+VAR pocet;
+begin
+  pocet=0;
+  pom=FilterAllUnits([[f_side,You],[f_btype,b_depot]]);
+  pom1=pom;
+  while pocet<2 do
+    begin
+      for i in pom do
+        if not IsConstructed(i) then begin
+                                       pocet=pocet+1;
+                                       pom1=pom1 diff i;
+                                     end;
+      pom=pom1;
+      wait(0$2);
+    end;
+//  Hint('Transport');
+  Hint('Transport1');
+end;
+
+// CHMO navrat zpet
+EXPORT function chmo_6;
+begin
+  ChangeMissionObjectives('M6a');
+end;
+
+// query na refuelovani aut
+EXPORT function query_refuel;
+begin
+  Query('QRefuel');
+end;
+
+// CHMO odskrtnuti pocet posatvenych aut
+EVERY 0$6 DO
+VAR pom;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+  if postavenych_aut>=pom then ChangeMissionObjectives('M3a')
+                          else enable;
+end;
+
+// hint s cerpacima autama
+EXPORT function hint_cerpaci_auta;
+begin
+  Hint('refuelingtrucks');
+end;
+
+{pridane nesmysly,aby mel Machmakerradost
+ChangeMissionObjectives('M6');
+Query('QEndMission');
+}

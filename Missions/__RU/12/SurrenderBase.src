@@ -1,0 +1,199 @@
+export function SurrenderBase(type, side);
+var a, cars;
+begin
+  if not (side in your_bases) then begin
+    SetAttitude(you, side, att_friend, true);
+    case type of
+      t_kill      : begin
+        if side=ai_s[1] then begin
+           DXbaseSurrender(side);
+           SurrenderNormal(true, side);
+        end
+        else begin
+           diplomacy:=false;
+           DXbaseSurrender(side);
+           SurrenderNormal(true, side);
+        end;
+      end;
+      t_killbeat  : begin
+        if side=ai_s[1] then begin
+           DXbaseSurrender(side);
+           SurrenderNormal(true, side);
+        end
+        else begin
+           diplomacy:=false;
+           DXbaseSurrender(side);
+           SurrenderNormal(true, side);
+        end;
+      end;
+      t_intimidate: begin
+        if side=ai_s[2] then begin
+           DB_BaseAccept(cap_bases=0);
+           SurrenderNormal(cap_bases=0, ai_s[2]);
+        end;
+      end;
+      t_persuade  : begin
+        if side=ai_s[3] then begin
+           DQrML_Right(cap_bases=0);
+           SurrenderNormal(cap_bases=0, ai_s[3]);
+        end;
+      end;
+      t_pay       : begin
+        if side=ai_s[4] then begin
+           DD_BaseAccept(cap_bases=0);
+           SurrenderNormal(cap_bases=0, ai_s[4]);
+        end;
+      end;
+      t_beat      : begin
+        if side=ai_s[5] then begin
+           DE_BaseAccept(cap_bases=0);
+           SurrenderNormal(cap_bases=0, ai_s[5]);
+        end;
+      end;
+    end;
+
+    your_humans:=FilterAllUnits([[f_side,you],[f_type,unit_human]]);
+    your_builds:=FilterAllUnits([[f_side,you],[f_type,unit_building]]);
+    your_cars:=FilterAllUnits([[f_side,you],[f_type,unit_vehicle]]);
+
+    remove_from_humans(your_humans);
+    remove_from_builds(your_builds);
+    remove_from_vehicles(your_cars);
+
+    cap_bases:=cap_bases+1;
+    your_bases:=your_bases ^ [side];
+  end;
+end;
+
+function SurrenderNormal(first, side);
+var yours, take, theirs, i, max, t_sci, t_lab;
+begin
+    yours:=FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_russian]]);
+    theirs:=FilterAllUnits([[f_side,side],[f_type,unit_human],[f_nation,nation_russian]]);
+    for i in theirs do
+      if GetLives(i)<hranice_umirani then
+        SetLives(i, hranice_umirani+50);
+    InGameOn;
+    while UnitFilter(theirs, [[f_inside]]) diff hlavouni do begin
+      ComExitBuilding(theirs);
+      AddComExitVehicle(theirs);
+      wait(0$2);
+    end;
+    InGameOff;
+    if first then begin
+       SetTech(tech_SibLoc, you, state_researched);
+       ai:=ai diff side;
+       case side of
+         ai_s[1]: begin
+            SetSideBase_custom(GetBase(depots[1]), you);
+            SetSide(humans[1], you);
+            SetSide(vehicles[1], you);
+         end;
+         ai_s[2]: begin
+            SetSideBase_custom(GetBase(depots[2]), you);
+            SetSide(humans[2], you);
+            SetSide(vehicles[2], you);
+            SetSide(Borodin, you);
+         end;
+         ai_s[3]: begin
+            SetSideBase_custom(GetBase(depots[3]), you);
+            SetSide(humans[3], you);
+            SetSide(vehicles[3], you);
+            SetSide(Tsaritsyn, you);
+         end;
+         ai_s[4]: begin
+            t_sci:=sci isect humans[4];
+            if t_sci>3 then
+              t_sci:=t_sci[1]^t_sci[2]^t_sci[3];
+            t_lab:=UnitFilter(buildings[4], [mf_lab]);
+            for i in t_lab do
+              if GetLabKind(i,1)=b_lab_spacetime or GetLabKind(i,2)=b_lab_spacetime then begin
+                t_lab:=i;
+                break;
+              end;
+
+            SetSideBase_custom(GetBase(depots[4]), you);
+            SetSide(humans[4] diff t_sci, you);
+            SetSide(vehicles[4], you);
+
+            SetSide(t_lab, ai_s[4]);
+            ComEnterUnit(t_sci^[Davidov], t_lab);
+         end;
+         ai_s[5]: begin
+            SetSideBase_custom(GetBase(depots[5]), you);
+            SetSide(humans[5], you);
+            SetSide(vehicles[5], you);
+            SetSide(Eisenstein, you);
+         end;
+       end;
+    end
+    else begin
+      case side of
+        ai_s[1]: take:=humans[1]^buildings[1]^vehicles[1];
+
+        ai_s[2]: begin
+                   if humans[2]<3 then max:=1 else max:=humans[2]-2;
+                   if max>5 then max:=5;
+                   take:=CharacterSelection('B-Base',1,max,
+        yours ^ [sel_not_hired,sel_changeable,sel_dont_change_class] ^ humans[2] ^ [sel_not_changeable] ^ [Borodin],
+        [class_soldier, class_mechanic, class_engineer, class_scientistic, class_bazooker]);
+        end;
+
+        ai_s[3]: begin
+                   if humans[3]<3 then max:=1 else max:=humans[3]-2;
+                   if max>3 then max:=3;
+                   take:=CharacterSelection('C-Base',1,max,
+        yours ^ [sel_not_hired,sel_changeable,sel_dont_change_class] ^ humans[3] ^ [sel_not_changeable] ^ [Tsaritsyn],
+        [class_soldier, class_mechanic, class_engineer, class_scientistic, class_bazooker]);
+        end;
+
+        ai_s[4]: begin
+                   if humans[4]<3 then max:=1 else max:=humans[4]-2;
+                   if max>2 then max:=2;
+
+                   t_sci:=sci isect humans[4];
+                   if t_sci>3 then
+                     t_sci:=t_sci[1]^t_sci[2]^t_sci[3];
+                   take:=CharacterSelection('D-Base',1,max,
+        yours ^ [sel_not_hired,sel_changeable,sel_dont_change_class] ^ (humans[4] diff t_sci) ^ [sel_not_changeable] ^ t_sci ^ [Davidov],
+        [class_soldier, class_mechanic, class_engineer, class_scientistic, class_bazooker]);
+        end;
+
+        ai_s[5]: begin
+                   if humans[5]<3 then max:=1 else max:=humans[5]-2;
+                   if max>5 then max:=5;
+                   take:=CharacterSelection('E-Base',1,max,
+        yours ^ [sel_not_hired,sel_changeable,sel_dont_change_class] ^ humans[5] ^ [sel_not_changeable] ^ [Eisenstein],
+        [class_soldier, class_mechanic, class_engineer, class_scientistic, class_bazooker]);
+        end;
+      end;
+    end;
+
+    ComExitVehicle(take);
+    AddComExitBuilding(take);
+    take:=take union FilterAllUnits([[f_side,side],[f_type,unit_vehicle],[f_control,control_manual]]);
+    SetSide(take, you);
+end;
+
+//Build-in function "SetSideBase_custom(base,side)" does not reset PriorityAttack commands on the affected buildings. "SetSide(un,side)" does.
+Export Function SetSideBase_custom(base,side);
+     var b, depot, orig_side;
+     begin
+          //Find the depot representing this base.
+          depot = -1;
+          for b in FilterAllUnits([[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]) do
+               if GetBase(b) = base then
+                    begin
+                         depot = b;
+                         break;
+                    end;
+
+          orig_side = GetSide(depot);
+
+          for b in FilterAllUnits([[f_side,orig_side],[f_type,unit_building]]) diff depot do
+               if GetBase(b) = base then
+                    SetSide(b,side);
+
+          //Always depot as last building. The base of the buildings connected to this depot changes if the depot changes side.
+          SetSide(depot,side);
+     end;

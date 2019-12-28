@@ -1,0 +1,272 @@
+export rus,am,ar,am_odj,legion;
+export scie0,scie0_sk,baz0,baz0_sk,baz1,baz1_sk,baz2,baz2_sk,baz3,baz3_sk,baz4,baz4_sk,baz5,baz5_sk;
+export guard0_chassis,guard0_weapon,guard0_dr,guard1_chassis,guard1_weapon,guard1_dr,guard2_chassis,guard2_weapon,guard2_dr,guard3_chassis,guard3_weapon,guard3_dr;
+export def0_chassis,def0_weapon,def0_dr,def1_chassis,def1_weapon,def1_dr,def2_chassis,def2_weapon,def2_dr;
+export defa_chassis,defa_weapon,defa_driver,defb_chassis,defb_weapon,defb_driver;
+export runo0_chassis,runo0_weapon,runo0_driver,runo1_chassis,runo1_weapon,runo1_driver,runo2_chassis,runo2_weapon,runo2_driver;
+export ruso0_chassis,ruso0_weapon,ruso0_driver,ruso1_chassis,ruso1_weapon,ruso1_driver,ruso2_chassis,ruso2_weapon,ruso2_driver;
+export amv0_ch,amv0_wp,amv1_ch,amv1_wp,amv2_ch,amv2_wp,amv3_ch,amv3_wp,amv0_dr,amv1_dr;
+export amsold0_lvl,amsold1_lvl,amscie0_lvl;
+export zas1_ch,zas1_wp,zas2_ch,zas2_wp,zas3_ch,zas3_wp,zas1_dr,zas2_dr,zas3_dr;
+export req_sib,req_cans,req_sib_,req_cans_,req2_sib,req2_cans,req2_sib_,req2_cans_,creq_sib,creq_cans,creq_sib_,creq_cans_,creq2_sib,creq2_cans,creq2_sib_,creq2_cans_;
+export fact_mech0,fact_mech1;
+export t1_1_ch,t1_1_wp,t1_2_ch,t1_2_wp,t1_3_ch,t1_3_wp;
+export t2_1_ch,t2_1_wp,t2_2_ch,t2_2_wp,t2_3_ch,t2_3_wp;
+export t3_1_ch,t3_1_wp,t3_2_ch,t3_2_wp,t3_3_ch,t3_3_wp;
+export marked_3,telepmed;
+export scie1_sk,scie2_sk,scie3_sk,scie4_sk,scie5_sk;
+export arv0_ch,arv0_wp,arv0_dr,arv1_ch,arv1_wp,arv1_dr,arv2_ch,arv2_wp,arv2_dr,arsld0,arsld1;
+export rubunw0_cr,rubunw1_cr,rubunw2_cr,rubune0_cr,rubune1_cr;
+export default_skill,rta;
+
+export secondPass;
+
+var cperiode,cper,supplies;
+
+function set_vars;
+begin
+//sides
+  rus=3;
+  am=1;
+  ar=2;
+  am_odj=4;
+  amv0_ch=us_medium_wheeled;  //vozitka co prijedou s johnem
+  amv0_wp=us_gatling_gun;
+  amv0_dr=5;
+  amv1_ch=us_medium_tracked;
+  amv1_wp=us_double_gun;
+  amv1_dr=5;
+  amv2_ch=us_medium_wheeled;
+  amv2_wp=us_light_gun;
+  amv3_ch=us_medium_tracked;
+  amv3_wp=us_gatling_gun;
+  amsold0_lvl=6;
+  amsold1_lvl=7;
+  amscie0_lvl=6;
+  zas1_ch=us_medium_tracked;    //doprovod co prijede se zasilkama
+  zas1_wp=us_gatling_gun;
+  zas1_dr=6;
+  zas2_ch=us_medium_wheeled;
+  zas2_wp=us_double_gun;
+  zas2_dr=3;
+  zas3_ch=us_medium_wheeled;
+  zas3_wp=us_light_gun;
+  zas3_dr=6;
+  arv0_ch=ar_medium_trike;      //najati arabsti zoldaci
+  arv0_wp=ar_gatling_gun;
+  arv0_dr=6;
+  arv1_ch=ar_half_tracked;
+  arv1_wp=ar_light_gun;
+  arv1_dr=6;
+  arv2_ch=ar_medium_trike;
+  arv2_wp=ar_flame_thrower;
+  arv2_dr=5;
+  arsld0=6;
+  arsld1=7;
+  req_sib=100;                //pozadavky arabu
+  req_cans=100;
+  req_sib_=60;
+  req_cans_=60;
+  req2_sib=200;
+  req2_cans=200;
+  req2_sib_=120;
+  req2_cans_=120;
+  creq_sib=req_sib;
+  creq_cans=req_cans;
+  creq_sib_=req_sib_;
+  creq_cans_=req_cans_;
+  creq2_sib=req2_sib;
+  creq2_cans=req2_cans;
+  creq2_sib_=req2_sib_;
+  creq2_cans_=req2_cans_;
+
+
+  default_skill=[7,6,5][difficulty];
+  cperiode=[1$45,2$05,2$25][difficulty];
+  supplies=[51,27,41][difficulty];
+
+//casove parametry ruskych teleportujicich se utoku 4-oo, zaklad je 15$00
+  rta=[
+       [10,30,10,20,17],  //1@(10)+1@(30)+oo@(47,64,..)
+       [14,22,7,8,11],  //2@(7,14)+1@(22)+oo@(33,44,..)
+       [10,18,5,4,7]    //2@(5,10)+2@(14,18)+oo@(25,32,..)
+      ][difficulty];
+//bazookeri
+  scie0_sk=[3,5,7][difficulty];
+  baz0_sk=[4,6,8][difficulty];
+  baz1_sk=[3,5,7][difficulty];
+  baz2_sk=[4,6,8][difficulty];
+  baz3_sk=[4,6,8][difficulty];
+  baz4_sk=[3,5,7][difficulty];
+  baz5_sk=[4,6,8][difficulty];
+//defenders of the bridge
+  guard0_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+  guard0_weapon=[ru_gun,ru_gun,ru_gun][difficulty];
+  guard0_dr=[4,6,8][difficulty];
+  guard1_chassis=[ru_medium_tracked,ru_medium_tracked,ru_medium_tracked][difficulty];
+  guard1_weapon=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  guard1_dr=[3,5,7][difficulty];
+  guard2_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  guard2_weapon=[ru_heavy_machine_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  guard2_dr=[4,6,8][difficulty];
+  guard3_chassis=[ru_medium_tracked,ru_medium_tracked,ru_heavy_tracked][difficulty];
+  guard3_weapon=[ru_gun,ru_gun,ru_heavy_gun][difficulty];
+  guard3_dr=[3,5,7][difficulty];
+//defenders of the base B south (mountain pass)
+  def0_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  def0_weapon=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  def0_dr=[2,4,6][difficulty];
+  def1_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  def1_weapon=[ru_heavy_machine_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  def1_dr=[3,5,7][difficulty];
+  def2_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+  def2_weapon=[ru_gun,ru_gun,ru_heavy_gun][difficulty];
+  def2_dr=[3,4,6][difficulty];
+//defenders of the base B east
+  defa_chassis=[ru_medium_tracked,ru_medium_tracked,ru_medium_tracked][difficulty];
+  defa_weapon=[ru_gun,ru_gun,ru_gun][difficulty];
+  defa_driver=[3,5,7][difficulty];
+  defb_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  defb_weapon=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  defb_driver=[3,4,6][difficulty];
+  rubunw0_cr=[3,5,7][difficulty];
+  rubunw1_cr=[4,5,7][difficulty];
+  rubunw2_cr=[4,5,7][difficulty];
+//levels of factory mechanics 
+  fact_mech0=[6,6,6][difficulty];
+  fact_mech1=[7,7,7][difficulty];
+//vehicles in group T1 (first teleported)
+  t1_1_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  t1_1_wp=[ru_heavy_machine_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  t1_2_ch=[ru_medium_wheeled,ru_heavy_wheeled,ru_heavy_wheeled][difficulty];
+  t1_2_wp=[ru_gun,ru_gun,ru_gun][difficulty];
+  t1_3_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+  t1_3_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+//vehicles in group T2 (second teleported)
+  t2_1_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+  t2_1_wp=[ru_gatling_gun,ru_gun,ru_gun][difficulty];
+  t2_2_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+  t2_2_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  t2_3_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  t2_3_wp=[ru_gun,ru_gun,ru_gun][difficulty];
+//vehicles in group T3 (third teleported)
+  t3_1_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_medium_wheeled][difficulty];
+  t3_1_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  t3_2_ch=[ru_medium_wheeled,ru_heavy_wheeled,ru_heavy_wheeled][difficulty];
+  t3_2_wp=[ru_gun,ru_heavy_gun,ru_heavy_gun][difficulty];
+  t3_3_ch=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+  t3_3_wp=[ru_gatling_gun,ru_gun,ru_gun][difficulty];
+//scientist in the lab 
+  scie1_sk=[5,5,5][difficulty];
+  scie2_sk=[6,6,6][difficulty];
+  scie3_sk=[7,7,7][difficulty];
+  scie4_sk=[6,6,6][difficulty];
+  scie5_sk=[5,5,5][difficulty];
+//obrana vyzk. zakladny (sever)
+  rubune0_cr=[3,4,5][difficulty];
+  rubune1_cr=[4,5,6][difficulty];
+  runo0_chassis=[ru_medium_tracked,ru_medium_tracked,ru_medium_tracked][difficulty];
+  runo0_weapon=[ru_heavy_machine_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  runo0_driver=[3,4,5][difficulty];
+  runo1_chassis=[ru_medium_tracked,ru_heavy_tracked,ru_heavy_tracked][difficulty];
+  runo1_weapon=[ru_gun,ru_heavy_gun,ru_heavy_gun][difficulty];
+  runo1_driver=[4,4,6][difficulty];
+  runo2_chassis=[ru_medium_tracked,ru_medium_tracked,ru_heavy_tracked][difficulty];
+  runo2_weapon=[ru_gatling_gun,ru_gun,ru_gun][difficulty];
+  runo2_driver=[3,4,5][difficulty];
+//obrana vyzk. zakladny (jih)
+  ruso0_chassis=[ru_medium_tracked,ru_heavy_tracked,ru_heavy_tracked][difficulty];
+  ruso0_weapon=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  ruso0_driver=[5,6,6][difficulty];
+  ruso1_chassis=[ru_medium_wheeled,ru_heavy_wheeled,ru_heavy_wheeled][difficulty];
+  ruso1_weapon=[ru_gun,ru_gun,ru_heavy_gun][difficulty];
+  ruso1_driver=[5,5,6][difficulty];
+  ruso2_chassis=[ru_medium_wheeled,ru_heavy_wheeled,ru_heavy_wheeled][difficulty];
+  ruso2_weapon=[ru_gun,ru_gun,ru_heavy_gun][difficulty];
+  ruso2_driver=[5,6,6][difficulty];
+
+//bunkry & turrety
+  setblevel([rubunw0,rubunw1,rubunw2],[3,5,7][difficulty]);
+  setblevel([rubune0,rubune1],[4,6,8][difficulty]);
+  setblevel([ruturr0,ruturr1],[5,7,9][difficulty]);
+
+
+  secondPass= 0; // If in query player select option 1 or 2 them variable change value to 1 and trigger build russian vehs.
+
+end;
+
+//---Starting block------Starting block------Starting block------Starting block------
+export debug,dialog6uzbyl;
+starting
+begin
+  SA_OnMissionStart;
+  debug=false;
+  fstamdep=60$0;
+  dialog6uzbyl=false;
+  cper=cperiode;
+  ingame_video=true;  //nechci excl.
+  interface_hidden=true;
+  set_vars;
+  amattbf=false;  //americani utoci na B
+  attackers=[];   //brod2
+  att_began=false;  //zacal utok na brod2
+  zdrhat=false;  //am. uz musi tutikat
+  brod=false;  //vidi brod
+  zapbrod=false; //zapadni brod - q1 treti volba
+  most_att_bg=false; //zacal utok na zap. brod
+  legion=-1; //ke komu se pridal legion (-1 k rusum, 0 neutral, 1 k amikum)
+  marked_3=true; //prvni vetev eventu unitgoestored je enabled
+  achjo=true;
+  us_in_udoli_=[];
+  pr_loz=0; //primarni lozisko v rozhovoru nezmineno
+  telepmed=0; //info o teleportu
+  zasilka=15$0;
+  disable(5);
+  disable(6);
+  disable(7);
+  disable(8);
+  disable(9);
+  disable(10);
+  disable(101);
+  disable(12);
+  disable(102);
+  disable(14);
+  disable(15);
+  disable(16);
+  disable(17);
+  prepare_russians;
+  prepare_americans;  
+  intro;              //debugrem!!!!!!!!!!!!!!
+  //ingame_video=false;  //debug!!!!!! zaremovat!!!!!
+end;
+
+
+//krabice
+{every 10$0 do
+begin
+  createcratesanywhere(rand(4,5),true);
+  enable;
+end;}
+
+every 0$15+7$00 do
+begin
+  cper=cper-0$15;
+  if cper<=0 then begin
+    if createcratesarea(5,dropzone,true) then begin
+      if (supplies>1) then begin
+        supplies=supplies-1;
+        enable;
+      end;
+      cper=cperiode;
+    end
+    else enable;
+  end
+  else enable;
+end;
+
+every 0$7 do
+begin
+  randomize;
+  enable;
+end;
+

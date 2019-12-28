@@ -1,0 +1,649 @@
+export rh,powel;        //Ron Harrison, Arthur Powell
+export john;
+
+export lisa,frank,john_;
+export cyrus,bobby,denis,yamoko;
+export amhsold0,amhsolda;
+
+export posilya,posilyb;
+export return_time,return_time_;
+//var amhsold3,amhsold4
+//var amhsold5;
+export lucy,brown,vanh,glad,joan;
+export lisaloc,frankloc,cyrusloc,bobbyloc,denisloc,yamokoloc,lucyloc,brownloc,gladloc,joanloc;
+
+export gamma2commander;
+var time;
+var othergamma2,othergamma3,otherunplaced,otherjmm,otherlatejmm;
+var gamma2vip,gamma3vip,withjmmvip,withjmmlatevip;
+var gamma2;
+var ambctwr0;
+
+function pouzit(un);
+begin
+  result=(un in posilya) or (un in posilyb) or (un in smejdi);
+end;
+
+export function saveitall;
+var tmz,bz,tmzo;
+begin
+  if john then
+    savecharacters(john,'JMM')
+  else
+    savecharacters(john_,'JMM');
+  savecharacters([],'Harisson');  
+  deletecharacters('Harisson');
+  if cyrus then begin
+    savecharacters(cyrus,'Cyrus');
+    if isdead(cyrus) then savevariable(0,'CyrusLoc')
+    else if pouzit(cyrus) or (cyrus in withjmmlatevip) then savevariable(2,'CyrusLoc');
+  end;
+  if bobby then begin
+    savecharacters(bobby,'Bobby');
+    if isdead(bobby) then savevariable(0,'BobbyLoc')
+    else if pouzit(bobby) or (bobby in withjmmlatevip) then savevariable(2,'BobbyLoc');
+  end;
+  if lisa then begin
+    savecharacters(lisa,'Lisa');
+    if isdead(lisa) then savevariable(0,'LisaLoc')
+    else if pouzit(lisa) or (lisa in withjmmlatevip) then savevariable(2,'LisaLoc');
+  end;
+  if frank then begin
+    savecharacters(frank,'Frank');
+    if isdead(frank) then savevariable(0,'FrankLoc')
+    else if pouzit(frank) or (frank in withjmmlatevip) then savevariable(2,'FrankLoc');
+  end;
+  if lucy then begin
+    savecharacters(lucy,'Donaldson');
+    if isdead(lucy) then savevariable(0,'DonaldsonLoc')
+    else if pouzit(lucy) or (lucy in withjmmlatevip) then savevariable(2,'DonaldsonLoc');
+  end;
+  if brown then begin
+    savecharacters(brown,'Brown');
+    if isdead(brown) then savevariable(0,'BrownLoc')
+    else if pouzit(brown) or (brown in withjmmlatevip) then savevariable(2,'BrownLoc');
+  end;
+  if denis then begin
+    savecharacters(denis,'Denis');
+    if isdead(denis) then savevariable(0,'DenisLoc')
+    else if pouzit(denis) or (denis in withjmmlatevip) then savevariable(2,'DenisLoc');
+  end;
+  if joan then begin
+    savecharacters(joan,'Joan');
+    if isdead(joan) then savevariable(0,'JoanLoc')
+    else savevariable(2,'JoanLoc');
+  end;
+  if glad then begin
+    savecharacters(glad,'Gladstone');
+    if isdead(glad) then savevariable(0,'GladstoneLoc')
+    else if pouzit(glad) or (glad in withjmmlatevip) then savevariable(2,'GladstoneLoc');
+  end;
+  if not frank then
+    if yamoko then begin
+      savecharacters(yamoko,'Yamoko');
+      if isdead(yamoko) then savevariable(0,'YamokoLoc')
+      else if pouzit(yamoko) or (yamoko in withjmmlatevip) then savevariable(2,'YamokoLoc');
+    end;
+  savecharacters(amhsolda,'Sikorski');
+  if isdead(amhsolda) then savevariable(0,'SikorskiLoc')
+  else savevariable(2,'SikorskiLoc');
+  savecharacters(vanh,'VanHouten');
+  if gamma2commander=3 then
+    if isdead(vanh) then savevariable(0,'VanHoutenLoc')
+    else savevariable(2,'VanHoutenLoc')
+  else savevariable(0,'VanHoutenLoc');
+
+  tmz=filterallunits([[f_alive],[f_side,amer],[f_type,unit_human]]) diff [john,cyrus,bobby,lisa,frank,lucy,brown,denis,joan,glad,yamoko,amhsolda,vanh];
+  tmz=unitfilter(tmz,[f_not,[f_nation,nation_nature]]);
+  savecharacters(tmz union (othergamma2^othergamma3^otherunplaced^otherjmm^otherlatejmm),'otherGamma2');
+  savecharacters([],'otherDelta');
+  savecharacters([],'otherUnplaced');
+  savecharacters([],'otherJMM');
+  savecharacters([],'otherLateJMM');
+  //jeste promena Gamma2 - schileny seznam budov
+  //prvky jsou seznamy tvaru [x,y,direction,building_type,level]
+  tmz=filterallunits([[f_side,amer],[f_nation,nation_american],[f_btype,b_factory]]);
+  tmz=tmz^filterallunits([[f_side,amer],[f_nation,nation_american],[f_type,unit_building],f_not,[f_btype,b_factory]]);
+  tmzo=[];
+  for bz in tmz do
+    case getbtype(bz) of
+      b_lab_basic,b_lab_weapon:begin end;
+      b_lab,b_lab_half,b_lab_full:tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz),getlabkind(bz,1),getlabkind(bz,2)]];
+      b_bunker,b_turret:tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz),getbweapon(bz)]];
+      else tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz)]];
+    end;
+  savevariable(tmzo,'Gamma2');
+
+  //savecampaignfile('CharsAm08out');
+end;
+
+var smejdi;
+var zbytci;
+export function from_prev_mis;
+var tmp,tmp1,tmz,tmz_,tm_c,tm_e,tm_m,tm_s,tmp_c,tmp_e,tmp_m,tmp_s,tot,lab_done,retry;
+var smery;
+begin
+  uc_side=amer;
+  uc_nation=nation_american;
+  return_time=0$1;
+  return_time_=0$1;
+  othergamma2=[];
+  othergamma3=[];
+  otherunplaced=[];
+  otherjmm=[];
+  gamma2vip=[];
+  gamma3vip=[];
+  withjmmvip=[];
+  withjmmlatevip=[];
+
+//  opencampaignfile('CharsAm08');
+
+  time=loadvariable('Time',-1);    //Time je v ticich!
+  if time=-1 then buildquery('neny Time',['OK'])
+  else begin
+    if time>14$50 then time=14$50;
+    if time<0$30 then time=1$30;
+    return_time=time;
+    return_time_=time;
+  end;
+  
+
+
+  gamma2=loadvariable('Gamma2',[]);
+  if gamma2=0 then buildquery(['neny Gamma2',Gamma2],['OK']);
+  //napred budovky [x,y,direction,building_type,level]
+  lab_done=false;
+  retry=[];
+  for tmp in gamma2 do begin
+    if tmp[1]=38 and tmp[2]=3 then  //oil mine
+    else if tmp[1]=40 and tmp[2]=11 then //wrkshop
+    else if tmp[1]=52 and tmp[2]=12 then //depot
+    else if tmp[4]=b_breastwork or tmp[4]=b_bunker or tmp[4]=b_factory or tmp[4]=b_workshop or tmp[4]=b_depot or tmp[4]=b_warehouse then
+    else if (tmp[4]=b_lab or tmp[4]=b_lab_half or tmp[4]=b_lab_full)and not lab_done then begin //lab
+      uc_direction=tmp[3];
+      bc_type=b_lab_full;
+      bc_level=tmp[5];
+      bc_kind1=b_lab_weapon;
+      bc_kind2=b_lab_opto;
+      tmp1=createbuilding;
+      if not placeunitxy(tmp1,tmp[1],tmp[2],false) then retry=retry^[tmp]
+//        if not placeunitarea(tmp1,ambase,false) then buildquery('lab nebude',['OK'])  //DEBUG!!!
+//        else lab_done=true
+      else lab_done=true;
+    end
+    else if tmp[4]=b_armoury then begin
+      uc_direction=tmp[3];
+      bc_type=b_barracks;
+      bc_level=tmp[5];
+      tmp1=createbuilding;
+      if not placeunitxy(tmp1,tmp[1],tmp[2],false) then retry=retry^[tmp];
+//        if not placeunitarea(tmp1,ambase,false) then buildquery('barracks nebudou',['OK']); //DEBUG!!!
+    end
+    else begin
+      uc_direction=tmp[3];
+      bc_type=tmp[4];
+      bc_level=tmp[5];
+      tmp1=createbuilding;
+      if not placeunitxy(tmp1,tmp[1],tmp[2],false) then  retry=retry^[tmp];
+//        if not placeunitarea(tmp1,ambase,false) then buildquery([tmp[4],'nebude'],['OK']); //DEBUG!!!
+    end;
+  end;
+{  for tmp in gamma2 do begin
+    if tmp[1]=38 and tmp[2]=3 then  //oil mine
+    else if tmp[1]=40 and tmp[2]=11 then //wrkshop
+    else if tmp[1]=52 and tmp[2]=12 then //depot
+    else if tmp[4]=b_breastwork or tmp[4]=b_bunker or tmp[4]=b_factory or tmp[4]=b_workshop or tmp[4]=b_depot or tmp[4]=b_warehouse then
+    else if tmp[4]=b_lab and not lab_done then begin //lab
+      bc_type=b_lab_full;
+      bc_level=tmp[5];
+      bc_kind1=b_lab_weapon;
+      bc_kind2=b_lab_opto;
+      if not createandplacebuildingxyd(tmp[1],tmp[2],tmp[3]) then
+buildquery('lab nebude',['OK'])  //DEBUG!!!
+//        else lab_done=true
+      else lab_done=true;
+    end
+    else if tmp[4]=b_armoury then begin
+      bc_type=b_barracks;
+      bc_level=tmp[5];
+      if not createandplacebuildingxyd(tmp[1],tmp[2],tmp[3]) then
+buildquery('barracks nebudou',['OK']); //DEBUG!!!
+    end
+    else begin
+      bc_type=tmp[4];
+      bc_level=tmp[5];
+      if not createandplacebuildingxyd(tmp[1],tmp[2],tmp[3]) then
+buildquery([tmp[4],'nebude'],['OK']); //DEBUG!!!
+    end;
+  end;   }
+
+  //uc_direction=3;
+  bc_type=b_control_tower;
+  bc_level=4;
+  //ambctwr0=createbuilding;
+  smery=[
+  [[48,16],[49,16],[50,16],[50,15],[50,14],[50,13],[49,12],[48,11],[47,11],[46,11],[45,11],[45,12],[45,13],[46,14],[47,15]],
+  [[48,16],[49,16],[50,16],[51,16],[51,15],[51,14],[50,13],[49,12],[48,11],[47,11],[46,11],[46,12],[46,13],[46,14],[47,15]],
+  [[49,17],[50,17],[51,17],[51,16],[51,15],[51,14],[50,13],[49,12],[48,12],[47,12],[46,12],[46,13],[46,14],[47,15],[48,16]],
+  [[48,17],[49,17],[50,17],[51,17],[51,16],[51,15],[50,14],[49,13],[48,12],[47,12],[46,12],[46,13],[46,14],[46,15],[47,16]],
+  [[48,17],[49,17],[50,17],[50,16],[50,15],[50,14],[49,13],[48,12],[47,12],[46,12],[45,12],[45,13],[45,14],[46,15],[47,16]],
+  [[47,16],[48,16],[49,16],[50,16],[50,15],[50,14],[49,13],[48,12],[47,11],[46,11],[45,11],[45,12],[45,13],[45,14],[46,15]]
+  ];
+  tmp1=[];
+  for tmz=1 to 6 do begin
+    tm_c=false;
+    for tmz_=1 to 15 do
+      if hexinfo(smery[tmz][tmz_][1],smery[tmz][tmz_][2]) then begin tm_c=true;break;end;
+    if not tm_c then tmp1=tmp1^[tmz-1]
+    else tm_c=false;
+  end;
+  tm_c=false;
+  for tmz in tmp1 do begin
+    uc_direction=tmz;
+    ambctwr0=createbuilding;
+    if placeunitxy(ambctwr0,48,14,false) then begin tm_c=true;break;end
+    else destroyunit(ambctwr0);
+  end;
+//  debuglog(['retry:',retry]);  //DEBUG!!!
+  for tmp in retry do begin
+    if (tmp[4] in [b_lab,b_lab_half,b_lab_full]) and not lab_done then begin //lab
+      uc_direction=tmp[3];
+      bc_type=b_lab_full;
+      bc_level=tmp[5];
+      bc_kind1=b_lab_weapon;
+      bc_kind2=b_lab_opto;
+      tmp1=createbuilding;
+      if not placeunitarea(tmp1,ambase,false) then buildquery('lab nebude',['OK'])  //DEBUG!!!
+      else lab_done=true;
+    end
+    else if tmp[4]=b_armoury then begin
+      uc_direction=tmp[3];
+      bc_type=b_barracks;
+      bc_level=tmp[5];
+      tmp1=createbuilding;
+      if not placeunitarea(tmp1,ambase,false) then buildquery('barracks nebudou',['OK']); //DEBUG!!!
+    end
+    else begin
+      uc_direction=tmp[3];
+      bc_type=tmp[4];
+      bc_level=tmp[5];
+      tmp1=createbuilding;
+      if not placeunitarea(tmp1,ambase,false) then buildquery([tmp[4],'nebude'],['OK']); //DEBUG!!!
+    end;
+  end;
+  if not tm_c then
+    if not placeunitarea(ambctwr0,ambase,false) then buildquery('control tower nebude',['OK']);
+
+  if not testcharacters('otherGamma2') or not checkcharacterset('otherGamma2') then
+  else othergamma2=createcharacterset('otherGamma2');
+
+  if not testcharacters('otherDelta') or not checkcharacterset('otherDelta') then
+  else othergamma3=createcharacterset('otherDelta');
+
+  if not testcharacters('otherUnplaced') or not checkcharacterset('otherUnplaced') then
+  else otherunplaced=createcharacterset('otherUnplaced');
+
+  if not testcharacters('otherJMM') or not checkcharacterset('otherJMM') then
+  else otherjmm=createcharacterset('otherJMM');
+
+  if not testcharacters('otherLateJMM') or not checkcharacterset('otherLateJMM') then
+  else otherlatejmm=createcharacterset('otherLateJMM');
+
+//  if testcharacters('Harisson') and checkcharacterset('Harisson') then rh=createcharacter('Harisson')
+//  else buildquery('neny Harisson',['OK']);
+  rh=newcharacter('Harisson');
+  if not rh then buildquery('neny Harisson',['OK']);
+  if testcharacters('JMM') and checkcharacterset('JMM') then john_=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+//  if testcharacters('Powell') and checkcharacterset('Powell') then powel=createcharacter('Powell')
+//  else buildquery('neny Powell',['OK']);
+  powel=newcharacter('Powell');
+  if not powel then buildquery('neny Powell',['OK']);
+
+  gamma2commander=loadvariable('Gamma2Commander',0);
+  if not gamma2commander then buildquery('neny Gamma2Commander',['OK']);
+  lucy=0;brown=0;vanh=0;
+  if not testcharacters('Donaldson') or not checkcharacterset('Donaldson') then lucy=0
+  else begin
+    lucy=createcharacter('Donaldson');
+    lucyloc=loadvariable('DonaldsonLoc',-1);
+    if lucyloc=-1 then buildquery('neny DonaldsonLoc',['OK']);
+  end;
+
+  if not testcharacters('Brown') or not checkcharacterset('Brown') then brown=0
+  else begin
+    brown=createcharacter('Brown');
+    brownloc=loadvariable('BrownLoc',-1);
+    if brownloc=-1 then buildquery('neny BrownLoc',['OK']);
+  end;
+
+//  if not testcharacters('VanHouten') or not checkcharacterset('VanHouten') then vanh=0
+//  else vanh=createcharacter('VanHouten');
+  vanh=newcharacter('VanHouten');
+
+  case gamma2commander of
+    1:if not lucy then buildquery('neny Donaldson',['OK'])
+      else amhsold0=lucy;
+    2:if not brown then buildquery('neny Brown',['OK'])
+      else amhsold0=brown;
+    3:if not vanh then buildquery('neny VanHouten',['OK'])
+      else amhsold0=vanh;
+  end;
+
+//  if not testcharacters('Sikorski') or not checkcharacterset('Sikorski') then buildquery('neny Sikorski',['OK'])
+//  else begin
+//    uc_side=amer_reinf;
+//    amhsolda=createcharacter('Sikorski');
+//    uc_side=amer;
+//  end;
+  uc_side=amer_reinf;
+  amhsolda=newcharacter('Sikorski');
+  uc_side=amer;
+  if not amhsolda then buildquery('neny Sikorski',['OK']);
+
+  if not testcharacters('Lisa') or not checkcharacterset('Lisa') then lisa=0
+  else begin
+    lisa=createcharacter('Lisa');
+    lisaloc=loadvariable('LisaLoc',-1);
+    case lisaloc of
+      2:gamma2vip=gamma2vip^[lisa];
+      3:gamma3vip=gamma3vip^[lisa];
+      4:withjmmvip=withjmmvip^[lisa];
+      5:withjmmlatevip=withjmmlatevip^[lisa];
+      -1:buildquery('neny LisaLoc',['OK']);
+    end;
+  end;                                
+
+  if not testcharacters('Frank') or not checkcharacterset('Frank') then frank=0
+  else begin
+    frank=createcharacter('Frank');
+    frankloc=loadvariable('FrankLoc',-1);
+    case frankloc of
+      2:gamma2vip=gamma2vip^[frank];
+      3:gamma3vip=gamma3vip^[frank];
+      4:withjmmvip=withjmmvip^[frank];
+      5:withjmmlatevip=withjmmlatevip^[frank];
+      -1:buildquery('neny FrankLoc',['OK']);
+    end;
+  end;
+
+  if not testcharacters('Joan') or not checkcharacterset('Joan') then joan=0
+  else begin
+    joan=createcharacter('Joan');
+    joanloc=loadvariable('JoanLoc',-1);
+    case joanloc of
+      9:;
+      -1:buildquery('neny JoanLoc',['OK']);
+    end;
+  end;
+
+  if not testcharacters('Gladstone') or not checkcharacterset('Gladstone') then glad=0
+  else begin
+    glad=createcharacter('Gladstone');
+    gladloc=loadvariable('GladstoneLoc',-1);
+    case gladloc of
+      2:gamma2vip=gamma2vip^[glad];
+      3:gamma3vip=gamma3vip^[glad];
+      4:withjmmvip=withjmmvip^[glad];
+      5:withjmmlatevip=withjmmlatevip^[glad];
+      -1:buildquery('neny GladstoneLoc',['OK']);
+    end;
+  end;
+
+  if not testcharacters('Cyrus') or not checkcharacterset('Cyrus') then cyrus=0
+  else begin
+    cyrus=createcharacter('Cyrus');
+    cyrusloc=loadvariable('CyrusLoc',-1);
+    case cyrusloc of
+      2:gamma2vip=gamma2vip^[cyrus];
+      3:gamma3vip=gamma3vip^[cyrus];
+      4:withjmmvip=withjmmvip^[cyrus];
+      5:withjmmlatevip=withjmmlatevip^[cyrus];
+      -1:buildquery('neny CyrusLoc',['OK']);
+    end;
+  end;
+
+  if not testcharacters('Bobby') or not checkcharacterset('Bobby') then bobby=0
+  else begin
+    bobby=createcharacter('Bobby');
+    bobbyloc=loadvariable('BobbyLoc',-1);
+    case bobbyloc of
+      2:gamma2vip=gamma2vip^[bobby];
+      3:gamma3vip=gamma3vip^[bobby];
+      4:withjmmvip=withjmmvip^[bobby];
+      5:withjmmlatevip=withjmmlatevip^[bobby];
+      -1:buildquery('neny BobbyLoc',['OK']);
+    end;
+  end;
+
+  if not testcharacters('Denis') or not checkcharacterset('Denis') then denis=0
+  else begin
+    denis=createcharacter('Denis');
+    denisloc=loadvariable('DenisLoc',-1);
+    case denisloc of
+      2:gamma2vip=gamma2vip^[denis];
+      3:gamma3vip=gamma3vip^[denis];
+      4:withjmmvip=withjmmvip^[denis];
+      5:withjmmlatevip=withjmmlatevip^[denis];
+      -1:buildquery('neny DenisLoc',['OK']);
+    end;
+  end;
+
+  yamoko=0;
+  if not frank then
+    if not testcharacters('Yamoko') or not checkcharacterset('Yamoko') then yamoko=0
+    else begin
+      yamoko=createcharacter('Yamoko');
+      yamokoloc=loadvariable('YamokoLoc',-1);
+      case yamokoloc of
+        2:gamma2vip=gamma2vip^[yamoko];
+        3:gamma3vip=gamma3vip^[yamoko];
+        4:withjmmvip=withjmmvip^[yamoko];
+        5:withjmmlatevip=withjmmlatevip^[yamoko];
+        -1:buildquery('neny YamokoLoc',['OK']);
+      end;
+    end;
+
+  posilya=[];
+  if gamma3vip>=2 then posilya=[gamma3vip[1],gamma3vip[2]]
+  else begin
+    tmp=0+gamma3vip+othergamma3;
+    if tmp<2 then begin
+      posilya=gamma3vip^othergamma3;
+      if (not glad) or (glad and gladloc<>3) then begin
+        preparescientist(sex_male,2);
+        //hc_name='Elliot Forshaw';
+        posilya=posilya^[createhuman];
+        tmp=tmp+1;
+      end;
+      if tmp=1 then begin
+{        preparemechanic(sex_female,2);
+        hc_name='Coleen Orris';
+        posilya=posilya^[createhuman];
+      end;
+      if tmp<=2 then begin}
+        preparesoldier(sex_male,2);
+        //hc_name='Brian Lester';
+        posilya=posilya^[createhuman];
+      end;
+    end
+    else begin
+      tmp1=[];
+      tmp1=gamma3vip^othergamma3;
+      for tmp=1 to 2 do
+        posilya=posilya^tmp1[tmp];
+    end;
+  end;
+
+  posilyb=[john_];
+  if withjmmvip>=4 then posilyb=[john_,withjmmvip[1],withjmmvip[2],withjmmvip[3],withjmmvip[4]]
+  else begin
+    tmp=0+withjmmvip+otherjmm;
+    if tmp<4 then begin
+      posilyb=[john_]^withjmmvip^otherjmm;
+      if tmp=0 then begin
+        preparemechanic(sex_male,3);
+        //hc_name='Austin Yallop';
+        posilyb=posilyb^[createhuman];
+      end;
+      if tmp<=1 then begin
+        preparesoldier(sex_female,3);
+        //hc_name='Tricia Underwood';
+        posilyb=posilyb^[createhuman];
+      end;
+      if tmp<=2 then begin
+        preparesoldier(sex_male,3);
+        //hc_name='Geoffrey Tewksbury';
+        posilyb=posilyb^[createhuman];
+      end;
+      preparesoldier(sex_male,3);
+      //hc_name='Henry Duffey';
+      posilyb=posilyb^[createhuman];
+    end
+    else begin
+      tmp1=[];
+      tmp1=withjmmvip^otherjmm;
+      for tmp=1 to 4 do
+        posilyb=posilyb^tmp1[tmp];
+    end;
+  end;
+
+  //now to the hard job - the selecting and placing base crew
+
+  //place the commander
+  if not placeunitxyr(amhsold0,44,8,3,false) then placeunitarea(amhsold0,ambase,false);
+
+  tmz=gamma2vip union othergamma2 union otherunplaced;
+  tmz_=tmz;
+  tm_c=unitfilter(tmz,[[f_class,class_soldier]]);
+  tm_e=unitfilter(tmz,[[f_class,class_engineer]]);
+  tm_m=unitfilter(tmz,[[f_class,class_mechanic]]);
+  tm_s=unitfilter(tmz,[[f_class,class_scientistic]]);
+  if tmz>=6 then begin
+    tmp_c=0+tm_c;
+    if tmp_c>3 then tmp_c=2;
+    for tmp1=1 to tmp_c do begin
+      if not placeunitxyr(tm_c[tmp1],52,36,3,false) then placeunitarea(tm_c[tmp1],ambase,false);
+      tmz=tmz diff [tm_c[tmp1]];
+    end;
+    tot=tmp_c;
+
+    tmp_m=0+tm_m;
+    if tmp_m>3 then tmp_m=2;
+    for tmp1=1 to tmp_m do begin
+      if not placeunitxyr(tm_m[tmp1],45,16,3,false) then placeunitarea(tm_m[tmp1],ambase,false);
+      tmz=tmz diff [tm_m[tmp1]];
+    end;
+    tot=tot+tmp_m;
+
+    tmp_e=0+tm_e;
+    if tmp_e>2 then tmp_e=1;
+    for tmp1=1 to tmp_e do begin
+      if not placeunitxyr(tm_e[tmp1],52,16,3,false) then placeunitarea(tm_e[tmp1],ambase,false);
+      tmz=tmz diff [tm_e[tmp1]];
+    end;
+    tot=tot+tmp_e;
+
+    tmp_s=0+tm_s;
+    if tmp_s>2 then tmp_s=1;
+    for tmp1=1 to tmp_s do begin
+      if not placeunitxyr(tm_s[tmp1],60,18,3,false) then placeunitarea(tm_s[tmp1],ambase,false);
+      tmz=tmz diff [tm_s[tmp1]];
+    end;
+    tot=tot+tmp_s;
+
+    for tmp1=1 to (6-tot) do
+      if not placeunitxyr(tmz[tmp1],45,8,5,false) then placeunitarea(tmz[tmp1],ambase,false);
+
+  end
+  else begin
+    tmp_c=0+tm_c;
+    if tmp_c>3 then tmp_c=2;
+    for tmp1=1 to tmp_c do begin
+      if not placeunitxyr(tm_c[tmp1],52,36,3,false) then placeunitarea(tm_c[tmp1],ambase,false);
+      tmz=tmz diff [tm_c[tmp1]];
+    end;
+    tot=tmp_c;
+    if tmp_c=0 then begin
+      preparesoldier(sex_male,3);
+      //hc_name='Chester McGillis';
+      tmp=createhuman;
+      if not placeunitxyr(tmp,52,36,3,false) then placeunitarea(tmp,ambase,false);
+    end;
+    if tmp_c<=1 then begin
+      preparesoldier(sex_male,3);
+      //hc_name='Errol Nevinson';
+      tmp=createhuman;
+      if not placeunitxyr(tmp,52,36,3,false) then placeunitarea(tmp,ambase,false);
+    end;
+
+    tmp_m=0+tm_m;
+    if tmp_m>3 then tmp_m=2;
+    for tmp1=1 to tmp_m do begin
+      if not placeunitxyr(tm_m[tmp1],45,16,3,false) then placeunitarea(tm_m[tmp1],ambase,false);
+      tmz=tmz diff [tm_m[tmp1]];
+    end;
+    tot=tot+tmp_m;
+    if tmp_m=0 then begin
+      preparemechanic(sex_male,3);
+      //hc_name='Lewis Peyton';
+      tmp=createhuman;
+      if not placeunitxyr(tmp,45,16,3,false) then placeunitarea(tmp,ambase,false);
+    end;
+    if tmp_m<=1 then begin
+      preparemechanic(sex_male,3);
+      //hc_name='Matthew Lindsay';
+      tmp=createhuman;
+      if not placeunitxyr(tmp,45,16,3,false) then placeunitarea(tmp,ambase,false);
+    end;
+
+    tmp_e=0+tm_e;
+    if tmp_e>2 then tmp_e=1;
+    for tmp1=1 to tmp_e do begin
+      if not placeunitxyr(tm_e[tmp1],52,16,3,false) then placeunitarea(tm_e[tmp1],ambase,false);
+      tmz=tmz diff [tm_e[tmp1]];
+    end;
+    tot=tot+tmp_e;
+    if tmp_e=0 then begin
+      prepareengineer(sex_female,3);
+      //hc_name='Cindy Crawford';
+      tmp=createhuman;
+      if not placeunitxyr(tmp,52,16,3,false) then placeunitarea(tmp,ambase,false);
+    end;
+
+    tmp_s=0+tm_s;
+    if tmp_s>2 then tmp_s=1;
+    for tmp1=1 to tmp_s do begin
+      if not placeunitxyr(tm_s[tmp1],60,18,3,false) then placeunitarea(tm_s[tmp1],ambase,false);
+      tmz=tmz diff [tm_s[tmp1]];
+    end;
+    tot=tot+tmp_s;
+    if tmp_s=0 then begin
+      preparescientist(sex_female,2);
+      //hc_name='Kristina Kilkullen';
+      tmp=createhuman;
+      if not placeunitxyr(tmp,60,18,3,false) then placeunitarea(tmp,ambase,false);
+    end;
+
+  end;
+  if joan then placeunitxyr(joan,52,15,2,false);
+  smejdi=tmz_ diff tmz;
+  zbytci=tmz;
+
+//  buildquery('opoce',['OK']);  //DEBUG!!!
+  uc_nation=nation_nature;
+  preparehuman(sex_male,class_apeman_engineer,0);
+  //hc_name='Mike';
+  placeunitarea(createhuman,ambase,false);
+  preparehuman(sex_male,class_apeman_engineer,0);
+  //hc_name='Jack';
+  placeunitarea(createhuman,ambase,false);
+  preparehuman(sex_male,class_apeman_engineer,0);
+  //hc_name='Phil';
+  placeunitarea(createhuman,ambase,false);
+  uc_nation=nation_american;
+  hc_name='';
+//  commoveunit(amhsold1,ambbunk1);
+//  commoveunit(amhsold2,ambbunk0);
+//  commoveunit(amhmech1,ambctwr0);
+end;

@@ -1,0 +1,599 @@
+// Marked  1 -  Spusteni patrolovani ruske strany
+// Marked  2 -  Pripusteni Franka do zakladny
+// Marked  3 -  Umira nam Cornell
+// Marked  4 -  Leaving Cornells group
+// Marked  5 -  Frankova zprava (kdyz byl poslan na pruzkum) - odkryti mapy
+// Marked  7 -  Reakce postav na to, kdyz nektera sedi v aute
+// Marked  8 -  Leaving Cornell
+// Marked 10 -  Event ze bylo vyrobeno prvni auto
+
+
+// Starting scene //
+export function starting_scene;
+var sol1,time;
+begin
+  time:=TICK;
+  wait(0$1);
+  if amtruck1 then
+    CenterOnUnits(amtruck1)
+  else
+    CenterOnUnits(MacMillan);
+
+  InGameOn;
+
+// his guys
+  ComWait(Kobra1 diff MacMillan,0$0.8);
+
+// macmillan itself
+  if amtruck1 then
+    begin
+      ComMoveXY(amtruck1,172,112);
+      AddComMoveUnit(Kobra1 diff MacMillan,amtruck1);
+      ComTurnUnit(cornells,amtruck1);
+    end
+  else
+    begin
+      ComMoveXY(MacMillan,168,109);
+      AddComMoveUnit(Kobra1 diff MacMillan,amtruck1);
+      ComTurnUnit(cornells,MacMillan);
+    end;
+
+  if amtruck2 then
+    begin
+      ComMoveXY(amtruck2,164,110);
+      AddComExitVehicle(amtruck2);
+    end;
+
+  ComMoveXY(Cornell,165,105);
+
+  wait(0$1.5);
+  ComHold(Kobra1 diff MacMillan);
+
+  if amtruck1 then
+    begin
+      repeat
+        Wait(0$0.5);
+      until not IsBusy(amtruck1);
+      ComExitVehicle(amtruck1);
+      wait(0$0.2);
+      ComMoveXY(MacMillan,168,109);
+    end;
+  repeat
+    Wait(0$0.5);
+  until not IsBusy(MacMillan);
+
+  ComHold(Kobra1);
+  ComTurnUnit(MacMillan,Cornell);
+  ComTurnUnit(Cornell,MacMillan);
+
+  Wait(0$1);
+
+  InGameOff;
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(MacMillan,'D1-JMM-1');
+  Say(Cornell,'D1-Corn-1');
+
+  ComStop(cornells);
+
+  Say(MacMillan,'D1-JMM-2');
+  Say(MacMillan,'D1-JMM-2a');
+  Say(Cornell,'D1-Corn-2');
+
+  if IsOK (Mikhail) Then
+    begin
+      Say(Cornell,'D1a-Corn-1');
+      Say(MacMillan,'D1a-JMM-1');
+      ComMoveXY(Mikhail,169,107);
+      Say(Cornell,'D1a-Corn-2');
+      Say(MacMillan,'D1a-JMM-2');
+      Say(Cornell,'D1a-Corn-3');
+      Say(MacMillan,'D1a-JMM-3');
+      Say(Cornell,'D1a-Corn-4');
+      Say(MacMillan,'D1a-JMM-4');
+      Say(Cornell,'D1a-Corn-5');
+    end;
+
+  Say(MacMillan,'D1b-JMM-1');
+  Say(Cornell,'D1b-Corn-1');
+  Say(MacMillan,'D1b-JMM-2');
+  Say(Cornell,'D1b-Corn-2');
+  Say(MacMillan,'D1b-JMM-3');
+  SayRadio(Powell,'D1b-Pow-3');
+
+  Say(MacMillan,'D1b-JMM-4');
+  Say(Cornell,'D1b-Corn-4');
+  if IsOK(Khatam) then
+    Say(Khatam,'D1b-Khat-4')
+  else
+    begin
+      sol1:=UnitFilter(cornells,[f_sex,sex_male]);
+      if sol1 then
+        Say(sol1[1],'D1b-Sol1-4');
+    end;
+  if IsOK(Cyrus) then
+    begin
+      Say(Cyrus,'D1b-Cyrus-4');
+      if IsOK(Lisa) then
+        begin
+          Say(Lisa,'D1b-Lisa-4');
+          Say(Cyrus,'D1b-Cyrus-5');
+        end;
+    end;
+
+  SelectGroup;
+
+  interface_hidden:=false;
+  DialogueOff;
+  InGameOn;
+
+  Enable(4);
+
+  Say(MacMillan,'D1d-JMM-1');
+  Say(Cornell,'D1d-Corn-1');
+
+  SetSide(Cornell,neutral);
+  if amtruck2 then
+    begin
+      ComEnterUnit(Cornell,amtruck2);
+      repeat
+        wait(0$1)
+      until IsInUnit(Cornell);
+      ComMoveXY(amtruck2,166,95);
+    end
+  else
+    begin
+      ComStop(Cornell);
+      ComMoveXY(Cornell,166,95);
+    end;
+
+
+  SaveForQuickRestart;                 // <-- Quick Restart
+  Enable(8);
+  Enable(3);
+
+  wait(0$0.5);
+
+  ChangeMissionObjectives('M1');
+
+  TICK:=time;
+  ComFree([yours]);
+  InGameOff;
+
+  Wait(0$5);
+  SetAttitude(russians,you,att_enemy,true);
+  SetAttitude(russians,neutral,att_enemy,true);
+end;
+
+
+Function SelectGroup;
+var units;
+begin
+  units:=[MacMillan,sel_changeable]^
+          (Kobra1 diff [MacMillan,Mikhail])^
+          [sel_not_hired,sel_not_changeable,Cornell,Mikhail]^
+          [sel_changeable]^cornells;
+  yours:=MacMillan^CharacterSelection('Select five characters to go with you',
+          5,5,units,[]);
+  Cornell_group:=Kobra1 union cornells diff yours;
+end;
+
+
+//Leaving Cornell Group
+every 0$0.5 Marked 4 do
+var pom_replace,lidi_mimo,
+    group_out;
+begin
+  group_out:=Cornell_group diff Cornell;
+  SetSide(Cornell_group,neutral);
+  ComMoveXY(Cornell_group diff Cornell,165,93);
+  repeat
+    lidi_mimo:=FilterUnitsInArea(Leaving,[ [f_side,neutral] ]);
+    group_out:=group_out diff lidi_mimo;
+    if lidi_mimo then
+      for pom_replace in lidi_mimo do
+        RemoveUnit(pom_replace);
+    Wait(0$0.5);
+  until not group_out;
+end;
+
+//Leaving Cornell
+every 0$0.5 Marked 8 do
+begin
+  repeat
+    if IsInUnit(Cornell) then
+      ComMoveXY(IsInUnit(Cornell),166,95)
+    else
+      ComMoveXY(Cornell,166,95);
+    Wait(0$0.5);
+  until not (IsBusy(Cornell) or IsBusy(IsInUnit(Cornell)));
+  if IsInUnit(Cornell) then
+    RemoveUnit(IsInUnit(Cornell))
+  else
+    RemoveUnit(Cornell);
+  Enable(3);    // Pocitani lidi ve hre
+end;
+
+
+// reaching small american base
+// or See(you,breast)
+var tick_after;
+
+every 0$1 trigger IsInArea(MacMillan,Meeting) do
+begin
+  SetSideBase(GetBase(sklad),you);
+  SetSide([am1,am2,am4,am5],you);
+
+  RevealFogArea(you,Am_Base);
+
+  ComMoveUnit(MacMillan,am1);
+  ComMoveUnit(am1,MacMillan);
+
+  repeat
+    Wait(0$0.5);
+  until GetDistUnits(MacMillan,am1)<5;
+
+  ComStop([MacMillan,am1]);
+  CenterOnUnits(am1);
+  ComTurnUnit(MacMillan,am1);
+  ComTurnUnit(am1,MacMillan);
+
+  ComHold([am1,am2,am4,am5]);
+
+  Wait(0$1);
+
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(MacMillan,'D2-JMM-1');
+  Say(am1,'D2-Sol1-1');
+  Say(MacMillan,'D2-JMM-2');
+  Say(am1,'D2-Sol1-2');
+  Say(MacMillan,'D2-JMM-3');
+  Say(am1,'D2-Sol1-3');
+  Say(MacMillan,'D2-JMM-4');
+  Say(am1,'D2-Sol1-4');
+  Say(MacMillan,'D2-JMM-5');
+  async;
+   Say(am1,'D2-Sol1-5');
+  sync;
+  RevealFogArea(you,panika_1);
+  CenterOnXY(121,51);
+  DWait(0$6);
+  RevealFogArea(you,panika_2);
+  CenterOnXY(90,36);
+  DWait(0$3);
+  async;
+   Say(MacMillan,'D2-JMM-6');
+  sync;
+  RevealFogArea(you,panika_3);
+  CenterOnXY(58,33);
+  DWait(0$3);
+  RevealFogArea(you,panika_4);
+  CenterOnXY(36,42);
+  Say(am1,'D2-Sol1-6');
+  CenterOnUnits(MacMillan);
+  Say(MacMillan,'D2-JMM-7');
+  Say(am1,'D2-Sol1-7');
+  Say(MacMillan,'D2-JMM-8');
+  DialogueOff;
+  interface_hidden:=false;
+
+  ComFree([am1,am2,am4,am5]);
+  ChangeMissionObjectives('MOutCap');
+  ChangeMissionObjectives('MSolar1');
+  Hint('BuildingBase');
+  base_reached:=true;
+  talk_about_shipments;
+end;
+
+// Dialogue 2a (short time after reaching American base)
+function talk_about_shipments;
+var fin,m,n;
+begin
+  fin:=false;
+
+  while not GetResourceArea(am_base,mat_cans) do
+    wait(0$3);
+  Hint('Crates');
+
+  m:=GetResourceType(GetBase(sklad),mat_cans);
+  repeat
+    n:=GetResourceType(GetBase(sklad),mat_cans);
+    if n>m then
+      fin:=true
+    else
+      m:=n;
+    wait(0$1);
+  until fin;
+  wait(0$2);
+  DisableExclamations;
+  DialogueOn;
+  interface_hidden:=true;
+  Say(MacMillan,'D2a-JMM-1');
+  Say(am5,'D2a-Sci1-1');
+  Say(MacMillan,'D2a-JMM-2');
+  Say(am5,'D2a-Sci1-2');
+  Say(MacMillan,'D2a-JMM-3');
+  Say(am5,'D2a-Sci1-3');
+  interface_hidden:=false;
+  DialogueOff;
+  EnableExclamations;
+
+  Enable(10);
+  Enable(2);
+end;
+
+// Dialogue 2b (when first vehicle is created)
+on VehicleConstructed(vyrobene_auto,tovarna) Marked 10 do
+begin
+  talk_about_first_car;     // Rozhovor MacMillana s vedcem nad prvnim solarnim autem
+  solar_constructed:=true;
+  ChangeMissionObjectives('MOutSol');
+  Disable(10);              // Event ze bylo vyrobeno prvni auto
+end;
+
+function talk_about_first_car;
+begin
+  repeat
+    wait(0$1);
+  until not Dialogue_wait;
+  Wait(0$3);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Hint('Vehicle');
+  Say(MacMillan,'D2b-JMM-1');
+  if IsOK(am5) then
+    Say(am5,'D2b-Sci1-1')
+  else
+    Say(Khatam,'D2b-Sci1-1');  //ted to nebudu opravovat, ale Khattam musi mit vlastni hlasky!!! M.
+  Say(MacMillan,'D2b-JMM-2');
+  if IsOK(am5) then
+    Say(am5,'D2b-Sci1-2')
+  else
+    Say(Khatam,'D2b-Sci1-2');
+  Say(MacMillan,'D2b-JMM-3');
+
+  interface_hidden:=false;
+  DialogueOff;
+  Enable(7);
+end;
+
+// Dialogue 2c (if a car is driven by some character)
+every 0$2 trigger GetEngine(IsInUnit(MacMillan))=engine_solar Marked 7 do
+begin
+  DisableExclamations;
+  Say(MacMillan,'D2c-JMM-1');
+  if JMMinvehicle then
+    Say(MacMillan,'D2c-JMM-1a');
+  EnableExclamations;
+end;
+
+every 0$2 trigger GetEngine(IsInUnit(Lisa))=engine_solar Marked 7 do
+begin
+  Wait(0$2);
+  EnableExclamations;
+  async;
+  Say(Lisa,'D2c-Lisa-1');
+  sync;
+
+  AddComMoveXY(Lisa,GetX(Lisa),GetY(Lisa)-2);
+  AddComMoveXY(Lisa,GetX(Lisa)+2,GetY(Lisa)+2);
+  AddComMoveXY(Lisa,GetX(Lisa),GetY(Lisa)+2);
+  AddComMoveXY(Lisa,GetX(Lisa)-2,GetY(Lisa)-2);
+  DisableExclamations;
+end;
+
+every 0$2 trigger GetEngine(IsInUnit(Cyrus))=engine_solar Marked 7 do
+begin
+  DisableExclamations;
+  Say(Cyrus,'D2c-Cyrus-1');
+  if Cyrusinvehicle then
+    Say(Cyrus,'D2c-Cyrus-1a');
+  EnableExclamations;
+end;
+
+every 0$2 trigger GetEngine(IsInUnit(Bobby))=engine_solar Marked 7 do
+begin
+  EnableExclamations;
+  Say(Bobby,'D2c-Bobby-1');
+  DisableExclamations;
+end;
+
+
+// Frank returns
+every 2$0 trigger IsInArea(MacMillan,Am_Base) Marked 2 do
+var hold_list;
+begin
+  PlaceUnitXY(Frank,34,65,false);
+  ComMoveXY(Frank,50,74);
+  AddComMoveXY(Frank,60,87);
+
+  repeat
+    wait(0$1);
+  until not IsBusy(Frank);
+  CenterOnUnits(Frank);
+  InGameOn;
+
+  hold_list:=[Frank];
+
+  if IsInArea(MacMillan,Am_Base) and not (GetType(IsInUnit(MacMillan))=unit_building)  then
+    begin
+      ComMoveXY(MacMillan,62,91);
+      hold_list:=hold_list ^ MacMillan;
+    end;
+  if IsInArea(Lisa,Am_Base) and not (GetType(IsInUnit(Lisa))=unit_building) then
+    begin
+      ComMoveXY(Lisa,59,90);
+      hold_list:=hold_list ^ Lisa;
+    end;
+  if IsInArea(am1,Am_Base) and not (GetType(IsInUnit(am1))=unit_building) then
+    begin
+      ComMoveXY(am1,65,91);
+      hold_list:=hold_list ^ am1;
+    end;
+
+  Wait(0$2);
+
+  InGameOff;
+  interface_hidden:=true;
+  DialogueOn;
+
+  Meet_Frank:=true;
+
+  ComHold(hold_list);
+  AddComTurnUnit(Frank,MacMillan);
+  AddComTurnUnit(hold_list diff Frank,Frank);
+  Say(MacMillan,'D6-JMM-1');
+  Say(Frank,'D6-Frank-1');
+  RevealFogArea(you,odkryj_mapu);
+  CenterOnXY(33,12);
+  DWait(0$4);
+  CenterOnXY(65,18);
+  DWait(0$3);
+  CenterOnUnits(Frank);
+  DWait(0$4);
+
+  DialogueOff;
+  InGameOn;
+
+  If IsInArea(Lisa,Am_Base) and not (GetType(IsInUnit(Lisa))=unit_building) then
+    begin
+      ComMoveUnit(Lisa,Frank);
+      Wait(40);
+      Say(Lisa,'D6-Lisa-1');
+      Say(Frank,'D6-Frank-2');
+      ComHold(Lisa);
+    end;
+  InGameOff;
+  DialogueOn;
+  interface_hidden:=true;
+  Say(am1,'D6-Sol1-2');
+  Say(MacMillan,'D6-JMM-2');
+  Say(Frank,'D6-Frank-3');
+  Say(MacMillan,'D6-JMM-3');
+  Say(Frank,'D6-Frank-4');
+  Say(Frank,'D6-Frank-4a');
+  Say(MacMillan,'D6-JMM-4');
+  Say(Frank,'D6-Frank-5');
+  if IsOK(Lisa) then
+    Say(Lisa,'D6-Lisa-5');
+  Say(Frank,'D6-Frank-6');
+  Say(MacMillan,'D6-JMM-6');
+
+  Frank_Query:=Query('Q1');
+
+  if Frank_Query=1 then
+    begin
+      SetSide(Frank,neutral);
+      ComStop(Lisa);
+      ComMoveXY(Frank,35,68);
+      Wait(0$2);
+      DialogueOff;
+      interface_hidden:=false;
+      repeat
+        Wait(0$0.5);
+      until IsAt(Frank,35,68);
+      RemoveUnit(Frank);
+    end
+  else                                                             
+    begin
+      DialogueOff;
+      interface_hidden:=false;
+    end;
+
+  ComStop(hold_list diff Frank);
+  ComFree(hold_list);
+end;
+
+every 0$5 Marked 5 do
+begin
+  wait(0$10);
+  RevealFogArea(you,odkryj_mapu2);
+  SayRadio(Frank,'D3b-Frank-1');
+end;
+
+// Dialogue 3 (some 2 minutes before 3a)
+every 0$10 trigger (TICK>(time_to_attack-2$30)) or
+                   (FilterAllUnits([[f_side,you],[f_type,unit_vehicle],[f_engine,engine_solar]]) > 5) or
+                   (FilterAllUnits([[f_side,you],[f_type,unit_vehicle],[f_engine,engine_solar]]) >=
+                    FilterAllUnits([[f_side,you],[f_type,unit_human],[f_ok]]) ) do
+begin
+  if cornell_lost then
+    exit;
+  time_to_attack:=TICK+2$30;
+  SayRadio(Cornell,'D3-Corn-1');
+end;
+    
+// The beginning of the attack of second group from the east side
+every 0$10 trigger TICK>(time_to_attack) do
+begin
+  if cornell_lost then
+    exit;
+  CenterOnUnits(MacMillan);
+  DisableExclamations;
+  DialogueOn;
+  interface_hidden:=true;
+  SayRadio(Cornell,'D3a-Corn-1');
+  Say(MacMillan,'D3a-JMM-1');
+  SayRadio(Cornell,'D3a-Corn-2');
+  interface_hidden:=false;
+  DialogueOff;
+  EnableExclamations;
+
+  ChangeMissionObjectives('MOutWait');
+  ChangeMissionObjectives('M2');
+
+  SetAreaMapShow(TopBorder,1);      // rozzareni koncove areji
+
+  if FilterAllUnits([ [f_side,you], [f_type,unit_vehicle], [f_nation,nation_american] ]) then
+    Hint('Skills1')
+  else
+    Hint('Skills2');
+
+  if (GetSide(Frank)=neutral) then
+    Enable(5);     // Frankova zprava (kdyz byl poslan na pruzkum) - odkryti mapy
+  atack:=1;
+  attack_began;
+end;
+
+// Cornell is telling you everything's going wrong
+every 0$10 trigger TICK>(time_to_attack+time_to_return-1$0) do
+begin
+  if not cornell_lost then
+    SayRadio(Cornell,'D4-Corn-1');
+end;
+
+// Cornell is lost hist mission
+every 0$1 trigger GridY(MacMillan)<10 or TICK>(time_to_attack+time_to_return) Marked 3 do
+begin
+   SayRadio(Cornell,'D5-Corn-1');
+   if TICK<(15$0+time_to_return) then
+     atack:=0;
+   cornell_lost:=true;
+end;
+
+// Dialogue 8b (Russian patrol escapes)
+export function talk_about_attack;
+begin
+  DisableExclamations;
+  if IsOK(patrol1) and IsOK(patrol2) then
+    Say(MacMillan,'D8b-JMM-1a')
+  else
+    Say(MacMillan,'D8b-JMM-1');
+  Say(am1,'D8b-Sol1-1');
+  if IsOK(Cyrus) then
+    Say(Cyrus,'D8b-Cyrus-1');
+  if IsOK(Bobby) then
+    Say(Bobby,'D8b-Bobby-1');
+  if not (IsOK(Cyrus) or IsOK(Bobby)) then
+    Say(am2,'D8b-Sol2-1');
+  Say(MacMillan,'D8b-JMM-2');
+  if IsOK(Lisa) then
+    Say(Lisa,'D8b-Lisa-2');
+  EnableExclamations;
+end;
+
+

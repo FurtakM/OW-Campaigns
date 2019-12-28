@@ -1,0 +1,158 @@
+EXPORT AMICI_PAST_LIST;
+EXPORT AMICI_STAVENI_BASE_LIST;
+EXPORT AMICI_UTOK_BELKOV_LIST;
+VAR ah,av;
+
+// vraci cislo creatnuteho humana podle zadanych parametru
+EXPORT function get_human(sex,clas,level,name);
+var pom;     
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+  pom=CreateHuman;
+  result:=pom;
+end;
+
+EXPORT function amici_breast;
+begin
+  uc_nation=nation_american;
+  uc_side=Amici;
+
+  ah=get_human(sex_male,class_soldier,LEVELY_AMICI[difficulty],'David Love');
+  PlaceUnitXY(ah,107,63,false);
+  ComMoveXY(ah,92,56);
+  ABW1=ah;
+  AddComEnterUnit(ah,am_bre1);
+  ah=get_human(sex_male,class_soldier,LEVELY_AMICI[difficulty],'John Kraninger');
+  PlaceUnitXY(ah,106,65,false);
+  ComMoveXY(ah,95,61);
+  AddComEnterUnit(ah,am_bre2);
+  ABW2=ah;
+end;
+
+// vraci sex daneho vojaka - sanze na zenskou 1/5
+function get_sex;
+begin
+  if Prob(20) then result=sex_female
+              else result=sex_male;
+end;
+
+// vytvoreni amiku na prepad a past
+EXPORT function create_amici_past;
+VAR i;
+VAR a;
+VAR p_vojaku;
+begin
+  a=[];
+  p_vojaku=amici_past_pocet[difficulty];
+  a=get_human(sex_male,class_soldier,LEVELY_AMICI[difficulty]+1,'');
+  for i:=1 to p_vojaku-1 do
+    a=a^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty]+1,'');
+  AMICI_PAST_LIST=a;
+end;
+
+// predvytvoreni amiku pro stavbu 2. base
+EXPORT function create_amici_staveni_w;
+VAR a;
+begin
+  a=get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  a=a^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  a=a^get_human(get_sex,class_engineer,LEVELY_AMICI[difficulty],'');
+  a=a^get_human(get_sex,class_engineer,LEVELY_AMICI[difficulty],'');
+  AMICI_STAVENI_BASE_LIST=a;
+end;
+
+// vybirani cloveka podle povolani
+EXPORT function vyber_cloveka(list,cla);
+VAR i;
+VAR a;
+begin
+  a=0;
+  for i in list do if GetClass(i)=cla then a=i;
+  result=a;
+end;
+
+// utok na belkova pokud neni zachraneny
+EXPORT function create_utok_na_belkova;
+VAR pom;
+begin
+  uc_side=Amici;
+  uc_nation=nation_american;
+
+  pom=get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,LEVELY_AMICI[difficulty],'');
+
+  AMICI_UTOK_BELKOV_LIST=pom;
+end;
+
+// vytvoreni vojaku ze save ... dulezitych jednotek
+EXPORT function create_vojaci_zacatek;
+VAR pom_gny;
+begin
+  uc_nation=nation_russian;
+  uc_side=You;
+
+//  kurin=nacti_osobu('kurin');
+  SetSide(Kurin,You2);
+  PlaceUnitXY(kurin,121,101,false);
+{
+  if BELKOV_MRTVY then bel=get_human(sex_male,class_soldier,2,'Anatolij Belkov')
+                  else bel=nacti_osobu('Belkov');
+}
+  Setclass(bel,class_soldier);
+  SetSide(bel,You2);
+  PlaceUnitXY(bel,121,104,false);
+
+//  kov=nacti_osobu('Kovalyuk');
+  SetSide(kov,You);
+  PlaceUnitXY(kov,126,105,false);
+
+//  bur=nacti_osobu('Burlak');
+  SetClass(bur,class_mechanic);
+  SetSide(bur,You);
+  PlaceUnitXY(bur,124,105,false);
+
+//  gny=nacti_osobu('Gnyevko');
+  if gny<>0 then begin
+                   SetClass(gny,class_soldier);
+                   SetSide(gny,You);
+                   PlaceUnitXY(gny,120,103,false);
+                end
+           else begin
+                  pom_gny=get_human(sex_male,class_soldier,2,'');
+                  PlaceUnitXY(pom_gny,120,103,false);
+                end;
+  
+
+//  plat=nacti_osobu('Platonov');
+  SetSide(plat,You3);
+  PlaceUnitXY(plat,66,90,false);
+end;            
+
+// nacteni osoby ze savu z predesle mise
+EXPORT function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then result:=CreateCharacter(ident)
+                              else result:=0;
+end;
+
+// vytvoreni amika, aby ho bylo videt
+EXPORT function place_amik_k_videni;
+begin
+  uc_side=Amici;
+  uc_nation=nation_american;
+
+  ah=get_human(get_sex,class_soldier,3,'');
+  PlaceUnitXYR(ah,72,28,3,false);
+  result:=ah;
+end;
+
+Every 0$1 trigger GetLives(plat) < 1000 do
+begin
+enable;
+SetLives(plat, 1000);
+end;

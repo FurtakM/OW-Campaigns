@@ -1,0 +1,35 @@
+// detekce detonace kamikaze pro zdeseny rozhovor hrdinne ruske posadky
+on UnitKamikazed(un) do
+begin
+  first_apeman_exploded:=true;
+end;
+
+// cekani na Burlakovu smrt
+on UnitDestroyed(un) do
+begin
+  if un=Burlak then
+    burlaks_end;
+  if GetSide(un)=you and GetType(un)=unit_human then
+    lost_russians:=lost_russians+1;
+  if un=Masha then
+    lost_masha:=true;
+
+  if un = Heike then
+       heike_killed = true;
+end;
+
+// burlak umira a nema ho kdo vylecit
+on UnitGoesToRed(un) do
+begin
+  if un=Burlak then
+    if not FilterAllUnits([ [f_side,you], [f_class,class_scientistic] ]) then
+      burlaks_end;
+  if un=Gossudarov then
+    gossudarov_killed;
+end;
+
+on VehicleCaptured(vnew,vold,origside,hum) do
+begin
+  if vold=artefact then
+    artefact:=vnew;
+end;

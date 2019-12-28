@@ -1,0 +1,59 @@
+export rus_mcrep_id,rus_mcrep_units,rus_mcrep_bui,rus_depot,rus_lab,rus_breastwork;
+
+every 0$0.1 do
+begin
+  rus_mcrep_units:=[14,18,19,20,21,22,23,];
+  rus_mcrep_bui:=FilterAllUnits([[f_side,rus],[f_type,unit_building]])^[14,15]; // 14,15 - 2 rus.soldiers
+  rus_depot:=FilterAllUnits([[f_side,rus],[f_btype,b_warehouse]])[1];
+  rus_lab:=FilterAllUnits([[f_side,rus],[f_btype,b_lab_full]])[1];
+  rus_breastwork:=FilterAllUnits([[f_side,rus],[f_btype,b_breastwork]])[1];
+
+  enable(401); // Russian McRepair
+end;
+
+every 0$10+0$0.5 marked 401 do // Russian McRepair
+var un,CanReturnToDepot,filter;
+begin
+// McRepair illl prior, units, others, options
+// runs McRepair macro and returns mcid
+// units will be maintain others (and extras from McWithdraw);
+// options - [[mcr_hum_area, area], [mcr_veh_area, area], (-)mcr_area_only, [mcr_safety, 7],
+// [mcr_hum_limit, 600], [mcr_veh_limit, 1000], [mcr_bui_limit, 1000],
+// [mcr_repv_area, area], [mcr_capv_area, area], [mcr_repb_area, area], [mcr_capb_area, area]]
+
+  if NOT ExistMc(rus_mcrep_id) then
+    rus_mcrep_id:=McRepair (100,rus_mcrep_units,
+                            rus_mcrep_bui^rus_mcrep_units,
+                            [[mcr_hum_area, BluekherRepairArea],
+                            [mcr_repb_area, BluekherArea]]);
+
+  if IsLive(rus_depot) OR IsLive(rus_lab) OR IsLive(rus_breastwork) then
+  begin
+    for un in rus_mcrep_units do
+      if GetUnitMc(un)=0 AND GetLives(un)=1000 then
+        case GetClass(un) of
+          class_engineer:if IsLive(rus_depot) AND NOT (UnitsInside(rus_depot)=6) then
+                              ComEnterUnit(un,rus_depot);
+//                            else
+//                              ComMoveToArea(un,BluekherRepairArea);
+
+          class_scientistic:if IsLive(rus_lab) AND NOT (UnitsInside(rus_lab)=6) then
+                              ComEnterUnit(un,rus_lab);
+//                            else
+//                              ComMoveToArea(un,BluekherRepairArea);
+
+          class_soldier:if IsLive(rus_breastwork) AND NOT UnitsInside(rus_breastwork) then
+                          ComEnterUnit(un,rus_breastwork);
+//                        else
+//                          ComMoveToArea(un,BluekherRepairArea);
+        end
+        else
+          ComMoveToArea(un,BluekherRepairArea);
+  end;
+
+  filter:=FilterUnitsExceptArea(BluekherArea,[[f_side,rus],[f_or,[f_class,class_engineer],[f_class,class_scientistic]]]);
+  if filter then
+    ComMoveXY(filter,48,88);
+
+  enable;
+end;

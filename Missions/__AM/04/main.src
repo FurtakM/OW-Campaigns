@@ -1,0 +1,1247 @@
+// 04_8-RSol1-1
+export rus,amer,amer2;
+//export difficulty;
+export rh;        //Ron Harrison
+export amhsold3,amhsold4,amhsold5,amhsold6,amhsold8,amhsold9,amhsolda,amhsoldb,amhsoldc;
+//export rbs0,rbs1;
+export rubdepo0,rubbunk1,rubbrwr2;
+export rusove2;
+export attacking;
+export bunker_done,brwr_done;
+export rubase1_gone;
+export ruhmech3;
+export ruv1,ruv2;
+export ruhsoldj,ruhsoldk,ruhsoldl;
+export ruv4,ruhmech5;
+
+var john,bobby,cyrus,lisa,frank,lucyd,amhsold7;
+var amhsold1;
+var i,j;
+export depot_done;
+var build_wrks;
+var other_survivors;
+function from_prev_mis;
+var tmz;
+begin
+  uc_side=amer;
+  lisa=0;bobby=0;cyrus=0;
+  other_survivors=[];
+//  if not opencampaingfile('CharsAm04') then buildquery('can not open',['OK']);
+  //opencampaignfile('CharsAm04');
+//  if testcharacters('Harisson') and checkcharacterset('Harisson') then rh=createcharacter('Harisson')
+//  else buildquery('neny Harisson',['OK']);
+  rh=newcharacter('Harisson');
+  if not rh then buildquery('neny Harisson',['OK']);
+  if testcharacters('JMM') and checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+  if not testcharacters('Lisa') then msg('neny Lisa')
+  else
+    if not checkcharacterset('Lisa') then
+      if not testcharacters('Cyrus') then msg('neny Cyrus')
+      else
+        if not checkcharacterset('Cyrus') then
+          if not testcharacters('Bobby') then msg('neny Bobby')
+          else
+            if not checkcharacterset('Bobby') then //nejaky obyc. manik
+              if not testcharacters('other_survivors') then msg('neny other_survivors')
+              else
+                if not checkcharacterset('other_survivors') then begin
+                  preparesoldier(sex_male,3);
+                  //hc_name='Alex Fringeman';
+                  amhsold3=createhuman;
+                end
+                else begin
+                  other_survivors=createcharacterset('other_survivors');
+                  amhsold3=0;
+                  for tmz in other_survivors do
+                    if getclass(tmz)=class_soldier then begin
+                      amhsold3=other_survivors[tmz];
+                      other_survivors=other_survivors diff other_survivors[tmz];
+                      break;
+                    end;
+                  if not amhsold3 then
+                    for tmz in other_survivors do
+                      if getclass(tmz)=class_mechanic then begin
+                        amhsold3=other_survivors[tmz];
+                        other_survivors=other_survivors diff other_survivors[tmz];
+                        break;
+                      end;
+                  if not amhsold3 then begin
+                    amhsold3=other_survivors[1];
+                    other_survivors=other_survivors diff other_survivors[1];
+                  end;
+                  savecharacters(other_survivors,'other_survivors');
+                end
+            else begin bobby=createcharacter('Bobby');amhsold3=bobby;end
+        else begin cyrus=createcharacter('Cyrus');amhsold3=cyrus;end
+    else begin lisa=createcharacter('Lisa');amhsold3=lisa;end;
+  if not testcharacters('Frank') or not checkcharacterset('Frank') then frank=0
+  else frank=createcharacter('Frank');
+//  if not testcharacters('Donaldson') or not checkcharacterset('Donaldson') then buildquery('neny Donaldson',['OK'])
+//  else lucyd=createcharacter('Donaldson');
+  lucyd=newcharacter('Donaldson');
+  if not lucyd then buildquery('neny Donaldson',['OK']);
+//  if not testcharacters('Brown') or not checkcharacterset('Brown') then buildquery('neny Brown',['OK'])
+//  else amhsold1=createcharacter('Brown');
+  amhsold1=newcharacter('Brown');
+  if not amhsold1 then buildquery('neny Brown',['OK']);
+  setdir(amhsold1,3);
+  placeunitxy(amhsold1,55,24,false);
+  setdir(amhsold3,3);
+  placeunitxy(amhsold3,49,12,false);
+
+  placehumaninunit(john,amvj);
+  centeronxy(42,26);
+//  com_queue=true;
+//  commovexy(amvj,23,10);
+//     centeronxy(28,20);
+//  commovexy(amvj,28,20);
+//     centeronxy(33,26);
+//  commovexy(amvj,33,26);
+//     centeronxy(42,27);
+//  commovexy(amvj,42,27);
+//     centeronxy(53,21);
+  commovexy(amvj,53,24);
+  addcomexitvehicle(amvj);
+//  com_queue=false;
+
+end;
+
+function saveitall;
+var tmz,bz,tmzo;
+begin
+  savecharacters(john,'JMM');
+  if cyrus then savecharacters(cyrus,'Cyrus');
+  if bobby then savecharacters(bobby,'Bobby');
+  if lisa then savecharacters(lisa,'Lisa');
+  savecharacters(frank,'Frank');
+  savecharacters(lucyd,'Donaldson');
+  savecharacters(amhsold1,'Brown');
+//  if (0+other_survivors)<>0 then savecharacters(other_survivors,'other_survivors');
+  savecharacters(filterallunits([[f_side,amer],[f_type,unit_human]]) diff [john,cyrus,bobby,lisa,frank,lucyd,amhsold1],'otherGamma2');
+  if lisa then
+    if isdead(lisa) then savevariable(0,'LisaLoc')
+    else savevariable(2,'LisaLoc')
+  else savevariable(1,'LisaLoc');
+  if bobby then
+    if isdead(bobby) then savevariable(0,'BobbyLoc')
+    else savevariable(2,'BobbyLoc')
+  else savevariable(1,'BobbyLoc');
+  if cyrus then
+    if isdead(cyrus) then savevariable(0,'CyrusLoc')
+    else savevariable(2,'CyrusLoc')
+  else savevariable(1,'CyrusLoc');
+  if frank then
+    if isdead(frank) then savevariable(0,'FrankLoc')
+    else savevariable(2,'FrankLoc')
+  else savevariable(1,'FrankLoc');
+  if isdead(amhsold1) then savevariable(0,'BrownLoc')
+  else savevariable(2,'BrownLoc');
+  if isdead(frank) then savevariable(0,'DonaldsonLoc')
+  else savevariable(2,'DonaldsonLoc');
+
+  //jeste promena Gamma2 - schileny seznam budov
+  //prvky jsou seznamy tvaru [x,y,direction,building_type,level]
+  tmz=filterunitsinarea(ambase,[[f_or,[f_side,amer],[f_side,amer2]],[f_nation,nation_american],[f_btype,b_factory]]);
+  tmz=tmz^filterunitsinarea(ambase,[[f_or,[f_side,amer],[f_side,amer2]],[f_nation,nation_american],[f_type,unit_building],f_not,[f_btype,b_factory]]);
+  tmzo=[];
+  for bz in tmz do
+    case getbtype(bz) of
+      b_lab_basic,b_lab_weapon:begin end;  //shouldn't occur
+      b_lab,b_lab_half,b_lab_full:tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz),getlabkind(bz,1),getlabkind(bz,2)]];
+      b_bunker,b_turret:tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz),getbweapon(bz)]];
+      else tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz)]];
+    end;
+  savevariable(tmzo,'Gamma2');
+  //savecampaignfile('CharsAm04out');
+end;
+
+
+export rusove,rusove0;
+var rusove1;
+export healeri;
+var brwr_lev,bunk_lev;
+function prepare_units;
+begin
+  amer=1;
+  amer2=4;
+  rus=3;
+//  setattitude(amer,rus,att_enemy,true);
+  inituc;
+  inithc;
+  initvc;
+  initbc;
+//----americani-----------------------------------------
+  from_prev_mis;
+//combuild(amhengi0,b_oil_mine,38,3,2);
+//----rusove--------------------------------------------
+  //rbs0=getbase(rubware0);
+  comenterunit(rusoldff,rubunkff);
+  uc_nation=nation_russian;
+  uc_side=rus;
+  case difficulty of
+    2:preparemechanic(sex_male,1);
+    3:preparemechanic(sex_male,2);
+    1:preparemechanic(sex_male,0);
+  end;
+//     hc_galery='Ru';
+//     hc_face_number=
+//     hc_name='Boris Tekatov';
+  hc_sex=sex_male;
+  ruhmech3=createhuman;
+  case difficulty of
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  if difficulty>1 then ruv2=createvehicle
+  else ruv2=0;
+  setdir(ruv2,5);
+  placeunitxy(ruv2,72,91,false);
+  placehumaninunit(ruhmech3,ruv2);
+  case difficulty of
+    2:preparemechanic(sex_male,1);
+    3:preparemechanic(sex_male,2);
+    1:preparemechanic(sex_male,0);
+  end;
+//     hc_name='Artur Klujscinskij';
+  ruhmech5=createhuman;
+  case difficulty of
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv4=createvehicle;
+  setdir(ruv4,5);
+  placeunitxy(ruv4,68,69,false);
+  placehumaninunit(ruhmech5,ruv4);
+//comremember(ruv4);
+
+  case difficulty of
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  if difficulty>1 then ruv1=createvehicle
+  else ruv1=0;
+  setdir(ruv1,5);
+  placeunitxy(ruv1,80,85,false);
+  commoveunit(ruhmech0,ruv1);
+  commoveunit(ruhmech2,ruv0);
+//     rubdepo0=combuild(ruhengi1,b_depot,50,61,5);
+//     commovexy(ruhengi0,50,57);
+//     wait(0$3);
+  rusove1=[ruv0,ruhsold1,ruhsold2];  //hlidaji predsunutou zakladnu
+  rusove2=[ruhsold6,ruhsold7,ruv4];      //posily v pripade utoku na preds. zakl.
+  rusove=[ruv1,ruv2,ruhsold0];
+  rusove0=[];
+  healeri=[ruhscie0,ruhscie1];//,ruhscie2];
+  comremember(rusove);
+  commoveunit(ruhmech1,rubfact0);
+  comremember(rusove2);
+  comhold(rusove2);
+  commoveunit(ruhsold3,rubbrwr0);
+  commoveunit(ruhsold4,rubbrwr1);
+  commoveunit(ruhsold5,rubbunk0);
+  commovexy(rusove1,47,51);
+  case difficulty of
+    2:begin
+      setskill([ruhmech0,ruhmech2],skill_mechanical,2);
+      complaceweapon(rubbunk0,ru_gatling_gun);
+      setskill([ruhsold2,ruhsold6,ruhsold7],skill_combat,3);
+      setskill(ruhsold1,skill_combat,2);
+      setblevel([rubbrwr0,rubbrwr1],2);
+      setblevel([rubbunk0],2);
+    end;             
+    3:begin
+      setskill([ruhmech0,ruhmech2],skill_mechanical,2);
+      complaceweapon(rubbunk0,ru_gun);
+      setskill([ruhsold1,ruhsold6,ruhsold7],skill_combat,3);
+      setskill(ruhsold2,skill_combat,4);
+      setblevel([rubbrwr0,rubbrwr1],4);
+      setblevel([rubbunk0],5);
+    end;
+    1:begin
+      setskill([ruhmech0,ruhmech2],skill_mechanical,1);
+      complaceweapon(rubbunk0,ru_heavy_machine_gun);
+      setskill([ruhsold2,ruhsold6,ruhsold7],skill_combat,1);
+      setskill(ruhsold1,skill_combat,0);
+      setblevel([rubbrwr0,rubbrwr1],1);
+      setblevel([rubbunk0],0);
+    end;
+  end; //case
+  brwr_lev=[1,3,5][difficulty];
+  bunk_lev=[0,2,4][difficulty];
+end; //function prepare_units;
+
+
+//--------Start Block------------Start Block--------------Start Block-----
+var supply,which_dlg;
+var opev_start;
+var flaka_se;
+export retreat;
+var chciplo,zbaven_veleni;
+export poskoz,pacienti;
+var dial1_ended;
+export hr_lidi,hr_auta; //hranice zivotu na utek rusaku z boje
+export mpora; //Maximal Power for One Russian Attack (== no. of vehicles)
+export mpard; //Maximal Power of Additional Russian Defence (== no. of vehicles)
+export prebytek,debug;
+var revealed,hint_capt;
+starting
+begin
+//  disable(13);
+  disable(02);
+  setbname(ambdept0,'gamma');
+  debug=false;
+  if debug then msg('Bacha, debug is ON!');
+  amer=1;
+  rus=3;
+  setresourcevisibility(42,54,rus);
+  revealfogarea(amer,odrkfog);
+  rubbunk1=0;
+  rubbrwr2=0;
+  ruboilp1=0;
+  rubwrks0=0;
+  revealed=0;
+  randomize;
+  dial1_ended=false;
+  hint_capt=false;
+//     difficulty=3;       //DEBUG!!!
+  case difficulty of
+    1:begin
+      hr_lidi=450;
+      hr_auta=490;
+      mpora=2;
+      mpard=0;
+      settech(tech_tech1,rus,state_enabled);
+    end;
+    2:begin
+      hr_lidi=487;
+      hr_auta=532;
+      mpora=3;
+      mpard=1;
+      settech(tech_tech1,rus,state_enabled);
+    end;
+    3:begin
+      hr_lidi=524;
+      hr_auta=574;
+      mpora=4;
+      mpard=3;
+      settech(tech_tech1,rus,state_researched);
+    end;
+  end;
+  powerhint=false;
+  which_dlg=0;
+  zbaven_veleni=false;
+  chciplo=8;
+  depot_done=false;
+  rubdepo0 = 0;
+  ruboilp1=0;
+  bunker_done=false;
+  brwr_done=false;
+  attacking=false;
+  opev_start=false;
+  rubase1_gone=false;
+  build_wrks=false;
+  flaka_se=false;
+  vracet_se=true;
+  retreat=false;
+  rubbunk1=0;
+  poskoz=[];
+  prebytek=[];
+  pacienti=[];
+  supply=11;
+//  disable(01);
+  bu1_done=false;
+  br2_done=false;
+  op1_done=false;
+  oilpowpldone=false;
+  scndoildrill=false;
+  ingameon;
+  prepare_units;
+  comhold([john,amhsold0,amhsold1,amhmech0,bobby,cyrus,lisa]);
+  wait(0$4);
+{     centeronxy(28,20);
+     wait(0$2);
+     centeronxy(33,26);
+     wait(0$2);
+     centeronxy(42,27);
+     wait(0$2);}
+  centeronxy(53,21);
+end;
+
+//hinty
+function auto_ve_zlutem;
+var tmp,tmp1;
+begin
+  tmp=filterallunits([[f_side,amer],[f_type,unit_vehicle]]);
+  for tmp1 in tmp do if getlives(tmp1)<hranice_zraneni then begin result=true;exit;end;
+  result=false;
+end;
+
+every 0$1 trigger auto_ve_zlutem do hint('Repair');
+
+
+on unitgoestored(un) marked 13 do 
+  if (difficulty=2)and(un=rubdepo0) then begin
+    settech(tech_tech1,rus,state_researched);
+    //disable;
+  end
+  else if (not hint_capt) and (un in filterallunits([[f_side,rus],[f_type,unit_vehicle]])) then begin
+    hint_capt=true;
+    hint('CapturingVehicles1');
+  end;
+
+
+every 0$1 trigger see(amer,rubdepo0) or see(amer,rubwrks0) do
+begin
+  hint('Capturing2');
+end;
+
+
+
+//dialog1
+every 0$1 trigger isinunit(john)=false do
+begin
+     //comhold([john,amhsold0,amhsold1,amhmech0,bobby,cyrus,lisa]);
+     //ingame_video=true;
+  centeronunits(john);
+  commovexy(john,50,14);
+  commovexy(amhsold1,50,14);
+  say(john,'D1-JMM-1');
+  centeronxy(50,14);
+  say(amhsold1,'D1-Brown-1');
+  say(john,'D1-JMM-2');
+  say(amhsold1,'D1-Brown-2');
+  say(amhsold0,'D1-FSol1-2');
+  say(amhmech0,'D1-Sol2-2');
+  if bobby then say(bobby,'D1-Bobby-2');
+  if cyrus then say(cyrus,'D1-Cyrus-2');
+  if lisa then say(lisa,'D1-Lisa-2');
+  say(john,'D1-JMM-3');
+  commovexy(john,42,6);
+  wait(0$2.2);
+  centeronunits(john);
+  say(john,'D1-JMM-3a');
+  say(amhsold1,'D1-Brown-3');
+  sayradio(rh,'D1-Har-3');
+  say(john,'D1-JMM-4');
+  sayradio(rh,'D1-Har-4');
+  say(john,'D1-JMM-5');
+  sayradio(rh,'D1-Har-5');
+  say(john,'D1-JMM-6');
+  ingameoff;
+  saveforquickrestart;
+  wait(0$0.7);
+  changemissionobjectives('M1');
+  comfree([john,amhsold0,amhsold1,amhmech0,bobby,cyrus,lisa]);
+  wait(0$1);
+  hint('Oil');
+  rubdepo0=combuild(ruhengi1,b_depot,50,61,5);
+  commovexy(ruhengi0,50,57);
+  wait(0$10);
+  dial1_ended=true;
+end;
+
+//dialog9 (takove ty kecy o factory)
+every 0$2+1$0 trigger dial1_ended do
+begin
+  if not unitfilter([ambwrks0],[[f_btype,b_factory]]) then begin
+    dialogueon;
+    say(amhmech0,'D9-Mech1-1');
+    say(john,'D9-JMM-1');
+    dialogueoff;
+    wait(0$1);
+    hint('Upgrade');
+  end;
+end;
+{
+on buildingcomplete(un) do
+  if getbtype(un) in [b_solar_power,b_oil_power] then hint('PowerPlant')
+  else
+    if getbtype(un)=b_bunker then hint('Turrets2');
+}
+on upgradecomplete(un) do
+  if getbtype(un)=b_factory then begin hint('Turrets');disable;end;
+
+//dialog9a (fact. upg and no power plant)
+every 0$1+0$30 trigger unitfilter([ambwrks0],[[f_btype,b_factory]]) and (not isconstructed(ambwrks0)) and (not unitfilter(filterallunits([[f_side,amer]]),[f_or,[f_btype,b_oil_power],[f_btype,b_solar_power]])) do
+begin
+{  tmp=tick;
+  exclusiveon;
+  stop_action=true;
+  say(john,'D9a-JMM-1');
+  say(amhmech0,'D9a-Mech1-1');
+  stop_action=false;
+  exclusiveoff;
+  tick=tmp;}
+  if which_dlg<>11 then which_dlg=10;
+end;
+
+//dialog9b (behen staveni prvniho bunkru, pokud neny power plant)
+every 0$1+0$5 trigger filterallunits([[f_side,amer],[f_btype,b_bunker]]) and not unitfilter(filterallunits([[f_side,amer]]),[f_or,[f_btype,b_oil_power],[f_btype,b_solar_power]]) do
+begin
+{  tmp=tick;
+  exclusiveon;
+  stop_action=true;
+  say(amhengi0,'D9b-Eng1-1');
+  stop_action=false;
+  exclusiveoff;
+  tick=tmp;}
+  if which_dlg<>10 then which_dlg=11;
+end;
+
+//dialog9c (reakce na prvni z 9a, 9b)
+every 0$1+0$5.5 trigger which_dlg<>0 do
+begin
+  dialogueon;
+  if which_dlg=10 then begin
+    say(john,'D9a-JMM-1');
+    say(amhmech0,'D9a-Mech1-1');
+  end;
+  if which_dlg=11 then begin
+    say(amhengi0,'D9b-Eng1-1');
+  end;
+  if (not researched(amer,tech_oilpow)) and (not researched(amer,tech_solpow)) then say(john,'D9c-JMM-1') else
+  if (not researched(amer,tech_oilpow)) and researched(amer,tech_solpow) then say(john,'D9c-JMM-1a') else
+  if researched(amer,tech_oilpow) and (not researched(amer,tech_solpow)) then say(john,'D9c-JMM-1b') else
+  if researched(amer,tech_oilpow) and researched(amer,tech_solpow) then say(john,'D9c-JMM-1c');
+  dialogueoff;
+end;
+
+function postavena_fact;
+var zatr;
+begin
+  zatr=unitfilter([ambwrks0],[[f_btype,b_factory]]);
+  result=false;                         //grrr ja ci castecne vyhodnocovani podminek
+  if zatr then if not isconstructed(zatr[1]) then result=true;
+end;
+
+
+function postavena_elekt;
+var tmp,ii;
+begin
+  result=false;
+  tmp=unitfilter(filterallunits([[f_side,amer]]),[f_or,[f_btype,b_oil_power],[f_btype,b_solar_power]]);
+//  debuglog(tmp);  //debug
+  if tmp then
+    for ii in tmp do
+      if not isconstructed(ii) then begin
+        result=true;
+  //         debuglog('elektrana postavena'); //debug
+        exit;
+      end;
+end;
+
+
+//dialog10 (postavena factory i elektrarna(y?) )
+every 0$2.5 trigger postavena_fact and postavena_elekt do
+begin
+  dialogueon;
+  say(amhmech0,'D10-Mech1-1');
+  dialogueoff;
+end;
+
+var zatr;
+function postaveny_bunkr;
+begin                                                           
+  zatr=filterallunits([[f_side,amer],[f_btype,b_bunker],[f_nation,nation_american]]);
+  result=false;                         
+  if zatr then if not isconstructed(zatr[1]) then result=true;
+end;
+
+//dialog11 (postaveny bunkr)
+every 0$1+0$5.1 trigger postaveny_bunkr do
+begin
+  dialogueon;
+  say(amhengi0,'D11-Eng1-1');
+  dialogueoff;
+end;
+
+
+//create bedny 
+{every 4$05+0$50 do
+begin
+  createcratesanywhere(rand(4,5),true);
+  enable;
+end;}
+
+every 2$0+0$15 do
+begin
+  createcratesarea(5,targetarea,true);
+  if supply then begin
+     supply=supply-1;
+     enable;
+  end;
+end;
+
+every 0$7 do
+begin
+  randomize;
+  enable;
+end;
+
+var bu1_done,br2_done,op1_done;
+var oilpowpldone,scndoildrill,powerhint;
+
+//-----------built 2nd russian base-----------------
+on buildingcomplete(un) marked 01 do
+  if un=rubbunk1 then bu1_done=true
+  else if un=rubbrwr2 then br2_done=true
+  else if un=ruboilp1 then op1_done=true
+  else if un=rubwrks0 then build_wrks=true
+  else if (getnation(un)=nation_american) and (getbtype(un)=b_oil_power) and not oilpowpldone then begin
+    oilpowpldone=true;
+    if not powerhint then begin powerhint=true;hint('PowerPlant');end;
+    if scndoildrill then changemissionobjectives('M1a');
+  end
+  else if (getnation(un)=nation_american) and (getbtype(un)=b_oil_mine) and (getx(un)<>38) and (gety(un)<>3) and not scndoildrill then begin
+    scndoildrill=true;
+    if oilpowpldone then changemissionobjectives('M1a');
+  end
+  else if (getbtype(un)=b_solar_power)and(not powerhint) then begin powerhint=true;hint('PowerPlant');end
+  else if getbtype(un)=b_bunker then hint('Turrets2');
+
+every 0$3+1$25 trigger isinarea(ruhengi1,rubase1rng) and not isconstructed(rubdepo0) and rubdepo0 > 0 do
+begin
+  depot_done=true;
+  //if difficulty=2 then enable(13);
+  //rbs1=getbase(rubdepo0);
+  comcollect([ruhengi1,ruhengi0],40,54);
+  commovexy(ruv0,48,53);
+//  while not isinarea(ruv0,hlidaci) do wait(0$03);
+  addcomhold(ruv0);
+end;
+
+every 0$3+1$40 trigger depot_done and getresourcetype(getbase(rubdepo0),mat_cans)>=30 do
+begin
+  comhold([ruhengi0,ruhengi1]);
+  addresourcetype(getbase(rubdepo0),mat_cans,50);
+  rubbunk1=combuild(ruhengi1,b_bunker,44,50,3);
+  rubbrwr2=combuild(ruhengi0,b_breastwork,52,57,3);
+//  enable(01);
+  opev_start=true;
+end;
+
+every 0$3+1$55 trigger opev_start and bu1_done do
+begin
+  setblevel(rubbunk1,bunk_lev);
+  commoveunit(ruhsold1,rubbunk1);
+//     commovexy(ruv0,48,53);
+//     wait(0$03);
+//     comhold(ruv0);
+  addresourcetype(getbase(rubdepo0),mat_cans,90);
+  bunker_done=true;
+end;
+
+every 0$2.5+1$57 trigger bunker_done and not isinunit(ruhsold1)=rubbunk1 do
+begin
+  commoveunit(ruhsold1,rubbunk1);
+  wait(0$3);
+  if not isinunit(ruhsold1)=rubbunk1 then enable;
+end;
+
+
+every 0$5+2$0 trigger bunker_done do
+begin
+  comfree(ruhengi0);
+  combuild(ruhengi1,b_oil_mine,42,54,0);
+end;
+
+var rubwrks0;
+every 0$5+3$15 trigger depot_done and getresourcetype(getbase(rubdepo0),mat_oil)>0 do
+begin
+  rubwrks0=combuild(ruhengi1,b_workshop,39,48,2);
+//  build_wrks=true;
+end;
+
+
+var ruboilp1;
+every 0$5+4$25 trigger build_wrks and not IsConstructed(rubwrks0) do
+begin
+  //wait(0$2);
+  ruboilp1=combuild(ruhengi1,b_oil_power,34,49,0);
+  //comexitbuilding(ruhmech1);
+  commoveunit(ruhmech1,rubwrks0);
+end;
+
+every 0$6+4$20 trigger build_wrks and Isinunit(ruhmech1)=rubwrks0 do
+begin
+  commoveunit(ruhengi0,rubware0);
+  complaceweapon(rubbunk1,ru_heavy_machine_gun);
+     {case difficulty of                   //gatling chce bohuzel factory
+      1:begin
+         complaceweapon(rubbunk1,ru_heavy_machine_gun);
+        end;
+      2:begin
+         complaceweapon(rubbunk1,ru_gatling_gun);
+        end;
+      3:begin
+         complaceweapon(rubbunk1,ru_gatling_gun);
+        end;
+     end; }//case
+end;
+
+on weaponplaced(bunk,fact) do
+if bunk=rubbunk1 then
+  begin
+    commovexy(ruv0,73,78);
+//    comexitbuilding(ruhmech1);
+    commoveunit(ruhmech1,rubfact0);
+  end;
+
+every 0$7+4$55 trigger ruboilp1 and op1_done do
+begin
+  commoveunit(ruhengi1,rubdepo0);
+end;
+
+every 0$3+1$54 trigger opev_start and br2_done do
+begin
+  brwr_done=true;
+  setblevel(rubbrwr2,brwr_lev);
+  commoveunit(ruhsold2,rubbrwr2);
+  comcollect(ruhengi0,40,53);
+  //commoveunit(ruhengi0,rubware0);
+end;
+
+every 0$3+2$00 trigger brwr_done do
+begin
+  wait(0$5);
+  com_queue=true;
+  commoveunit(ruhengi0,rubdepo0);
+  comexitbuilding(ruhengi0);
+  //commoveunit(ruhengi0,rubware0);
+  com_queue=false;
+end;
+
+//prvni rusky utok (takovy ten osahavaci)
+every 6$0 do
+begin
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+//     hc_face_number=
+  case difficulty of
+    1:preparesoldier(sex_male,1);
+    2:preparesoldier(sex_male,2);
+    3:preparesoldier(sex_male,3);
+  end;
+//     hc_name='Lev Grodin';
+  ruhsoldj=createhuman;
+  placeunitarea(ruhsoldj,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,3);
+  end;
+//     hc_name='Michail Taranenko';
+  ruhsoldk=createhuman;
+  placeunitarea(ruhsoldk,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_male,1);
+    2:preparesoldier(sex_male,2);
+    3:preparesoldier(sex_male,3);
+  end;
+//     hc_name='Vladimir Nageykin';
+  ruhsoldl=createhuman;
+  placeunitarea(ruhsoldl,rusreinf0,false);
+  comremember([ruhsoldj,ruhsoldk,ruhsoldl]);
+  comagressivemove([ruhsoldj,ruhsoldk,ruhsoldl],78,46);
+end;
+
+
+
+
+every 0$1+6$0 trigger not ([ruhsoldj,ruhsoldk,ruhsoldl] diff filterunitsinarea(wayarea1,[[f_ok],[f_side,rus],[f_type,unit_human]])) do
+begin
+  comagressivemove([ruhsoldj,ruhsoldk,ruhsoldl],55,16);
+  hint('Shift');
+//  hint('Pause');
+//  wait(0$1);
+//  hint('Stack');
+end;
+
+every 0$0.7+6$5 trigger unitfilter([ruhsoldj,ruhsoldk,ruhsoldl],[[f_ok]])<3 do
+var pomsold,pomsold2;
+begin
+  comreturn([ruhsoldj,ruhsoldk,ruhsoldl]);
+  wait(0$1);
+  pomsold=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok]]) diff [john];
+  if pomsold<>0 then begin
+    pomsold2=unitfilter(pomsold,[[f_class,classtype_soldier]]);
+    if pomsold2<>0 then pomsold=pomsold2[1]
+    else pomsold=pomsold[1];
+    wait(0$1);
+    dialogueon;
+    if getsex(pomsold)=sex_female then say(pomsold,'DAtt1-FSol1-1')
+    else say(pomsold,'DAtt1-Sol1-1');
+    say(john,'DAtt1-JMM-1');
+    if (0+filterallunits([[f_side,amer],[f_btype,b_breastwork]])+filterallunits([[f_side,amer],[f_btype,b_bunker]]))<=3 then begin
+      if isok(lisa) then say(lisa,'DAtt1a-Lisa-1')
+      else
+        if getsex(pomsold)=sex_male then say(pomsold,'DAtt1a-Sol1-1')
+        else begin
+          pomsold=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok],[f_sex,sex_male]]) diff john;
+          if pomsold then begin
+            pomsold2=unitfilter(pomsold,[[f_class,classtype_soldier]]);
+            if pomsold2<>0 then pomsold=pomsold2[1]
+            else pomsold=pomsold[1];
+            say(pomsold,'DAtt1a-Sol1-1');
+          end
+          else pomsold=0;
+        end;
+      if isok(lisa) or getsex(pomsold)=sex_male then say(john,'DAtt1a-JMM-1');
+    end
+    else
+      if getsex(pomsold)=sex_male then say(pomsold,'DAtt1b-Sol1-1')
+      else begin
+        pomsold=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok],[f_sex,sex_male]]) diff [john];
+        if pomsold then say(pomsold[1],'DAtt1b-Sol1-1');
+      end;
+    dialogueoff;
+  end;
+  wait(0$7);
+  commovexy([ruhsoldj,ruhsoldk,ruhsoldl],76,77);
+end;
+
+
+
+//dialog2 (about the delay of the reinforcement)
+every 0$10+9$0 do
+begin
+  dialogueon;
+  sayradio(lucyd,'D2-Don-1');
+  say(john,'D2-JMM-1');
+  sayradio(lucyd,'D2-Don-2');
+  say(john,'D2-JMM-2');
+  sayradio(lucyd,'D2-Don-3');
+  dialogueoff;
+end;
+
+//dialog3 (reinforcement arrived)
+every 12$10 do
+begin
+  placeunitarea(lucyd,reinf0,false);
+              //C E M S
+//     hc_galery='Am';
+  uc_nation=nation_american;
+  uc_side=amer;
+//     hc_face_number=
+  if frank then begin
+    placeunitarea(frank,reinf0,false);
+    amhsold4=frank;
+  end
+  else begin
+//       hc_name='Harry Flament';
+    preparesoldier(sex_male,3);
+    amhsold4=createhuman;
+    placeunitarea(amhsold4,reinf0,false);
+  end;
+//     hc_name='Greg Gaines';
+  preparesoldier(sex_male,3);
+  amhsold5=createhuman;
+  placeunitarea(amhsold5,reinf0,false);
+//     hc_name='Christina Gordon';
+  if difficulty=3 then preparemechanic(sex_female,2)
+  else preparemechanic(sex_female,3);
+  amhsold6=createhuman;
+  placeunitarea(amhsold6,reinf0,false);
+//     hc_name='Quinn Ashley';
+  if difficulty=3 then preparemechanic(sex_male,1)
+  else preparemechanic(sex_male,2);
+  amhsold7=createhuman;
+  placeunitarea(amhsold7,reinf0,false);
+  chciplo=chciplo+5;
+  if difficulty=1 then begin
+//        hc_name='Jeff Greenleaf';
+     preparesoldier(sex_male,2);
+     amhsold7=createhuman;
+     placeunitarea(amhsold7,reinf0,false);
+     chciplo=chciplo+1;
+  end;
+  centeronunits([lucyd,amhsold4,amhsold5,amhsold6]);
+  dialogueon;
+  say(amhsold5,'D3-Sol1-1');
+  say(amhsold7,'D3-Sol2-1');
+  if frank then say(frank,'D3-Frank-1');
+  say(lucyd,'D3-Don-1');
+  sayradio(lucyd,'D3-Don-1a');
+  say(john,'D3-JMM-1');
+  sayradio(lucyd,'D3-Don-2');
+  if rubase1_notrazed then begin
+     say(john,'D3-JMM-2');
+     sayradio(lucyd,'D3-Don-3');
+     say(john,'D3-JMM-3');
+     if frank then say(frank,'D3-Frank-3');
+  end else begin
+     say(john,'D3-JMM-4');
+  end;
+  dialogueoff;
+end;
+
+function rubase1_notrazed;
+begin
+  result=filterunitsinarea(rubase1rng,[[f_side,rus],[f_alive]]);
+end;
+
+//dialog3a (when meets JMM and not in the fight,... COZE? NOT IN THE FIGHT?!? a jak to poznam?!?)
+every 0$2+12$20 trigger getdistunits(john,frank)<5 do
+begin
+  rubase1_gone=true;
+  dialogueon;
+  if isok(frank) then begin
+    say(frank,'D3a-Frank-1');
+    if isok(lisa) then begin
+      say(lisa,'D3a-Lisa-1');
+      say(frank,'D3a-Frank-2');
+      say(lisa,'D3a-Lisa-2');
+      say(frank,'D3a-Frank-3');
+    end;
+    say(john,'D3a-JMM-3');
+  end;
+  dialogueoff;
+end;
+
+//dialog3b (gdyz tam ty posily trci moc dlouho(==45s))
+every 0$3+12$52 trigger ([lucyd,amhsold4,amhsold5,amhsold6] diff filterunitsinarea(reinf0ex,[[f_side,amer]]))<=2 do
+begin
+  dialogueon;
+  sayradio(lucyd,'D3b-Don-1');
+  dialogueoff;
+end;
+
+{
+every 0$1+0 trigger seearea(amer,sees_ru_1) do revealed=revealed+1;
+every 0$1+1 trigger seearea(amer,sees_ru_2) do revealed=revealed+1;
+every 0$1+2 trigger seearea(amer,sees_ru_3) do revealed=revealed+1;
+every 0$1+3 trigger seearea(amer,sees_ru_4) do revealed=revealed+1;
+every 0$1+4 trigger seearea(amer,sees_ru_5) do revealed=revealed+1;
+}
+
+// ending conditions
+every 0$1+1$0 trigger {(revealed=5) and} (not filterallunits([[f_side,rus],[f_ok],[f_type,unit_human]])) do
+var tmp,tmp2;
+begin
+  if debug then msg('koncime!');
+  wait(0$1);
+  chciplo=chciplo-filterallunits([[f_alive],[f_side,amer],[f_type,unit_human]]);
+  if chciplo>3 then addmedal('deaths',-1)
+  else addmedal('deaths',1);
+
+{     tmp2=filterallunits([[f_btype,b_oil_power],[f_side,amer],[f_nation,nation_american]]);
+     tmp=filterallunits([[f_btype,b_oil_mine],[f_side,amer],[f_nation,nation_american]]) diff filterunitsinarea(pramen,[[f_btype,b_oil_mine]]);
+     if (not tmp) and (not tmp2) then addmedal('oil',-3)
+     else if not tmp2 then addmedal('oil',-1)
+     else if not tmp then addmedal('oil',-2)
+     else //if researched(amer,tech_oilpow) then
+       addmedal('oil',1); //ten sasek tu oil power postavil
+}
+  if oilpowpldone and scndoildrill then addmedal('oil',1)
+  else if not oilpowpldone and not scndoildrill then addmedal('oil',-3)
+  else if not oilpowpldone then addmedal('oil',-1)
+  else if not scndoildrill then addmedal('oil',-2);
+
+//     if not flaka_se then addmedal('honour',1);
+  if zbaven_veleni then addmedal('honour',-1)
+  else addmedal('honour',1);
+
+  givemedals('Main');
+  rewardpeople(filterallunits([[f_alive],[f_side,amer],[f_type,unit_human]]));// diff [amhsold8,amhsold9,amhsolda,amhsoldb,amhsoldc]);
+  saveitall;
+  youwin;
+end;
+
+{every 0$1+0$2 trigger not IsOK(john) do
+begin
+  wait(0$3);
+//saveitall;
+  youlost('JMM');
+end;}
+
+on unitdestroyed(un) do
+  if un=john then begin
+//    saveitall;                        //!!!DEBUG!!!
+//    savecampaignfile('CharsAm04out');  //!!!DEBUG!!!
+    youlost('JMM');
+  end;
+
+
+every 0$1 trigger not filterallunits([[f_or,[f_side,amer],[f_side,amer2]],[f_type,unit_building]]) do
+begin
+  wait(0$3);
+//  saveitall;
+  youlost('Base');
+end;
+
+{// debriefing
+every 0$0.5+0$1 trigger end_of_mission  do
+begin
+    case end_of_mission of
+         -1:BuildQuery('John is dying.',['MISSION FAILED']);
+         -2:BuildQuery('you are too defensive.',['MISSION FAILED']);
+         1:begin
+           BuildQuery('Success.',['MISSION COMPLETE !']);
+          end;
+    end;
+    //ExitGame;
+end;
+}
+
+// retreat of remaining russian units
+every 0$1 trigger filterallunits([[f_side,rus],[f_ok],[f_type,unit_human]])<=5 do
+begin
+  zbytek=filterallunits([[f_side,rus],[f_ok],[f_type,unit_human]]);
+  commovetoarea(zbytek,retr_ar); //124,95);
+  changesidefog(rus,amer);
+  setattitude(rus,amer,att_friend,false);
+  commovetoarea(filterunitsexceptarea(targetarea,[[f_side,amer],[f_ok]{,[f_type,unit_human]}]),retr_ar_AM);
+  ingame_video=true;
+  interface_hidden=true;
+  centeronunits(zbytek);
+  retreat=true;
+end;
+
+var zbytek;
+every 0$0.7 trigger retreat do
+var ii;
+begin
+  zbytek=filterunitsinarea(retr_ar,[[f_side,rus],[f_alive],[f_or,[f_type,unit_human],[f_and,[f_type,unit_vehicle],[f_occupied]]]]);
+  for ii in zbytek do
+    destroyunit(ii);
+  zbytek=filterallunits([[f_side,rus],[f_ok],[f_or,[f_type,unit_human],[f_and,[f_type,unit_vehicle],[f_occupied]]]]);
+  if zbytek then begin
+    enable;
+    centeronunits(zbytek);
+    commovetoarea(zbytek,retr_ar);
+    addcommovexy(zbytek,126,98);
+  end
+  else begin
+    ingame_video=false;
+    interface_hidden=false;
+  end;
+end;
+
+//dialog 4&5
+var qres;
+every 0$10+20$0 do
+begin
+  dialogueon;
+  sayradio(rh,'D4-Har-1');
+  say(john,'D4-JMM-1');
+  sayradio(rh,'D4-Har-2');
+  qres=query('Q1');
+  case qres of
+    1:begin say(john,'D5-JMM-1');sayradio(rh,'D5-Har-1');end;
+    2:begin say(john,'D5-JMM-2');sayradio(rh,'D5-Har-2');end;
+    3:begin say(john,'D5-JMM-3');sayradio(rh,'D5-Har-3');end;
+  end;//case
+  dialogueoff;
+end;
+                             
+//dialog 6
+every 0$10+26$0 do
+begin
+//     hc_galery='Am';
+  uc_nation=nation_american;
+  uc_side=amer;
+  preparemechanic(sex_male,3);
+//     hc_face_number=
+//     hc_name='Randy Barnes';
+  amhsold8=createhuman;
+  placeunitarea(amhsold8,reinf1,false);
+  preparesoldier(sex_male,3);
+//     hc_name='Carl Pearson';
+  amhsold9=createhuman;
+  placeunitarea(amhsold9,reinf1,false);
+  preparesoldier(sex_male,3);
+//     hc_name='Jesse Robbins';
+  amhsolda=createhuman;
+  placeunitarea(amhsolda,reinf1,false);
+  case qres of
+    1:begin
+      centeronunits([amhsold8,amhsold9,amhsolda]);
+      chciplo=chciplo+3;
+    end;
+    2:begin
+      preparesoldier(sex_female,4);
+//           hc_name='Tracy Donahue';
+      amhsoldb=createhuman;
+      placeunitarea(amhsoldb,reinf1,false);
+      chciplo=chciplo+4;
+      centeronunits([amhsold8,amhsold9,amhsolda,amhsoldb]);
+    end;
+    3:begin
+      preparesoldier(sex_female,3);
+//           hc_name='Tracy Donahue';
+      amhsoldb=createhuman;
+      placeunitarea(amhsoldb,reinf1,false);
+      preparesoldier(sex_male,4);
+//           hc_name='Matt Howe';
+      amhsoldc=createhuman;
+      placeunitarea(amhsoldc,reinf1,false);
+      chciplo=chciplo+5;
+      centeronunits([amhsold8,amhsold9,amhsolda,amhsoldb,amhsoldc]);
+    end;
+  end;//case
+  dialogueon;
+  sayradio(amhsold8,'D6-Sol3-1');
+  dialogueoff;
+end;
+
+//dialog 7
+var utoci,cas,utoci_,utocil;
+every 0$10+30$30 do
+begin 
+  dialogueon;
+  sayradio(rh,'D7-Har-1');
+  wait(0$2);
+  changemissionobjectives('M2');
+  dialogueoff;
+  utoci=false;
+  utocil=0;
+  utoci_=0;
+  cas=0;    
+  enable(02);
+end;
+
+every 0$1+3$0 marked 02 do
+begin
+  cas=cas+1;
+  if inbattle(amer) then utoci_=utoci_+1;
+  if debug then debug_strings=['utoci_:'&utoci_,'cas:'&cas];
+  if cas>119 then begin
+    cas=0;
+    if utoci_>24 then begin
+      utoci=true;
+      if not utocil then utocil=true;
+      utoci_=0;
+    end
+    else utoci=false;
+  end;
+  enable;
+end;
+
+//dialog 7a       //neni tech 4 minut zbytecne dlouho?
+every 0$10+34$30 do
+var tmp,tmp1,tmp2;
+begin
+  case difficulty of
+    3:wait(0$1);
+    2:wait(2$0);
+    1:wait(6$0);
+  end;
+  while true do
+    if utoci then wait(2$0)
+    else if utoci_>0 then
+      if ((cas/utoci_)<=6) then wait(2$0)
+      else break
+    else break;
+
+  tmp=filterunitsinarea(rubase0,[[f_side,rus]]);
+  tmp2=[];
+  for tmp1 in tmp do
+    case gettype(tmp1) of
+      unit_human:tmp2=tmp2^[tmp1];
+      unit_building,unit_vehicle:tmp2=tmp2^unitsinside(tmp1);
+    end;
+  tmp2=tmp2 diff [0];
+  if tmp2>5 then begin
+    dialogueon;
+    sayradio(rh,'D7a-Har-1');
+    dialogueoff;
+    changemissionobjectives('M2a');
+    flaka_se=true;
+  end;
+end;
+
+//dialog 8
+var pom8,pom8_;
+every 0$10+40$0 trigger flaka_se do
+begin
+  case difficulty of
+    3:wait(0$1);
+    2:wait(3$0);
+    1:wait(9$0);
+  end;
+  if not filterunitsinarea(rubase0,[[f_side,amer],[f_alive]]) then begin
+    dialogueon;
+    if isok(lucyd) then sayradio(rh,'D8-Har-1')
+    else sayradio(rh,'D8-Har-1a');
+    dialogueoff;  //taak a ted to prebarvit...
+    pom8=unitfilter(filterallunits([[f_side,amer]]),[f_or,[f_type,unit_human],[f_type,unit_vehicle]]) diff [john,isinunit(john)];
+//    pom8_=filterallunits([[f_side,amer],[f_type,unit_building]]);
+    setattitude(amer,amer2,att_neutral,true);
+    setside(pom8,amer2);
+    setsidebase(getbase(ambdept0),amer2);
+    changesidefog(amer2,amer);
+    pom8=unitfilter(pom8,[f_not,[f_type,unit_building]]);
+    comagressivemove(pom8,88,89);
+
+    zbaven_veleni=true;
+  end;
+end;
+
+// New evenets
+
+// Building Area Block
+On Command(com) do
+var i, j, temp, x, y, typeTask;
+begin
+        for i in FilterAllUnits([[f_side,amer],[f_type,unit_human]]) do
+            if GetTaskList(i) > 0 then
+               for j = 1 to GetTaskList(i) do
+               begin
+
+                    temp = GetTaskList(i)[j][4];
+                    x = GetTaskList(i)[j][2];
+                    y = GetTaskList(i)[j][3];
+                    typeTask = GetTaskList(i)[j][1];
+
+                    if x > 0 and y > 0 and typeTask = 'B' and InArea(x, y, BlockBuildArea) then SetTaskList(i, []);
+               end;   
+end;
+
+// Don't block escape area
+function return_am;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(retr_ar,[[f_side,amer]]);
+  ComMoveToArea(pom,retr_ar_AM);
+end;
+
+EVERY 0$1 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(retr_ar,[[f_side,amer],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  if pom>0 then
+    begin
+      return_am;
+    end;
+  enable;
+end;

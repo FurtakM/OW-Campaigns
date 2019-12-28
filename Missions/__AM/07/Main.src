@@ -1,0 +1,46 @@
+// Characters
+EXPORT JMM, Harrison, Frank, Lisa, Cyrus, Gladstone, Yamoko; // Khatam; // They talks
+EXPORT Brown, Bobby, Denis, Donaldson;
+EXPORT Joan;
+
+// Imported/Exported variables
+EXPORT CyrusLoc, BobbyLoc, LisaLoc, Gamma2Commander, DonaldsonLoc, BrownLoc;
+EXPORT FrankLoc, GladstoneLoc, DenisLoc, otherGamma2, otherDelta;
+EXPORT otherJMM, otherUnplaced, Gamma2;
+
+// Vehicles
+EXPORT am_veh1, am_veh2, am_veh3, am_veh4;
+EXPORT har_veh;
+
+// Marks
+
+// Variables
+EXPORT americans, americans1, russians; //sides
+EXPORT all_americans, new_americans, selected_americans; // selected_americans - they go to the mission
+EXPORT am_vehicles, russ_turets;
+EXPORT RemoteDeveloped, return_no_complete;
+EXPORT scout_pos;
+EXPORT warehouse_stands;
+EXPORT Time_of_game;
+EXPORT Units_WL, Units_WR, Units_E;
+EXPORT count5, count10; // counter - mod 5, mod 10
+EXPORT Repair_place1, Repair_place2;
+EXPORT Russ_sold, Russ_eng, Russ_mech; // Lists of russians
+EXPORT Blds;  // A list of buildings of the base.
+
+
+
+Function SetVariables;
+ begin
+  americans=1;
+ end;
+
+
+starting
+ begin
+   SetVariables;
+   Load;
+   Action;
+   Save;
+   ChangeMap('%_cont','%_cont');
+ end;

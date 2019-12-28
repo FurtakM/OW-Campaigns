@@ -1,0 +1,109 @@
+export function konec_mise;
+var saved_units,survivors3;
+begin
+  gained_medals:=[];
+  missing_medals:=[];
+  saved_units:=FilterAllUnits([ [f_side,you], [f_nation, 3], [f_type,unit_human] ]) diff heike_group;
+
+  AddMedal('Speed',(TICK < 20$0));                          // domluvit se na nastaveni casu
+  AddMedal('Masha',not lost_masha);
+  AddMedal('LittleLosses',(lost_russians<4));
+
+  GiveMedals('Main');                                       // Gossudarov saved, Artefact captured
+
+  if heike_killed then
+       SaveVariable(true,'HeikeKilled');
+
+  RewardPeople(saved_units diff Gossudarov);
+  // vlada:
+  // BASTARDE!!!! TY BASTARDE!!! Kdyz mi ty lidi nesejvnes, tak nedostanou zkusenost! Nehlede k tomu, ze
+  // pokud umreli, tak se to taky neprojevi...
+
+{
+  Je potreba pod spravnym identifikatorem sejvnout:
+}
+  survivors3:=saved_units diff [Burlak, Gossudarov, Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov, Karamazov,
+                                Petrovova, Gleb, Petrosyan, Lipshchin, Titov, Dolgov, Xavier, Oblukov, Kozlov, Kapitsova];
+
+
+
+// tohle jsem semka pridal, ok?
+  SaveCharacters(Burlak,'Burlak');
+  SaveCharacters(Gossudarov,'Gossudarov');
+  SaveCharacters(survivors3,'survivors3');
+
+  if Belkov then
+    SaveCharacters(Belkov,'Belkov');
+
+  if Gnyevko then
+    SaveCharacters(Gnyevko,'Gnyevko');
+
+  if Kirilenkova then
+    SaveCharacters(Kirilenkova,'Kirilenkova');
+
+  if Kovalyuk then
+    SaveCharacters(Kovalyuk,'Kovalyuk');
+
+  if Scholtze then
+    SaveCharacters(Scholtze,'Scholtze');
+
+  if Kuzmov then
+    SaveCharacters(Kuzmov,'Kuzmov');
+
+  if Karamazov then
+    SaveCharacters(Karamazov,'Karamazov');
+
+  if Petrovova then
+    SaveCharacters(Petrovova,'Petrovova');
+
+  if Gleb then
+    SaveCharacters(Gleb,'Gleb');
+
+  if Petrosyan then
+    SaveCharacters(Petrosyan,'Petrosyan');
+
+  if Lipshchin then
+    SaveCharacters(Lipshchin,'Lipshchin');
+
+  if Titov then
+    SaveCharacters(Titov,'Titov');
+
+  if Dolgov then
+    SaveCharacters(Dolgov,'Dolgov');
+
+  if Xavier then
+    SaveCharacters(Xavier,'Xavier');
+
+  if Oblukov then
+    SaveCharacters(Oblukov,'Oblukov');
+
+  if Kozlov then
+    SaveCharacters(Kozlov,'Kozlov');
+
+  if Kapitsova then
+    SaveCharacters(Kapitsova,'Kapitsova');
+
+
+
+
+
+  if lost_masha then
+    DeleteVariable('Masha');
+
+  YouWin;
+  exit;
+end;
+
+
+// Neuspesny konec mise
+export function burlaks_end;
+begin
+  wait(50);
+  YouLost('Burlak');
+end;
+
+export function gossudarov_killed;
+begin
+  wait(50);
+  YouLost('Gossudarov');
+end;

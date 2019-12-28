@@ -1,0 +1,648 @@
+export
+Burlak,
+Popov,
+Belkov,
+Kirilenkova,
+Gnyevko,
+Kapitsova,
+Dietrich,
+Gleb,
+Petrosyan,
+Kuzmov,
+Heike,
+Kovalyuk,
+Kurt,
+Mercenary1,
+Scholtze,
+ASoldier1,
+Karamazov,
+Titov,
+Oblukov,
+Kozlov,
+Petrovova,
+Lipshchin,
+Dolgov,
+Xavier,
+other,
+player_units,
+amattack,
+
+depot_build,
+depotX,
+depotY,
+
+you,
+ally,
+arab,
+merc,
+usa,
+
+GenscherBetrayed,
+HeikeCaptured,
+HeikeKilled,
+MercPaid,
+MercHandedOver,
+MercWillBeHandedOver,
+MercHandoverDone,
+MercHandoverArabsSpawned,
+MercAccepted,
+HeikeDismissed,
+PopovAsked,
+HuntingAccepted,
+BuildingsDone,
+TurretsDone,
+WeaponsDone,
+TechnoDone,
+MortarDone,
+GalleryBuild,
+AvailableWeapons,
+AvailableBuildings,
+AvailableTechno,
+FreeMan,
+FreeWoman,
+FreeTimeGranted,
+Masha,
+CompVehConstructed,
+LimitTeleportResearched,
+LimitTeleportTested,
+AmAttackDone,
+HeikeSend,
+GalleryAsked,
+HuntingAsked,
+FreetimeAsked,
+MortarAsked,
+MashaAsked,
+AmAttackStarted,
+
+hunter,
+
+speed,
+am_attack_skill,
+weaker,
+stronger,
+countdown,
+pocetmercenaries,
+snipers_positions,
+
+ar_human,
+
+MercenaryWillBeHealen,
+KurtWillBeHealen,
+
+WasSelected,
+
+CountTrees,
+GenCount,
+
+disabled2,
+disabled3,
+disabled4,
+disabled5,
+disabled6,
+disabled7,
+disabled8,
+disabled9,
+disabled102;
+
+Export testing;
+
+function read_parameters;
+var i;
+begin
+  you:=3;
+  ally:=6;
+  arab:=2;
+  merc:=5;
+  usa:=1;
+
+  HeikeCaptured:=LoadVariable('HeikeCaptured',true);
+
+  SetAttitude(you,ally,att_friend,true);
+  SetAttitude(you,merc,att_neutral,true);
+  SetAttitude(you,arab,att_neutral,true);
+  SetAttitude(you,usa,att_enemy,true);
+  SetAttitude(ally,merc,att_friend,true);
+  SetAttitude(ally,arab,att_friend,true);
+  SetAttitude(ally,usa,att_friend,true);
+  SetAttitude(merc,usa,att_neutral,true);
+  SetAttitude(arab,usa,att_neutral,true);
+
+  ChangeSideFog(ally,you);
+
+  HeikeDismissed:=false;
+  MercAccepted:=false;
+  MercPaid:=false;
+  BuildingsDone:=false;
+  WeaponsDone:=false;
+  TechnoDone:=false;
+  MortarDone:=false;
+  TurretsDone:=false;
+  GalleryBuild:=false;
+  CompVehConstructed:=false;
+  LimitTeleportResearched:=false;
+  LimitTeleportTested:=false;
+  AmAttackDone:=false;
+  HeikeSend:=false;
+  HeikeKilled:=false;
+  Masha:=0;
+  GalleryAsked:=false;
+  HuntingAsked:=false;
+  FreetimeAsked:=false;
+  MashaAsked:=false;
+  GenscherBetrayed:=false;
+
+  AvailableWeapons:=[
+  {ru_heavy_machine_gun} 42,
+  {ru_gatling_gun} 43,
+  {ru_gun} 44,
+  {ru_rocket_launcher} 45,
+  {ru_heavy_gun} 46
+//  {ru_rocket} 47
+//  {ru_siberium_rocket} 48,
+//  {ru_siberium_rocket_remainder} 55,
+//  {ru_time_lapser} 49,
+//  {ru_cargo_bay} 51,
+//  {ru_crane} 52,
+//  {ru_bulldozer} 53}
+  ];
+
+  AvailableBuildings=[];
+  for i:=0 to 50 do
+    if GetRestrict(i,you)=1 then
+      AvailableBuildings:=AvailableBuildings^i;
+  AvailableBuildings:=AvailableBuildings diff [0,2,4,6,7,8,9,10,11,12,14,22,31,32,33,39,40];
+
+
+  AvailableTechno=[];
+  for i:=0 to 72 do
+    if GetTech(i,you)=1 then
+      AvailableTechno:=AvailableTechno^i;
+  AvailableTechno:=AvailableTechno diff 72;
+end;
+
+
+function set_difficulty;
+begin
+  countdown:=[2$0,1$30,1$0][difficulty];
+  pocetmercenaries:=[20,40,60][difficulty];
+  am_attack_skill:=[4,6,8][difficulty];
+  weaker:=[10,15,20][difficulty];
+  stronger:=[20,25,30][difficulty];
+  speed:=[60$0,45$0,38$0][difficulty];
+  snipers_positions:=[
+                      [[115,77],[127,67],[15,2],[71,1]], //easy
+                      [[120,70],[11,20],[15,2],[50,1],[71,1]], //medium
+                      [[115,77],[127,67],[11,20],[15,2],[50,1],[71,1]] //hard
+                     ][difficulty];
+end;
+
+function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then
+    result:=CreateCharacter(ident)
+  else
+    result:=0;
+end;
+
+function create_people;
+var def,i,x,y,un;
+begin
+
+//*********************************************
+  uc_side=you;
+  uc_nation:=nation_russian;
+
+  other:=nacti_osobu('survivors1');
+  other:=other union nacti_osobu('survivors2');
+  other:=other diff 0;
+//*********************************************
+  if not testing then
+       Burlak:=nacti_osobu('Burlak')
+  else
+       begin
+            PrepareMechanic(sex_male,7);
+            hc_name = 'Burlak';
+            Burlak = CreateHuman;
+       end;
+
+  Belkov:=nacti_osobu('Belkov');
+  Gnyevko:=nacti_osobu('Gnyevko');
+  Kirilenkova:=nacti_osobu('Kirilenkova');
+  Kovalyuk:=nacti_osobu('Kovalyuk');
+  Popov:=NewCharacter('Popov');
+  Scholtze:=nacti_osobu('Scholtze');
+  Kuzmov:=nacti_osobu('Kuzmov');
+  Karamazov:=nacti_osobu('Karamazov');
+  Petrovova:=nacti_osobu('Petrovova');
+  Gleb:=nacti_osobu('Gleb');
+  Petrosyan:=nacti_osobu('Petrosyan');
+  Lipshchin:=nacti_osobu('Lipshchin');
+  Titov:=nacti_osobu('Titov');
+  Dolgov:=nacti_osobu('Dolgov');
+  Xavier:=nacti_osobu('Xavier');
+  Oblukov:=NewCharacter('Oblukov');
+  Kozlov:=NewCharacter('Kozlov');
+  Kapitsova:=NewCharacter('Kapitsova');
+//*************** ALLIANCE ********************
+  uc_side=ally;
+  uc_nation:=nation_arabian;
+
+  if not testing then
+       Heike:=nacti_osobu('Heike')
+  else
+       begin
+            PrepareSoldier(sex_female,7);
+            hc_name = 'Heike';
+            Heike = CreateHuman;
+       end;
+  SetClass(Heike,class_engineer);
+//**************** ARABIAN ********************
+  uc_side=arab;
+  uc_nation:=nation_arabian;
+
+  Dietrich:=NewCharacter('Dietrich');
+//************* MERCENARIES *******************
+  uc_side=merc;
+  uc_nation:=nation_arabian;
+
+  Kurt:=NewCharacter('Kurt');
+
+  PrepareHuman(sex_male,class_engineer,2);
+  hc_name:='';
+  Mercenary1:=CreateHuman;
+
+  PrepareHuman(sex_male,class_soldier,1);
+  hc_name:='';
+  ASoldier1:=CreateHuman;
+//*********************************************
+
+  player_units:=([Burlak,Belkov,Kirilenkova,Gnyevko,Kapitsova,Gleb,Kuzmov,Kovalyuk,Scholtze,Karamazov,Titov,Oblukov,Kozlov,Petrovova,Lipshchin,Petrosyan,Dolgov,Xavier] union other) diff [0];
+  other:=other diff player_units;
+
+//******* Doplneni pri nedostatku lidi ********
+  uc_side=you;
+  uc_nation:=nation_russian;
+
+  if 0+player_units<15 then // pridat lidi ze survivors
+    for i:=1 to 0+other do
+      if 0+player_units<15 then player_units:=player_units^other[i];
+
+  if 0+player_units<15 then // pridat novy lidi
+     for i:=1 to 15-player_units do
+     begin
+       PrepareHuman(0,0,4);
+       hc_name:='';
+       player_units:=player_units^CreateHuman;
+     end;
+
+  Randomize;
+  RandomizeAll;
+
+  for un in player_units do
+    PlaceUnitArea(un,EnterArea,false);
+end;
+
+function create_vehicles;
+var i,auto;
+begin
+  for i:=1 to 5 do
+  begin
+  // cargo_bay
+    uc_side:=you;
+    uc_nation:=nation_russian;
+    uc_direction:=Rand(0,5);
+
+    vc_chassis:=ru_medium_wheeled;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_cargo_bay;
+    vc_control:=control_manual;
+
+    auto:=CreateVehicle;
+    if i<=4 then
+      SetCargo(auto,mat_cans,100)
+    else
+      SetCargo(auto,mat_oil,100);
+    SetFuel(auto,Rand(40,80));
+    PlaceUnitArea(auto,EnterArea,false);
+  end;
+
+// crane
+    uc_side:=you;
+    uc_nation:=nation_russian;
+    uc_direction:=Rand(0,5);
+
+    vc_chassis:=ru_medium_tracked;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_crane;
+    vc_control:=control_manual;
+
+    auto:=CreateVehicle;
+    SetFuel(auto,Rand(90,100));
+    PlaceUnitArea(auto,EnterArea,false);
+
+
+  for i:=1 to 3 do
+  begin
+// buldozer
+    uc_side:=you;
+    uc_nation:=nation_russian;
+    uc_direction:=Rand(0,5);
+
+    vc_chassis:=ru_heavy_tracked;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_bulldozer;
+    vc_control:=control_manual;
+
+    auto:=CreateVehicle;
+    SetFuel(auto,Rand(80,100));
+    PlaceUnitArea(auto,EnterArea,false);
+  end;
+
+end;
+
+export function create_snipers;
+var xy;
+begin
+  for xy in snipers_positions do
+  begin
+    uc_side=usa;
+    uc_nation:=nation_american;
+    hc_basic_skills:=[0,0,0,0]; // c e m s
+    hc_skills:=[difficulty-1,Rand(0,2),Rand(0,2),Rand(0,2)];
+    hc_class:=class_sniper;
+    hc_name:='';
+    PlaceUnitXY(CreateHuman,xy[1],xy[2],false);
+  end;
+end;
+
+export function create_heike;
+var auto,filter,x,y,d,Guard1,Guard2;
+begin
+  uc_side:=ally;
+  uc_nation:=nation_russian;
+  uc_direction:=Rand(3,5);
+
+  PrepareHuman(0,class_soldier,6);
+  hc_name:='';
+  Guard1:=CreateHuman;
+
+  PrepareHuman(0,class_soldier,6);
+  hc_name:='';
+  Guard2:=CreateHuman;
+
+  PlaceUnitArea(Guard1,EnterArea,false);
+  PlaceUnitArea(Guard2,EnterArea,false);
+  PlaceUnitArea(Heike,EnterArea,false);
+
+  filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+  if (0+filter)<>0 then
+  begin
+    x:=GetX(filter[1]);
+    y:=GetY(filter[1]);
+    d:=GetDir(filter[1]);
+  end
+  else
+  begin
+    x:=GetX(Burlak);
+    y:=GetY(Burlak);
+    d:=1;
+  end;
+
+  repeat
+    ComMoveXY(Guard1,x,y);
+    ComMoveUnit(Heike,Guard1);
+    ComMoveUnit(Guard2,Heike);
+    Wait(0$1);
+  until (GetDistUnitXY(Guard1,x,y)<10) AND (GetDistUnitXY(Guard2,x,y)<10);
+
+  ComStop([Guard1,Guard2,Heike]);
+  Wait(10);
+  ComMoveXY([Guard1,Guard2],113,29);
+
+  repeat
+    Wait(0$1);
+  until NOT HasTask(Guard1) AND NOT HasTask(Guard2);
+
+  DestroyUnit(Guard1);
+  DestroyUnit(Guard2);
+
+{  if filter>0 then
+  begin
+    repeat
+      Wait(0$1);
+    until NOT HasTask(Heike);
+    RemoveUnit(Heike);
+    PlaceHumanInUnit(Heike,filter[1]);
+    SetSide(Heike,you);
+  end;}
+end;
+
+export function create_kurt;
+begin
+  PlaceUnitArea(Mercenary1,MercEnterArea,false);
+  PlaceUnitArea(Kurt,MercEnterArea,false);
+
+  enable(2);  // On attack mercenaries change attitude
+end;
+
+starting
+begin
+  FogOff(false);
+
+  Randomize;
+  RandomizeAll;
+
+  testing = false;
+
+  InitBc;
+  InitHc;
+  InitUc;
+  InitVc;
+
+  disable(1); // Mercenaries become russians
+  disable(2); // On attack mercenaries change attitude
+  disable(3); // countdown to attack, if player didn't release Heike
+  disable(4); // Heike changes side and leaves map
+  disable(5); // mercenary destroying in MercExitArea
+  disable(6); // waiting for Heike
+  disable(7); // player attacks arabs ... HandOverSpoiled
+  disable(8); // Arabs arrest Mercenaries
+  disable(9); // Mercenaries starts run vhen Arabs arrive
+  disable(10); // Arabian request (handover)
+  disable(11); // Arabs removing in HandOverEnterArea
+  disable(13); // Dialogue and Query LegionFormed
+  disable(20); // Heike controling
+  disable(23); // Heike reaction on MercHandedOver (kill'em all)
+  disable(24); // Wait 10 s for dialogue D_MercAttack
+  disable(50); // Answer to Popov on AmAttackStart
+  disable(101); // Asking about Hunting
+  disable(102); // Hunter crawl and walk + Hunting done
+  disable(201); // Asking about Shooting Gallery
+  disable(202); // Shooting Gallery controling
+  disable(203); // Adding experiency for shooters
+  disable(301); // Asking about Freetime
+  disable(401); // Dialogue about Masha
+  disable(402); // Saving Masha
+  disable(501); // Dialogue & Calling of Am_Attack placing
+  disable(502); // Am_Attack_Done Checking & Dialogue
+  disable(601); // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
+  disable(999); // The End
+
+  PlaceTreesToArea(TreeArea1,[2,10,11,27,35],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea2,[9,10,27,35,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea3,[2,9,10,11,27],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea4,[9,10,27,35,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea5,[2,9,10,11,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea6,[2,11,27,35,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  {
+   PlaceTreesToArea(TreeArea1,[2,10,11,27,35],40,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea2,[9,10,27,35,48],30,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea3,[2,9,10,11,27],60,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea4,[9,10,27,35,48],90,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea5,[2,9,10,11,48],120,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea6,[2,11,27,35,48],45,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+}
+
+  read_parameters;
+  set_difficulty;
+  create_people;
+  create_vehicles;
+  create_snipers;
+  prepare_am_attack;
+
+  CenterNowOnXY (112,32);
+
+  D_Start;
+  SaveForQuickRestart;
+end;
+
+every 0$10 marked 999 do // The End
+var filter,prumer,un,un1,un2,distance,pole,budova1,budova2,i,trotskij;
+begin
+  if BuildingsDone AND WeaponsDone AND TechnoDone AND CompVehConstructed AND LimitTeleportTested AND Masha AND AmAttackDone then
+  begin
+    disable;
+
+    gained_medals:=[];
+    missing_medals:=[];
+
+    if HeikeCaptured then
+      if MortarDone then AddMedal('ArabBarracks',1) // Arabian Barracks
+      else AddMedal('ArabBarracks',-1)
+    else
+      if tick < speed then AddMedal('Speed',1) // Speed
+      else AddMedal('Speed',-1);
+
+    AddMedal('ArtisticImpression',1); //BeautifulBase
+
+    if (0+player_units)<=11 then  // Favourite Commander
+      {Lost Some Man} AddMedal('FavouriteCommander',-1)
+    else
+      if FreeTimeGranted AND HuntingAccepted AND GalleryBuild then
+          {Lucky People} AddMedal('FavouriteCommander',1)
+      else
+        if FreeTimeGranted OR HuntingAccepted OR GalleryBuild then
+          {Favouritism} AddMedal('FavouriteCommander',-3)
+        else {Harsh} AddMedal('FavouriteCommander',-2);
+
+    if MortarDone and not HeikeDismissed then
+         SA_OnMissionCompleteAndArBarracksBuildAndNotHeikeHandover;
+
+    GiveMedals('Main');
+       
+    for un1 in player_units do
+      if IsDead(un1) then player_units:=player_units diff un1;
+
+    RewardPeople(player_units);
+
+    trotskij:=[];
+    filter:=FilterAllUnits([[f_side,3],[f_btype,b_factory]])^
+            FilterAllUnits([[f_side,3],[f_type,unit_building],[f_not,[f_btype,b_factory]]]);
+    for un in filter do
+    begin
+      if GetBType(un) in [b_lab, b_lab_half, b_lab_full] then
+        trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un),GetLabKind(un,1),GetLabKind(un,2)]]
+      else
+        if GetBType(un) in [b_bunker,b_turret] then
+          trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un),GetBWeapon(un)]]
+        else
+          trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un)]];
+    end;
+
+    // if masha not exist!
+    if not Masha or not IsLive(Masha) then
+       DeleteVariable('Masha');
+
+    SaveVariable(trotskij,'Trotskij');
+    SaveVariable(ListEnvironmentArea(WholeMapArea),'Environment');
+
+    SaveVariable(HeikeKilled,'HeikeKilled');
+    SaveVariable(MercPaid,'MercPaid');
+    SaveVariable(MercHandedOver,'MercHandedOver');
+    SaveVariable(MercAccepted,'MercAccepted');
+    SaveVariable(GenscherBetrayed,'GenscherBetrayed');
+    SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha'); 
+
+    SaveCharacters(Heike,'Heike');
+    SaveCharacters(Petrosyan,'Petrosyan');
+    SaveCharacters(Dolgov,'Dolgov');
+    SaveCharacters(Xavier,'Xavier');
+    SaveCharacters(Burlak,'Burlak');
+    SaveCharacters(Belkov,'Belkov');
+    SaveCharacters(Kirilenkova,'Kirilenkova');            
+    SaveCharacters(Gnyevko,'Gnyevko');
+    SaveCharacters(Kapitsova,'Kapitsova');
+    SaveCharacters(Gleb,'Gleb');
+    SaveCharacters(Kuzmov,'Kuzmov');
+    SaveCharacters(Kovalyuk,'Kovalyuk');
+    SaveCharacters(Scholtze,'Scholtze');
+    SaveCharacters(Karamazov,'Karamazov');
+    SaveCharacters(Titov,'Titov');
+    SaveCharacters(Oblukov,'Oblukov');
+    SaveCharacters(Kozlov,'Kozlov');
+    SaveCharacters(Petrovova,'Petrovova');
+    SaveCharacters(Lipshchin,'Lipshchin');
+
+    SaveCharacters(((player_units union other) diff [Burlak,Belkov,Kirilenkova,Gnyevko,Kapitsova,Gleb,Kuzmov,Kovalyuk,Scholtze,Karamazov,Titov,Oblukov,Kozlov,Petrovova,Lipshchin,Petrosyan,Dolgov,Xavier]),'survivors3');
+
+    YouWin;
+    exit;
+  end;
+  enable;
+end;
+
+{
+Burlak      Load Save
+Belkov      Load Save
+Gnyevko     Load Save
+Kirilenkova Load Save
+Kovalyuk    Load Save
+Popov       New
+Scholtze    Load Save
+Kuzmov      Load Save
+Heike       Load Save
+Karamazov   Load Save
+Petrovova   Load Save
+Gleb        Load Save
+Petrosyan   Load Save
+Lipshchin   Load Save
+Titov       Load Save
+Dolgov      Load Save
+Xavier      Load Save
+Kurt        New
+Dietrich    New
+Oblukov     New  Save
+Kozlov      New  Save
+Kapitsova   New  Save
+
+1: survivors1 (první subkampaò) Load
+2: survivors2 (druhá subkampaò) Load
+4: survivors3 (tøetí subkampaò)       Save
+HeikeCaptured                   Load
+HeikeKilled                           Save
+MercPaid                              Save
+Masha                                 Save
+MercHandedOver                        Save
+MercAccepted                          Save
+Trotskij                              Save
+}

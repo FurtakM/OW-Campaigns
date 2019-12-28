@@ -1,0 +1,64 @@
+
+// cas, kdy prijdou rusi
+EXPORT timerusi;
+EXPORT levelrusi;
+EXPORT chassisrusi;
+EXPORT zbranrusi;
+EXPORT farusi;
+EXPORT pocaut;
+EXPORT wait2;
+EXPORT kutoku;
+EXPORT ntanku;
+EXPORT wait2new;
+EXPORT rusi_zivoty;
+EXPORT nulty_utok;
+EXPORT cekani_zradnych_arabu_pred_utokem;
+EXPORT cas_druzi_arabaci;
+
+EXPORT VIDEL_MIKHAILA;
+EXPORT VI_O_GRANATECH;
+EXPORT ZIJE_MIKHAIL;
+EXPORT MNOZSTVI_SIBERITU;
+
+EXPORT function SetDificultyLevels;
+begin
+  // cas nulteho utoku (jenom vojaci ... upozorneni)+ 2 minuty
+  nulty_utok=[3$0,2$0,1$0];
+  // cas prvniho utoku 4 minuty +
+  timerusi:=[4$0,2$0,0$0];
+  // level ruskych vojaku, kteri jsou do hry
+  levelrusi:=[4,5,6];
+  // podvozky aut
+  chassisrusi:=[ru_heavy_wheeled,ru_medium_tracked,ru_heavy_tracked];
+  // zbrane
+  zbranrusi:=[ru_heavy_machine_gun,ru_gatling_gun,ru_gun];
+  // cas 1. utoku rusu + 1 minuta
+  farusi:=[3$0,2$0,1$0];
+  //pocet aut pro 2. utok
+  pocaut=[1,2,3];
+  // 2. utok +1 minuta
+  wait2=[3$0,2$0,1$0];
+  // konstanta randu jednotlivych utoku + 1 minuta
+  kutoku=[3$0,2$0,1$0];
+  // nahodny pocet tanku pri utoku
+  ntanku=[1,2,3];
+  // cas nove pridaneho druheho utoku
+  wait2new=[4$30,3$30,2$00];
+  // zivoty auto pro prvni utoky rusu
+  rusi_zivoty=[600,800,1000];
+  // jak dlouho cekaji arabaci na to, nez zautoci
+  cekani_zradnych_arabu_pred_utokem=[0$15,0$7,0$3];
+  // cekani, nez prijdou na pomoc dalsi arabaci
+  cas_druzi_arabaci=[0$20,0$10,0$3];
+end;
+
+// hodiny
+EXPORT cas;
+EVERY 0$10 DO
+VAR pom;
+begin
+  if cas[3]+10=60 then cas=cas[1]+1^cas[2]^0
+                  else cas=cas[1]^cas[2]^cas[3]+10;
+  debug_strings=[cas];
+  enable;
+end;

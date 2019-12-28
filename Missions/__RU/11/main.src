@@ -1,0 +1,102 @@
+var ru,am;
+var burlak,gaydar,vsevol;
+var popov,yashin,jmm{,stolypin};
+var krovi,zakladna,tmp,tmp1,x,y,r;
+
+starting
+begin
+  ru=3;
+  am=1;
+  revealfogarea(ru,celamapa);
+  uc_side=am;
+  jmm=newcharacter('Macmillan');
+  if not jmm then msg('neny Macmillan');
+  uc_side=ru;
+  if testcharacters('Burlak') then
+    if checkcharacterset('Burlak') then burlak=createcharacterwithclass('Burlak',class_mechanic)
+    else msg('jakto ze Burlak je chciplej?!')
+  else msg('neny Burlak');
+  if testcharacters('Vsevolod') then
+    if checkcharacterset('Vsevolod') then vsevol=createcharacter('Vsevolod')
+    else begin
+      vsevol=newcharacter('Stolypin');
+      if not vsevol then msg('neny Stolypin');
+    end
+  else msg('neny Vsevolod');
+  popov=newcharacter('Popov');
+  if not popov then msg('neny Popov');
+  if testcharacters('Gaydar') then
+    if checkcharacterset('Gaydar') then gaydar=createcharacter('Gaydar') else
+  else msg('neny Gaydar');
+  yashin=newcharacter('Yashin');
+  if not yashin then msg('neny Yashin');
+
+  if testvariable('Environment') then krovi=loadvariable('Environment',[])
+  else msg('neny Environment');
+
+  placeenvironmentlist(krovi);
+
+  if testvariable('Trotskij') then zakladna=loadvariable('Trotskij',[])
+  else msg('neny Trotskij');
+
+  uc_nation=nation_russian;
+  x=0;y=0;
+  for tmp in zakladna do
+    case tmp[1] of
+      b_lab,b_lab_half,b_lab_full:begin
+        bc_type=tmp[1];
+        bc_level=tmp[5];
+        bc_kind1=tmp[6];
+        bc_kind2=tmp[7];
+        tmp1=createandplacebuildingxyd(tmp[2],tmp[3],tmp[4]);
+        if tmp1 then setlives(tmp1,rand(50,249));
+        x=x+tmp[2];y=y+tmp[3];
+      end;
+      b_bunker,b_turret:begin
+        bc_type=tmp[1];
+        bc_level=tmp[5];
+        tmp1=createandplacebuildingxyd(tmp[2],tmp[3],tmp[4]);
+        if tmp1 then placeweaponturret(tmp1,tmp[7]);
+        if tmp1 then setlives(tmp1,rand(50,249));
+        x=x+tmp[2];y=y+tmp[3];
+      end;
+      else begin
+        bc_type=tmp[1];
+        bc_level=tmp[5];
+        tmp1=createandplacebuildingxyd(tmp[2],tmp[3],tmp[4]);
+        if tmp1 then setlives(tmp1,rand(5,249));
+        x=x+tmp[2];y=y+tmp[3];
+      end;
+    end;
+  x=x/(0+zakladna);
+  y=y/(0+zakladna);
+  r=5;
+  placeunitxyr(burlak,x,y,r,false);
+  placeunitxyr(gaydar,x,y,r,false);
+  placeunitxyr(vsevol,x,y,r,false);
+  placeunitxyr(yashin,x,y,r,false);
+  placeunitxyr(popov,x,y,r,false);
+  centernowonunits([burlak,gaydar,vsevol,yashin,popov]);
+  dialogueon;
+  say(burlak,'DStart-Bur-1');
+  say(vsevol,'DStart-Vse-1');
+  sayradio(jmm,'DStart-JMM-1');
+  say(burlak,'DStart-Bur-2');
+  sayradio(jmm,'DStart-JMM-2');
+  say(popov,'DStart-Pop-2');
+  say(gaydar,'DStart-Gay-2');
+  say(yashin,'DStart-Yas-2');
+  say(vsevol,'DStart-Vse-2');
+  say(popov,'DStart-Pop-3');
+  say(yashin,'DStart-Yas-3');
+  say(burlak,'DStart-Bur-3');
+  say(yashin,'DStart-Yas-4');
+  say(burlak,'DStart-Bur-4');
+  say(gaydar,'DStart-Gay-4');
+//  DStart-All-4
+  dwait(0$2);
+  dialogueoff;
+  changemap('1','%_cont');
+
+end;
+

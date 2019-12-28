@@ -1,0 +1,414 @@
+// Characters
+EXPORT JMM, Harrison, Frank, Lisa, Cyrus, Gladstone, Yamoko, Khatam; // They talks
+EXPORT Brown, Bobby, Denis, Donaldson;
+EXPORT Joan;
+
+// Imported/Exported variables
+EXPORT CyrusLoc, BobbyLoc, LisaLoc, Gamma2Commander, DonaldsonLoc, BrownLoc;
+EXPORT FrankLoc, GladstoneLoc, DenisLoc, otherGamma2, otherDelta, YamokoLoc, KhatamLoc;
+EXPORT otherJMM, otherUnplaced, OtherLateJMM;
+                    
+// Vehicles
+EXPORT am_veh1, am_veh2, am_veh3, am_veh4;
+
+// Variables for russian mechanics and vehicles
+EXPORT West_mech, West_veh;
+EXPORT East_mech, East_veh;
+EXPORT Center_mech, Center_veh;
+
+// Marks
+EXPORT Review_the_map, Return_as_objective, Depot_destroyed;
+EXPORT End_of_m, Lose1, Lose2, After_talk, After_first_attack;
+EXPORT Timer; // It enables to show the clock
+
+// Events
+EXPORT Center_on_Area;
+
+// Variables
+EXPORT americans, americans1, russians; //sides
+EXPORT selected_americans; // selected_americans - they go to the mission
+EXPORT am_vehicles, russ_turets;
+EXPORT RemoteDeveloped, return_no_complete;
+EXPORT scout_pos;
+EXPORT warehouse_stands;
+EXPORT Time_of_game;
+EXPORT Units_WL, Units_WR, Units_E;
+EXPORT count5, count10; // counter - mod 5, mod 10
+EXPORT Repair_place1, Repair_place2;
+EXPORT Russ_sold, Russ_eng, Russ_mech; // Lists of russians
+EXPORT Russ_sold_skill, Russ_mech_skill, Russ_eng_skill; // for difficulty
+EXPORT time_of_first_warning, time_of_last_warning;
+EXPORT time_of_waiting;
+EXPORT First_run_of_soldier;
+
+
+// States of humans
+EXPORT State_GuardN1; // 0 - initial, 1 - working, 2 - at south
+EXPORT State_GuardN2;
+EXPORT State_GuardN3;
+EXPORT State_GuardN4;
+EXPORT State_GuardN5;
+EXPORT State_GuardE1;
+EXPORT State_GuardE2;
+EXPORT State_GuardW1;
+
+EXPORT State_physician; // 0 - free, 1 - busy
+
+EXPORT State_EngWL;     // 0 - free, 1 - busy, 2 - going to physician
+EXPORT State_EngWR;
+EXPORT State_EngE;
+
+EXPORT State_MechW;     // 0 - free, 1 - busy, 2 - going to physician, 3 - repairing vehicle, 4 - death
+EXPORT State_MechE;
+EXPORT State_MechC;     //     -- || --    4 - helping at West, 5 - helping at East, 6 - death
+
+
+Function Set_variables;
+ begin                                  
+  americans=1;
+  americans1=4;
+  russians=3;
+
+  //Events
+  Center_on_Area= 1;
+
+  RemoteDeveloped= LoadVariable('RemoteDeveloped', false);
+  scout_pos= [49, 89];
+  Repair_place1=[123, 144];
+  Repair_place2=[149, 151];
+  warehouse_stands= true;
+  russ_turets=[TuretWR1, TuretWR2, TuretWR3, TuretWL1, TuretWL2, TuretWL3];
+  russ_turets=UnitFilter(russ_turets, [f_ok]);
+  Count5= 0;
+  Count10= 0;
+  First_run_of_soldier= false;
+  Return_no_complete= 0;
+
+  Russ_sold= [GuardN1, GuardN2, GuardN3, GuardN4, GuardN5, GuardE1, GuardE2, GuardW1];
+  Russ_eng= [EngWL, EngWR, EngE];
+  Russ_mech= [m1, m2, m3];
+
+  Units_WL= [TuretWL1, TuretWL2, TuretWL3, TuretWL4, BwW1, PowerWL1, PowerWL2, PowerWL3, TuretW1, TuretW2, dep1];
+  Units_WR= [TuretWR1, TuretWR2, TuretWR3, TuretWR4, TuretWR5, PowerWR1, PowerWR2, PowerWR3, PowerWL2, PowerWL3, TuretW1, TuretW2, dep1];
+  Units_E= [TuretE1, TuretE2, TuretE3, TuretE4, TuretE5, TuretE6, PowerE1, PowerE2, PowerE3, PowerE4, PowerE5, dep1, dep2];
+
+  // States
+  State_GuardN1= 0;
+  State_GuardN2= 0;
+  State_GuardN3= 0;
+  State_GuardN4= 0;
+  State_GuardN5= 0;
+  State_GuardE1= 0;
+  State_GuardE2= 0;
+  State_GuardW1= 0;
+
+  State_physician= 0;
+
+  State_EngWL= 0;
+  State_EngWR= 0;
+  State_EngE= 0;
+             
+  State_MechW= 0;
+  State_MechE= 0;
+  State_MechC= 0;
+ end;
+
+Function Prepare_difficulty;
+var i;
+ begin
+   russ_sold_skill= [3, 4, 5];
+   russ_eng_skill= [2, 3, 5];
+   russ_mech_skill= [3, 4, 5];
+   time_of_first_warning= [21$0, 26$0, 29$0];
+   time_of_last_warning= [29$0, 36$0, 42$0];
+   time_of_waiting= [0$3, 0$1, 0$0];          // The soldiers waiting
+
+   for i in Russ_sold do
+     SetSkill(i, skill_combat, russ_sold_skill[Difficulty]);
+   for i in Russ_eng do
+     SetSkill(i, skill_engineering, russ_eng_skill[Difficulty]);
+   for i in Russ_mech do
+     SetSkill(i, skill_mechanical, russ_mech_skill[Difficulty]);
+
+   case Difficulty of
+    1: begin
+        DestroyUnit(TuretWL2);
+        DestroyUnit(TuretWR1);
+        DestroyUnit(TuretWL1);
+        DestroyUnit(TuretWR2);
+        DestroyUnit(PowerWL3);
+        DestroyUnit(PowerWR1);
+        DestroyUnit(PowerWL1);
+
+        DestroyUnit(TuretE2);
+        DestroyUnit(TuretE3);
+        DestroyUnit(PowerE4);
+
+        DestroyUnit(BunkerN2);
+        DestroyUnit(GuardN2);
+        DestroyUnit(PowerN2);
+       end;
+    2: begin
+         DestroyUnit(TuretWL2);
+         DestroyUnit(TuretWR1);
+         DestroyUnit(PowerWL3);
+
+         DestroyUnit(TuretE2);
+         DestroyUnit(PowerE4);
+
+         SetTech(tech_Weap1, russians, state_researched);
+         SetTech(tech_Weap2, russians, state_researched);
+       end;
+    3: begin
+         SetTech(tech_Weap1, russians, state_researched);
+         SetTech(tech_Weap2, russians, state_researched);
+         SetTech(tech_Weap3, russians, state_researched);
+       end;
+   end;
+ end;
+
+
+
+Function Prepare_Characters;
+var i, Un, hlp, Gamma2Comander, Alpha, New_person, Drivers, Other;
+
+ begin
+  Alpha= 1;
+
+  uc_nation= nation_american;
+  uc_side= americans;
+
+  // John Macmillan
+  JMM= CreateCharacter('JMM');
+  if not JMM then
+    BuildQuery('Error: John Macmillan not found!!!',['OK']);
+
+  Harrison= NewCharacter('Harisson');
+  if not Harrison then
+    BuildQuery('Error: Harrison not found!!!', ['OK']);
+
+  Bobby= CreateCharacter('Bobby');
+  BobbyLoc=LoadVariable('BobbyLoc', 0);
+  Lisa= CreateCharacter('Lisa');
+  LisaLoc=LoadVariable('LisaLoc', 0);
+  Cyrus= CreateCharacter('Cyrus');
+  CyrusLoc=LoadVariable('CyrusLoc', 0);
+  Brown= CreateCharacter('Brown');                                          
+  BrownLoc=LoadVariable('BrownLoc', 0);
+  Donaldson= CreateCharacter('Donaldson');
+  DonaldsonLoc= LoadVariable('DonaldsonLoc', 0);
+  Gladstone= CreateCharacter('Gladstone');
+  GladstoneLoc= LoadVariable('GladstoneLoc', 0);
+  Khatam= CreateCharacter('Khatam');
+  KhatamLoc= LoadVariable('KhatamLoc', 0);
+  Denis= CreateCharacter('Denis');
+  DenisLoc= LoadVariable('DenisLoc', 0);
+
+//  Joan= CreateCharacter('Joan'); // She doesn't go.
+
+  uc_side= americans1;
+  Frank= CreateCharacter('Frank');
+  FrankLoc= LoadVariable('FrankLoc', 0);
+  if Frank then
+    begin
+      SetClass(Frank, class_soldier);
+      PlaceUnitXY(Frank, scout_pos[1], scout_pos[2], false);
+      ComHold(Frank);
+      Yamoko=0;
+    end
+  else
+    begin
+      //Yamoko
+      hc_sex= sex_female;
+      hc_class= class_soldier;
+      hc_basic_skills=[2,0,1,0];
+      hc_skills= [4,1,3,1];
+      hc_name= 'Yamoko Kikuchi';
+      hc_attr= [9,12];
+
+      hc_gallery='us';
+      hc_face_number=1;
+      hc_importance=10;
+
+      Yamoko= CreateHuman;
+      PlaceUnitXY(Yamoko, scout_pos[1], scout_pos[2], false);
+      ComHold(Yamoko);
+    end;
+
+  Gamma2Commander= LoadVariable('Gamma2Commander', 3);
+
+  uc_side= americans;
+
+  Selected_americans= CreateCharacterSet('OtherJMM');
+
+  // Update of Selected_americans
+  Selected_americans= Selected_americans ^ JMM;
+  if BobbyLoc = 4 then Selected_americans= Selected_americans ^ Bobby
+                  else DestroyUnit(Bobby);
+  if CyrusLoc = 4 then Selected_americans= Selected_americans ^ Cyrus
+                  else DestroyUnit(Cyrus);
+  if LisaLoc = 4 then Selected_americans= Selected_americans ^ Lisa
+                  else DestroyUnit(Lisa);
+  if BrownLoc = 4 then Selected_americans= Selected_americans ^ Brown
+                  else DestroyUnit(Brown);
+  if DonaldsonLoc = 4 then Selected_americans= Selected_americans ^ Donaldson
+                      else DestroyUnit(Donaldson);
+  if GladstoneLoc = 4 then Selected_americans= Selected_americans ^ Gladstone
+                      else DestroyUnit(Gladstone);
+  if KhatamLoc = 4 then Selected_americans= Selected_americans ^ Khatam
+                  else DestroyUnit(Khatam);
+  if DenisLoc = 4 then Selected_americans= Selected_americans ^ Denis
+                  else DestroyUnit(Denis);
+
+   // vehicles
+    uc_direction= 3;
+    vc_chassis= us_light_wheeled;
+    vc_engine= engine_solar;
+    vc_control= control_manual;
+
+    vc_weapon= us_light_gun; 
+    am_veh1= CreateVehicle;              // Light gun
+
+    vc_chassis= us_medium_wheeled;
+
+    vc_weapon= us_gatling_gun;
+    am_veh2= CreateVehicle;              // Gatling gun
+
+    vc_weapon= us_double_gun;
+    am_veh3= CreateVehicle;              // Double gun
+
+    vc_weapon= us_radar;
+    am_veh4= CreateVehicle;              // Radar
+
+    am_vehicles= [am_veh1, am_veh2, am_veh3, am_veh4];
+
+
+    // Place drivers into vehicles and then palace the vehicles at the map.
+    hlp= [];
+    Drivers= UnitFilter(Selected_americans, [f_class, class_mechanic]);
+    Other= Selected_americans Diff Drivers;
+    if Drivers > 4 then Drivers= [Drivers[1], Drivers[2], Drivers[3], Drivers[4]];
+    if Drivers = 4 then
+      for i= 1 to 4 do
+        begin
+          PlaceHumanInUnit(Drivers[i], am_vehicles[i]);
+          PlaceUnitArea(am_vehicles[i], Start1, false);
+        end
+    else
+      begin
+        for i= 1 to Drivers do
+          begin
+            PlaceHumanInUnit(Drivers[i], am_vehicles[i]);
+            PlaceUnitArea(am_vehicles[i], Start1, false);
+          end;
+        for i= Drivers+1 to 4 do
+          begin
+            PlaceHumanInUnit(Other[i - Drivers], am_vehicles[i]);
+            PlaceUnitArea(am_vehicles[i], Start1, false);
+            hlp= hlp ^ Other[i - Drivers];
+          end;
+      end;
+
+   // Place the remaining humans at map.
+   for i in Selected_americans diff (Drivers ^ hlp) do
+    PlaceUnitArea(i, Start, false);
+
+//   for i in am_vehicles do
+//    PlaceUnitArea(i, Start1, false);
+
+ end;
+
+                                                                              
+
+Function Set_marks;
+ begin
+  Review_the_map= 1;
+  disable(Review_the_map);
+  Return_as_objective= 3;
+  disable(Return_as_objective);
+  Depot_destroyed= 4;
+  disable(Depot_destroyed);
+  End_of_m= 5;
+  disable(End_of_m);
+  Lose1= 6;
+  disable(Lose1);
+  Lose2= 7;
+  disable(Lose2);
+  After_talk= 8;
+  disable(after_talk);
+  After_first_attack= 9;
+  disable(After_first_attack);
+  Timer= 10;
+  Disable(Timer);
+ end;
+                                              
+Function Set_attitudes;
+ begin
+   SetAttitude(americans, americans1, att_friend, true);
+   SetAttitude(americans, russians, att_enemy, true);
+ end;
+
+Function Set_difficulty;
+ begin
+ end;
+
+Function Send_units_to_initial_position;
+ begin
+  if Frank then ComStand(opofrank);
+  if IsOk(GuardN1) then ComEnterUnit(GuardN1, BunkerN1); // North fortification
+  if IsOk(GuardN2) then ComEnterUnit(GuardN2, BunkerN2);      
+  if IsOk(GuardN3) then ComEnterUnit(GuardN3, BunkerN3);           
+  if IsOk(GuardN4) then ComEnterUnit(GuardN4, BwN4);
+  if IsOk(GuardN5) then ComEnterUnit(GuardN5, BwN5);
+  if IsOk(GuardW1) then ComEnterUnit(GuardW1, BwW1); // West
+  if IsOk(GuardE1) then ComEnterUnit(GuardE1, BwE1); // East
+  if IsOk(GuardE2) then ComEnterUnit(GuardE2, BwE2);
+
+  if IsOk(m1) then ComEnterUnit(m1, v1);
+  West_mech= m1;
+  West_veh= v1;
+      
+  if IsOk(m2) then ComEnterUnit(m2, v2);
+  East_mech= m2;
+  East_veh= v2;
+
+  if IsOk(m3) then ComEnterUnit(m3, v3);
+  Center_mech= m3;
+  Center_veh= v3;
+
+  ComHold(physician); ComRemember(physician);
+  ComRemember(EngWR);
+  ComRemember(EngWL); 
+  ComRemember(EngE);
+
+  WaitJob(West_mech, 0.1);  // Setting of Hold flag
+  ComHold(West_veh);
+  ComRemember(West_veh);
+  WaitJob(East_mech, 0.1);
+  ComHold(East_veh);
+//  SetLives(West_veh, 500);
+//  SetLives(West_mech, 500);
+  ComRemember(East_veh);
+  WaitJob(Center_mech, 0.1);
+  ComHold(Center_veh);
+  ComRemember(Center_veh);
+ end;
+
+Function Init;
+ begin
+  Randomize;
+  Set_variables;
+  Set_marks;
+  Set_attitudes;
+  Prepare_characters;
+  Prepare_difficulty;
+  Send_units_to_initial_position;
+ end;
+
+STARTING
+
+ begin
+//  Difficulty= 1;
+  Init;
+  CenterOnXY(32, 11);
+ end;

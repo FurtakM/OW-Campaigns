@@ -1,0 +1,225 @@
+// Evaluation
+
+////////// Mission fails ///////////
+
+// EOM - JMM is death
+{EVERY 0$5 TRIGGER IsDead(JMM) do
+ begin
+  YouLost('JMM');
+  ExitGame;
+ end;}
+On UnitDestroyed(un) do
+     begin
+          if un = JMM then
+               begin
+                    ExclusiveOn;
+                    Wait(0$1);
+                    YouLost('JMM');
+               end;
+     end;
+
+// The russians warehouse is not destroyed yet.
+// MARKED 6 - Lose1
+EVERY 0$1 MARKED 6 DO
+ begin
+  YouLost('TimeOut1');
+  ExitGame;
+ end;
+
+// Player don't catch to return back.
+// MARKED 7 - Lose2
+EVERY 0$1 MARKED 7 DO
+ begin
+  YouLost('TimeOut2');
+  ExitGame;
+ end;
+
+////////// Mission succeeds ///////////
+
+// MARKED 5 - End_of_m
+// Number of all buildings is 56
+EVERY 0$1 MARKED 5 Do
+var Remaining_russians_buildings;
+ begin
+   Remaining_russians_buildings= FilterAllUnits([[f_side, russians],
+                                 [f_type,unit_building], [f_ok]]);
+
+   if Remaining_russians_buildings < 15 then
+     begin
+       AddMedal('Destroy1',1);
+       AddMedal('Destroy2',1);
+       AddMedal('Destroy3',1);
+     end
+   else if Remaining_russians_buildings < 25 then
+     begin
+       AddMedal('Destroy1',2);
+       AddMedal('Destroy2',2);
+       AddMedal('Destroy3',-1);
+     end
+   else if Remaining_russians_buildings < 35 then
+     begin
+       AddMedal('Destroy1',3);
+       AddMedal('Destroy2',-1);
+       AddMedal('Destroy3',-1);
+     end
+   else
+     begin
+       AddMedal('Destroy1', -1);
+       AddMedal('Destroy2', -1);
+       AddMedal('Destroy3', -1);
+     end;
+
+   GiveMedals('MAIN');
+   RewardPeople(FilterAllUnits([[f_ok],[f_side,americans],[f_type,unit_human]]));
+
+   SaveCharacters(JMM,'JMM');
+   if Cyrus in Selected_americans then
+     SaveCharacters(Cyrus, 'Cyrus');
+   if Bobby in Selected_americans then
+     SaveCharacters(Bobby, 'Bobby');
+   if Lisa in Selected_americans then
+     SaveCharacters(Lisa, 'Lisa');
+   if Frank in Selected_americans then
+     SaveCharacters(Frank, 'Frank');
+   if Donaldson in Selected_americans then
+     SaveCharacters(Donaldson, 'Donaldson');
+   if Brown in Selected_americans then
+     SaveCharacters(Brown, 'Brown');
+   if Denis in Selected_americans then
+     SaveCharacters(Denis, 'Denis');
+   if Gladstone in Selected_americans then
+     SaveCharacters(Gladstone, 'Gladstone');
+   if Yamoko in Selected_americans then
+     SaveCharacters(Yamoko, 'Yamoko');
+
+   otherJMM= selected_americans diff [JMM, Cyrus, Bobby, Lisa, Frank, Donaldson,
+                                      Brown, Denis, Joan, Gladstone, Yamoko];
+   SaveCharacters(otherJMM, 'otherJMM');
+
+   if Time_of_game < time_of_first_warning[Difficulty] then
+     begin                                           
+       Time_of_game= 0;
+     end
+   else
+     begin
+       Time_of_game= Time_of_game - time_of_first_warning[Difficulty];
+     end;
+   SaveVariable(Time_of_game, 'Time');
+   SaveVariable(Gamma2Commander, 'Gamma2Commander');
+
+   if Cyrus in selected_americans then
+     begin
+       if not(Cyrus in OtherLateJMM) then CyrusLoc= 4
+       else
+         begin
+           CyrusLoc=5;
+           OtherLateJMM= OtherLateJMM diff Cyrus;
+         end;
+     end;
+   SaveVariable(CyrusLoc, 'CyrusLoc');
+
+
+   if Bobby in selected_americans then
+     begin
+       if not(Bobby in OtherLateJMM) then BobbyLoc= 4
+       else
+         begin
+           BobbyLoc=5;
+           OtherLateJMM= OtherLateJMM diff Bobby;
+         end;
+     end;
+   SaveVariable(BobbyLoc, 'BobbyLoc');
+
+
+   if Lisa in selected_americans then
+     begin
+       if not(Lisa in OtherLateJMM) then LisaLoc= 4
+       else
+         begin
+           LisaLoc=5;
+           OtherLateJMM= OtherLateJMM diff Lisa;
+         end;
+     end;
+   SaveVariable(LisaLoc, 'LisaLoc');
+
+
+   if Frank then
+     begin
+       if not(Frank in OtherLateJMM) then FrankLoc= 4
+       else
+         begin
+           FrankLoc=5;
+           OtherLateJMM= OtherLateJMM diff Frank;
+         end;
+     end;
+   SaveVariable(FrankLoc, 'FrankLoc');
+
+
+   if Donaldson in selected_americans then
+     begin
+       if not(Donaldson in OtherLateJMM) then DonaldsonLoc= 4
+       else
+         begin
+           DonaldsonLoc=5;
+           OtherLateJMM= OtherLateJMM diff Donaldson;
+         end;
+     end;
+   SaveVariable(DonaldsonLoc, 'DonaldsonLoc');
+
+
+   if Brown in selected_americans then
+     begin
+       if not(Brown in OtherLateJMM) then BrownLoc= 4
+       else
+         begin
+           BrownLoc=5;
+           OtherLateJMM= OtherLateJMM diff Brown;
+         end;
+     end;
+   SaveVariable(BrownLoc, 'BrownLoc');
+
+
+   if Gladstone in selected_americans then
+     begin
+       if not(Gladstone in OtherLateJMM) then GladstoneLoc= 4
+       else
+         begin
+           GladstoneLoc=5;
+           OtherLateJMM= OtherLateJMM diff Gladstone;
+         end;
+     end
+   else GladstoneLoc= 3;
+   SaveVariable(GladstoneLoc, 'GladstoneLoc');
+
+
+   if Denis in selected_americans then
+     begin
+       if not(Denis in OtherLateJMM) then DenisLoc= 4
+       else
+         begin
+           DenisLoc=5;
+           OtherLateJMM= OtherLateJMM diff Denis;
+         end;
+     end
+   else DenisLoc= 3;
+   SaveVariable(DenisLoc, 'DenisLoc');
+
+
+   if Yamoko then
+     begin
+       begin
+         if not(Yamoko in OtherLateJMM) then YamokoLoc= 4
+         else
+           begin
+             YamokoLoc=5;
+             OtherLateJMM= OtherLateJMM diff Yamoko;
+           end;
+       end;
+       SaveVariable(YamokoLoc, 'YamokoLoc');
+     end;
+
+   SaveCharacters(OtherLateJMM, 'OtherLateJMM');
+
+   YouWin;
+   ExitGame;
+ end;

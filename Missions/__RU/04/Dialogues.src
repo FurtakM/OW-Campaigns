@@ -1,0 +1,366 @@
+export function Dialogue1; // Dialogue 1 (after the start of the mission - at provisional Russian base in the bottom part of the map)
+begin 
+  SayRadio(SoldierX,'D1-RSol1-1'); //- (over radio) Comrade Platonov, the evacuation is ready. We can start in ten minutes.
+  SayRadio(Platonov,'D1-Pla-1'); //- (over radio) It is the only way, our losses are too many, comrade Kurin is amongst them. (TO BURLAK) Burlak, we need cover for our retreat. This may cost a few lives but it will save many.
+  Say(Burlak,'D1-Bur-1'); //- I understand Comrade Platonov.
+  SayRadio(Platonov,'D1-Pla-2'); //- You are the only one we can depend on Burlak. You must take eight men and construct a base on the knoll to the South. When you are ready we will send all the resources you need. Now hurry comrade. We cannot survive long.
+  Say(Burlak,'D1-Bur-2'); //- Very well Comrade Major. You may depend on me.
+end;
+
+export function Dialogue2; // Dialogue 2 (Depot is constructed)
+begin
+  Say(Burlak,'D2-Bur-1'); 
+  SayRadio(Platonov,'D2-Pla-1');
+end;
+
+export function Dialogue2x; // Dialogue 2x (Depot is constructed on a wrong spot)
+begin
+  SayRadio(Platonov,'D2a-Pla-1');
+end;
+
+export function Dialogue2a; // Dialogue 2a (short time afterwards a truck full of material comes to base)
+begin
+  Say(IsDrivenBy(FirstCargo),'D2a-RSol1-1');
+end;
+
+export function Dialogue2b;
+begin
+  DialogueOn;
+  Say(Kuzmov,'D2b-Kuz-1');
+  Say(Burlak,'D2b-Bur-1');
+  Say(Kuzmov,'D2b-Kuz-2');
+  Say(Burlak,'D2b-Bur-2');
+  Say(Kuzmov,'D2b-Kuz-3');
+  DialogueOff;
+
+  Query('Q1'); // Query 1 (Pinching vehicles)
+  enable(4);
+end;
+
+
+export function Dialogue3a; // Burlak diverts trucks - line 1
+begin
+  DialogueOn;
+  SayRadio(Platonov,'D3A-Pla-1');
+  Say(Burlak,'D3A-Bur-1');
+  SayRadio(Platonov,'D3A-Pla-2');
+  Say(Kuzmov,'D3A-Kuz-2');
+  DialogueOff;
+end;
+
+export function Dialogue3b; // Burlak diverts trucks - line 2
+begin
+  DialogueOn;
+  SayRadio(Platonov,'D3B-Pla-1');
+  Say(Burlak,'D3B-Bur-1');
+  SayRadio(Platonov,'D3B-Pla-2');
+  Say(Kuzmov,'D3B-Kuz-2');
+  DialogueOff;
+end;
+
+export function Dialogue3c; // Burlak diverts trucks - line 3
+begin
+  DialogueOn;
+  SayRadio(Platonov,'D3C-Pla-1');
+  Say(Burlak,'D3C-Bur-1');
+  SayRadio(Platonov,'D3C-Pla-2');
+  Say(Burlak,'D3C-Bur-2');
+  Say(Kuzmov,'D3C-Kuz-2');
+  DialogueOff;
+end;
+
+export function Dialogue3d; // Burlak diverts trucks - line 4
+begin
+  DialogueOn;
+  SayRadio(Platonov,'D3D-Pla-1');
+  Say(Burlak,'D3D-Bur-1');
+  SayRadio(Platonov,'D3D-Pla-2');
+  Say(Kuzmov,'D3D-Kuz-2');
+  DialogueOff;
+end;
+
+export function Dialogue3e; // Burlak diverts trucks - line 5
+begin
+  DialogueOn;
+  if (RecklessAttack = True) And (BelkovFreed = False) then SayRadio(Platonov,'D3E-Pla-1');
+  if (RecklessAttack = False) And (BelkovFreed = False) then SayRadio(Platonov,'D3E-Pla-1a');
+  if (RecklessAttack = True) And (BelkovFreed = True) then SayRadio(Platonov,'D3E-Pla-1b');
+  if (RecklessAttack = False) And (BelkovFreed = True) then SayRadio(Platonov,'D3E-Pla-1c');
+  DialogueOff;
+  YouLost('Arrest');
+end;
+
+export function Dialogue4; // Dialogue 4 (Russians completed withdrawal - when the player builds fortification or time-limit expires)
+begin
+  DialogueOn;
+  SayRadio(Platonov,'D4-Pla-1');
+  Say(Burlak,'D4-Bur-1');
+  Say(Kuzmov,'D4-Kuz-1');
+
+  if IsOK(Belkov) then
+    Say(Belkov,'D4-Bel-1')
+  else  Say(Burlak,'D4-Bur-2');
+
+  if IsOK(Gnyevko) then
+  begin
+    Say(Gnyevko,'D4-Gny-2');
+    Say(Burlak,'D4-Bur-3');
+  end;
+
+  Say(Burlak,'D4-Bur-3a');
+
+  if IsOK(Belkov) then
+    Say(Belkov,'D4-Bel-3')
+  else
+    if IsOK(Kovalyuk) then Say(Kovalyuk,'D4-Kov-3');
+  DialogueOff;
+end;
+
+export function Dialogue5; // Dialogue 5 (Scholtze - research; when the lab is upgraded)
+var filter,filter_all,un;
+begin
+ if IsOK(Scholtze) then
+ begin
+    Say(Scholtze,'D5-Sch-1');
+    Say(Burlak,'D5-Bur-1');
+ end
+ else
+ begin
+   filter_all:=FilterAllUnits([[f_side,you],[f_sex,sex_male],[f_ok],[f_not,[f_nation,nation_nature]]]);
+   filter_all:=filter_all diff [Burlak,Scholtze];
+   if 0+filter_all>0 then
+   begin
+     filter:=[];
+     for un in filter_all do // nepojmenovane postavy, ale jen vedci
+       if NOT (un in [Gnyevko,Belkov,Kovalyuk,Kuzmov]) and GetClass(un)=class_scientistic then
+         filter:=filter union un;
+     if filter>0 then
+     begin
+       Say(filter[1],'D5-RSci1-1');
+       Say(Burlak,'D5-Bur-1');
+     end
+     else
+     begin
+       for un in filter_all do  // nepojmenovane postavy
+         if NOT (un in [Gnyevko,Belkov,Kovalyuk,Kuzmov]) then
+           filter:=filter union un;
+       if filter>0 then
+       begin
+         Say(filter[1],'D5-RSci1-1');
+         Say(Burlak,'D5-Bur-1');
+       end
+       else
+       begin
+         for un in filter_all do  // i pojmenovane postavy, ale jen vedci
+           if GetClass(un)=class_scientistic then
+             filter:=filter union un;
+         if filter>0 then
+         begin
+           Say(filter[1],'D5-RSci1-1');
+           Say(Burlak,'D5-Bur-1');
+         end
+         else
+         begin  // kdokoliv krome Burlaka a Scholtzeho
+           Say(filter_all[1],'D5-RSci1-1');
+           Say(Burlak,'D5-Bur-1');
+         end;
+       end;
+     end;
+   end;
+ end;
+end;
+
+export function Dialogue7; // Dialogue 7 (Arabian attack starts; first Arabian vehicle appears - select 1-2 sentences depending on the characters present)
+var ss,bool,rand_sentence,pole,filter;
+begin
+  Randomize;
+  rand_sentence:=Rand(1,3);
+  case rand_sentence of
+    1:Say(Burlak,'D7-Bur-1');
+    2:Say(Burlak,'D7-Bur-1a');
+    3:Say(Burlak,'D7-Bur-1b');
+  end;
+
+  bool:=false;
+  pole:=[];
+  repeat
+    ss:=([1,2,3,4] diff pole)[Rand(1,4-pole)];
+    case ss of
+      1:begin
+          if IsOK(Belkov) then bool:=Say(Belkov,'D7-Bel-1');
+          pole:=pole union 1;
+        end;
+      2:begin
+        if IsOK(Kuzmov) then bool:=Say(Kuzmov,'D7-Kuz-1');
+          pole:=pole union 2;
+        end;
+      3:begin
+        if IsOK(Kovalyuk) then bool:=Say(Kovalyuk,'D7-Kov-1');
+          pole:=pole union 3;
+        end;
+      4:begin
+        if IsOK(Scholtze) then bool:=Say(Scholtze,'D7-Sch-1');
+          pole:=pole union 4;
+        end;
+    end;
+    Wait(1);
+  until bool or (pole>3);
+
+  if NOT bool then
+  begin
+    filter:=FilterAllUnits([[f_side,you],[f_sex,sex_male]]) diff [Burlak];
+    Say(filter[1],'D7-RSol1-1');
+  end;
+end;
+
+export function Dialogue7a; // Dialogue 7a (Arabian challenge)
+begin
+  Say(Heike,'D7a-Hke-1');
+  Say(Burlak,'D7a-Bur-1');
+end;
+
+export function Dialogue8; // Dialogue 8 (Russian losses reach certain threshold)
+var filter,filter_all,un;
+begin
+  if IsOK(Kuzmov) then
+  begin
+    Say(Kuzmov,'D8-Kuz-1');
+    Say(Burlak,'D8-Bur-1');
+  end
+  else
+  begin
+   filter_all:=FilterAllUnits([[f_side,you],[f_sex,sex_male],[f_ok],[f_not,[f_nation,nation_nature]]]);
+   filter_all:=filter_all diff [Burlak,Kuzmov];
+   if 0+filter_all>0 then
+   begin
+     filter:=[];
+     for un in filter_all do // nepojmenovane postavy, ale jen vojaci
+       if NOT (un in [Gnyevko,Belkov,Kovalyuk,Scholtze]) and GetClass(un)=class_soldier then
+         filter:=filter union un;
+     if filter>0 then
+     begin
+       Say(filter[1],'D8-RSol1-1');
+       Say(Burlak,'D8-Bur-1');
+     end
+     else
+     begin
+       for un in filter_all do  // nepojmenovane postavy
+         if NOT (un in [Gnyevko,Belkov,Kovalyuk,Scholtze]) then
+           filter:=filter union un;
+       if filter>0 then
+       begin
+         Say(filter[1],'D8-RSol1-1');
+         Say(Burlak,'D8-Bur-1');
+       end
+       else
+       begin
+         for un in filter_all do  // i pojmenovane postavy, ale jen vojaci
+           if GetClass(un)=class_soldier then
+             filter:=filter union un;
+         if filter>0 then
+         begin
+           Say(filter[1],'D8-RSol1-1');
+           Say(Burlak,'D8-Bur-1');
+         end
+         else
+         begin  // kdokoliv krome Burlaka a Kuzmova
+           Say(filter_all[1],'D8-RSol1-1');
+           Say(Burlak,'D8-Bur-1');
+         end;
+       end;
+     end;
+   end;
+  end;
+end;
+
+export function Dialogue9; // Dialogue 9 (You must hold)
+begin
+  SayRadio(Platonov,'D9-Pla-1');
+  Say(Burlak,'D9-Bur-1');
+  SayRadio(Platonov,'D9-Pla-2');
+  Say(Burlak,'D9-Bur-2');
+
+  ChangeMissionObjectives('M2');
+end;
+
+export function Dialogue10; // Dialogue 10 (Gaydar arrives)
+begin
+  Say(Gaydar,'D10-Gay-1');
+  Say(Burlak,'D10-Bur-1');
+  Say(Gaydar,'D10-Gay-2');
+  SayRadio(Popov,'D10-Pop-2');
+  Say(Gaydar,'D10-Gay-3');
+  enable(5);
+end;
+
+export function Dialogue11a(someone); // Dialogue11 (Meeting with Gaydar)
+begin
+   if someone<>Burlak then
+  begin
+    Say(Gaydar,'D11-Gay-1');
+    Say(someone,'D11-RSol1-1');
+  end;
+  enable(6);
+end;
+
+export function Dialogue11b; // Dialogue11 (Meeting with Gaydar)
+begin
+  Say(Gaydar,'D11-Gay-2');
+  Say(Burlak,'D11-Bur-2');
+  Say(Gaydar,'D11-Gay-3');
+  Say(Burlak,'D11-Bur-3');
+  Say(Gaydar,'D11-Gay-4');
+  Say(Burlak,'D11-Bur-4');
+  Wait(0$5);
+  Dialogue12;
+  Hint('Dismantle');
+end;
+
+export function Dialogue12; // Dialogue 12 (Order to retreat)
+begin
+  SayRadio(Popov,'D12-Pop-1');
+  Say(Burlak,'D12-Bur-1');
+  SayRadio(Platonov,'D12-Pla-1');
+
+  ChangeMissionObjectives('MFinal');
+  SetAreaMapShow(ExitArea,True);
+  disable(13);
+  disable(12);
+  enable(19); // Mission Objective - Dismantling Base
+  konec:=true;
+end;
+
+
+{
+^ Main
+Exit area reached, captain Gaydar is safe.
+
+| Burlak
+Burlak is dying.
+
+| Gaydar
+Captain Gaydar is dying.
+
+| Arrest
+You were arrested for stealing of the socialist property. You must not be so greedy next time!
+
+| ArabBreakthrough
+Arabians broke through your defences.
+
+* Dismantle
++ Base dismantled before abandoning.
+- Enemy captured some of the buildings in your base.
+*
+
+* EnemyLosses
++ Great losses inflicted to enemy.
+- Losses inflicted upon enemy were rather small.
+*
+
+* LittleLosses
++ Little losses
+- You lost more than two of your men.
+*
+}
+
+on SailEvent(num) do Dialogue7;

@@ -1,0 +1,603 @@
+@ Hunting grounds
+% Not everything is running to plan. When Burlak arrived he found himself alone, some of his comrades are still missing and others are already dead. Better news is  that the struggle against the Americans is going well. It is a struggle in which Burlak will soon play an active role.
+
+// Dialogue  
+
+// Dialogue 1 (immediately after the start of the mission - in S. M. Kirov base)
+$ D1-Kur-1
+- So you are the one they call, Burlak?
+$ D1-Bur-1
+- Yes, comrade commander!
+$ D1-Kur-2
+- I am impressed Burlak.  We need lads like you, who keep calm under fire. We also need good mechanics. You are good?
+$ D1-Bur-2
+- I hope so comrade commander.
+$ D1-Kur-3
+- We shall soon learn. I am transferring you to L. P. Beria - this is the base where we produce our vehicles. Private Kovalyuk will come with you, he is also mechanic. Is this clear?
+$ D1-Bur-3
+- Yes, comrade commander!
+$ D1-Kur-4
+- Good. Then get moving. Commander of Beria is comrade major Platonov. Report to him.
+$ D1-Kur-4a
+- [Gnyevko alive] And you can take comrade corporal Gnyevko with you. He would be a little lost without you I think.
+
+# M1
+Add Main Beria
+- Reach the L. P. Beria Base.
+#
+
+// Dialogue 1a (if Burlak returns to Kirov)
+$ D1a-Kur-1
+- [without vehicle] Burlak? What are you doing here boy? Didn't I tell you to go to Beria? Report to comrade major Platonov at once!
+$ D1a-Kur-1a
+- [with a vehicle (after he delivered the first one)] Burlak? We don't need any more vehicles. Do something useful boy!
+
+// Dialogue 1b (Burlak tries to go North before he gets to Beria)
+$ D1b-Kov-1
+- [alive] We are too far North, Burlak. We must return. (In-game video, moving south)
+$ D1b-Bur-1
+- [otherwise] I'm too far North already, I must head south. (In-game video)
+
+// Dialogue 2 (upon arrival to Beria)
+$ D2-Sol1-1
+- Halt! Identify yourself!
+$ D2-Bur-1
+- Mechanic third class, Yuri Burlak reporting for duty, comrade officer! My orders are to report to comrade major Platonov.
+$ D2-Sol1-2
+- Fine. I think he is expecting you.
+$ D2-Pla-2
+- (when Burlak comes closer to the centre of the base) Comrade Gorky, I presume.
+$ D2-Bur-2
+- That is correct, comrade major! Reporting for duty!
+$ D2-Pla-3
+- Good. Welcome to Beria. Shipments arrive often in this vicinity comrade, so this is where we build vehicles instead of taking material to Kirov first.
+$ D2-Bur-3
+- Makes good sense major.
+$ D2-Pla-4
+- (correcting) Comrade Major. Are you ready to commence your undertaking comrade Gorky.
+$ D2-Bur-4
+- I am comrade Major.
+$ D2-Pla-5
+- Good. But before you can begin playing with engines you must construct a design centre and a small workshop. Quickly comrade Gorky.
+
+// Query MoreInfo (use selective query for the next two dialogues)
+? QMoreInfo
+Do you want to ask major Platonov some questions?
+-1 Enquire further about the "shipments"
+-2 Enquire further about the "shop"
+-3 Enquire further about the "design centre"
+-4 No questions. You have all the answers yourself!
+?
+
+// Dialogue 2a (QMoreInfo-1)
+$ D2a-Bur-1
+- Excuse me comrade major, but what are the 'shipments'?
+$ D2a-Pla-1
+- I forget you are new Burlak. (as if telling a child a story) Let me explain...everything here was built using supplies our army sends through TAWAR. Sometimes you can hear a blast or see a flash. This means a shipment, maybe materials, maybe people, has just arrived in the locality. There's no way to know where or when the next landing will occur but the frequency is greater here than near Kirov. Hence the importance of Beira. (Query MoreInfo appears, with options 2-4)
+
+// Dialogue 2b (QMoreInfo-2)
+$ D2b-Bur-1
+- Excuse me, comrade major, how do I build this workshop?
+$ D2b-Pla-1
+- You extract a quantity of material from the depot and get working. There should be enough supplies to keep you going. (Query MoreInfo appears, with options 1 and 3-4)
+
+// Dialogue 2c (QMoreInfo-3)
+$ D2c-Bur-1
+- I am sorry, comrade major, what kind of design centre?
+$ D2c-Pla-1
+- Dear me Gorky, I can tell initiative is not your middle name! Call it what you like, design centre, laboratory, it's all the same. A work space to do a little ruminating! You must devise plans before you build or your vehicle may not make it beyond the workshop!
+
+// Dialogue 3 (in any case)
+$ D3-Pla-1
+- Very well. Now I am now going to search for shipments. I'll get back to you when you have completed your endeavours.
+$ D3-Bur-1
+- Thank you, comrade major. I shall start work immediately.
+
+# M2a
+Del Beria
+Add Main Work
+- Build workshop
+Add Main lab
+- Build laboratory
+#
+
+# M2
+Del Work
+Del lab
+Add Main Produce
+- Produce a vehicle in the workshop
+#
+
+! Base
+Base
+
+There will be hint...
+!
+
+! Depot
+Depot
+
+There will be hint...
+!
+
+! Construction
+Construction
+
+There will be hint...
+!
+
+// Dialogue 4 (When shipment appears and Platonov spots it)
+$ D4-Pla-1
+- Comrade Burlak, I've located some shipments here. Send someone or come and pick them up yourself. (There should only be enough material for one vehicle at first, so the player can't produce more vehicles while he gives the first one to Belkov and his boys.)
+
+! GatheringMaterial
+GatheringMaterial
+
+There will be hint...
+!
+
+// Dialogue 5a (Lab finished)
+$ D5a-Bur-1
+- Comrade major, the lab is up and running. We shall now proceed with your orders.
+$ D5a-Pla-1
+- [workshop ready] Good, you have completed the buildings we need, comrade.
+$ D5a-Pla-1a
+- [otherwise] Very well, comrade. Proceed with the workshop.
+
+# M2b
+Out lab
+#
+
+// Dialogue 5b (Workshop finished)
+$ D5b-Bur-1
+- The workshop is ready, comrade major. Shall we commence vehicle construction now?
+$ D5b-Pla-1
+- [lab ready] Well done Gorky, I see the buildings are all prepared.
+$ D5b-Pla-1a
+- [otherwise] Your memory is weak Burlak, I said you need laboratory also. Get to it now!
+
+# M2b
+Out Work
+#
+
+// Dialogue 6 (Burlak attempts to build something else)
+$ D6-Pla-1
+- Did I order you to build this comrade Gorky!? Please, get it in your vacuous mind, on this base you follow my orders!
+$ D6-Bur-1
+- (engineer abandons building, it is destroyed, material is returned to depot) I am sorry, comrade major! It will not happen again.
+
+// Dialogue 7a (Both workshop and lab ready, oil engine not researched)
+$ D7a-Bur-1
+- Now we have all the facilities we need, comrade major! But we must use the lab to develop a proper engine.
+$ D7a-Pla-1
+- Then what are you waiting for Gorky. Get a move on.
+
+// Dialogue 7b (Both workshop and lab ready, oil engine researched)
+$ D7b-Bur-1
+- Now we are ready we can begin production. We can only build light reconnaissance vehicles in this simple shop. Still, our vehicles are sturdier than the Yankee crap.  (HE DOESN'T HAVE TO SEE THEM, EVERY RUSSIAN KNOWS HIS VEHICLES ARE BETTER THAN YANKEE CRAP)
+$ D7b-Pla-1
+- Very well. Congratulations, comrade Gorky. Now build us one!
+
+! Laboratory
+Laboratory
+
+There will be hint...
+!
+
+! Healing
+Healing
+
+There will be hint...
+!
+
+! Workshop
+Workshop
+
+There will be hint...
+!
+
+! BuildingVehicles
+BuildingVehicles
+
+There will be hint...
+!
+
+// Dialogue 8 (Burlak or any of the player controlled men tries to leave base before the objective is fulfilled)
+$ D8-Pla-1
+- Hey, where are you going, comrade? Your assignment is not complete. Return immediately! (The question here is whether the game should force player to do so, I think better not)
+
+// Dialogue 9 (Vehicle constructed)
+$ D9-Bur-1
+- Comrade major! We have met our planned production! (PAUL WROTE We have built our first vehicle! - PLANNED PRODUCTION IS AN ALLUSION THE COMMUNIST OBSESSION WITH PLANNING - 5 YEAR PLAN, EXCEEDING PLAN, MEETING PLAN ETC. ARE DAILY STAPLE OF COMMUNIST PROPAGANDA.)
+$ D9-Pla-1
+- Very well, comrade Gorky. Now you can drive the fruits of your labour all the way to Kirov. Then return and report to me.
+
+# M3
+Out Produce
+Add Main Drive
+- Drive the vehicle to S. M. Kirov base.
+#
+
+! Driving
+Driving
+
+There will be hint...
+!
+
+! Driving
+Driving
+
+There will be hint...
+!
+
+! Fuel
+Fuel
+
+There will be hint...
+!
+
+! Fuel2
+Fuel2
+
+There will be hint...
+!
+
+! Repair
+Repair
+
+There will be hint...
+!
+
+// Dialogue 10 (Vehicle and Burlak reach Kirov))
+$ D10-Kur-1
+- So you brought us new vehicle Burlak. This will be a great help to our scouting groups. Armed with these the Yanks won't stand a chance.
+$ D10-Bel-1
+- It looks perfect, I can't wait to see the twin machine guns in action.
+$ D10-Bur-1
+- [Belkov died in previous mission THIS THEN REFERS TO BELKOV] Excuse me, comrade Belkov, but Pioter Mikhailovich...
+$ D10-Bel-2
+- [reply] He was my brother.
+$ D10-Bur-2
+- [reply] I'm sorry.
+$ D10-Kur-2
+- [Belkov did not die in previous mission] With vehicles like this I hope we can avoid repeat of tragic death which befell comrade Pokryshkin.
+$ D10-Kur-2a
+- [Belkov died in previous mission] With vehicles like this I hope we can avoid repeat of tragic death which befell comrades Pokryshkin and Belkov.
+$ D10-Kur-2b
+- Now get back to your duties. (Belkov and his group leave) Comrade Gorky, you can return to L. P. Beria. I'm sure that comrade Platonov has plenty of work for you there.  (Burlak now leaves. If he goes too much North, dialogue 1b takes place again)
+
+# M4
+Out Drive
+Add Main Return
+- Return to L. P. Beria base.
+#
+
+// Dialogue 11 (Return to Beria)
+$ D11-Pla-1
+- So, comrade Kurin has his vehicle and now we shall be the ones to benefit from your expertise! Get on with your job, Burlak, and when you have vehicles for your own use you can join the reconnaissance mission.
+$ D11-Bur-1
+- I'll see to it, comrade major.
+$ D11-Bur-1a
+- [not alone] Let's move, comrades. There is work to be done.
+
+# M5
+Del Drive
+Del Return
+Add Main Produce2
+- Produce one vehicle for each man under your command, including yourself.
+#
+
+// Dialogue 12 (Vehicles produced)
+$ D12-Bur-1
+- Comrade Platonov, we have produced all the vehicles we require.
+$ D12-Pla-1
+- And in a record-breaking time comrade Gorky. I see you thrive under my tuition.
+$ D12-Bur-2
+- We know the vehicles well now. I'm sure we will be successful driving them major.
+$ D12-Pla-2
+- (correcting)Comrade Major.
+$ D12-Bur-3
+- (terse) Comrade...major.
+$ D12-Pla-3
+- Good. Then you can prove that you are right comrade Gorky. It's time for a test drive. Head North in the vehicles and explore unknown areas.
+
+! Skills
+Skills
+
+There will be hint...
+!
+
+# M6
+Out Produce2
+Add Main Chart
+- Chart the area North of your position.
+#
+
+// Dialogue 13 (American trap)
+$ D13-ASol1-1
+- (into radio) Where are you, you bastards? Don't tell me I'm first again. Same at every party.  Somebody talk to me will you.
+$ D13-Bel-1
+- Comrade colonel Kurin, we've spotted another new arrival. We're going to test our new vehicle on the stupid yank.
+$ D13-Kur-1
+- Go ahead Belkov, hit him with all you've got.
+$ D13-Bel-2
+- (imitates Pokryshkin's English) Welcome to United States of Pliocene, soldier. Stay put, we'll pick you up.
+
+// Dialogue 14 (Arrival to the forest)
+$ D14-ASol1-1
+- (appears from behind couple of trees South of Russians) Guess what comrades? Surprise! (A group of more soldiers hiding around the place gets up and opens fire.)
+$ D14-Bel-1
+- It's trap! It's trap! Retreat North! (Returns fire and drives toward forest, when he gets there, his vehicle is on fire. He gets out and goes into forest. Other R. soldiers follow. American mechanic comes to damaged vehicle, repairs it and captures it.)
+$ D14-Bel-1a
+- Comrade colonel, we're trapped by superior American force! Many here.  Send help! Now! Now!
+$ D14-Kur-1
+- Restrain yourself comrade! There is no such thing as superior American force. Regroup and attack!
+$ D14-Bel-2
+- But...
+$ D14-Kur-2
+- You heard the order! Follow it! Follow it! Quickly!
+
+// Dialogue 14a (Can Burlak help?)
+$ D14a-Bur-1
+- Comrade major, we are now in a position to help comrade Belkov, should we...
+$ D14a-Pla-1
+- (cold, terse) Comrade Belkov and his men are no concern of mine! They are under comrade Kurin's orders!
+$ D14a-Bur-2
+- But....
+$ D14a-Pla-2
+- (snapping)Shut up Gorky! There may be more American forces in this area. Your task is to locate them and you will not be diverted from it. Do you understand?
+$ D14a-Bur-3
+- Comrade Major they will....
+$ D14a-Pla-3
+- (shouts) Do you understand?
+$ D14a-Bur-4
+- Yes, comrade major.
+$ D14a-Pla-4
+- Good. Then continue with your mission. If you make contact with the enemy, inform me and I shall consider giving permission to attack.
+
+// Dialogue 15 (New American breastwork is spotted or fires at them)
+$ D15-Bur-1
+- What!? This was not here earlier!
+$ D15-Gny-1
+- [present] The Yankees are sly, Burlak. They will have built it quickly.
+$ D15-Kov-1
+- [otherwise] They will have built it just to stop us reaching Belkov.
+$ D15-Bur-2
+- [never been on western ridge] There might be a better way than frontal attack here.
+$ D15-Kov-2
+- [reply] Like what?
+$ D15-Bur-3
+- [reply] We should see if there is a way to get there from West.
+
+// Dialogue 16 (When Eastern American breastwork is spotted)
+$ D16-Kov-1
+- [W. bw. not spotted: alt a1] So this is where the Yanks are hiding.
+$ D16-Kov-1a
+- [W. bw. spotted: alt a2] So they've got another little hiding spot here.
+$ D16-Bur-1
+- That looks like a good place to build fortifications.
+$ D16-Gny-1
+- [present] Sure, looks well armoured.
+
+// Dialogue 16A (attack on e. bw. from below)
+$ D16A-Gny-1
+- [present: alt a1] What are you doing, Burlak? We can't take it out from here!
+$ D16A-Kov-1
+- [otherwise] Burlak, comrade Major said to chart the territory, maybe we should follow orders?
+$ D16A-Bur-1
+- There is no other way to destroy this. And I'm not leaving this bunker to attack our comrades every time they come near.
+
+// Query AttackBw (only if: i. Western bw. was spotted; ii. Burlak entered the upper ridge; and iii. QAttackAm didn't take place)
+? QAttackBw
+It might be possible to attack the American position from here, but your order specifically asked for reconnaissance only. What are you going to do?
+-1 Ask for permission to attack
+-2 Ask for reinforcements to attack
+-3 Handle the situation yourself, do not communicate with base.
+?
+
+// Dialogue 17 (QAttackBw-1)
+$ D17-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. We've discovered a new American position. I request permission to attack.
+$ D17-Pla-1
+- (over radio) Eager to be a hero, aren't you, Burlak?
+$ D17-Bur-2
+- (into radio) We have a very good position, comrade major. We can pick them off easily and aid comrade Belkov and his men.
+$ D17-Pla-2
+- (over radio) Very well, comrade Gorky. Permission granted.
+
+// Dialogue 18 (QAttackBw-2)
+$ D18-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. I think we found an opening in American defences. Could we have reinforcements to assist an attack.
+$ D18-Pla-1
+- (over radio) Trying to play the hero, are you, Burlak. Your job is establishing Yanks position, not making yourself into a martyr.
+$ D18-Bur-2
+- (into radio) We are in very good position here. We just need backup.
+$ D18-Pla-2
+- (over radio) Very well, comrade, I'll send you somebody.
+
+// Dialogue 19 (immediately after Dialogue 17 or 18 or if QAttack-3, when Burlak attacks fortifications)
+$ D19-Gny-1
+- [present: alt a1] Are you crazy Burlak? You will get us all killed!
+$ D19-Bur-1
+- [reply] Do you want our boys charging from below and getting slaughtered like Pokryshkin? We can take it out from here, nice and clean.
+$ D19-Kov-1
+- [otherwise: alt a2] You have balls like a bull, Burlak! And a big one at that!
+$ D19-Bur-2
+- [reply] This is only matter of brains. Yanks are so stupid they have built a bunker there just so we can take it to pieces.
+
+// Dialogue 19A (attack on w. bw. from below, query AttackBW didn't take place)
+$ D19A-Gny-1
+- [present: alt a1] What are you doing, Burlak? This is stupid idea!
+$ D19A-Kov-1
+- [otherwise] This does not seem good tactics, Burlak. Isn't there a better way?
+$ D19A-Bur-1
+- There might be a better position but now it is too late to go looking for it. Just take them out!
+
+# M7
+Add Main AttackW
+- Destroy enemy fortifications in West
+#
+
+! Visibility
+Visibility
+
+There will be hint...
+!
+
+// Dialogue 20 (Western breastwork destroyed)
+$ D20-Bur-1
+- The Yanks have one place less to hide, comrade major.
+$ D20-Pla-1
+- Excellent, Burlak.
+
+// Dialogue 20a (Eastern breastwork destroyed)
+$ D20a-Bur-1
+- The Yanks have one less hiding place, comrade major.
+$ D20a-Pla-1
+- Good work, Burlak.
+
+# M8
+Out AttackW
+#
+
+// Query ContMission
+? QContMission
+You have fulfilled the main mission objective. However, you may still wish to help Belkov and his comrades, even if it is not going to make you popular with comrade Platonov. Do you wish to:
+-1 End the mission
+-2 Continue the mission
+?
+
+// Query AttackAm (only if: i. Burlak is close to North American position)
+? QAttackAm
+If you proceed further you will have to fight Americans, but your order specifically asked for reconnaissance only. What do you want to do?
+-1 Ask for the permission to attack
+-2 Ask for the reinforcements to attack
+-3 Handle the situation yourself, make no contact with base.
+?
+
+// Dialogue 21 (QAttackAm-1)
+$ D21-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. We've assessed the American forces surrounding comrade Belkov and we believe we can handle them. I request permission to attack.
+$ D21-Pla-1
+- (over radio) Permission granted comrade Burlak. Try and recover the vehicle.
+
+// Dialogue 22 (QAttackAm-2)
+$ D22-Bur-1
+- (into radio) This is Yuri Gorky, calling Beria. We are about to make contact with American forces surrounding comrade Belkov. Could you send reinforcements for an attack?
+$ D22-Pla-1
+- [bw. Destroyed & no reinforcements in QAttackBw] (over radio) Very well, comrade. As you took out those American positions, they should get to you easily enough. I will send support.
+$ D22-Pla-1a
+- [bw. not destroyed] (over radio) Negative, comrade Gorky. You had hard time getting there in vehicles, others might not make it at all.
+$ D22-Pla-1b
+- [bw. Destroyed & reinforcements sent in QattackBw] (over radio) You have all reinforcements we can spare, comrade Gorky. You must proceed.
+
+// Dialogue 23 (immediately after Dialogue 21 or 22 or if QAttack-3, when Burlak attacks Americans)
+$ D23-Gny-1
+- [present: alt a1] We should mind our god-damned business, Burlak. This is job for soldiers.
+$ D23-Bur-1
+- [reply] We can handle these machines better than any soldier. Show me you are not a coward!
+
+// Dialogue 23a (Belkov died)
+$ D23a-Bel-1
+- The Yanks are upon us, comrades! Help us! Aaaargh!
+
+# M9
+Add Main AttackAm
+- Join forces with comrade Belkov.
+#
+
+// Dialogue 24 (Belkov freed)
+$ D24-Bel-1
+- I am very glad to see you Burlak!
+$ D24-Bur-1
+- [Belkov did not die in previous mission] I cannot say the same Belkov. Every time we meet, you are in deep shit!
+$ D24-Bur-1a
+- [Belkov died in previous mission] I only wish I could have done the same  for your brother.
+$ D24-Bel-2
+- Thank you Burlak. You have saved my life.
+$ D24-Bur-2
+- We've still got to get back! (into radio) Lieutenant Gorky reporting to L. P. Beria. The American forces in this area were eliminated and we've made contact with comrade lieutenant Belkov.
+$ D24-Bur-2a
+- [vehicle recaptured] We have also managed to recapture our vehicle.
+$ D24-Pla-2
+- Very well, comrade.
+$ D24-Pla-2a
+- [bw. not captured] Now you should return to the American bunker and wipe them out too. (Objective Change 3)
+
+// Dialogue 25 (When Burlak returns to Beria)
+$ D25-Pla-1
+- So what did you learn or your little journey, boys?
+$ D25-Bur-1
+- [Both American breastworks found] We found two Yankee bunkers in this area, comrade major. Both are armoured, one is on that knoll to East, and would be difficult to attack, the another is on that ridge just North of here.
+$ D25-Bur-1a
+- [Eastern American bw. found] We found only one Yankee bunker in this area, comrade major, on that knoll to East. It would be very hard to attack.
+$ D25-Bur-1b
+- [Western bw. found] We found only one Yankee bunker in this area, comrade major. It is on the ridge just North of here.
+$ D25-Bur-1c
+- [no bw. found] I am afraid we learnt nothing yet comrade major.
+
+// Dialogue 25a (When Burlak returns to Beria for the second time)
+$ D25a-Pla-1
+- Did you find anything interesting this time, boys?
+$ D25a-Bur-1
+- [nothing] Nothing new, comrade major.
+$ D25a-Bur-1a
+- [e. bw.] We found a Yankee bunker, comrade major. It is on that knoll to East, an attack would be hazardous.
+$ D25a-Bur-1b
+- [w. bw.] We discovered a Yankee bunker on that ridge just North of here, comrade major.
+
+// Dialogue 25b (West bw. discovered and not destroyed)
+$ D25b-Bur-1
+- [not destroyed] I think we would be able to attack them from behind there, and take them out without casualties, comrade Platonov.
+$ D25b-Pla-1
+- [reply] Very well, comrade Burlak. If you think you can rid us of that Yankee sore, take a couple of soldiers and attack it! And I hope that you are right. (Objective Change 3)
+
+// Dialogue 25c (return to charting)
+$ D25c-Pla-1
+- [no bw. or only Eastern bw. found] There are more Americans here comrade Gorky, I feel them everywhere. You will have to look a little harder.
+$ D25c-Pla-1a
+- [not all fog revealed] There are still some dark spots on the map, comrade Burlak. Take your vehicles and search there.
+
+// Dialogue 26 (event destination unreachable in upper left corner)
+$ D26-Bur-1
+- This slope is too steep for these vehicles. The wheels are losing grip.
+$ D26-Kov-1
+- [present] Yes, tracks would be better. If we had a way to build them.
+$ D26-Gny-1
+- [present] What can we do. We have to leave that area uncharted and explain this to comrade Kurin.
+$ D26-Bur-2
+- Forget about the vehicles. We can explore on foot. Get out. It's time for walkies.
+
+# M9a
+Out AttackAm
+#
+
+# M9b
+Out Chart
+#
+
+^ Main
+American fortification destroyed, all territory charted.
+
+| Burlak
+Burlak is dying.
+
+| SelfAttack
+You cannot attack Your commanders.
+
+* Initiative
++ Proper initiative showed
+- You were too reckless in your attack. (didn't ask for permission to attack)
+- You were to too careful.(asked for reinforcements)
+*
+
+* Belkov
++ Belkov saved
+- You left comrade Belkov to die
+- You failed to save comrade Belkov.
+*
+
+* NoLosses
++ No losses
+- You lost some of your men.
+*

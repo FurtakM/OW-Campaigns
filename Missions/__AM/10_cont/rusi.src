@@ -1,0 +1,1311 @@
+EXPORT nah;  
+EXPORT RUSI_AUTA;
+EXPORT PRU_ATTACK;
+
+EXPORT EMR;       // poradny utok protoze chce uz jenom vynalezat
+
+EXPORT stavec;
+
+VAR Rusi_k;
+
+VAR VOJUTOK;
+
+VAR vehicle;
+VAR zo;
+VAR i,pom,pom1;
+
+VAR Dbase;
+
+VAR staveci;
+
+VAR RA1;
+
+//budovy
+
+VAR R_depot;
+VAR R_mine;
+VAR R_sel;
+VAR R_factory;
+VAR R_turret1;
+VAR R_lab;
+VAR R_bunkr;
+VAR R_turret2;
+VAR R_turret3;
+VAR R_egun;
+VAR R_arm;
+VAR R_ecomp;
+VAR R_etra;
+VAR R_esib;
+VAR R_oel; // !!! siberitova 2
+
+VAR XYS;
+VAR UTOK;
+VAR atway;
+VAR pomnah;
+
+VAR nahodne_tanku;
+VAR vojaci;
+
+VAR bazmakro;     // makro na pohyb bazookeru
+
+// disable triggeru na zacatrku
+EVERY 0$0.1 DO
+begin
+  for i:=1 to 51 do disable(200+i);
+  for i in [299,298,297,296,295,289,288,255] do disable(i);
+  // 299   vylozeni a poslani pryc cargo aut
+  // 298   vlezeni doktoru do labu
+  // 297   vlezeni vojclu do baracku
+  // 296   zacatek nekonecneho vynalezani
+  // 295   nekonecny loop vynalezani
+  // 289   3. utok
+  // 288   bazookersky utok
+  // 255   nekonecny posledni utok
+  EMR=false;
+end;
+
+//ukonceni staveni budov
+On BuildingComplete(building) do
+begin
+  if building=R_depot then begin
+                             enable(203);
+                             enable(299);
+                           end;
+  if building=R_mine then enable(205);
+  if building=R_sel then enable(207);
+  if building=R_factory then enable(209);
+  if building=R_turret1 then enable(214);
+  if building=R_lab then enable(217);
+  if building=R_lab then enable(220);
+  if building=R_egun then enable(224);
+  if building=R_turret2 then enable(226);
+  if building=R_turret3 then enable(229);
+  if building=R_arm then begin
+                           enable(232);
+                           enable(297);  // poslani vojclu do barracku
+                         end;
+  if building=R_etra then enable(235);
+  if building=R_ecomp then enable(249);
+  if building=R_esib then begin enable(237); enable(241); end;
+  if building=R_oel then enable(239);
+// amici
+  if building=Ambase then begin
+                            Dial:=1;
+                            pojmenuj_epsilon(Ambase);
+                          end;
+  enable;
+
+end;
+
+
+// ukonceni upgrade
+On UpgradeComplete(building) do
+begin
+  if building=R_depot then enable(210);
+  if building=R_factory then enable(211); 
+  if building=R_lab then begin
+                           enable(222);
+                           enable(298);   // vlezeni doktoru do labu
+                         end;
+
+// amici
+  if building=Amsiblab then Dial=3;
+  enable;
+end;
+
+
+// vytvoreni ruskeho konvoje
+EVERY 4$0 DO                // prijde asi 4$0
+begin
+
+  case nah of
+   1,2:CreateDepositXY(150,80,mat_oil);
+   4:CreateDepositXY(91,109,mat_oil);
+   3:CreateDepositXY(43,71,mat_oil);
+  end;
+
+  wait(timerusi[difficulty]);
+
+// zona kde se placnou podle nahody
+  case nah of
+   1:zo=RE1;
+   2:zo=RE2;
+   3:zo=RE3;
+   4:zo=RE4;
+  end;
+
+ // placnuti rusaku
+  for i in CREATOVANI_RUSKEHO_KONVOJE_LIST do PlaceUnitArea(i,zo,false);
+
+  Rusi_k:=FilterUnitsInArea(zo,[[f_side,Rusi]]);
+
+  if nah<3 then ComAgressiveMove(Rusi_k,145,69);
+  if nah=3 then ComAgressiveMove(Rusi_k,52,81);
+  if nah=4 then ComAgressiveMove(Rusi_k,93,99);
+
+// zona pro zakldnu
+  if nah=1 then zo=RZ1;
+  if nah=2 then zo=RZ1;
+  if nah=3 then zo=RZ3;
+  if nah=4 then zo=RZ2;
+  enable(201);
+//  enable(240);
+  enable(248);
+  RUSI_AUTA:=1;
+end;
+
+
+// dojezd konvoje a zacatek stavby
+EVERY 0$4 TRIGGER FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_class,class_engineer]])>0 marked 201 do
+begin
+  staveci:=FilterAllUnits([[f_side,Rusi],[f_class,class_engineer]]);
+  SetXYS(nah,1);
+  AddComBuild(staveci,b_depot,XYS[1],XYS[2],XYS[3]);
+  enable(202);
+end;
+
+// osetreni staveni base
+EVERY 0$5 marked 202 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_depot]]);
+  if pom=0 then begin
+                  SetXYS(nah,1);
+                  AddComBuild(staveci,b_depot,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_depot=pom[1];
+                  rus_cheat_source(300,50,0);
+                  enable(107);
+                end;
+end;
+
+// pridani konzerv,ropy,sioberitu do base
+function rus_cheat_source(cans,oil,siberite);
+begin
+  if GetSide(R_depot) <> Rusi then
+       exit;
+
+  Dbase=GetBase(R_depot);
+  AddResourceType(Dbase,mat_cans,cans);
+  AddResourceType(Dbase,mat_oil,oil);
+  AddResourceType(Dbase,mat_siberit,siberite);
+end;
+
+
+// staveni oil minu
+EVERY 0$2 marked 203 do
+begin
+  SetXYS(nah,2);
+  AddComBuild(staveci,b_oil_mine,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(204);
+end;
+
+// osetreni staveni oil minu
+EVERY 0$5 marked 204 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_oil_mine]]);
+  if pom=0 then begin
+                  SetXYS(nah,2);
+                  AddComBuild(staveci,b_oil_mine,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_mine=pom[1];
+                end;
+end;
+
+// staveni sib el
+EVERY 0$2 marked 205 do
+begin
+  rus_cheat_source(50,0,50);
+  SetXYS(nah,3);
+  AddComBuild(staveci,b_siberite_power,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(206);
+end;
+
+// osetreni staveni sib el
+EVERY 0$5 marked 206 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_siberite_power]]);
+  if pom=0 then begin
+                  SetXYS(nah,3);
+                  ComBuild(staveci,b_siberite_power,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_sel=pom[1];
+                end;
+end;
+
+// staveni factory
+EVERY 0$2 marked 207 do
+begin
+  rus_cheat_source(50,0,0);
+  SetXYS(nah,4);
+  AddComBuild(staveci,b_workshop,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(208);
+end;
+
+// osetreni staveni factory
+EVERY 0$5 marked 208 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_workshop]]);
+  if pom=0 then begin
+                  SetXYS(nah,4);
+                  ComBuild(staveci,b_workshop,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_factory=pom[1];
+                end;
+end;
+
+
+// upgrade depotu
+EVERY 0$1 marked 209 do
+begin
+   rus_cheat_source(100,20,50);
+   AddComUpgrade(R_depot);
+   case nah of
+    1:AddComMoveXY(staveci,142,68);
+    2:AddComMoveXY(staveci,142,68);
+    3:AddComMoveXY(staveci,48,73);
+    4:AddComMoveXY(staveci,94,105);
+   end;
+end;
+
+// upgrade factory
+EVERY 0$1 marked 210 do
+begin
+   rus_cheat_source(100,20,50);
+   AddComUpgrade(R_factory);
+   case nah of
+    1:AddComMoveXY(staveci,158,85);
+    2:AddComMoveXY(staveci,158,85);
+    3:AddComMoveXY(staveci,44,79);
+    4:AddComMoveXY(staveci,99,98);
+   end;
+end;
+
+// staveni turret1
+EVERY 0$2 marked 211 do
+begin
+  rus_cheat_source(50,0,0);
+  SetXYS(nah,5);
+  AddComBuild(staveci,b_turret,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(212);
+  enable(213);
+end;
+
+// osetreni turret 1
+EVERY 0$5 marked 212 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_turret]]);
+  if pom=0 then begin
+                  SetXYS(nah,5);
+                  ComBuild(staveci,b_turret,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_turret1=pom[1];
+                end;
+end;
+
+// nastup mechaniku do factory
+EVERY 0$1 marked 213 DO
+VAR i;
+VAR zone;
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_class,class_mechanic]]);
+  AddComEnterUnit(pom,R_factory);
+  case nah of
+   1,2:zone=mecharea1;
+   3:zone=mecharea2;
+   4:zone=mecharea3;
+  end;
+  for i in MECHANICI_NAVIC do PlaceUnitArea(i,zone,false);
+  ComEnterUnit(MECHANICI_NAVIC,R_factory);
+end;
+
+// staveni laboratory
+EVERY 0$2 marked 214 do
+begin
+  rus_cheat_source(50,0,10);
+  SetXYS(nah,6);
+  AddComBuild(staveci,b_lab,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(215);
+  enable(216);
+end;
+
+// osetreni laboratory
+EVERY 0$5 marked 215 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_lab]]);
+  if pom=0 then begin
+                  SetXYS(nah,6);
+                  ComBuild(staveci,b_lab,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_lab=pom[1];
+                end;
+end;
+
+// Machinegun na turret 1
+EVERY 0$1 marked 216 DO
+begin
+  AddComPlaceWeapon(R_turret1,zbrane_na_turrety1[difficulty]);
+end;
+
+// staveni bunkr
+EVERY 0$2 marked 217 do
+begin
+  rus_cheat_source(50,0,10);
+  SetXYS(nah,7);
+  AddComBuild(staveci,b_bunker,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(218);
+end;
+
+// osetreni bunkr
+EVERY 0$5 marked 218 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_bunker]]);
+  if pom=0 then begin
+                  SetXYS(nah,7);
+                  ComBuild(staveci,b_bunker,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_bunkr=pom[1];
+                  enable(219);
+                end;
+end;
+
+// vlezeni vojcla do bunkru + placunuti gunu
+EVERY 0$3 marked 219 DO
+begin
+  rus_cheat_source(20,0,10);
+  AddComPlaceWeapon(R_bunkr,zbrane_na_turrety2[difficulty]);
+end;
+
+
+// upgrade laboratory
+EVERY 0$3 marked 220 do
+begin
+  AddComUpgradeLab(R_lab,b_lab_spacetime);
+  AddComUpgradeLab(R_lab,b_lab_weapon);
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_type,unit_human]]);
+  if pom[1]<>staveci[1] then case nah of
+                              1:AddComMoveXY(pom[1],150,65);
+                              2:AddComMoveXY(pom[1],150,65);
+                              3:AddComMoveXY(pom[1],59,67);
+                              4:AddComMoveXY(pom[1],105,93);
+                             end
+                        else case nah of
+                              1:AddComMoveXY(pom[2],150,65);
+                              2:AddComMoveXY(pom[2],150,65);
+                              3:AddComMoveXY(pom[2],59,67);
+                              4:AddComMoveXY(pom[2],105,93);
+                             end;
+end;
+
+// vlezeni vojaka do bunkru
+EVERY 0$1 marked 221 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_class,class_soldier]]);
+  AddComEnterUnit(pom[1],R_bunkr);
+  enable(222);
+end;
+
+// staveni gun ext
+EVERY 0$2 marked 222 do
+begin
+  SetXYS(nah,8);
+  AddComBuild(staveci[1],b_ext_gun,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(223);
+end;
+
+// osetreni gun ext
+EVERY 0$5 marked 223 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_ext_gun]]);
+  if pom=0 then begin
+                  SetXYS(nah,8);
+                  AddComBuild(staveci[1],b_ext_gun,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else begin
+                  R_egun=pom[1];
+                end;
+end;
+
+// staveni turret 2
+EVERY 0$2 marked 224 do
+begin
+  SetXYS(nah,9);
+  AddComBuild(staveci[1],b_turret,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(225);
+end;
+
+// osetreni turret 2
+EVERY 0$5 marked 225 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_turret]]);
+  if (pom=0) or (pom=1 and pom[1]=R_turret1)
+    then begin
+           SetXYS(nah,9);
+           AddComBuild(staveci[1],b_turret,XYS[1],XYS[2],XYS[3]);
+           enable;
+         end
+    else begin
+           if pom=1 then R_turret2=pom[1]
+                    else if pom[1]=R_turret1 then R_turret2=pom[2]
+                                             else R_turret2=pom[1];
+         end;
+end;
+
+// placnuti gunu na turret
+EVERY 0$1 marked 226 DO
+begin
+  AddComPlaceWeapon(R_turret2,zbrane_na_turrety3[difficulty]);
+  enable(227);
+  enable(221);
+end;
+
+// staveni turret 3
+EVERY 0$2 marked 227 do
+begin
+  SetXYS(nah,10);
+  AddComBuild(staveci[1],b_turret,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(228);
+end;
+
+// osetreni turret 3
+EVERY 0$5 marked 228 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_turret]]);
+  if (pom=0) or (pom=1 and pom[1]=R_turret1) or (pom=1 and pom[1]=R_turret2) or (pom=2 and ((pom[1]=R_turret1 and pom[2]=R_turret2) or (pom[1]=R_turret2 and pom[2]=R_turret1)))
+    then begin
+           SetXYS(nah,10);
+           AddComBuild(staveci[1],b_turret,XYS[1],XYS[2],XYS[3]);
+           enable;
+         end
+    else begin
+           if pom=1 then R_turret3=pom[1];
+           if pom=2 then if pom[1]=R_turret1 or pom[1]=R_turret2 then R_turret3=pom[2]
+                                                                 else R_turret3=pom[1];
+           if pom=3 then
+             begin
+               if pom[1]<>R_turret1 and pom[1]<>R_turret2 then R_turret3=pom[1]
+               else
+               if pom[2]<>R_turret1 and pom[2]<>R_turret2 then R_turret3=pom[2]
+               else
+                 R_turret3=pom[3];
+              end;
+         end;
+end;
+
+//zbran na turret3
+EVERY 0$1 marked 229 DO
+begin
+  AddComPlaceWeapon(R_turret3,zbrane_na_turrety3[difficulty]);
+  enable(230);
+end;
+
+// staveni armoury
+EVERY 0$1 marked 230 do
+begin
+  SetXYS(nah,11);
+  AddComBuild(staveci[1],b_armoury,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(231);
+end;
+
+// osetreni armoury
+EVERY 0$5 marked 231 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_armoury]]);
+  if pom=0 then begin
+                  SetXYS(nah,11);
+                  AddComBuild(staveci[1],b_armoury,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+    else R_arm=pom[1]
+end;
+
+// upgrade armoury
+EVERY 0$1 marked 232 DO
+begin
+  enable(233);
+end;
+
+// staveni truck ext
+EVERY 0$1 marked 233 do
+begin
+  SetXYS(nah,12);
+  AddComBuild(staveci[1],b_ext_track,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(234);
+end;
+
+// osetreni track ext
+EVERY 0$5 marked 234 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_ext_track]]);
+  if pom=0 then begin
+                  SetXYS(nah,12);
+                  ComBuild(staveci[1],b_ext_track,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+    else R_etra=pom[1];
+end;
+
+// staveni comput ext
+EVERY 0$1 marked 235 do
+begin
+  SetXYS(nah,13);
+  AddComBuild(staveci[1],b_ext_computer,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(236);
+end;
+
+// osetreni comp ext
+EVERY 0$5 marked 236 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_ext_computer]]);
+  if pom=0 then begin
+                  SetXYS(nah,13);
+                  AddComBuild(staveci[1],b_ext_computer,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+    else R_ecomp=pom[1];
+end;
+
+// staveni 2. siberite power
+EVERY 0$1 marked 237 do
+begin
+  SetXYS(nah,14);
+  AddComBuild(staveci[1],b_siberite_power,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(238);
+end;
+
+// osetreni 2. siberite power
+EVERY 0$5 marked 238 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_siberite_power]]);
+  if pom=0 then begin
+                  SetXYS(nah,14);
+                  AddComBuild(staveci[1],b_siberite_power,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+           else
+  if pom=1 and pom[1]=R_sel then begin
+                                   SetXYS(nah,14);
+                                   AddComBuild(staveci[1],b_siberite_power,XYS[1],XYS[2],XYS[3]);
+                                   enable;
+                                 end
+                             else
+  if pom[1]=R_sel then R_oel=pom[1]
+                  else R_oel=pom[2];
+end;
+
+// diasable inzenyru
+EVERY 0$1 marked 239 DO
+begin
+  disable(248);
+end;
+
+// funkce na zadani hodnot pro ruzne nahodne zakladny
+function SetXYS(um,b);
+begin
+  if um=2 then um=1;
+  case b of
+   1:case um of            // depot
+      1:XYS=[137,65,2];
+      4:XYS=[97,112,0];
+      3:XYS=[48,73,3];
+     end;
+   2:case um of            // oil mine
+      1:XYS=[150,80,3];
+      4:XYS=[91,109,3];
+      3:XYS=[43,71,2];
+     end;
+   3:case um of            // sib elelkr
+      1:XYS=[140,63,3];
+      4:XYS=[105,112,4];
+      3:XYS=[37,70,2];
+     end;             
+   4:case um of            // faktory
+      1:XYS=[160,90,5];
+      4:XYS=[99,94,3];
+      3:XYS=[44,79,1];
+     end;
+   5:case um of            // turret 1
+      1:XYS=[133,72,4];
+      4:XYS=[86,84,2];
+      3:XYS=[75,90,2];
+     end;
+   6:case um of            // laboratory
+      1:XYS=[152,71,4];
+      4:XYS=[103,106,5];
+      3:XYS=[50,90,3];
+     end;
+   7:case um of            // bunkr
+      1:XYS=[143,56,2];
+      4:XYS=[105,93,2];
+      3:XYS=[59,67,2];
+     end;
+   8:case um of            // gun extension
+      1:XYS=[160,93,0];
+      4:XYS=[102,94,4];
+      3:XYS=[41,76,2];
+     end;
+   9:case um of            // turet 2
+      1:XYS=[140,74,3];
+      4:XYS=[93,85,2];
+      3:XYS=[60,93,2];
+     end;
+   10:case um of            // turret 3
+       1:XYS=[157,98,5];
+       4:XYS=[85,96,2];
+       3:XYS=[63,87,2];
+      end;
+   11:case um of            // armoury
+       1:XYS=[144,61,2];
+       4:XYS=[102,113,0];
+       3:XYS=[55,88,0];
+      end;
+   12:case um of            // track ext
+       1:XYS=[164,94,5];
+       4:XYS=[96,91,2];
+       3:XYS=[44,82,0];
+      end;
+   13:case um of            // computer extension 
+       1:XYS=[156,90,1];
+       4:XYS=[95,94,1];
+       3:XYS=[44,75,3];
+      end;
+   14:case um of            // oil power
+       1:XYS=[152,84,0];
+       4:XYS=[106,116,2];
+       3:XYS=[52,75,1];
+      end;
+   15:case um of            // siberite extension
+       1:XYS=[160,86,3];
+       4:XYS=[99,90,3];
+       3:XYS=[48,83,5];
+      end;
+ end;
+end;
+
+{
+#1
+#base 137,65,2
+#fac  160 90 5
+#sibel 140 63 3
+#lab 152,71 4
+#armoury 144 61 2
+#dril 150 80 3
+#oil el 151 84 0
+#bunker machine gun 143 56 2
+#turret heavy gun 140 74 3
+##turret heavy mg 133 72 2
+#turret gun 158 97 2
+#computer extension 156 90 1
+#gun ext 160 93 0
+#track ext 164 94 5
+
+#3
+
+BASE       97,112,0
+tovarna    99,94,3
+sib el     105,112,4
+turret1    86,84,2
+tur 2           85,96,2
+tur 3           93,85,2         gun
+bunkr           105,93,2
+lab             103,106,5
+oil             91,109,3
+oil power       106,116,2
+armoury         102,113,0
+comp ext        95,94,1
+gun ext         102,94,4
+track ext       96,91,2
+
+
+
+#4
+
+BASE            48,73,3
+tovarna         44,79,1
+sib el          37,70,2
+turret1         74,89,2
+tur 2           63,87,2
+tur 3           60,93,2         gun
+bunkr           59,67,2
+lab             49,89,3
+oil             43,71,2
+oil power       52,75,1
+armoury         55,88,0
+comp ext        44,75,3
+gun ext         41,76,2
+track ext       44,82,0
+
+}
+
+// poslani prazdnych aut s cargem odjezd
+EVERY 0$3 TRIGGER RUSI_AUTA=1 marked 299 DO
+VAR pom1;
+begin
+  pom=FilterAllUnits([[f_side,Rusi],[f_and],[f_weapon,ru_cargo_bay]]);
+  if pom=0
+    then RUSI_AUTA=0
+    else
+      begin
+        for i in pom do
+          if not Carry(i)
+            then begin
+                   ComMoveXY(i,144,118);
+                   AddComMoveXY(i,143,116);
+                 end
+            else begin
+                   ComMoveXY(i,GetX(R_depot),GetY(R_depot));
+                   wait(0$2);
+                   pom1=FilterAllUnits([[f_side,Rusi],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+                   if pom1>0 then
+                               begin
+                                 pom1=pom1[1];
+                                 AddResourceType(GetBase(pom1),mat_siberit,GetCargo(i,mat_siberit));
+                                 AddResourceType(GetBase(pom1),mat_oil,GetCargo(i,mat_oil));
+                                 SetCargo(i,mat_siberit,0);
+                                 SetCargo(i,mat_oil,0);
+                               end;
+                 end;
+        enable;
+      end;                     
+end;
+
+// remove prazdnych aut s cargem
+EVERY 0$5 TRIGGER RUSI_AUTA=1 DO
+begin
+  pom=FilterUnitsInArea(Seber,[[f_side,Rusi],[f_and],[f_weapon,ru_cargo_bay]]);
+  if pom>0 then
+    begin
+      for i in pom do if not Carry(i) then RemoveUnit(i);
+    end;
+  enable;
+end;
+
+// stavba 3. utoku
+EVERY 0$17 marked 241 DO
+begin
+  wait(wait2[difficulty]);
+
+  if GetSide(R_factory) <> Rusi then
+       exit;
+
+  rus_cheat_source(200,50,50);
+  for i:= 1 to pocaut[difficulty] do
+    begin
+      AddComConstruct(R_factory,ru_heavy_tracked,engine_siberite,control_computer,zbranrusi[difficulty]);
+    end;
+  AddComConstruct(R_factory,ru_heavy_tracked,engine_combustion,control_computer,ru_heavy_gun);
+  enable(242);
+end;
+
+// 3. utok
+EVERY 0$5 TRIGGER FilterAllUnits([[f_side,Rusi],[f_and],[f_control,control_computer]])=pocaut[difficulty]+1 marked 242 DO
+begin
+  UTOK:=FilterAllUnits([[f_side,Rusi],[f_and],[f_control,control_computer]]);
+  atway:=GetAttackWay;
+  for i in atway do AddComAgressiveMove(UTOK,i[1],i[2]);
+  pom=FilterAllUnits([[f_side,You],[f_and],[f_type,unit_building]]);
+  if pom>0 then AddComAgressiveMove(UTOK,GetX(pom[1]),GetY(pom[1]));
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+  if pom>0 then begin
+                  AddComAttackUnit(UTOK,pom[1]);
+                  AddComAgressiveMove(UTOK,GetX(JMM),GetY(JMM));
+                  AddComAttackUnit(UTOK,JMM);
+                end;
+  Dial:=4;
+  PRU_ATTACK=3;
+end;
+
+// vylosovani trasy momentalniho utoku
+function GetAttackWay;
+begin
+  pomnah:=Rand(1,4);
+  case nah of
+   1,2:case pomnah of
+        1:pom=[[123,83],[95,102],[72,99],[56,78],[66,55],[81,49],[92,47],[101,47],[106,37]];
+        2:pom=[[123,83],[95,102],[78,61],[78,49],[90,46],[103,45],[108,35]];
+        3,4:pom=[[146,65],[137,42],[127,21],[112,16],[106,25]];
+      end;
+   3:case pomnah of
+      1:pom=[[71,102],[57,81],[66,67],[66,55],[81,49],[92,47],[101,47],[106,37]];
+      2:pom=[[78,61],[78,49],[90,46],[103,45],[108,35]];
+      3:pom=[[121,82],[143,67],[143,69],[122,66],[116,52],[107,35]];
+      4:pom=[[121,82],[143,67],[146,65],[137,42],[127,21],[112,16],[106,25]];
+     end;
+   4:case pomnah of
+      1:pom=[[66,55],[81,49],[92,47],[101,47],[106,37]];
+      2:pom=[[70,99],[97,94],[78,61],[78,49],[90,46],[103,45],[108,35]];
+      3:pom=[[74,99],[107,95],[126,79],[142,73],[144,68],[122,66],[116,52],[107,35]];
+      4:pom=[[74,99],[107,95],[126,79],[142,73],[144,68],[146,65],[137,42],[127,21],[112,16],[106,25]];
+    end;
+  end;
+  result:=pom;
+end;
+
+// umozneni dalsich utoku
+EVERY 0$1 DO
+VAR zona;
+begin
+  case nah of
+   1,2:zona=RZ1;
+   3:zona=RZ2;
+   4:zona=RZ3;
+  end;
+  if FilterUnitsInArea(zona,[[f_side,Rusi],[f_control,control_computer]])>1
+    then begin
+           wait(0$45);
+           enable(244);
+         end
+    else enable;
+end;
+
+// dalsi ruske utoky priprava
+EVERY 1$0 marked 244 DO
+begin
+  wait(Rand(1,kutoku[difficulty]));
+
+  if GetSide(R_factory) <> Rusi then
+       exit;
+
+  rus_cheat_source(300,150,70);
+  if Prob(50) then nahodne_tanku:=Rand(0,ntanku[difficulty])
+              else nahodne_tanku:=0;
+  if Prob(33) then vojaci:=true
+              else vojaci=false;
+  for i:=1 to pocaut[difficulty]+nahodne_tanku do
+    begin
+      AddComConstruct(R_factory,ru_heavy_tracked,engine_siberite,control_computer,zbranrusi[difficulty]);
+    end;
+  enable(245);
+  disable_me(244);
+  enable;
+end;
+
+// utoky - vlastni utok
+EVERY 0$5 TRIGGER FilterAllUnits([[f_side,Rusi],[f_and],[f_control,control_computer]])=pocaut[difficulty]+nahodne_tanku marked 245 DO
+begin
+  UTOK:=FilterAllUnits([[f_side,Rusi],[f_and],[f_control,control_computer]]);
+  atway:=GetAttackWay;
+  for i in atway do AddComAgressiveMove(UTOK,i[1],i[2]);
+  pom=FilterAllUnits([[f_side,You],[f_and],[f_type,unit_building]]);
+  if pom>0 then AddComAgressiveMove(UTOK,GetX(pom[1]),GetY(pom[1]));
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+  if pom>0 then begin
+                  AddComAttackUnit(UTOK,pom[1]);
+                  AddComAgressiveMove(UTOK,GetX(JMM),GetY(JMM));
+                  AddComAttackUnit(UTOK,JMM);
+                end;
+  disable_me(245);
+  enable(246);
+  enable(247);
+  PRU_ATTACK:=PRU_ATTACK+1;
+  enable;
+end;
+
+// zjistuje, jestli se jeste bojuje a pripadne zacne novy odpocet utoku
+EVERY 0$6 marked 246 DO
+begin
+  if FilterAllUnits([[f_side,Rusi],[f_and],[f_control,control_computer]])=0
+    then begin
+           enable(244);
+           disable_me(246);
+         end;
+  enable;
+end;
+
+// disablne za urcitou dobu dany trigger
+function disable_me(ct);
+begin
+  wait(0$1);
+  disable(ct);
+end;
+
+// vojaci v utoku
+EVERY 0$3 marked 247 DO
+VAR i;
+begin
+  if vojaci then
+    begin
+      for i in CREATE_VOJACI_LIST do PlaceUnitArea(i,RUEV,false);
+      VOJUTOK=FilterUnitsInArea(RUEV,[[f_side,Rusi]]);
+      AddComAgressiveMove(VOJUTOK,122,40);
+      for i in VOJUTOK DO
+        begin
+          AddComSpaceShift(i,109,40);
+          AddComSailEvent(i,666);
+          AddComTimeShift(i,107,41);
+          AddComSailEvent(i,666);
+          AddComSpaceShift(i,110,30);
+          AddComSailEvent(i,666);
+          wait(0$2);
+          bazookaDialog = 1;
+        end;
+      pom=FilterAllUnits([[f_side,You],[f_and],[f_type,unit_building]]);
+      if pom>0 then for i in VOJUTOK do
+                      begin
+                        AddComSpaceShift(i,GetX(pom[1]),GetY(pom[1]));
+                        AddComSailEvent(i,666);
+                      end;
+      pom=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+      if pom>0 then begin
+                      AddComAttackUnit(UTOK,pom[1]);
+                      AddComAgressiveMove(UTOK,GetX(JMM),GetY(JMM));
+                      AddComAttackUnit(UTOK,JMM);
+                    end;
+    end;
+  disable_me(247);
+  enable;
+end;
+
+// pridani inzenyra, pokud jsou vsichni dead
+EVERY 0$10 marked 248 DO
+begin
+  if R_depot > 0 then
+       if GetSide(R_depot) <> Rusi then
+            exit;
+
+  pom=FilterAllUnits([[f_side,Rusi],[f_and],[f_class,class_engineer]]);
+  if pom=0 then
+    begin
+      radzio=radzio+1;
+      create_engineer;
+      pom=FilterAllUnits([[f_side,Rusi],[f_and],[f_class,class_engineer]]);
+      case nah of
+       1,2:ComAgressiveMove(pom,145,69);
+       3:ComAgressiveMove(pom,52,81);
+       4:ComAgressiveMove(pom,93,99);
+      end;
+    end;
+  enable;
+end;
+
+//Radziowa poprawka xD
+every 0$01 trigger radzio>=20 do
+begin
+disable(248);
+end;
+
+// staveni siberite ext
+EVERY 0$1 marked 249 do
+begin
+  SetXYS(nah,15);
+  AddComBuild(staveci[1],b_ext_siberium,XYS[1],XYS[2],XYS[3]);
+  wait(0$5);
+  enable(250);
+end;
+
+// osetreni siberite ext
+EVERY 0$5 marked 250 DO
+begin
+  pom=FilterUnitsInArea(zo,[[f_side,Rusi],[f_and],[f_btype,b_ext_siberium]]);
+  if pom=0 then begin
+                  SetXYS(nah,15);
+                  AddComBuild(staveci[1],b_ext_computer,XYS[1],XYS[2],XYS[3]);
+                  enable;
+                end
+    else R_esib=pom[1];
+end;
+
+// utok na dalsi budovu, kdyz jsou v zakladne
+EVERY 0$9 DO
+begin
+  pom=FilterUnitsInArea(Base2,[[f_side,Rusi]]);
+  for i in pom do if IsIdle(i) then
+                                 begin
+                                   pom1=FilterAllUnits([[f_side,You]]);
+                                   ComAttackUnit(i,pom1[1]);
+                                 end;
+  enable;
+end;
+
+// utok na unit, kdyz jsou idle
+EVERY 0$6 DO
+begin
+  pom=FilterUnitsInArea(Base2,[[f_side,Rusi],[f_and],[f_control,control_computer]]);
+  pom1=FilterAllUnits([[f_side,You]]);
+  for i in pom do if IsIdle(i) then ComAttackUnit(i,pom1[Rand(1,pom1)]);
+  enable;
+end;
+
+// utok po ukonceni vyzkumu !!
+EVERY 0$34 TRIGGER EMR DO
+VAR pom;
+begin
+  for i in RUSSIAN_AFTER_END_ATTACK_LIST1 do PlaceUnitArea(i,EnterAM,false);
+  McMove(1,RUSSIAN_AFTER_END_ATTACK_LIST1,[[43,48],[69,49],[92,43],[105,37]],[mc_move_waitwp,mc_move_agressive,mc_move_dontcapture]);
+  wait(timerusi[difficulty]);
+  for i in RUSSIAN_AFTER_END_ATTACK_LIST2 do
+    if nah<>4 then PlaceUnitArea(i,RE2,false)
+              else PlaceUnitArea(i,REME,false);
+  if nah<>4 then McMove(1,RUSSIAN_AFTER_END_ATTACK_LIST2,[[95,93],[80,64],[77,45],[92,42],[104,33]],[[mc_move_waitwp,mc_move_agressive,mc_move_dontcapture]])
+            else McMove(1,RUSSIAN_AFTER_END_ATTACK_LIST2,[[59,86],[92,96],[83,71],[77,43],[93,43],[95,41],[108,31],[99,26]],[]);
+  wait(2$0);
+  wait(wait2[difficulty]);
+  pom=FilterAllUnits([[f_side,Rusi],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  if pom>0 then McMove(1,pom,[[120,93],[108,39]],[mc_move_waitwp,mc_move_agressive]);
+  wait(total_final[difficulty]);
+  for i in RUSSIAN_AFTER_END_ATTACK_LIST_FINAL do
+    if nah<>4 then PlaceUnitArea(i,RE2,false)
+              else PlaceUnitArea(i,REME,false);
+  if nah<>4 then McMove(1,RUSSIAN_AFTER_END_ATTACK_LIST_FINAL,[[95,93],[80,64],[77,45],[92,42],[104,33]],[[mc_move_waitwp,mc_move_agressive,mc_move_dontcapture]])
+            else McMove(1,RUSSIAN_AFTER_END_ATTACK_LIST_FINAL,[[59,86],[92,96],[83,71],[77,43],[93,43],[95,41],[108,31],[99,26]],[]);
+  enable(255);
+end;
+
+// nekonecne utoceni posledniho utoku
+EVERY 0$5 marked 255 DO
+VAR i;
+VAR AT;
+begin
+  wait(total_final[difficulty]);
+  AT=C_N_A;
+  for i in AT do
+    if nah<>4 then PlaceUnitArea(i,RE2,false)
+              else PlaceUnitArea(i,REME,false);
+  if nah<>4 then McMove(1,AT,[[95,93],[80,64],[77,45],[92,42],[104,33]],[[mc_move_waitwp,mc_move_agressive,mc_move_dontcapture]])
+            else McMove(1,AT,[[59,86],[92,96],[83,71],[77,43],[93,43],[95,41],[108,31],[99,26]],[mc_move_agressive]);
+  wait(3$0);
+  enable;
+end;
+
+// jeslti se spontalne teleportoval
+On SpontaneousTeleported(un) do
+begin
+  uvidel_spontalni_teleportaci;
+  disable;
+end;
+
+// poslani rskych bazukeru do akce
+EXPORT function posli_ruske_bazukery;
+VAR baz;
+VAR i;
+begin
+  baz=create_ruske_bazukery;
+  for i in baz do PlaceUnitArea(i,ABaz,false);
+  ComAgressiveMove(baz,118,40);
+end;
+
+// strileni rusu 2 z bazook
+EVERY 0$2 TRIGGER FilterUnitsInArea(BAZUTOK,[[f_or,[f_side,Rusi2],[f_side,Rusi]],[f_class,class_bazooker]])>0 do
+VAR pom,pom1;
+VAR i;
+VAR cile,cil;
+begin
+  pom1=FilterUnitsInArea(BAZUTOK,[[f_or,[f_side,Rusi2],[f_side,Rusi]],[f_class,class_bazooker]]);
+  pom=[];
+  for i in pom1 do if Attacks(i) then pom=pom^i;
+  for i in pom do if Prob(75) then
+                    begin
+                      debug_strings=['specialni bazookersky utok'];
+                      msg('specialni bazookersky utok');
+                      cile=FilterUnitsInArea(Base2,[[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+                      if cile=0 then exit
+                                else cil=[cile[Rand(1,cile+0)],NearestUnitToUnit(cile,i)] [Rand(1,2)];
+                      case Rand(1,2) of
+                       1:begin
+                           ComSpaceShift(i,GetX(cil),GetY(cil));
+                           AddComSailEvent(i,666);
+                         end;
+                       2:begin
+                           ComTimeShift(i,GetX(cil),GetY(cil));
+                           AddComSailEvent(i,666);
+                         end;
+                      end;
+                    end;
+  enable;
+end;
+
+// vlezeni vsech doktoru do laboratore
+EVERY 0$7 marked 298 DO
+VAR pomdoktori;
+begin
+  pomdoktori=FilterUnitsInArea(zo,[[f_side,Rusi],[f_class,class_scientistic]]);
+  ComEnterUnit(pomdoktori,R_lab);
+  enable(296);    // vynalezani v labu
+end;
+
+// vlezeni vsech doktoru do laboratore
+EVERY 0$19 marked 297 DO
+VAR pomvojcli;
+begin
+  pomvojcli=FilterUnitsInArea(zo,[[f_side,Rusi],[f_or,[f_class,class_soldier],[f_class,class_bazooker]]]);
+  ComEnterUnit(pomvojcli,R_arm);
+end;
+
+// nekonecne vynalezani v labu
+EVERY 0$3 marked 296 DO
+begin
+  if GetSide(R_lab) <> Rusi then
+       exit;
+
+  SetTech(tech_Tech3,Rusi,state_enabled);
+  SetTechProgress(tech_Tech3,Rusi,0);
+  ComResearch(R_lab,tech_Tech3);
+  enable(295);                  // nekonecne vynalezanui start
+end;
+
+// vynalezani
+EVERY 0$5 TRIGGER GetTech(tech_Tech3,Rusi)=state_researched marked 295 DO
+begin
+  if GetSide(R_lab) <> Rusi then
+       exit;
+
+  SetTech(tech_Tech3,Rusi,state_enabled);
+  SetTechProgress(tech_Tech3,Rusi,0);
+  ComResearch(R_lab,tech_Tech3);
+  enable;
+end;
+
+// utoky
+// nulty utok
+EVERY 0$1 DO
+VAR i,pom;
+VAR BASE_cesta;
+begin
+  while not dialog_u_zakladny_probehl do wait(0$3);
+  wait(cas_na_cekani_pred_nultym_utokem[difficulty]);
+  for i in RUSKY_UTOK_0_LIST do PlaceUnitArea(i,Rutok0,false);
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom>0 then BASE_cesta=[GetX(pom[1]),GetY(pom[1])]
+           else BASE_cesta=[60,8];
+  McMove(1,RUSKY_UTOK_0_LIST,[[65,66],[89,70],[111,78],[115,67],[120,62],[110,41],BASE],[mc_move_agressive,mc_move_dontcapture,mc_move_waitwp]);
+  enable(240);    // povoleni na zautoceni 1. ruskeho utoku
+  zpracuj_ruske_utoceni(RUSKY_UTOK_0_LIST);
+end;
+
+// prvni rusky utok
+EVERY 1$0 marked 240 DO
+VAR sourad;
+VAR baz;
+VAR BASE_cesta;
+begin
+  wait(farusi[difficulty]);
+  for i in CREATE_RUSKY_ATTACK1_LIST do PlaceUnitArea(i,RE3,false);
+  RA1:=FilterUnitsInArea(RE3,[[f_side,Rusi]]);
+  if IsOK(Ambase) then sourad=[GetX(Ambase),GetY(Ambase)]
+                  else sourad=[99,30];
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom>0 then BASE_cesta=[GetX(pom[1]),GetY(pom[1])]
+           else BASE_cesta=[60,8];
+  McMove(1,RA1,[[95,98],[77,54],[85,45],[93,45],[106,42],sourad,BASE_cesta],[mc_move_dontcapture,mc_move_agressive]);
+  wait(wait_spec_baz[difficulty]);
+  posli_ruske_bazukery;
+  enable(251);  // 2. rusky utok umoznen
+  zpracuj_ruske_utoceni(CREATE_RUSKY_ATTACK1_LIST);
+  PRU_ATTACK=1;
+end;
+
+// 2. rusky utok
+EVERY 1$30 TRIGGER PRU_ATTACK=1 marked 251 DO
+VAR sourad;
+VAR BASE_cesta;
+begin
+  wait(wait2new[difficulty]);
+  for i in CREATE_2_NEW_ATTACK_LIST do
+  begin
+    if not IsInUnit(i) then
+      PlaceUnitArea(i,EnterAM,false);
+  end;
+  UTOK=FilterUnitsInArea(EnterAM,[[f_side,Rusi]]);
+  pom=FilterAllUnits([[f_side,You],[f_and],[f_type,unit_building]]);
+  if pom>0 then sourad=[GetX(pom[1]),GetY(pom[1])]
+           else sourad=[98,26];
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom>0 then BASE_cesta=[GetX(pom[1]),GetY(pom[1])]
+           else BASE_cesta=[70,48];
+  McMove(1,UTOK,[[52,51],[80,46],[99,48],sourad,BASE_cesta],[mc_move_dontcapture,mc_move_agressive]);
+  PRU_Attack=2;
+  enable(289); // 3. novy pomocny utok
+  zpracuj_ruske_utoceni(CREATE_2_NEW_ATTACK_LIST);
+end;
+
+// 3. rusky utok
+EVERY 0$10 marked 289 DO
+VAR BASE_cesta;
+begin
+  wait(wait3new[difficulty]);
+  for i in CREATE_3_NEW_ATTACK_LIST do PlaceUnitArea(i,EnterAM,false);
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom>0 then BASE_cesta=[GetX(pom[1]),GetY(pom[1])]
+           else BASE_cesta=[60,8];
+  McMove(1,CREATE_3_NEW_ATTACK_LIST,[[56,51],[81,44],[100,29],BASE_cesta],[mc_move_agressive,mc_move_dontcapture,mc_move_waitwp]);
+  PRU_Attack=3;
+  enable(288);  // bazookersky utok
+  zpracuj_ruske_utoceni(CREATE_3_NEW_ATTACK_LIST);
+end;
+
+// bazookersky utok
+EVERY 0$17 TRIGGER PRU_Attack=3 marked 288 DO
+VAR BASE_cesta;
+begin
+  wait(wait_bazooka_attack[difficulty]);
+  for i in CREATE_BAZOOKA_ATTACK_LIST do PlaceUnitArea(i,RE2,false);
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pom>0 then BASE_cesta=[GetX(pom[1]),GetY(pom[1])]
+           else BASE_cesta=[63,6];
+  bazmakro=McMove(1,CREATE_BAZOOKA_ATTACK_LIST,[[92,93],[121,91],[126,76]],[mc_move_agressive,mc_move_dontcapture,mc_move_waitwp]);
+  PRU_Attack=4;
+end;
+
+// kill macra na pohyb bazookeru + vlastni attack
+EVERY 0$1 TRIGGER PRU_Attack=4 and FilterUnitsInArea(bazooka_attack_test,[[f_side,Rusi],[f_class,class_bazooker]])>1 DO
+begin
+  KillMc(bazmakro);
+  ComAgressiveMove(CREATE_BAZOOKA_ATTACK_LIST,129,70);
+  AddComAgressiveMove(CREATE_BAZOOKA_ATTACK_LIST,126,52);
+  AddComAgressiveMove(CREATE_BAZOOKA_ATTACK_LIST,110,36);
+end;
+
+// zpracovani dalsiho utoku po skonceni
+function zpracuj_ruske_utoceni(jedn);
+VAR j,pomj;
+VAR i,pom;
+VAR AIJ;
+begin
+   j=jedn;
+   while j<>0 do
+     begin
+       AIJ=[];
+       for i in j do if IsIdle(i) then AIJ=AIJ^i;
+
+       pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+       if pom>0 then begin
+                       ComAgressiveMove(AIJ,GetX(pom[1]),GetY(pom[1]));
+                       AddComAttackUnit(AIJ,pom[1]);
+                       AddComAgressiveMove(AIJ,GetX(JMM),GetY(JMM));
+                       AddComAttackUnit(AIJ,JMM);
+                     end;
+
+       pomj=j;
+       for i in j do if not IsOK(i) then pomj=pomj diff i;
+       j=pomj;
+
+       wait(0$1);
+     end;
+end;

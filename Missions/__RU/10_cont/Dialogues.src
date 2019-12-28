@@ -1,0 +1,462 @@
+export first_apeman_exploded;
+export first_mine_exploded;
+
+export Heike_group;
+
+export artefact_found,
+       gossudarov_freed;
+
+// inicializace dialogoveho systemu
+export function init_dialogues;
+begin
+  first_apeman_exploded:=false;
+  first_mine_exploded:=false;
+  artefact_found:=false;    
+  gossudarov_freed:=false;
+  CenterNowOnUnits(IsInUnit(Burlak));
+  SaveForQuickRestart;
+  wait(0$1);
+  ChangeMissionObjectives('MStart');
+end;
+
+// definovani zijicisch ruskych molodcu
+function define_company(all_company);
+var un,
+    company;                 // seznam Burlakovych spolubojovniku, co jsou jeste nazivu a schopni kecani
+begin
+  company:=[];
+  for un in all_company do
+    if IsOK(un) then
+      company:=company ^ un;
+  result:=company;
+end;
+
+//-------------------//
+//-----  MINES  -----//
+// Dialogue Mines (when first mines explode)
+every 0$1 trigger first_mine_exploded do
+var healty;
+begin
+  CenterOnXY(mine_xy[1],mine_xy[2]);
+  wait(0$2);
+  healty:=define_company([Belkov,Titov,Petrovova]);
+  DialogueOn;
+  interface_hidden:=true;
+  if healty then
+            case healty[Rand(1,0+healty)] of
+     Belkov: Say(Belkov,'DMines-Bel-1');
+      Titov: Say(Titov,'DMines-Tit-1');
+  Petrovova: Say(Petrovova,'DMines-Ptr-1');
+            end;
+  Say(Burlak,'DMines-Bur-1');
+  if Vsevolod then                 
+    Say(Burlak,'DMines-Bur-1a')
+  else
+    Say(Burlak,'DMines-Bur-1b');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+//----------------------//
+//-----  KAMIKAZE  -----//
+// fuction checking if your side saw kamikaze unit
+function see_kamikaze;
+var un,saw;
+begin
+  saw:=FilterAllUnits([ [f_class,class_apeman] ]);
+  if saw then
+    result:=true
+  else
+    result:=false;
+end;
+
+// Dialogue Kamikaze (after first Apeman kamikaze attack)
+every 0$1 trigger first_apeman_exploded do  // mzona se pohrat s attitudes
+var healty;
+begin
+  repeat
+    wait(0$1);
+  until not see_kamikaze;
+
+  wait(0$2);
+  healty:=define_company([Belkov,Gnyevko,Lipshchin]);
+  DialogueOn;
+  interface_hidden:=true;
+  if healty then
+            case healty[Rand(1,0+healty)] of
+     Belkov: Say(Belkov,'DKamikaze-Bel-1');
+    Gnyevko: Say(Gnyevko,'DKamikaze-Gny-1');
+  Lipshchin: Say(Lipshchin,'DKamikaze-Lip-1');
+            end;
+  Say(Burlak,'DKamikaze-Bur-1');
+  interface_hidden:=false;
+  DialogueOff;
+  SetAttitude(you,nature,att_enemy,true);
+end;
+
+
+//---------------------------//
+//-----  FLAMETHROWERS  -----//
+function see_flamers;
+var un,saw,vysledek;
+begin
+  saw:=FilterAllUnits([ [f_see,you], [f_side,enemy], [f_weapon,ar_flame_thrower] ]);
+  if saw then
+    vysledek:=true
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+// Dialogue Flame (after first flamethrower attack)
+every 0$1 trigger see_flamers do
+var healty;
+begin
+  repeat                   // cekam dokud vsichni flameri nezmizi, nebo pokud sem nejakeho dostal, pak dokud
+    wait(0$2);             // nezabiju ridice
+  until not FilterAllUnits([ [f_see,you], [f_side,enemy], [f_ok] ]);
+
+  wait(0$2);
+  healty:=define_company([Petrovova,Karamazov,Oblukov]);
+  DialogueOn;
+  interface_hidden:=true;
+  if healty then
+    begin
+            case healty[Rand(1,0+healty)] of
+  Petrovova: Say(Petrovova,'DFlame-Ptr-1');
+  Karamazov: Say(Karamazov,'DFlame-Kar-1');
+    Oblukov: Say(Oblukov,'DFlame-Obl-1');
+            end;
+      Say(Burlak,'DFlame-Bur-1');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+//------------------------//
+//-----  HOVERCRAFT  -----//
+function see_hovers;
+var un,saw,vysledek;
+begin
+  saw:=FilterAllUnits([ [f_see,you], [f_side,enemy], [f_chassis,ar_hovercraft] ]);
+  if saw then
+    vysledek:=true
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+// Dialogue Hover (after first hovercraft attack)
+every 0$1 trigger see_hovers do
+var healty;
+begin
+  repeat                   // cekam dokud neni v mem okoli klid
+    wait(0$2);             
+  until not FilterAllUnits([ [f_see,you], [f_side,enemy], [f_ok] ]);
+
+  wait(0$2);
+  healty:=define_company([Titov,Gnyevko,Oblukov]);
+  DialogueOn;
+  interface_hidden:=true;
+  if healty then
+    begin
+          case healty[Rand(1,0+healty)] of
+    Titov: Say(Titov,'DHover-Tit-1');
+  Gnyevko: Say(Gnyevko,'DHover-Gny-1');
+  Oblukov: Say(Oblukov,'DHover-Obl-1');
+          end;
+      Say(Burlak,'DHover-Bur-1');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+//--------------------//
+//-----  SNIPER  -----//
+function see_sniper;
+var un,saw,vysledek;
+begin
+  saw:=FilterAllUnits([ [f_see,you], [f_side,enemy], [f_class,class_sniper] ]);
+  if saw then
+    vysledek:=true
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+// Dialogue Sniper (after first sniper attack)
+every 0$1 trigger see_sniper do
+var healty,saw;
+begin
+  repeat
+    saw:=false;
+    repeat
+     wait(10);
+     if not saw then
+       saw:=see_sniper;
+    until not FilterAllUnits([ [f_see,you], [f_side,enemy], [f_type,unit_human], [f_ok] ]);
+  until not saw;
+
+  wait(0$2);
+  healty:=define_company([Belkov,Lipshchin,Karamazov]);
+  DialogueOn;
+  interface_hidden:=true;
+  if healty then
+    begin
+            case healty[Rand(1,0+healty)] of
+     Belkov: Say(Belkov,'DSniper-Bel-1');
+  Lipshchin: Say(Lipshchin,'DSniper-Lip-1');
+  Karamazov: Say(karamazov,'DSniper-Kar-1');
+            end;
+      Say(Burlak,'DSniper-Bur-1');
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+//-------------------//
+//-----  LASER  -----//
+function see_laser;
+var un,saw,vysledek;
+begin
+  saw:=FilterAllUnits([ [f_see,you], [f_side,enemy], [f_weapon,us_laser] ]);
+  if saw then
+    vysledek:=true
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+// Dialogue Laser (after first laser attack)
+every 0$1 trigger see_laser do
+var healty;
+begin
+  wait(0$2);
+  CenterOnUnits(FilterAllUnits([ [f_type,unit_vehicle], [f_weapon,us_laser] ]));
+  wait(0$1);
+  DialogueOn;
+  interface_hidden:=true;
+  healty:=define_company([Petrovova,Gnyevko,Titov]);
+  if healty then
+            case healty[Rand(1,0+healty)] of
+  Petrovova: Say(Petrovova,'DLaser-Ptr-1');
+    Gnyevko: Say(Gnyevko,'DLaser-Gny-1');
+      Titov: Say(Titov,'DLaser-Tit-1');
+            end;
+  Say(Burlak,'DLaser-Bur-1');
+  Say(Burlak,'DLaser-Bur-1a');
+  SayRadio(Yashin,'DLaser-Yas-1');
+  Say(Burlak,'DLaser-Bur-2');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+//-------------------//
+//-----  HEIKE  -----//
+function show_mines;
+var i;
+begin
+  for i=1 to (mines_list div 2) do
+    ViewMineAtPos(mines_list[(i*2)-1],mines_list[(i*2)],you);
+
+  Heike_group:=[] ^ Heike;
+  PlaceUnitArea(Heike,heike_placed,false);
+  uc_side:=neutral;
+  uc_nation:=nation_arabian;
+  uc_direction:=Rand(0,5);
+  for i=1 to (4-difficulty) do
+    begin
+      PrepareSoldier(0,5);
+      Heike_group:=Heike_group ^ CreateHuman;
+      PlaceUnitArea(Heike_group[i+1],heike_placed,false);
+    end;
+end;
+
+// Dialogue Heike (about the time they reach the river; MercPaid = True)
+every 0$1 trigger heike_in_action and FilterUnitsInArea(heike_starting,[ [f_side,you] ]) do
+var un;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(Heike,'DHeike-Hke-1');
+  Say(Burlak,'DHeike-Bur-1');
+  Say(Heike,'DHeike-Hke-2');
+  Say(Burlak,'DHeike-Bur-2');
+  Say(Heike,'DHeike-Hke-3');
+
+    case Query('QHeike') of
+  1: begin
+       Say(Burlak,'DQrHeike#1-Bur-1');
+       show_mines;
+       interface_hidden:=false;
+       DialogueOff;
+       un:=AllNearestUnitToUnit(cast_important,Heike);
+       AddComMoveUnit(Heike_group,un);
+       repeat
+         wait(10);
+       until (GetDistUnits(Heike,un)<4);
+       ComStop(Heike);
+       SetSide(Heike_group,you);
+     end;
+  2: begin
+       Say(Burlak,'DQrHeike#2-Bur-1');
+       Say(Heike,'DQrHeike#2-Hke-1');
+       interface_hidden:=false;
+       DialogueOff;
+     end;
+    end;
+end;
+
+
+//---------------------------------------------//
+//-----  ARTEFACT FIND BEFORE GOSSUDAROV  -----//
+// Dialogue VehicleFound (if Burlak finds vehicle with Artefact before Gossudarov)
+every 0$1 trigger See(you,artefact) and not gossudarov_freed do
+var un,
+    list,         // seznam zijicich (neumirajicich) ruskych vojaku
+    nearest;      // vojak nejblize k artefaktu
+begin
+  repeat
+    wait(0$1);
+  until IsSelected(artefact);
+
+  list:=FilterAllUnits([ [f_side,you], [f_sex,sex_male] ]) diff Burlak;
+
+  nearest:=AllNearestUnitToUnit(list,artefact);
+  if GetDistUnits(nearest,artefact)<10 then
+    begin
+      ComMoveUnit(nearest,artefact);
+      if IsInUnit(nearest) then
+        AddComExitVehicle(nearest);
+    end;
+
+  InGameOn;
+  Say(Burlak,'DVehicleFound-Bur-1');
+  Say(nearest,'DVehicleFound-Rsol1-1');          // walks to the vehicle
+  Say(Burlak,'DVehicleFound-Bur-2');
+  InGameOff;
+  ChangeMissionObjectives('MArtefTake');
+  artefact_found:=true;
+end;
+
+
+//------------------------------//
+//-----  ARTEFACT TO FIND  -----//
+// Dialogue Artefact (when mercs. flee, Gossudarov stumbles out of depot)
+every 0$1 Marked 8 do
+begin
+  if IsInUnit(Burlak) then
+    ComMoveUnit(Gossudarov,IsInUnit(Burlak))
+  else
+    ComMoveUnit(Gossudarov,Burlak);
+
+// vlada: Pridal jsem sem Center, jinak to muze byt klidne uplne mimo obrazovku
+  CenterOnUnits(Gossudarov);
+
+// vlada: Tohle je uplne spatne. Ma-li hrac vyssi rychlost hry, prvni hlaska se vubec nedorekne... prepisu to jinak
+{  InGameOn;
+  async;
+  Say(Gossudarov,'DArtefact-Gos-1');
+  sync;
+  wait(0$2);
+  ComStop(Gossudarov);
+  ComTurnUnit(Gossudarov,Burlak);
+  ComTurnUnit(Burlak,Gossudarov);
+  InGameOff;}
+
+  InGameOn;
+  wait(0$2);
+  ComStop(Gossudarov);
+  ComTurnUnit(Gossudarov,Burlak);
+  ComTurnUnit(Burlak,Gossudarov);
+  CenterOnUnits(Gossudarov);
+  Say(Gossudarov,'DArtefact-Gos-1');
+  InGameOff;
+
+  DialogueOn;
+  interface_hidden:=true;
+  Say(Burlak,'DArtefact-Bur-1');
+  Say(Gossudarov,'DArtefact-Gos-2');
+
+  if artefact_found then
+    begin
+      Say(Burlak,'DArtefactFound-Bur-1');           // Dialogue ArtefactFound (if VehicleFound took place)
+      ChangeMissionObjectives('MOutSave');
+    end
+  else
+    begin                                           // Dialogue ArtefactSearch
+      Say(Burlak,'DArtefactSearch-Bur-1');
+      Say(Gossudarov,'DArtefactSearch-Gos-1');
+      ChangeMissionObjectives('MArtefLocate');
+    end;
+
+  gossudarov_freed:=true;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+//--------------------------------------------------//
+//-----  ARTEFACT FIND AFTER GOSSUDAROV FREED  -----//
+every 0$1 trigger See(you,artefact) do
+begin
+  repeat
+    wait(30);
+  until IsSelected(artefact) or IsDrivenBy(artefact);
+  wait(0$1);
+  artefact_found:=true;
+end;
+
+
+//-----------------------------//
+//-----  TROTSKY CALLING  -----//
+// Dialogue CallFromTrotsky1 (when Arabian base spotted)
+every 35 trigger ar_base_list isect FilterAllUnits([ [f_see,you], [f_type,unit_building] ]) do
+begin
+  wait(0$1);
+  DialogueOn;
+  interface_hidden:=true;
+  SayRadio(Yashin,'DCallFromTrotsky1-Yas-1');
+  if Vsevolod then
+    SayRadio(Yashin,'DCallFromTrotsky1-Yas-1a')      // VS - Vsevolod
+  else
+    SayRadio(Yashin,'DCallFromTrotsky1-Yas-1b');      // or NV - Stolypin
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// Dialogue CallFromTrotsky2 (when Gossudarov freed)
+every 0$1 trigger ((not ( FilterUnitsInArea(gossudarov_meeting, [ [f_side,enemy], [f_type,unit_human], [f_ok] ]) or
+                         IsOK(bun_2) )) and
+                    FilterUnitsInArea(gossudarov_meeting, [ [f_side,you] ] )) or
+                  (GetLives(ar_depot)<300) do
+begin
+  SetSide(Gossudarov,you);
+  repeat
+    wait(0$1);
+  until not FilterAllUnits([ [f_see,you], [f_side,enemy], [f_type,unit_human] ]);
+  wait(0$2);
+  DialogueOn;
+  interface_hidden:=true;
+  SayRadio(Yashin,'DCallFromTrotsky2-Yas-1');
+  Say(Burlak,'DCallFromTrotsky2-Bur-1');
+  SayRadio(Yashin,'DCallFromTrotsky2-Yas-2');
+  Say(Burlak,'DCallFromTrotsky2-Bur-2');
+  SayRadio(Yashin,'DCallFromTrotsky2-Yas-3');
+  interface_hidden:=false;
+  DialogueOff;
+  wait(15);
+  Enable(8);
+end;
+
+// cekani na osvobozeni Gossudarova a nalezeni vozidla
+every 0$2 trigger artefact_found and gossudarov_freed do
+begin
+  konec_mise;
+end;

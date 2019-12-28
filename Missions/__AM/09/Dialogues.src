@@ -1,0 +1,101 @@
+export function Dialog1;
+begin
+     InGameOn;
+
+     Wait(0$2);
+     CenterNowOnUnits(JMM);
+     SayRadio(Powell, 'D1-Pow-1');
+     Say(JMM, 'D1-JMM-1');
+     SayRadio(Powell, 'D1-Pow-2');
+     Say(JMM, 'D1-JMM-2');
+     SayRadio(Powell, 'D1-Pow-3');
+     Say(JMM, 'D1-JMM-3');
+     SayRadio(Powell, 'D1-Pow-4');
+     Say(JMM, 'D1-JMM-4');
+     SayRadio(Powell, 'D1-Pow-5');
+     Say(JMM, 'D1-JMM-5');
+     SayRadio(Powell, 'D1-Pow-6');
+     if not SikorskiDiedin8 then begin
+        SayRadio(Powell, 'D1-Pow-6a');
+        SayRadio(Powell, 'D1-Pow-6b');
+     end
+     else begin
+        SayRadio(Powell, 'D1-Pow-6c');
+        SayRadio(Powell, 'D1-Pow-6d');
+     end;
+
+     Say(JMM, 'D1-JMM-6');
+     Say(JMM, 'D1-JMM-6a');
+     SayRadio(Powell, 'D1-Pow-7');
+     Say(JMM, 'D1-JMM-7');
+     SayRadio(Powell, 'D1-Pow-8');
+     Say(JMM, 'D1-JMM-8');
+     SayRadio(Powell, 'D1-Pow-9');
+
+// Dialog 1a
+     if Lisa then
+        Say(Lisa, 'D1a-Lisa-1')
+     else
+        Say(FSol1, 'D1a-FSol1-1');
+
+     if Frank then
+        Say(Frank, 'D1a-Frank-1')
+     else
+        Say(Sol1, 'D1a-Sol1-1');
+
+     if Lisa then
+        Say(Lisa, 'D1a-Lisa-2')
+     else
+        Say(FSol1, 'D1a-FSol1-2');
+
+     if Frank then
+        Say(Frank, 'D1a-Frank-2')
+     else
+        Say(Sol1, 'D1a-Sol1-2');
+
+     if Lisa then
+        Say(Lisa, 'D1a-Lisa-3')
+     else
+        Say(FSol1, 'D1a-FSol1-3');
+
+     Say(JMM, 'D1a-JMM-3');
+
+     Dialog1b;
+     ComMoveXY(JMM, 67,66);
+     wait(0$4);
+     InGameOff;
+end;
+
+function Dialog1b;
+var adepts, i, j, k;
+begin
+     adepts:=[] union [Lisa, Gladstone, Joan, Donaldson];
+     adepts:=adepts diff 0;
+
+     if adepts then begin       
+       i:=Rand(1, adepts);
+       case adepts[i] of
+          Lisa:      Say(Lisa, 'D1b-Lisa-1');
+          Gladstone: Say(Gladstone, 'D1b-Glad-1');
+          Joan:      Say(Joan, 'D1b-Joan-1');
+          Donaldson: Say(Donaldson, 'D1b-Don-1');
+       end;
+       j:=Rand(1, adepts);
+       if j<>i then
+         case adepts[j] of
+              Lisa:      Say(Lisa, 'D1b-Lisa-1');
+              Gladstone: Say(Gladstone, 'D1b-Glad-1');
+              Joan:      Say(Joan, 'D1b-Joan-1');
+              Donaldson: Say(Donaldson, 'D1b-Don-1');
+         end;
+       k:=Rand(1, adepts);
+       if k<>j and k<>i then
+         case adepts[k] of
+              Lisa:      Say(Lisa, 'D1b-Lisa-1');
+              Gladstone: Say(Gladstone, 'D1b-Glad-1');
+              Joan:      Say(Joan, 'D1b-Joan-1');
+              Donaldson: Say(Donaldson, 'D1b-Don-1');
+         end;
+     end; 
+end;
+

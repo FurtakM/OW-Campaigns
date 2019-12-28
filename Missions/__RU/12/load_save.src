@@ -1,0 +1,145 @@
+export
+Burlak,
+Platonov,
+
+Gossudarov,
+
+Gladkov,
+Fadeev,
+Borodin,
+Tsaritsyn,
+Davidov,
+Eisenstein,
+
+Gleb;
+
+var masha_def, masha;
+var used;
+
+export function Load;
+var i;
+begin
+     Masha:=LoadVariable('Masha', []);
+
+     InitUc;
+     InitHc;
+     uc_nation:=nation_russian;
+
+     uc_side:=ai_s[1];
+     Platonov:=MyCreateCharacter('Platonov', class_soldier, true);
+     Gossudarov:=MyCreateCharacter('Gossudarov', class_scientistic, false);
+     SetSkill(Gossudarov, skill_mechanical, gossudarov_mech_skill);
+
+     uc_side:=ai_s[2];
+     Borodin:=MyCreateCharacter('Borodin', 0, true);
+     uc_side:=ai_s[3];
+     Tsaritsyn:=MyCreateCharacter('Tsaritsyn', 0, true);
+     uc_side:=ai_s[4];
+     Davidov:=MyCreateCharacter('Davidov', class_scientistic, true);
+     uc_side:=ai_s[5];
+     Eisenstein:=MyCreateCharacter('Eisenstein', 0, true);
+
+     uc_side:=you;
+
+     Burlak:=MyCreateCharacter('Burlak', class_mechanic, false);
+
+     Gladkov:=MyCreateCharacter('Gladkov', 0, true);
+     Fadeev:=MyCreateCharacter('Fadeev', 0, true);
+     Gleb:=MyCreateCharacter('Gleb', class_soldier, false);
+//SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha');
+     masha_def:=LoadVariable('Masha', []);
+     if masha_def then begin
+       InitVc;
+       vc_chassis:=masha_def[1];
+       vc_engine:=masha_def[2];
+       vc_control:=masha_def[3];
+       vc_weapon:=masha_def[4];
+       masha:=CreateVehicle;
+     end;
+
+     used:=[];
+     used:=[Gleb] diff 0;
+     used:=used ^ [Fadeev, Gladkov];
+     for i:=used+1 to 3 do begin
+        PrepareSoldier(sex_male, 6);
+        used:=used ^ [CreateHuman];
+     end;
+     used:=used ^ [Burlak];
+end;
+
+export function place_ru;
+var i;
+begin
+     for i in used diff burlak do
+         PlaceUnitArea(i, ru_place, false);
+     if masha then begin
+       SetMark(masha, 1);
+       PlaceHumanInUnit(Burlak, masha);
+       PlaceUnitArea(masha, ru_place, false);
+       SetMark(masha, 1);
+     end
+     else
+       PlaceUnitArea(Burlak, ru_place, false);
+end;
+
+function MyCreateCharacter(name, unclass, new);
+begin
+///////////////// load verze /////////////////////////
+    if (new and NewCharacter(name)) or TestCharacters(name) then begin
+      if new then
+         result:=NewCharacter(name)
+      else begin
+         if CheckCharacterSet(name) then
+            result:=CreateCharacter(name)
+         else
+            result:=0;
+      end;
+
+      if unclass then SetClass(result,unclass);
+    end
+////////////// generate verze /////////////////////////
+    else begin
+       Msg('Chybi '& name &'!');
+       hc_name:=name;
+       PrepareHuman(sex_male,0,3);
+       if unclass then hc_class:=unclass;
+       result:=CreateHuman;
+    end;
+end;
+
+export function Save;
+var tmp, Bluekher, t;
+begin
+// nas hrdina
+     SaveCharacters(Burlak, 'Burlak');
+// 
+     SaveCharacters(Gladkov, 'Gladkov');
+     SaveCharacters(Fadeev, 'Fadeev');
+
+     DeleteCharacters('Platonov');
+     SaveVariable(not IsLive(Platonov), 'PlatonovKilled');
+     SaveVariable(BehemothSeen, 'BehemothSeen');
+     if IsDead(masha) then
+       DeleteVariable('Masha');
+
+     SaveCharacters(Borodin, 'Borodin');
+     SaveCharacters(Tsaritsyn, 'Tsaritsyn');
+     SaveCharacters(Davidov, 'Davidov');
+     SaveCharacters(Eisenstein, 'Eisenstein');
+
+     if Gleb then SaveCharacters(Gleb, 'Gleb');
+     DeleteCharacters('Gossudarov');
+
+    tmp:=FilterUnitsInArea(Bluekher_area, [[f_type,unit_building]]);
+    Bluekher:=[];
+    for t in tmp do begin
+      case getbtype(t) of
+        b_lab_basic,b_lab_weapon,b_lab_biological,b_lab_computer,b_lab_opto,b_lab_siberium,b_lab_spacetime:begin end;
+        b_lab,b_lab_half,b_lab_full:Bluekher:=Bluekher^[[getx(t),gety(t),getdir(t),getbtype(t),getblevel(t),GetNation(t),getlabkind(t,1),getlabkind(t,2)]];
+        b_bunker,b_turret:Bluekher:=Bluekher^[[getx(t),gety(t),getdir(t),getbtype(t),getblevel(t),GetNation(t),GetWeapon(t)]];
+        else Bluekher:=Bluekher^[[getx(t),gety(t),getdir(t),getbtype(t),getblevel(t),GetNation(t)]];
+      end;
+    end;
+    SaveVariable(Bluekher, 'Bluekher');
+
+end;

@@ -1,0 +1,812 @@
+var Bur, Pla, Kar, Ptr, Glb, Pty, Huck, Tit, Lip, Dol;
+var donttalk;
+
+function set_shorts;
+begin
+     Bur:=Burlak;
+     Dol:=Dolgov;
+     Lip:=Lipshchin;
+     Tit:=Titov;
+     Pla:=Platonov;
+     Kar:=Karamazov;
+     Ptr:=Petrovova;
+     Glb:=Gleb;
+     Pty:=Petrosyan;
+
+     Huck:=Stevens;
+
+     donttalk:=used diff [Burlak,Karamazov,Petrovova,Gleb,Petrosyan];
+end;
+
+// Dialogue Intro (Burlak and his men hiding in forest)
+export function DIntro;
+var pos, auta, i, hex, rcars;
+begin
+     pos:=[[50,39],[46,42],[40,50],[48,57],[49,59],[55,70],[55,73],[70,86],[69,83]];
+     set_shorts;
+
+     InGameOn;
+     place_ru_cars(ru_place2);
+     RevealFogArea(you, co_vidi);
+     auta:=FilterAllUnits([[f_side,you],[f_type,unit_vehicle]]);
+     ComMoveToArea(auta, ru_dojezd);
+     wait(0$0.1);
+     CenterNowOnUnits(IsInUnit(Bur));
+     while FilterUnitsInArea(ru_dojezd, [[f_side,you],[f_type,unit_vehicle]])<5 do begin
+        wait(0$1);
+        CenterOnUnits(IsInUnit(Bur));
+     end;
+
+     DStart;
+     InGameOff;
+end;
+
+// Dialogue Start (After the start of the mission)
+export function DStart;
+begin
+     DialogueOn;
+     ComStop(FilterAllUnits([[f_side,you]]));
+     wait(0$0.5);
+     Say(Bur, 'DStart-Bur-1');
+     SayRadio(Pla, 'DStart-Pla-1');
+     Say(Bur, 'DStart-Bur-2');
+     SayRadio(Pla, 'DStart-Pla-2');
+     SaveForQuickRestart;
+     DialogueOff;
+     ChangeMissionObjectives('MBegin');
+     SetAreaMapShow(exit_rus, 1);
+end;
+
+// Dialogue Doubts (After the first dialogue)
+every 0$0.1 trigger dialogy do
+begin
+   DDoubts;
+end;
+function DDoubts;
+var who;
+begin
+     who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+     if not who then
+       who:=Bur;
+     if IsLive(Kar) or IsLive(Ptr) then begin
+       DialogueOn;
+       Say(Kar, 'DDoubts-Kar-1');
+       Say(Ptr, 'DDoubts-Ptr-1');
+       Say(who, 'DDoubts-Bur-1');
+       if Say(Kar, 'DDoubts-Kar-2') then
+       if Say(Glb, 'DDoubts-Glb-2') then
+          Say(Bur, 'DDoubts-Bur-2');
+       DialogueOff;
+     end;
+end;
+
+// Dialogue Arabs (when Arabians are first spotted)
+every 0$5 trigger dialogy and (SeeArea(you, vidi_je) or  See_any(you, fort)) do
+begin
+   DArabs;
+   DSurrender;
+end;
+export function DArabs;
+var who;
+begin
+   SetAttitude(you,arabians,att_enemy,true);
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   DialogueOn;
+   Say(who, 'DArabs-RSol1-1');
+   Say(Kar, 'DArabs-Kar-1');
+   Say(Bur, 'DArabs-Bur-1');
+   SayRadio(Pla, 'DArabs-Pla-1');
+   DialogueOff;
+   DefendLast:=true;
+end;
+
+function DSurrender;
+var qr;
+begin
+       DialogueOn;
+       Say(Omar, 'DSurrender-Omar-1');
+       qr:=Query('QSurrender');
+       case qr of
+            1: DQrSurrender_1;
+            2: DQrSurrender_2;
+            3: DQrSurrender_3;
+       end;
+       DialogueOff;
+end;
+function DQrSurrender_1;
+begin
+       Say(Bur, 'DQrSurrender#1-Bur-1');
+       YouLost('Surrender');
+end;
+function DQrSurrender_2;
+begin
+       Say(Bur, 'DQrSurrender#2-Bur-1');
+       wait_while:=true;
+end;
+function DQrSurrender_3;
+begin
+       Say(Bur, 'DQrSurrender#3-Bur-1');
+end;
+
+// Dialogue Shipments (when somebody crosses the southern ford - shipment materialises)
+every 0$1 trigger dialogy and (FilterUnitsInArea(enter_other_side, [[f_sex,sex_male],[f_side,you],[f_nation,nation_russian]])) do
+var b;
+begin
+  b:=donttalk isect FilterUnitsInArea(enter_other_side, [[f_sex,sex_male],[f_side,you],[f_nation,nation_russian]]);
+  if b then
+    DShipments(b[1])
+  else
+    enable;
+
+end;
+function DShipments(who);
+begin
+   CreateCratesArea(5,second_crate,true);
+   wait(0$6);
+   DialogueOn;  
+   if Say(who, 'DShipments-RSol1-1') then 
+   if Say(Bur, 'DShipments-Bur-1') then
+      Say(who, 'DShipments-RSol1-2');
+   DialogueOff;
+end;
+
+// Dialogue Road (when somebody spots the path in south)
+every 0$3 + 0$2 trigger dialogy and (FilterUnitsInArea(enter_near_road, [[f_sex,sex_male],[f_side,you],[f_nation,nation_russian]])) do
+var b;
+begin
+    b:=donttalk isect FilterUnitsInArea(enter_other_side, [[f_sex,sex_male],[f_side,you],[f_nation,nation_russian]]);
+    if b then
+      DRoad(b[1])
+    else
+      enable;
+end;
+function DRoad(who);
+begin
+     if who<>Burlak then begin
+       DialogueOn;
+       Say(who, 'DRoad-RSol1-1');
+       if not breaked_trough then Say(who, 'DRoad-RSol1-1a');
+       DialogueOff;
+     end;
+end;
+
+// Dialogue ApeSpot (When first Apeman is spotted)
+every 0$3 + 0$2 trigger dialogy and see_any(you, UnitFilter(apemans, [[f_side,neutral]])) do
+var a;
+begin
+   a:=(FilterAllUnits([[f_side,you],[f_see,neutral]]) isect donttalk)^Burlak;
+   if a then begin
+     if not GetTech(tech_ApeLang, you)=state_researched then begin
+       DApeSpot(a[Rand(1,a)]);
+       wait(2$0);
+       if not FilterAllUnits([[f_side,you],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) then
+          DApeLab;
+     end;
+   end
+   else
+     enable;
+end;
+function DApeSpot(who);
+var Sci1;
+begin
+   Sci1:=Pty;
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+
+   DialogueOn;
+   if who=Bur then
+      Say(Bur, 'DApeSpot-Bur-1a')
+   else begin
+      Say(Bur, 'DApeSpot-Bur-1');
+      Say(who, 'DApeSpot-RSol1-1');
+   end;
+   if Sci1 then begin
+     Say(Sci1, 'DApeSpot-Pty-1');
+     if FilterAllUnits([[f_side,you],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) then
+        Say(Sci1, 'DApeSpot-Pty-1a')
+     else
+        Say(Sci1, 'DApeSpot-Pty-1b');
+   end;
+   DialogueOff;
+end;
+
+// Dialogue ApeLab (When no lab is build for a long time and ApeSpot took place)
+function DApeLab;
+var Sci1;
+begin
+   Sci1:=Pty;
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+   if Sci1 then begin
+     DialogueOn;
+     Say(Sci1, 'DApeLab-Pty-1');
+     DialogueOff;
+   end;
+end;
+
+// Dialogue ApeLangCompl (Apeman language researched)
+export function DApeLangCompl;
+var Sci1;
+begin
+   Sci1:=Pty;
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+
+   if Sci1 then begin
+     DialogueOn;
+     Say(Sci1, 'DApeLangCompl-Pty-1');
+     Say(Bur, 'DApeLangCompl-Bur-1');
+     Say(Sci1, 'DApeLangCompl-Pty-2');
+     Say(Bur, 'DApeLangCompl-Bur-2');
+     Say(Sci1, 'DApeLangCompl-Pty-3');
+     Say(Bur, 'DApeLangCompl-Bur-3');
+     Say(Sci1, 'DApeLangCompl-Pty-4');
+     DialogueOff;
+   end;
+   MyHint('ApemenTaming');
+end;
+
+
+// Dialogue ApeTame (When first Apeman is tamed)
+export function DApeTame;
+var Sci1;
+begin
+   first_apeman_tamed:=true;
+   Sci1:=Pty;
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+
+   if Sci1 then begin
+     DialogueOn;
+     Say(Sci1, 'DApeTame-Sci1-1');
+     Say(Bur, 'DApeTame-Bur-1');
+     DialogueOff;
+   end;
+end;
+
+// Dialogue ApeWorkSol (When first Apeman is taken into lab)
+function ApemansInLabs;
+var labs, i, inlabs;
+begin
+   inlabs:=[];
+   labs:=FilterAllUnits([[f_side,you],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]);
+   for i in labs do
+      inlabs:=inlabs ^ UnitsInside(i);
+   result:=UnitFilter(inlabs, [[f_nation,nation_nature]]);
+end;
+every 0$3 trigger dialogy and ApemansInLabs do
+begin
+   DApeWorkSol;
+end;
+function DApeWorkSol;
+var Sci1;
+begin
+   Sci1:=Pty;
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+
+   if Sci1 then begin
+     DialogueOn;
+     Say(Bur, 'DApeWorkSol-Bur-1');
+     if Say(Sci1, 'DApeWorkSol-Pty-1') then
+     Say(Bur, 'DApeWorkSol-Bur-2');
+     MyHint('ApemenUsing');
+     DialogueOff;
+   end;
+end;
+
+// Dialogue ApeWorkCompl (When research of Apeman psychology is completed)
+export function DApeWorkCompl;
+var Sci1;
+begin
+   first_apeman_tamed:=true;
+   Sci1:=Pty;
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+
+   if Sci1 then begin
+     DialogueOn;
+     if Say(Sci1, 'DApeWorkCompl-Pty-1') then
+     Say(Bur, 'DApeWorkCompl-Bur-1');
+     DialogueOff;
+   end;
+end;
+
+// Dialogue ApeSolCompl (When research of Apeman aggressiveness is completed)
+export function DApeSolCompl;
+var Sci1;
+begin
+   Sci1:=Pty;
+//neni samomluva
+   if not IsLive(Pty) then
+      Sci1:=WhoSayAny(donttalk, you, sex_male, class_scientistic, 0);
+
+   if Sci1 then begin
+     DialogueOn;
+     if Say(Sci1, 'DApeSolCompl-Pty-1') then
+     Say(Bur, 'DApeSolCompl-Bur-1');
+     DialogueOff;
+   end;
+end;
+
+// Dialogue Stevens (when somebody goes North to tame Apemen; American scientist materialises)
+every 0$5 + 0$4 trigger dialogy and not byl_stevens and depot and (FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian]]) diff [Burlak,Petrovova,Gleb]) do
+begin
+  if IsDead(Pty) then
+   Pty:=Dol;
+  if IsDead(Pty) then
+   Pty:=Kar;
+
+  if Pty in FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian]]) then
+    DStevens(Pty)
+  else
+    DStevens(FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian]])[1]);
+end;
+every 0$5 + 0$4 trigger dialogy and not byl_stevens and (FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_type,unit_vehicle]])>3) do
+begin
+  if IsDead(Pty) then
+   Pty:=Dol;
+  if IsDead(Pty) then
+   Pty:=Kar;
+  vespod:=true;
+
+  if Pty in FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_nation,nation_russian]]) then
+    DStevens(Pty)
+  else
+    DStevens(FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_nation,nation_russian]])[1]);
+end;
+export vespod, vespod2, byl_stevens;
+function DStevens(who);
+begin
+//   SetAttitude(you,americans,att_enemy,false);
+//   SetAttitude(americans,you,att_neutral,false);
+   if not vespod then PlaceUnitArea(Huck, stv_site, true)
+                 else PlaceUnitArea(Huck, stv_site2, true);
+   wait(0$4);
+   ComStop(who);
+   ComTurnUnit(who, huck);
+   ComTurnUnit(huck, who);
+   CenterNowOnUnits(huck);
+   Stevens_killed:=true;
+   wait(0$1);
+   DialogueOn;
+   if IsDead(Pty) then
+     Pty:=Dol;
+   if IsDead(Pty) then
+     Pty:=Kar;
+   if IsOk(Pty) then begin
+     if who=Pty then begin
+        SetAttitude(you,americans,att_enemy,false);
+        DialogueOff;
+        while GetLives(huck)>940 do
+          Wait(0$0.5);
+        SetAttitude(you,americans,att_neutral,true);
+        ComStop(who);
+        Wait(0$0.1);
+        DialogueOn;
+        Say(Huck, 'DStevens-Huck-1');
+     end
+     else begin
+        Say(who, 'DStevens-RSol1-1');
+        DialogueOff;
+        Wait(0$0.7);
+        SetAttitude(you,americans,att_enemy,false);
+        while GetLives(huck)>940 do
+          Wait(0$0.5);
+        SetAttitude(you,americans,att_neutral,true);
+        ComStop(who);
+        Wait(0$0.1);
+        DialogueOn;
+        Say(Huck, 'DStevens-Huck-1');
+        Say(Pty, 'DStevens-Pty-1');
+     end;
+     Say(Pty, 'DStevens-Pty-1a');
+     Say(Huck, 'DStevens-Huck-2');
+     Say(Pty, 'DStevens-Pty-2');
+     Say(Huck, 'DStevens-Huck-3');
+     Say(Pty, 'DStevens-Pty-3');
+     Say(Huck, 'DStevens-Huck-4');
+     Say(Pty, 'DStevens-Pty-4');
+     SetAttitude(you, americans, att_friend, true);
+     SetSide(huck, you2);
+     ComMoveUnit(huck, who);
+   end
+   else begin
+     Say(who, 'DStevens-RSol1-1');
+     SetAttitude(you, americans, att_enemy, true);
+   end;
+   byl_stevens:=true;
+   DialogueOff;
+end;
+
+var stv_depot;
+
+// Block change Stevens class
+Every 1 trigger GetSide(Huck) = 3 or GetSide(Huck) = 6 do
+begin
+     if not GetClass(Huck) = 4 then SetClass(Huck, 4);
+enable;
+end;
+
+// Dialogue StevensBurlak (When Stevens enters the base)
+function HumansInDepots;
+var labs, i, inlabs;
+begin
+   inlabs:=[];
+   labs:=FilterAllUnits([[f_side,you],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+   for i in labs do
+      inlabs:=inlabs ^ UnitsInside(i);
+   result:=inlabs;
+end;
+every 0$5 + 0$3  trigger dialogy and byl_stevens and (not vespod and(IsInArea(Huck, stred)) or GetDistUnits(Burlak, Huck)<13) do
+begin
+   if IsDead(Pty) then
+     Pty:=Dol;
+   if IsDead(Pty) then
+     Pty:=Kar;
+   if IsLive(Pty)and IsLive(Huck) then
+      DStevensBurlak;
+end;
+function DStevensBurlak;
+var qr, tmp_depot;
+begin
+   DialogueOn;
+   Say(Pty, 'DStevensBurlak-Pty-1');
+   Say(Bur, 'DStevensBurlak-Bur-1');
+   Say(Pty, 'DStevensBurlak-Pty-2');
+   qr:=Query('QKill');
+
+   if qr=1 then begin
+// Dialogue Kill-1 //Kill him.
+      Say(Bur, 'DKill-1-Bur-1');
+      SetSide(Huck, americans);
+      SetAttitude(you, americans, att_enemy, true);
+      if IsLive(Glb) then
+         Say(Glb, 'DKill-1-Glb-1');
+   end;
+   if qr=2 then begin
+// Dialogue Kill-2 //Capture him
+      Say(Bur, 'DKill-2-Bur-1');
+      Say(Pty, 'DKill-2-Pty-1');
+      if not vespod then Say(Bur, 'DKill-2-Bur-2');
+      StevensStayInBase = 1;
+   end;
+   DialogueOff;
+   if not vespod and qr=2 then begin
+      while not tmp_depot do begin
+        tmp_depot:=FilterAllUnits([[f_side,you], [f_ok], [f_or,[f_btype,b_warehouse],[f_btype,b_depot]]])[1];
+        Wait(0$1);
+      end;
+      while GetDistUnits(Huck,tmp_depot)>5 do begin
+        ComMoveUnit(Huck, tmp_depot);
+        Wait(0$0.1);
+      end;
+      SetSide(Huck, you);
+      while not (huck in HumansInDepots) do begin
+        ComMoveUnit(Huck, tmp_depot);
+        Wait(0$0.1);
+      end;
+      stv_depot:=tmp_depot;
+   end;
+   if vespod and qr=2 then begin
+     DialogueOn;
+     DWait(0$4.5);
+     DialogueOff;
+     vespod2:=true;
+   end;
+   if qr=1 then begin
+     while not IsInArea(huck, stv_exit) do begin
+       ComMoveToArea(Huck, stv_exit);
+       DU_wait(Huck);
+     end;
+     RemoveUnit(Huck);
+   end;
+end;
+
+function DQrKillAgain_1;
+begin
+  DialogueOn;
+  Say(Bur, 'DQrKillAgain#1-Bur-1');
+  DialogueOff;
+  SetSide(Huck, americans);
+  SetAttitude(you, americans, att_enemy, true);
+  Stevens_Killed:=true;
+  stv_depot:=0;
+end;
+function DQrKillAgain_2;
+begin
+  DialogueOn;
+  Say(Bur, 'DQrKillAgain#2-Bur-1');
+  DialogueOff;
+  stv_depot:=0;
+  SetSide(Huck, americans);
+  ComMoveToArea(Huck, Stv_exit);
+  while not (IsInArea(Huck, stv_exit)) do
+       wait(0$1);
+  RemoveUnit(Huck);
+end;
+
+// Stevens stay in base, writed better code by Nefarem - 15.01.2019
+function DQrKillAgain_3; 
+var tmp_depot;
+begin
+  DialogueOn;
+  Say(Bur, 'DQrKillAgain#2-Bur-1a');
+  DialogueOff;
+
+  SetSide(Huck, you2);
+
+  tmp_depot = FilterAllUnits([[f_side,you], [f_ok], [f_or,[f_btype,b_warehouse],[f_btype,b_depot]]]);
+
+  if tmp_depot = 0 then
+    repeat
+      wait(0$1);
+      tmp_depot = FilterAllUnits([[f_side,you], [f_ok], [f_or,[f_btype,b_warehouse],[f_btype,b_depot]]]);
+
+      if IsInUnit(Bur) then ComMoveUnit(Huck, IsInUnit(Bur))
+      else ComMoveUnit(Huck, Bur);
+    until tmp_depot > 0;
+
+  if tmp_depot > 0 then
+  begin
+    repeat
+    tmp_depot = FilterAllUnits([[f_side,you], [f_ok], [f_or,[f_btype,b_warehouse],[f_btype,b_depot]]]);
+
+    wait(0$1);
+    ComMoveUnit(Huck, tmp_depot[1]);
+    until GetDistUnits(Huck, tmp_depot[1]) < 5 or tmp_depot = 0;
+
+    if tmp_depot = 0 then
+       repeat
+       wait(0$1);
+       tmp_depot = FilterAllUnits([[f_side,you], [f_ok], [f_or,[f_btype,b_warehouse],[f_btype,b_depot]]]);
+
+       if IsInUnit(Bur) then ComMoveUnit(Huck, IsInUnit(Bur))
+       else ComMoveUnit(Huck, Bur);
+    until tmp_depot > 0;          
+
+    SetSide(Huck, you);
+    repeat
+     wait(0$0.1);
+     ComEnterUnit(Huck, tmp_depot[1]);
+    until IsInUnit(Huck);
+  end;
+
+end;
+// Dialogue Release (If the player sends Stevens out)
+every 0$3 trigger dialogy and byl_stevens and IsOK(Huck) and StevensStayInBase = 1 and not IsInUnit(Huck) do
+var qr;           
+begin
+   DialogueOn;
+   Stevens_killed:=false;
+   Say(Bur, 'DRelease-Bur-1');
+   DialogueOff;
+   if vespod then
+     qr:=SelectiveQuery('QKillAgain',[1,2])
+   else
+     qr:=SelectiveQuery('QKillAgain',[1,2,3]);
+   case qr of
+//#1 Kill him.
+        1: DQrKillAgain_1;
+//#2 Let him go
+        2: DQrKillAgain_2;
+//#3 Return him to depot.
+        3: DQrKillAgain_3;
+   end;
+   if qr=3 then
+     enable;
+end;
+
+function DStevensLeftBehind;
+var r, Sol1;
+begin
+   DialogueOn;
+   Sol1:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   if IsOk(Pty) then
+      r:=Say(Pty, 'DStevensLeftBehind-Pty-1')
+   else
+      r:=Say(Sol1, 'DStevensLeftBehind-RSol1-1');
+   if r then Say(Bur, 'DStevensLeftBehind-Bur-1');
+   Stevens_Killed:=true;
+   DialogueOff;
+end;
+
+// Dialogue Mastodon (First Arabian noble on mastodon is spotted)
+var was_sheikh_obj;
+every 0$1  trigger dialogy and See(you, Mastodon) do
+var a;
+begin
+   if not was_sheikh_obj then begin
+     ChangeMissionObjectives('MAddSheikh');
+     was_sheikh_obj:=true;
+   end;
+
+   a:=NearestUnitToUnit(UnitFilter(donttalk, [f_sex, sex_male])^Burlak, Mastodon);
+   if a then
+     DMastodon(a)
+   else
+     enable;
+end;
+function DMastodon(who);
+begin
+   DialogueOn;
+   if who=Bur then
+      Say(who, 'DMastodon-Bur-1')
+   else
+      Say(who, 'DMastodon-RSol1-1');
+   Say(Glb, 'DMastodon-Glb-1');
+   DialogueOff;
+end;
+
+// Dialogue Omar (if Omar is killed - this should be very likely)
+every 0$1 trigger dialogy and IsDead(Omar) do
+begin
+   DOmar;
+   ChangeMissionObjectives('MOutSheikh');
+end;
+function DOmar;
+var who, mytick;
+begin
+   who:=WhoSayAny(donttalk, you, sex_male, class_soldier, 0);
+   DialogueOn;
+   if IsLive(Kar) then
+      Say(Kar, 'DOmar-Kar-1');
+   if IsLive(Ptr) then
+      Say(Ptr, 'DOmar-Ptr-1');
+   if not IsLive(Kar) and not IsLive(Ptr) then
+      Say(who, 'DOmar-RSol1-1');
+
+   if SayRadio(Heike, 'DOmar-Hke-1') then
+      Say(Bur, 'DOmar-Bur-1');
+   DialogueOff;
+end;
+
+// Dialogue Breakthrough (when Arabian positions are destroyed)
+every 0$1 +0$3.5 trigger dialogy do
+var i, arForces;
+begin
+   enable;
+   arForces = FilterAllUnits([[f_side, 2], [f_type, unit_human]]);
+   for i in UnitsInside(FilterUnitsInArea(RoadArea, [[f_side, 2], [f_type, unit_vehicle]])) do arForces = arForces diff i;
+
+   if arForces <= 4 and (IsDead(Omar) or not IsPlaced(Omar)) then
+   begin
+      Disable;
+      DBreaktrough;
+   end;
+end;
+function DBreaktrough;
+begin
+   if tick<=breaketrough_time then
+     action_was_fast:=true;
+   breaked_trough:=true;
+
+   DialogueOn;
+   Say(Ptr, 'DBreakthrough-Ptr-1');
+   Say(Bur, 'DBreakthrough-Bur-1');
+   SayRadio(Pla, 'DBreakthrough-Pla-1');
+   if action_was_fast then
+      SayRadio(Pla, 'DBreakthrough-Pla-1a')
+   else
+      SayRadio(Pla, 'DBreakthrough-Pla-1b');
+   if FilterAllUnits([[f_side,you],[f_nation,nation_russian],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) then begin
+     SayRadio(Pla, 'DBreakthrough-Pla-1c');
+     ChangeMissionObjectives('MAddLab');
+     znicit_lab:=true;
+   end;
+   if byl_stevens and IsLive(Huck) and stv_depot then
+     DStevensLeftBehind;
+   DialogueOff;
+end;
+export znicit_lab;
+every 0$3 trigger znicit_lab and not FilterAllUnits([[f_side,you],[f_nation,nation_russian],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) do
+begin
+     ChangeMissionObjectives('MOutLab');
+end;
+
+// Dialogue Patrol (when they run into Arabian patrol)
+every 0$5 + 0$0.5 trigger dialogy and breaked_trough and FilterUnitsInArea(enter_near_road, [[f_side,you]]) and See_any(you, [ArScout1,ArScout2,ArScout3]) do
+begin
+   DPatrol;
+end;
+function DPatrol;
+var RSol1;
+begin
+   RSol1:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   DialogueOn;
+   if IsLive(Kar) then
+      Say(Kar, 'DPatrol-Kar-1');
+   if IsLive(Ptr) then
+      Say(Ptr, 'DPatrol-Ptr-1');
+   if not IsLive(Kar) and not IsLive(Ptr) then
+      Say(RSol1, 'DPatrol-RSol1-1');
+   Say(Bur, 'DPatrol-Bur-1');
+   DialogueOff;
+end;
+
+// Query Vehicles
+// Query EndMission
+var used1, used2;
+function TestEnd;
+var lidi_in, lidi_in_cars, lidi_all, i;
+begin
+     lidi_in_cars=[];
+     lidi_in:=FilterHumansInArea(exit_rus, [[f_side,you],[f_nation,nation_russian],[f_type,unit_human]]);
+     for i in lidi_in do
+       if GetType(IsInUnit(i))=unit_vehicle then begin
+         lidi_in_cars:=lidi_in_cars ^ [i];
+       end;
+
+     result:=0;
+     if (lidi_in>=6)and(IsInArea(IsInUnit(Bur), exit_rus)) then begin
+       lidi_all:=FilterAllUnits([[f_side,you],[f_nation,nation_russian],[f_type,unit_human]]);
+
+       if lidi_in_cars>=6 then begin
+         if (lidi_all+0)>(lidi_in_cars+0) then begin
+           result:=2;
+         end;
+         if (lidi_all+0)<=(lidi_in_cars+0) then
+           result:=3;
+       end
+       else begin
+         if not used1 and (lidi_in+0)>(lidi_in_cars+0) then begin
+           result:=1;
+         end;
+       end;
+     end;
+end;
+every 0$2 do
+var qr;
+begin
+   case TestEnd of
+      0: begin
+         end_the_mission_allowed:=false;
+      end;
+      1: begin
+         end_the_mission_allowed:=false;
+         if not used1 then begin
+           qr:=Query('Qvehicles');
+           used1:=true;
+         end;
+      end;
+      2: begin
+         end_the_mission_allowed:=true;
+         if not used2 then begin
+           ChangeMissionObjectives('MOutDefend');
+           qr:=Query('QEndMission');
+           used2:=true;
+           if qr=1 then
+             Vyhra;
+         end;
+      end;
+      3: begin
+         Vyhra;
+      end;
+   end;
+
+   enable;
+end;
+
+every 0$2 trigger IsInUnit(Omar)=mastodon do
+begin
+  ComCarabine(Omar);
+  enable(99);
+end;
+every 0$2 trigger not IsInUnit(Omar)=mastodon marked 99 do
+var mytick;
+begin
+  ComSabre(Omar);
+  wait(0$1);
+  mytick:=tick+0$5;
+  while not IsInArea(Omar, omar_exit) and tick<mytick do begin
+    ComMoveToArea(Omar, omar_exit);
+    DU_wait(Omar);
+  end;
+  ComStop(Omar);
+  wait([4$30,2$15,0$30][difficulty]);
+  while not IsInArea(Omar, omar_exit) and tick<mytick do begin
+    ComMoveToArea(Omar, omar_exit);
+    DU_wait(Omar);
+  end;
+  RemoveUnit(Omar);
+end;

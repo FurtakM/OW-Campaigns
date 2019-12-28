@@ -1,0 +1,967 @@
+//zasilky
+var am_grupb;
+var c11,c12,c21,c22,c23,c31,c32;
+var vyber;
+export pr_loz;
+                               
+every 0$1 do             //total: 3x mech, 1x engi, 3x sold
+var tmp;
+begin
+  if not zapbrod then zasilka=zasilka-0$1;  //debugrem!!!!!!
+//  ingame_video=false;     //debug!!!!!! zaremovat!!!
+//  debug_strings=[zasilka];
+  if zasilka<=0 then begin
+    uc_nation=nation_american;
+    uc_side=am;
+    vc_control=control_manual;
+    vc_engine=engine_siberite;
+    vc_chassis=zas1_ch;
+    vc_weapon=zas1_wp;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitxyr(tmp,144,100,4,false);
+//    preparemechanic(sex_male,zas1_dr);  //mech
+    placehumaninunit(mech0,tmp);
+    vc_chassis=zas2_ch;                
+    vc_weapon=zas2_wp;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitxyr(tmp,144,100,4,false);
+//    preparemechanic(sex_male,zas2_dr);  //mech
+    placehumaninunit(mech1,tmp);
+
+    vc_control=control_computer;
+    vc_chassis=us_medium_wheeled;
+    vc_weapon=us_cargo_bay;
+    c11=createvehicle;
+    setdir(c11,4);
+    setcargo(c11,mat_cans,80);
+    addcargo(c11,mat_siberit,20);
+    placeunitxyr(c11,143,95,5,false);
+    c12=createvehicle;
+    setdir(c12,4);
+    setcargo(c12,mat_siberit,100);
+    placeunitxyr(c12,143,95,5,false);
+//    debug_strings=[getcargo([c11,c12],mat_cans),getcargo([c11,c12],mat_oil)];
+
+//    prepareengineer(sex_female,6);    //eng
+    placeunitxyr(eng0,146,100,3,false);
+//    preparesoldier(sex_male,5);      //sol
+    placeunitxyr(sold0,146,100,3,false);
+
+    dialogueon;
+    say(john,'DC1-JMM-1');
+    sayradio(powell,'DC1-Pow-1');
+    dialogueoff;
+    zasilka=4$0;
+    odjet=2;
+    enable(5);
+    enable(6);
+  end
+  else enable;
+end;
+
+//odjezd prazdnych nakladaku
+var odjet,odjet2,odjet3;
+every 0$1+0$0.1 trigger (isplaced(c11) and (not getcargo(c11,mat_cans)) and (not getcargo(c11,mat_siberit))) or (isplaced(c12) and not getcargo(c12,mat_siberit)) marked 5 do
+var tmp;
+begin
+  if isplaced(c12) and (not getcargo(c12,mat_siberit)) then begin tmp=c12;c12=0;end
+  else begin tmp=c11;c11=0;end;
+  setside(tmp,am_odj);
+  commovexy(tmp,150,101);
+  odjet=odjet-1;
+  if odjet>0 then enable;
+end;
+
+every 0$1 marked 6 do
+var tmp;
+begin
+  zasilka=zasilka-0$1;  
+  if zasilka=0 then begin
+    uc_nation=nation_american;
+    uc_side=am;
+    vc_control=control_manual;
+    vc_engine=engine_siberite;
+    vc_chassis=zas3_ch;
+    vc_weapon=zas3_wp;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitxyr(tmp,144,100,4,false);
+//    preparemechanic(sex_male,zas3_dr);  //mech
+    placehumaninunit(mech2,tmp);
+
+    vc_control=control_computer;
+    vc_chassis=us_medium_wheeled;
+    vc_weapon=us_cargo_bay;
+    c21=createvehicle;
+    setdir(c21,4);
+    setcargo(c21,mat_cans,100);
+
+    placeunitxyr(c21,143,95,7,false);
+    c22=createvehicle;
+    setdir(c22,4);
+    setcargo(c22,mat_cans,100);
+    placeunitxyr(c22,143,95,7,false);
+    c23=createvehicle;
+    setdir(c23,4);
+    setcargo(c23,mat_siberit,50);
+    addcargo(c23,mat_oil,50);
+    placeunitxyr(c23,143,95,7,false);
+                                     
+//    preparesoldier(sex_male,5);   //sol
+    placeunitxyr(sold1,146,100,3,false);
+
+    dialogueon;
+    say(john,'DC2-JMM-1');
+    sayradio(powell,'DC2-Pow-1');
+    dialogueoff;
+    zasilka=5$0;
+    odjet2=3;
+    enable(7);
+    enable(8);
+  end
+  else enable;
+end;
+
+//odjezd druhych prazdnych nakladaku
+every 0$1+0$0.1 trigger (isplaced(c21) and not getcargo(c21,mat_cans)) or (isplaced(c22) and not getcargo(c22,mat_cans)) or (isplaced(c23) and (not getcargo(c23,mat_siberit)) and (not getcargo(c23,mat_oil))) marked 7 do
+var tmp;
+begin
+  if isplaced(c21) and not getcargo(c21,mat_cans) then begin tmp=c21;c21=0;end
+  else if isplaced(c22) and not getcargo(c22,mat_cans) then begin tmp=c22;c22=0;end
+  else begin tmp=c23;c23=0;end;
+  setside(tmp,am_odj);
+  commovexy(tmp,150,101);
+  odjet2=odjet2-1;
+  if odjet2>0 then enable;
+end;
+
+every 0$1 marked 8 do
+var tmp;
+begin
+  zasilka=zasilka-0$1;
+  if zasilka=0 then begin
+    uc_nation=nation_american;
+    uc_side=am;
+
+    vc_control=control_computer;
+    vc_chassis=us_medium_wheeled;
+    vc_weapon=us_cargo_bay;
+    c31=createvehicle;
+    setdir(c31,4);
+    setcargo(c31,mat_cans,100);
+    placeunitxyr(c31,143,95,7,false);
+    c32=createvehicle;
+    setdir(c32,4);
+    setcargo(c32,mat_cans,100);
+    placeunitxyr(c32,143,95,7,false);
+
+//    preparesoldier(sex_male,6);          //sol
+    placeunitxyr(sold2,146,100,3,false);
+
+    dialogueon;
+    sayradio(powell,'DC3-Pow-1');
+    say(john,'DC3-JMM-1');
+    dialogueoff;
+    odjet3=2;
+    enable(9);
+  end
+  else enable;
+end;
+
+//odjezd tretich prazdnych nakladaku
+every 0$1+0$0.1 trigger (isplaced(c31) and not getcargo(c31,mat_cans)) or (isplaced(c32) and not getcargo(c32,mat_cans)) marked 9 do
+var tmp;
+begin
+  if isplaced(c31) and not getcargo(c31,mat_cans) then begin tmp=c31;c31=0;end
+  else begin tmp=c32;c32=0;end;
+  setside(tmp,am_odj);
+  commovexy(tmp,150,101);
+  odjet3=odjet3-1;
+  if odjet3>0 then enable;
+end;
+
+//mizeni odjizdejicich nakladacku
+var odjizdelci;
+function odjizdeji;
+var tmp;
+begin
+  odjizdelci=filterunitsinarea(odjezd,[[f_side,am_odj]]);
+  result=0+odjizdelci;
+end;
+
+every 0$1 do
+var tmp;
+begin
+  if odjizdeji then
+    for tmp in odjizdelci do
+      destroyunit(tmp);
+  tmp=filterunitsinarea(ambase,[[f_side,am_odj],[f_ok]]);
+  if tmp then begin
+    commovexy(tmp,150,101);
+  end;
+  enable;
+end;               
+
+export fstamdep;
+on buildingcomplete(un) do
+  if (getbtype(un)=b_depot) and (getside(un)=am) then begin
+    fstamdep=tick+5$0;
+    disable;
+  end;
+
+export legion_cheated;
+//kurt
+every 0$20+4$15 trigger filterallunits([[f_side, am], [f_type, unit_building], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]) do
+//every 0$30 do
+var tmp,tmp2,str,li,tmps,tmpc,depoty;
+begin
+  while fstamdep>tick do wait(0$3);
+  uc_nation=nation_arabian;
+  uc_side=ar;
+  setside(kurt,ar);
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_chassis=ar_medium_trike;
+  vc_weapon=ar_double_machine_gun;
+  kurt_veh=createvehicle;
+  setdir(kurt_veh,4);
+  placeunitxyr(kurt_veh,148,100,3,false);
+  placehumaninunit(kurt,kurt_veh);
+  wait(0$0.5);
+  commovexy(kurt_veh,134,93);
+  addcomexitvehicle(kurt_veh);
+  wait(0$5);
+
+
+  legion_cheated=0;
+  tmp=filterallunits([[f_side,am],[f_sex,sex_male]]) diff john;
+  dialogueon;
+  changesidefog(ar,am);
+  if tmp then say(tmp[1],'D3-Sol1-1');
+  centernowonunits(kurt_veh);
+  say(kurt,'D3-Kurt-1');
+  say(john,'D3-JMM-1');
+  if kurtloc then begin
+    say(kurt,'D3-Kurt-2');
+    say(john,'D3-JMM-2');
+  end
+  else begin
+    say(kurt,'D3-Kurt-3');
+    say(john,'D3-JMM-3');
+  end;
+  say(kurt,'D3-Kurt-4');
+  say(john,'D3-JMM-4');
+  say(kurt,'D3-Kurt-5');
+
+  depoty=unitfilter(filterallunits([[f_side,am],[f_type,unit_building]]),[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]);
+  tmpc=0;tmps=0;
+  for tmp in depoty do begin
+    tmpc=tmpc+getresourcetype(getbase(tmp),mat_cans);
+    tmps=tmps+getresourcetype(getbase(tmp),mat_siberit);
+  end;
+
+  if kurtloc=0 then begin  //kurt is dead
+    say(kurt,'D3-Kurt-5b');
+    str='Q2';
+    if (tmpc>=req_cans) and (tmps>=req_sib) then li=[1,2,3,4]
+    else li=[1,3,4];
+  end
+  else begin
+    say(kurt,'D3-Kurt-5a');
+    str='Q2K';
+    if (tmpc>=req_cans_) and (tmps>=req_sib_) then li=[1,2,3,4]
+    else li=[1,3,4];
+  end;
+  
+  vyber=selectivequery(str,li);
+  legion=-1;
+  case vyber of
+    1:begin //reject
+      say(john,'D3Ka-JMM-1');
+      say(kurt,'D3Ka-Kurt-1');
+    end;
+    2:begin   //pay 4 neutrality
+      legion=0;
+      say(john,'D3Kb-JMM-1');
+      say(kurt,'D3Kb-Kurt-1');
+      if kurtloc then begin
+        req_cans=creq_cans_;
+        req_sib=creq_sib_;
+      end
+      else begin
+        req_cans=creq_cans;
+        req_sib=creq_sib;
+      end;
+      for tmp in depoty do begin
+        tmp2=getresourcetype(getbase(tmp),mat_cans);
+        if tmp2>=req_cans then begin
+          setresourcetype(getbase(tmp),mat_cans,tmp2-req_cans);
+          break;
+        end
+        else begin
+          setresourcetype(getbase(tmp),mat_cans,0);
+          req_cans=req_cans-tmp2;
+        end;
+      end;
+      for tmp in depoty do begin
+        tmp2=getresourcetype(getbase(tmp),mat_siberit);
+        if tmp2>=req_sib then begin
+          setresourcetype(getbase(tmp),mat_siberit,tmp2-req_sib);
+          break;
+        end
+        else begin
+          setresourcetype(getbase(tmp),mat_siberit,0);
+          req_sib=req_sib-tmp2;
+        end;
+      end;
+{      if kurtloc=0 then str='Q2c' //kurt is dead
+      else str='Q2cK';
+      case query(str) of
+        1:begin
+          say(john,'D5Ka-JMM-1');
+          say(kurt,'D5Ka-Kurt-1');
+        end;
+        2:begin         //pay 4 help
+          legion=1;
+          say(john,'D3Ke-JMM-1');
+          say(john,'D3Ke-Kurt-1');
+          if kurtloc then begin
+            req2_cans=creq2_cans_-creq_cans_;
+            req2_sib=creq2_sib_-creq_sib_;
+          end
+          else begin
+            req2_cans=creq2_cans-creq_cans;
+            req2_sib=creq2_sib-creq_sib;
+          end;
+          for tmp in depoty do begin
+            tmp2=getresourcetype(getbase(tmp),mat_cans);
+            if tmp2>=req2_cans then begin
+              setresourcetype(getbase(tmp),mat_cans,tmp2-req2_cans);
+              break;
+            end
+            else begin
+              setresourcetype(getbase(tmp),mat_cans,0);
+              req2_cans=req2_cans-tmp2;
+            end;
+          end;
+          for tmp in depoty do begin
+            tmp2=getresourcetype(getbase(tmp),mat_siberit);
+            if tmp2>=req2_sib then begin
+              setresourcetype(getbase(tmp),mat_siberit,tmp2-req2_sib);
+              break;
+            end
+            else begin
+              setresourcetype(getbase(tmp),mat_siberit,0);
+              req2_sib=req2_sib-tmp2;
+            end;
+          end;
+        end;
+      end;}
+    end;
+    3:begin   //not enough mat.
+      say(john,'D3Kc1-JMM-1');
+      say(kurt,'D3Kc1-Kurt-1');
+      say(john,'D3Kc1-JMM-2');
+      say(kurt,'D3Kc1-Kurt-2');
+      pr_loz=1;
+      case selectivequery('Q2b',[1,2,3]) of
+        1,2:begin
+          if vyber=1 then say(john,'D4a-JMM-1')
+          else begin
+            say(john,'D4b-JMM-1');
+            say(kurt,'D4b-Kurt-1');
+          end;
+          vyber=selectivequery(str,li);
+          case vyber of
+            1:begin //reject
+              say(john,'D3Ka-JMM-1');
+              say(kurt,'D3Ka-Kurt-1');
+            end;
+            2:begin   //pay 4 neutrality
+              legion=0;
+              say(john,'D3Kb-JMM-1');
+              say(kurt,'D3Kb-Kurt-1');
+              if kurtloc then begin
+                req_cans=req_cans_;
+                req_sib=req_sib_;
+              end;
+              for tmp in depoty do begin
+                tmp2=getresourcetype(getbase(tmp),mat_cans);
+                if tmp2>=req_cans then begin
+                  setresourcetype(getbase(tmp),mat_cans,tmp2-req_cans);
+                  break;
+                end
+                else begin
+                  setresourcetype(getbase(tmp),mat_cans,0);
+                  req_cans=req_cans-tmp2;
+                end;
+              end;
+              for tmp in depoty do begin
+                tmp2=getresourcetype(getbase(tmp),mat_siberit);
+                if tmp2>=req_sib then begin
+                  setresourcetype(getbase(tmp),mat_siberit,tmp2-req_sib);
+                  break;
+                end
+                else begin
+                  setresourcetype(getbase(tmp),mat_siberit,0);
+                  req_sib=req_sib-tmp2;
+                end;
+              end;
+            end;
+            3:begin   //not enough mat. 2nd time
+              say(john,'D3Kc2-JMM-1');
+              say(kurt,'D3Kc2-Kurt-1');
+              vyber=1; //reject
+            end;
+            4:begin     //request help
+              say(john,'D3Kd-JMM-1');
+              if kurtloc=0 then begin
+                str='Q2a';
+                li=[1];
+                if (tmpc>=req_cans) and (tmps>=req_sib) then li=li^[2];
+                if (tmpc>=req2_cans) and (tmps>=req2_sib) then li=li^[3];
+                li=li^[4];
+              end
+              else begin
+                str='Q2aK';
+                li=[1];
+                if (tmpc>=req_cans_) and (tmps>=req_sib_) then li=li^[2];
+                if (tmpc>=req2_cans_) and (tmps>=req2_sib_) then li=li^[3];
+                li=li^[4];
+              end;
+              vyber=selectivequery(str,li);
+              case vyber of
+                1:begin   //reject
+                  say(john,'D3Ka-JMM-1');
+                  say(kurt,'D3Ka-Kurt-1');
+                end;
+                2:begin     //pay 4 neutrality
+                  legion=0;
+                  say(john,'D3Kb-JMM-1');
+                  say(kurt,'D3Kb-Kurt-1');
+                  if kurtloc then begin
+                    req_cans=req_cans_;
+                    req_sib=req_sib_;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_cans);
+                    if tmp2>=req_cans then begin
+                      setresourcetype(getbase(tmp),mat_cans,tmp2-req_cans);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_cans,0);
+                      req_cans=req_cans-tmp2;
+                    end;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_siberit);
+                    if tmp2>=req_sib then begin
+                      setresourcetype(getbase(tmp),mat_siberit,tmp2-req_sib);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_siberit,0);
+                      req_sib=req_sib-tmp2;
+                    end;
+                  end;
+                end;
+                3:begin    //pay 4 help
+                  legion=1;
+                  say(john,'D3Ke-JMM-1');
+                  say(kurt,'D3Ke-Kurt-1');
+                  if kurtloc then begin
+                    req2_cans=req2_cans_;
+                    req2_sib=req2_sib_;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_cans);
+                    if tmp2>=req2_cans then begin
+                      setresourcetype(getbase(tmp),mat_cans,tmp2-req2_cans);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_cans,0);
+                      req2_cans=req2_cans-tmp2;
+                    end;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_siberit);
+                    if tmp2>=req2_sib then begin
+                      setresourcetype(getbase(tmp),mat_siberit,tmp2-req2_sib);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_siberit,0);
+                      req2_sib=req2_sib-tmp2;
+                    end;
+                  end;
+                end;
+                4:begin      //not enough mat. 2nd time
+                  say(john,'D3Kc2-JMM-1');
+                  say(kurt,'D3Kc2-Kurt-1');
+                  vyber=1; //reject
+                end;
+              end;
+            end;
+          end;
+        end;
+        3:begin
+          say(john,'D4c-JMM-1');
+          say(kurt,'D4c-Kurt-1');
+          say(john,'D4c-JMM-2');
+          say(kurt,'D4c-Kurt-2');
+          legion_cheated=1;
+          vyber=2;  //pay 4 neutrality (lie)
+          legion=0;     
+        end;
+      end;  //konec Q2b
+    end;
+    4:begin   //request help
+      say(john,'D3Kd-JMM-1');
+      if kurtloc=0 then begin
+        str='Q2a';
+        li=[1];
+        if (tmpc>=req_cans) and (tmps>=req_sib) then li=li^[2];
+        if (tmpc>=req2_cans) and (tmps>=req2_sib) then li=li^[3];
+        li=li^[4];
+      end
+      else begin
+        str='Q2aK';
+        li=[1];
+        if (tmpc>=req_cans_) and (tmps>=req_sib_) then li=li^[2];
+        if (tmpc>=req2_cans_) and (tmps>=req2_sib_) then li=li^[3];
+        li=li^[4];
+      end;
+      vyber=selectivequery(str,li);
+      case vyber of
+        1:begin   //reject
+          say(john,'D3Ka-JMM-1');
+          say(kurt,'D3Ka-Kurt-1');
+        end;
+        2:begin     //pay 4 neutrality
+          legion=0;
+          say(john,'D3Kb-JMM-1');
+          say(kurt,'D3Kb-Kurt-1');
+          if kurtloc then begin
+            req_cans=req_cans_;
+            req_sib=req_sib_;
+          end;
+          for tmp in depoty do begin
+            tmp2=getresourcetype(getbase(tmp),mat_cans);
+            if tmp2>=req_cans then begin
+              setresourcetype(getbase(tmp),mat_cans,tmp2-req_cans);
+              break;
+            end
+            else begin
+              setresourcetype(getbase(tmp),mat_cans,0);
+              req_cans=req_cans-tmp2;
+            end;
+          end;
+          for tmp in depoty do begin
+            tmp2=getresourcetype(getbase(tmp),mat_siberit);
+            if tmp2>=req_sib then begin
+              setresourcetype(getbase(tmp),mat_siberit,tmp2-req_sib);
+              break;
+            end
+            else begin
+              setresourcetype(getbase(tmp),mat_siberit,0);
+              req_sib=req_sib-tmp2;
+            end;
+          end;
+        end;
+        3:begin    //pay 4 help
+          legion=1;
+          say(john,'D3Ke-JMM-1');
+          say(kurt,'D3Ke-Kurt-1');
+          if kurtloc then begin
+            req2_cans=req2_cans_;
+            req2_sib=req2_sib_;
+          end;
+          for tmp in depoty do begin
+            tmp2=getresourcetype(getbase(tmp),mat_cans);
+            if tmp2>=req2_cans then begin
+              setresourcetype(getbase(tmp),mat_cans,tmp2-req2_cans);
+              break;
+            end
+            else begin
+              setresourcetype(getbase(tmp),mat_cans,0);
+              req2_cans=req2_cans-tmp2;
+            end;
+          end;
+          for tmp in depoty do begin
+            tmp2=getresourcetype(getbase(tmp),mat_siberit);
+            if tmp2>=req2_sib then begin
+              setresourcetype(getbase(tmp),mat_siberit,tmp2-req2_sib);
+              break;
+            end
+            else begin
+              setresourcetype(getbase(tmp),mat_siberit,0);
+              req2_sib=req2_sib-tmp2;
+            end;
+          end;
+        end;
+        4:begin      //not enough mat.
+          say(john,'D3Kc1-JMM-1');
+          say(kurt,'D3Kc1-Kurt-1');
+          say(john,'D3Kc1-JMM-2');
+          say(kurt,'D3Kc1-Kurt-2');
+          pr_loz=1;
+          case selectivequery('Q2b',[1,2,3]) of
+            1,2:begin
+              if vyber=1 then say(john,'D4a-JMM-1')
+              else begin
+                say(john,'D4b-JMM-1');
+                say(kurt,'D4b-Kurt-1');
+              end;
+              vyber=selectivequery(str,li);
+              case vyber of
+                1:begin //reject
+                  say(john,'D3Ka-JMM-1');
+                  say(kurt,'D3Ka-Kurt-1');
+                end;
+                2:begin   //pay 4 neutrality
+                  legion=0;
+                  say(john,'D3Kb-JMM-1');
+                  say(kurt,'D3Kb-Kurt-1');
+                  if kurtloc then begin
+                    req_cans=req_cans_;
+                    req_sib=req_sib_;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_cans);
+                    if tmp2>=req_cans then begin
+                      setresourcetype(getbase(tmp),mat_cans,tmp2-req_cans);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_cans,0);
+                      req_cans=req_cans-tmp2;
+                    end;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_siberit);
+                    if tmp2>=req_sib then begin
+                      setresourcetype(getbase(tmp),mat_siberit,tmp2-req_sib);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_siberit,0);
+                      req_sib=req_sib-tmp2;
+                    end;
+                  end;
+                end;
+                3:begin      //pay 4 help
+                  legion=1;
+                  say(john,'D3Ke-JMM-1');
+                  say(kurt,'D3Ke-Kurt-1');
+                  if kurtloc then begin
+                    req2_cans=req2_cans_;
+                    req2_sib=req2_sib_;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_cans);
+                    if tmp2>=req2_cans then begin
+                      setresourcetype(getbase(tmp),mat_cans,tmp2-req2_cans);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_cans,0);
+                      req2_cans=req2_cans-tmp2;
+                    end;
+                  end;
+                  for tmp in depoty do begin
+                    tmp2=getresourcetype(getbase(tmp),mat_siberit);
+                    if tmp2>=req2_sib then begin
+                      setresourcetype(getbase(tmp),mat_siberit,tmp2-req2_sib);
+                      break;
+                    end
+                    else begin
+                      setresourcetype(getbase(tmp),mat_siberit,0);
+                      req2_sib=req2_sib-tmp2;
+                    end;
+                  end;
+                end;
+                4:begin   //not enough mat. 2nd time
+                  say(john,'D3Kc2-JMM-1');
+                  say(kurt,'D3Kc2-Kurt-1');
+                  vyber=1; //reject
+                end;
+              end;
+            end;
+            3:begin
+              say(john,'D4c-JMM-1');
+              say(kurt,'D4c-Kurt-1');
+              say(john,'D4c-JMM-2');
+              say(kurt,'D4c-Kurt-2');
+              legion_cheated=1;
+              vyber=2;  //pay 4 neutrality (lie)
+              legion=0;
+              li=[1];
+              if kurtloc=0 then begin
+                str='Q2c';
+                if (tmpc>=req_cans) and (tmps>=req_sib) then li=li^[2];
+              end
+              else begin
+                str='Q2cK';
+                if (tmpc>=req_cans_) and (tmps>=req_sib_) then li=li^[2];
+              end;
+              if li>1 then begin
+                vyber=selectivequery(str,li);
+                case vyber of
+                  1:begin    //reject additional offer
+                    say(john,'D5Ka-JMM-1');
+                    say(kurt,'D5Ka-Kurt-1');
+                  end;
+                  2:begin  //pay 4 help
+                    legion=1;
+                    say(john,'D3Ke-JMM-1');
+                    say(kurt,'D3Ke-Kurt-1');
+                    if kurtloc then begin
+                      req2_cans=req_cans_;
+                      req2_sib=req_sib_;
+                    end
+                    else begin
+                      req2_cans=req_cans;
+                      req2_sib=req_sib;
+                    end;
+                    for tmp in depoty do begin
+                      tmp2=getresourcetype(getbase(tmp),mat_cans);
+                      if tmp2>=req2_cans then begin
+                        setresourcetype(getbase(tmp),mat_cans,tmp2-req2_cans);
+                        break;
+                      end
+                      else begin
+                        setresourcetype(getbase(tmp),mat_cans,0);
+                        req2_cans=req2_cans-tmp2;
+                      end;
+                    end;
+                    for tmp in depoty do begin
+                      tmp2=getresourcetype(getbase(tmp),mat_siberit);
+                      if tmp2>=req2_sib then begin
+                        setresourcetype(getbase(tmp),mat_siberit,tmp2-req2_sib);
+                        break;
+                      end
+                      else begin
+                        setresourcetype(getbase(tmp),mat_siberit,0);
+                        req2_sib=req2_sib-tmp2;
+                      end;
+                    end;
+                  end;
+                end;
+              end;
+            end;
+          end;  //konec Q2b
+        end;
+      end;
+    end;
+  end;
+  changesidefog(ar,ar);
+  dialogueoff;
+  smejdi_ar=[];
+  case legion of
+    -1:begin  //prepare arabian units guarding the bridge  //jen dva?
+      //setattitude(am,ar,att_enemy,true);
+      setattitude(rus,ar,att_friend,true);
+      uc_nation=nation_arabian;
+      uc_side=ar;
+      preparesoldier(sex_male,6);
+      tmp2=createhuman;
+      placeunitxyr(tmp2,35,42,2,false);
+      complaceremotecharge(tmp2,36,51,0);
+      addcommovexy(tmp2,36,44);
+      addcomcrawl(tmp2);
+      addcomturnxy(tmp2,36,51);
+      preparesoldier(sex_female,6);
+      tmp2=createhuman;
+      placeunitxyr(tmp2,35,42,2,false);
+      complaceremotecharge(tmp2,35,51,0);
+      addcommovexy(tmp2,35,43);
+      addcomcrawl(tmp2);
+      addcomturnxy(tmp2,35,51);
+      enable(16);
+    end;
+    0:begin
+      setattitude(am,ar,att_neutral,true);
+      setattitude(rus,ar,att_neutral,true);
+    end;
+    1:begin //prepare arabians fighting on player's side
+      SA_OnEmployMercenaries;
+      setattitude(am,ar,att_friend,true);
+      setattitude(rus,ar,att_enemy,true);
+      uc_nation=nation_arabian;
+      uc_side=am;
+      vc_control=control_manual;
+      vc_engine=engine_siberite;
+      vc_chassis=arv0_ch;
+      vc_weapon=arv0_wp;
+      tmp2=createvehicle;
+      preparemechanic(sex_male,arv0_dr);
+      setdir(tmp2,4);
+      placeunitxyr(tmp2,144,96,2,false);
+      placehumaninunit(createhuman,tmp2);
+      tmp=[tmp2];
+      vc_chassis=arv1_ch;
+      vc_weapon=arv1_wp;
+      tmp2=createvehicle;
+      preparemechanic(sex_female,arv1_dr);
+      setdir(tmp2,4);
+      placeunitxyr(tmp2,144,99,2,false);
+      placehumaninunit(createhuman,tmp2);
+      tmp=tmp^[tmp2];
+      vc_chassis=arv2_ch;
+      vc_weapon=arv2_wp;
+      tmp2=createvehicle;
+      preparemechanic(sex_male,arv2_dr);
+      setdir(tmp2,4);
+      placeunitxyr(tmp2,147,102,2,false);
+      placehumaninunit(createhuman,tmp2);
+      tmp=tmp^[tmp2];
+      preparesoldier(sex_male,arsld0);
+      tmp2=createhuman;
+      placeunitxyr(tmp2,143,97,2,false);
+      tmp=tmp^[tmp2];
+      preparesoldier(sex_male,arsld1);
+      tmp2=createhuman;
+      placeunitxyr(tmp2,147,100,2,false);
+      tmp=tmp^[tmp2];
+      commovexy(tmp,134,93);
+      smejdi_ar=tmp;
+    end;
+  end;
+  //buildquery('kurt',['OK']);  //DEBUG!!!!!
+  comenterunit(kurt,kurt_veh);
+  while not isinunit(kurt) do begin wait(0$1);comenterunit(kurt,kurt_veh);end;
+  commovexy(kurt_veh,150,101);
+  enable(10);
+  enable(99);
+  hint('Legion');
+end;
+export smejdi_ar;
+
+every 0$1 trigger isplaced(kurt) and (not hastask(kurt_veh)) marked 99 do
+begin
+  commovexy(kurt_veh,150,101);
+  enable;
+end;
+
+//mizeni odjizdejiciho kurta
+every 0$1 trigger isinarea(kurt_veh,odjezd) marked 10 do
+begin
+  disable(99);
+  destroyunit(kurt_veh);
+  if legion=-1 then setattitude(am,ar,att_enemy,true);
+end;
+
+//odpaleni nalozi
+every 0$0.5 trigger filterunitsinarea(minefield,[[f_side,am],[f_type,unit_human]]) marked 16 do
+begin
+  comfireexplosives(filterallunits([[f_side,ar],[f_type,unit_human]]));
+end;
+
+
+//dialog 5
+every 0$0.85 trigger seexy(am,36,53) do
+var tmp,tmp1,tmp2;
+begin
+  dialogueon;
+  if isinarea(john,vidimost) then begin
+    say(john,'D5-JMM-1');
+    if isok(lucy) and (legion=-1) then say(lucy,'D5-Don-1');
+  end
+  else begin
+    tmp=filterunitsinarea(vidimost,[[f_side,am],[f_type,unit_human]]);
+    if not tmp then begin
+      tmp2=filterunitsinarea(vidimost,[[f_side,am],[f_type,unit_vehicle]]);
+      tmp=[];
+      for tmp1 in tmp2 do
+        case getcontrol(tmp1) of
+          control_manual:tmp=tmp^[isdrivenby(tmp1)];
+          control_remote:tmp=tmp^[iscontroledby(tmp1)];
+        end;
+    end;
+    if not tmp then begin
+      tmp2=filterallunits([[f_side,am],[f_ok],[f_type,unit_human]]) diff [john,lucy];
+      tmp=[nearestunittoxy(tmp2,36,53)] diff [0];
+    end;
+    if tmp then begin
+      if getsex(tmp[1])=sex_female then say(tmp[1],'D5-FSol1-1')
+      else say(tmp[1],'D5-Sol1-1');
+      if isok(lucy) and (legion=-1) then say(lucy,'D5-Don-1');
+    end;
+  end;
+  dialogueoff;
+end;
+
+
+//dialog 7
+export ru_scies__;
+var lab_destroyed;
+on unitdestroyed(un) do
+  if un=john then youlost('JMM')
+  else if un=ru_lab then lab_destroyed=true
+  else if un in ru_scies then begin
+    ru_scies__=ru_scies__-1;
+    if not ru_scies__ then changemissionobjectives('M1a');
+  end
+  else if(un=ruteleprt)and(telepmed<>2) then changemissionobjectives('M2b');
+
+
+function isplacedex(l);
+var tmp;
+begin
+  result=false;
+  for tmp in l do if isplaced(tmp) then begin result=true;exit;end;
+end;
+
+every 0$0.4 trigger lab_destroyed do
+var tmp,tmq;
+begin
+  while isplacedex(ru_scies) do wait(0$1);
+  tmq=0;
+  for tmp in ru_scies do if getlives(tmp) then tmq=tmq+1;
+  dialogueon;
+  case tmq of
+    5:begin
+      say(john,'D7a-JMM-1');
+      say(powell,'D7a-Pow-1');
+      addmedal('Materials',-1);
+      addmedal('Scientists',-1);
+      savevariable(1,'vedci_zdrhli');
+    end;
+    4,3,2,1:begin
+      say(john,'D7b-JMM-1');
+      say(powell,'D7b-Pow-1');
+      addmedal('Scientists',-1);
+    end;
+    0:begin
+      say(john,'D7c-JMM-1');
+      say(powell,'D7c-Pow-1');
+      addmedal('Scientists',1);
+    end;
+  end;                       
+  if tmq<5 then begin
+    savevariable(0,'vedci_zdrhli');
+    say(john,'D7d-JMM-1');
+    say(powell,'D7d-Pow-1');
+    say(john,'D7d-JMM-2');
+    if pr_loz then say(john,'D7d-JMM-2a')
+    else say(powell,'D7d-Pow-2');
+    say(powell,'D7d-Pow-2a');
+    addmedal('Materials',1);
+  end;
+  dialogueoff;
+  case telepmed of
+    0:addmedal('Teleport',-1);
+    1:addmedal('Teleport',-2);
+    2:addmedal('Teleport',1);
+  end;
+  givemedals('MAIN');
+  rewardpeople(filterallunits([[f_alive],[f_side,am],[f_type,unit_human]]));
+  saveitall;
+  youwin;
+end;
+
+

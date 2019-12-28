@@ -1,0 +1,673 @@
+
+// SIDES
+export you,russians,arabians, you2;
+// skupiny
+export apemans;
+export prilet_tvoji;
+export prilet_rusaci;
+export prilet_arabi;
+export all, other;
+export not_char, used, opicaci;
+export zgamy2;
+// jednotlivci
+export JMM;
+export Har;
+export RadioSci;
+export Sol1, Eng1;
+export Frank, Lisa;
+export Cyrus, Bobby, Donaldson, Brown, Denis, Gladstone;
+export MSol1, MSol2, MSol3, MEng1, MMec1, Joan;
+export Op1, Op2, Op3, Op4, Op5;
+export RMSo1, RMSo2, RMEn1, RMMe1;
+export Kurt;
+export Car1, Car2;
+export Denis_P, Kurt_P, Joan_P, Lisa_P, Frank_P;
+export MaterialNavic;
+export DialogInProgress;
+// game starting
+export map_size_x, map_size_y;
+//export difficulty;
+// game progress
+export start_game;
+export test_JMM_Joan;
+export before_d6;
+export act_Lisa_JMM;
+export hledani;
+export attacky;
+export more_scouting;
+export go_up;
+export attacking;
+export under_attack;
+export odplata_1;
+export odplata_2;
+export attack_to_scouting;
+export start_scouting;
+
+export WasD11aa, WasD11ab, WasD11b, WasD11c, WasD11d, WasD11e, WasD11f;
+
+export crates;
+
+export list_of_R1_query;
+export Gamma3_lab_upgraded_to_opto;
+export Gamma3_lab_upgraded_to_weapon;
+export radar_invented;
+export vzit_opicaku;
+export remote_tried;
+export Gamma2Commander;
+export NavicLidi;
+export KurtTryToEscape;
+
+
+//------------------------------------------------------------------------------------------------------
+//-------- Main Starting Block -------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+starting
+begin
+    disable(33);
+    disable_prediction:=true;
+
+    map_size_x:=100;
+    map_size_y:=100;
+
+    prepare_sides;
+    load_characters;
+    prepare_russian_units;
+    prepare_arabian_units;
+
+    if radar_invented then
+       SetTech(tech_Radar, you, state_researched);
+
+    Gamma3_lab_upgraded_to_opto:=false;
+    Gamma3_lab_upgraded_to_weapon:=false;
+
+
+    SetDifficulty;
+
+    apemans:=FilterAllUnits( [f_nation, nation_nature] );
+
+    Kurt_P:=false;
+    Joan_P:=false;
+
+// some variables of game progress
+    start_game:=false;
+    test_JMM_Joan:=false;
+    before_d6:=false;
+    act_Lisa_JMM:=false;
+    hledani:=false;
+    more_scouting:=false;
+    go_up:=false;
+
+    WasD11aa:=false;
+    WasD11ab:=false;
+    WasD11b:=false;
+    WasD11c:=false;
+    WasD11d:=false;
+    WasD11e:=false;
+    WasD11f:=false;
+
+    crates:=[];
+
+    attacky:=0;
+    attacking:=false;
+    under_attack:=false;
+    Dialog1;
+end;
+
+function load_characters;
+begin
+    InitUc;
+    InitHc;
+    InitVc;
+    uc_side:=arabians;
+    uc_nation:=nation_arabian;
+    Kurt:=NewCharacter('Kurt');
+
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    JMM:=CreateCharacter('JMM');
+    Har:=NewCharacter('Harisson');
+
+    if TestCharacters('other_from5to6') then
+      all:=CreateCharacterSet('other_from5to6')
+    else
+      all:=[];
+
+// just talking trough radio (sci)
+    if CheckCharacterSet('radiosci_from5to6') then
+       RadioSci:=CreateCharacter('radiosci_from5to6')
+    else begin
+       PrepareScientist(sex_male, 10);
+       RadioSci:=CreateHuman;
+    end;
+    DeleteCharacters('radiosci_from5to6');
+
+
+    other:=all;
+
+    radar_invented:=LoadVariable('RadarDeveloped', false);
+    Gamma2Commander:=LoadVariable('Gamma2Commander', 3);
+    opicaci:=[];
+    if CheckCharacterSet('opicaci') then
+       opicaci:=CreateCharacterSet('opicaci');
+
+// zda byli vybrani v intru
+    Lisa:=0;
+    if CheckCharacterSet('Lisa') then
+      If LoadVariable('LisaLoc', 0)=8 then
+        begin
+          Lisa:=CreateCharacter('Lisa');
+          Lisa_P:=true;
+          all:=all^[Lisa];
+        end;
+    Cyrus:=0;
+    if CheckCharacterSet('Cyrus') then
+      If LoadVariable('CyrusLoc', 0)=8 then
+        begin
+          Cyrus:=CreateCharacter('Cyrus');
+          all:=all^[Cyrus];
+        end;
+    Bobby:=0;
+    if CheckCharacterSet('Bobby') then
+      If LoadVariable('BobbyLoc', 0)=8 then
+        begin
+          Bobby:=CreateCharacter('Bobby');
+          all:=all^[Bobby];
+        end;
+    Frank:=0;
+    if CheckCharacterSet('Frank') then
+      if LoadVariable('FrankLoc', 0)=8 then
+        begin
+          Frank:=CreateCharacter('Frank');
+          Frank_P:=true;
+          all:=all^[Frank];
+        end;
+    Donaldson:=0;
+    if CheckCharacterSet('Donaldson') then
+      if LoadVariable('DonaldsonLoc', 0)=8 then
+        begin
+          Donaldson:=CreateCharacter('Donaldson');
+          all:=all^[Donaldson];
+        end;
+    Brown:=0;
+    if CheckCharacterSet('Brown') then
+      if LoadVariable('BrownLoc', 0)=8 then
+        begin
+          Brown:=CreateCharacter('Brown');
+          all:=all^[Brown];
+        end;
+
+// objevili se v posledni misi
+    Denis:=0;
+    if CheckCharacterSet('Denis') then
+      if LoadVariable('DenisLoc', 0)=8 then
+        begin
+          Denis:=CreateCharacter('Denis');
+          Denis_P:=true;
+        end;
+    Gladstone:=0;
+    if CheckCharacterSet('Gladstone') then
+      if LoadVariable('GladstoneLoc', 0)=8 then
+        begin
+          Gladstone:=CreateCharacter('Gladstone');
+          all:=all^[Gladstone];
+        end;
+
+// objevi se v teto misi
+    uc_side:=you2;
+    Joan:=NewCharacter('Joan');
+    SetLives(Joan, hranice_umirani-1);
+    uc_side:=you;
+
+
+// initializes unit, human and vehicle creating
+
+// vozidla
+    vc_chassis:=us_light_wheeled;
+    vc_control:=control_manual;
+    vc_engine:=engine_solar;
+    vc_weapon:=us_machine_gun;
+    Car1:=CreateVehicle;
+
+    vc_chassis:=us_light_wheeled;
+    vc_control:=control_manual;
+    vc_engine:=engine_solar;
+    vc_weapon:=us_machine_gun;
+    Car2:=CreateVehicle;
+
+// lidi z gamy 2
+    uc_nation:=nation_american;
+    hc_sex:=sex_female;
+    hc_class:=class_soldier;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 4,2,1,0 ];
+    Sol1:=CreateHuman;
+
+    hc_sex:=sex_male;
+    hc_class:=class_engineer;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 3,4,0,0 ];
+    Eng1:=CreateHuman;
+    zgamy2:=[Sol1, Eng1];
+
+
+// lidi materializovani
+    hc_sex:=sex_female;
+    hc_class:=class_soldier;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 1,1,0,0 ];
+    MSol1:=CreateHuman;
+
+    hc_sex:=sex_male;
+    hc_class:=class_soldier;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 2,0,1,0 ];
+    MSol2:=CreateHuman;
+
+    hc_sex:=sex_male;
+    hc_class:=class_soldier;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 2,0,1,0 ];
+    MSol3:=CreateHuman;
+
+    hc_sex:=sex_female;
+    hc_class:=class_engineer;
+    hc_attr:=[ 9,10 ];
+    hc_skills:=[ 0,2,0,0 ];
+    MEng1:=CreateHuman;
+
+    hc_sex:=sex_male;
+    hc_class:=class_mechanic;
+    hc_attr:=[ 10,9 ];
+    hc_skills:=[ 0,0,3,0 ];
+    MMec1:=CreateHuman;
+    prilet_tvoji:=[MSol1, MSol2, MEng1, MMec1];
+    NavicLidi:=prilet_tvoji;
+end;
+
+FUNCTION prepare_russian_units;
+begin
+// initializes unit, human and vehicle creating
+    InitUc;
+    InitHc;
+    InitVc;
+
+// cizi lidi materializovani
+    uc_nation:=nation_russian;
+    uc_side:=russians;
+
+    hc_sex:=sex_female;
+    hc_class:=class_soldier;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 1,1,0,0 ];
+    RMSo1:=CreateHuman;
+
+    hc_sex:=sex_male;
+    hc_class:=class_soldier;
+    hc_attr:=[ 10,10 ];
+    hc_skills:=[ 2,0,1,0 ];
+    RMSo2:=CreateHuman;
+
+    hc_sex:=sex_female;
+    hc_class:=class_engineer;
+    hc_attr:=[ 9,10 ];
+    hc_skills:=[ 0,2,0,0 ];
+    RMEn1:=CreateHuman;
+
+    hc_sex:=sex_male;
+    hc_class:=class_mechanic;
+    hc_attr:=[ 10,9 ];
+    hc_skills:=[ 0,0,3,0 ];
+    RMMe1:=CreateHuman;
+
+    prilet_rusaci:=[RMSo1, RMSo2, RMMe1];
+
+    prilet_arabi:=[];
+end;
+
+FUNCTION prepare_arabian_units;
+begin
+// initializes unit, human and vehicle creating
+    InitUc;
+    InitHc;
+    InitVc;
+
+// cizi lidi materializovani
+    uc_nation:=nation_arabian;
+    uc_side:=arabians;
+
+    prilet_arabi:=[];
+
+end;
+
+FUNCTION prepare_sides;
+begin
+// who is who in this mission
+    you:=1;
+    you2:=4;
+    arabians:=2;
+    russians:=3;
+
+// starting setting of attitiudes (you remain neutral with anyone as long as you attack him or he attack you)
+    SetAttitude(russians,you,att_enemy,true);
+    SetAttitude(arabians,you,att_neutral,true);
+    SetAttitude(arabians,russians,att_enemy,true);
+end;
+
+
+
+FUNCTION SetDifficulty;
+var t1;
+begin
+    MaterialNavic:=[350,500,700][difficulty];
+    odplata_1:=[130, 90, 75][difficulty];
+    odplata_2:=[350, 250, 150][difficulty];
+    attack_to_scouting:=[15,10,5][difficulty];
+    start_scouting:=[5$0,2$0,0$0][difficulty];
+    case difficulty of
+      1:begin
+          for t1 in FilterAllUnits([[f_side,russians],[f_type,unit_human]]) do begin
+              SetAttr(t1, attr_stamina, GetAttr(t1,attr_stamina)-3);
+              SetAttr(t1, attr_speed, GetAttr(t1,attr_speed)-2);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_soldier]]) do begin
+              SetSkill(t1, skill_combat, GetSkill(t1,skill_combat)-1);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_engineer]]) do begin
+              SetSkill(t1, skill_engineering, GetSkill(t1,skill_engineering)+2);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_mechanic]]) do begin
+              SetSkill(t1, skill_mechanical, GetSkill(t1,skill_mechanical)-1);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_scientistic]]) do begin
+              SetSkill(t1, skill_scientistic, GetSkill(t1,skill_scientistic)-1);
+          end;
+       end;
+      2:begin
+          for t1 in FilterAllUnits([[f_side,russians],[f_type,unit_human]]) do begin
+              SetAttr(t1, attr_stamina, GetAttr(t1,attr_stamina)-1);
+              SetAttr(t1, attr_speed, GetAttr(t1,attr_speed)-1);
+              SetSkill(t1, skill_combat, GetSkill(t1,skill_combat));
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_soldier]]) do begin
+              SetSkill(t1, skill_combat, GetSkill(t1,skill_combat)+1);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_engineer]]) do begin
+              SetSkill(t1, skill_engineering, GetSkill(t1,skill_engineering)+2);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_mechanic]]) do begin
+              SetSkill(t1, skill_mechanical, GetSkill(t1,skill_mechanical));
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_scientistic]]) do begin
+              SetSkill(t1, skill_scientistic, GetSkill(t1,skill_scientistic)+1);
+          end;
+        end;
+      3:begin
+          for t1 in FilterAllUnits([[f_side,russians],[f_type,unit_human]]) do begin
+              SetAttr(t1, attr_stamina, GetAttr(t1,attr_stamina)+1);
+              SetAttr(t1, attr_speed, GetAttr(t1,attr_speed)+1);
+              SetSkill(t1, skill_combat, GetSkill(t1,skill_combat)+1);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_soldier]]) do begin
+              SetSkill(t1, skill_combat, GetSkill(t1,skill_combat)+2);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_engineer]]) do begin
+              SetSkill(t1, skill_engineering, GetSkill(t1,skill_engineering)+2);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_mechanic]]) do begin
+              SetSkill(t1, skill_mechanical, GetSkill(t1,skill_mechanical)+2);
+          end;
+          for t1 in FilterAllUnits([[f_side,russians],[f_class,class_scientistic]]) do begin
+              SetSkill(t1, skill_scientistic, GetSkill(t1,skill_scientistic)+2);
+          end;
+        end;
+    end;
+end;
+
+every 50$0 do
+var bases, i, mat;
+begin
+     if count_crates<MaterialNavic then begin
+        Disable(0);
+        YouLost('matmin');
+     end
+     else begin
+        Disable(0);
+        SetMedals;
+        GiveMedals('Main');
+        RewardPeople(FilterAllUnits([[f_ok],[f_side,you],[f_type,unit_human],[f_nation,nation_american]]));
+        Save;
+        YouWin;
+     end;
+end;
+
+export function Save;
+begin
+    SaveCharacters(JMM, 'JMM');
+
+    SaveCharacters(Kurt, 'Kurt');
+    SaveVariable(not IsDead(Kurt),'KurtLeaves');        
+    SaveVariable(KurtTryToEscape and not IsDead(Kurt),'KurtEscapes');
+    SaveVariable(remote_tried, 'RemoteUsed');
+    SaveVariable(Researched(you, tech_RemCont), 'RemoteDeveloped');
+
+    if Lisa then begin
+       SaveCharacters(Lisa, 'Lisa');
+       SaveVariable(9, 'LisaLoc');
+    end;
+
+    if Frank then begin
+       SaveCharacters(Frank, 'Frank');
+       SaveVariable(9, 'FrankLoc');
+    end;
+
+    if Donaldson then begin
+       SaveCharacters(Donaldson, 'Donaldson');
+       SaveVariable(9, 'DonaldsonLoc');
+    end;
+
+    if Brown then begin
+       SaveCharacters(Brown, 'Brown');
+       SaveVariable(9, 'BrownLoc');
+    end;
+
+    if Gladstone then begin
+       SaveCharacters(Gladstone, 'Gladstone');
+       SaveVariable(9, 'GladstoneLoc');
+    end;
+
+    SaveCharacters(Joan, 'Joan');
+    SaveVariable(9, 'JoanLoc');
+
+    if Denis then begin
+       SaveCharacters(Denis, 'Denis');
+       SaveVariable(9, 'DenisLoc');
+    end;
+
+    if Bobby then begin
+       SaveCharacters(Bobby, 'Bobby');
+       SaveVariable(9, 'BobbyLoc');
+    end;
+
+    if Cyrus then begin
+       SaveCharacters(Cyrus, 'Cyrus');
+       SaveVariable(9, 'CyrusLoc');
+    end;
+
+    SaveCharacters(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_american]])
+        diff [JMM,Lisa,Frank,Donaldson,Brown,Gladstone,Joan,Denis,Bobby,Cyrus,0], 'OtherUnplaced');
+
+    DeleteCharacters('opicaci');
+    DeleteCharacters('other_from5to6');
+end;
+
+export function SetMedals;
+begin
+{* cans
++ Spousta materiálu.
+- Nezískal jsi navíc ani M materiálu.
+*}    AddMedal('cans', count_crates>=(MaterialNavic+100));
+
+      //It is theoretically possible to gather up to about 3000 crates but 1500 is more realistic.
+      if count_crates >= 1000 then
+           SA_On1000CratesGathered;
+
+{* people
++ Spousta lidí.
+- Nezachránil jsi ani tøi z lidí, kteøí se objevili.
+*}    NavicLidi:=UnitFilter(NavicLidi, [f_ok]);
+      AddMedal('people', NavicLidi>=3);
+
+{* remote
++ Dálkové ovládání.
+- Nenechal jsi vìdce na Gammì 3 vynalézt revoluèní technologii.
+- Nevyzkoušel jsi novou technologii - øízení více vozidel najednou dálkovì.
+*}
+  if remote_tried then
+     AddMedal('remote', 1)
+  else begin
+     if GetTech(tech_RemCont, you)=state_researched then
+        AddMedal('remote', -2)
+     else
+        AddMedal('remote', -1);
+  end;
+end;
+
+// for future use
+final
+begin
+end;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

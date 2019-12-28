@@ -1,0 +1,318 @@
+var nearest_labs;                // seznam nejlblizsich labu k danym artefaktum
+
+export art_researched;              // seznam identu stavu vyzkumu artefaktu (zjednodusene art_progress na true/false)
+
+var art_progres;                 // seznam stavu vyzkumu jednotlivych artefaktu
+
+var art_status;                  // seznam poradi ikon k jednotlivym artefaktum
+
+var art_in_research;             // seznam artefaktu, ktere se prave zkoumaji
+
+var art_difficulty;              // seznam obtiznosti vynalezani jednotlivych artefaktu
+
+var art_num;                     // pocet artefaktu ve hre
+
+var can_use_artefact;            // seznam 3x true/false, jestli se prave ted muze pouzit dany artefakt
+
+var sib_to_destroy,              // mnozstvi siberitu potrebneho ke zniceni siberitove jednotky
+    sib_to_view,                 // mnozstvi siberitu potrebneho ke zobrazeni vzdalene oblasti
+    sib_to_teleport;             // mnozstvi siberitu potrebneho k masove teleportaci
+
+var recharge_destroy,            // cas potrebny ke znovunabiti artefaktu na zniceni siberitove jednotky
+    recharge_view;               // cas potrebny ke znovunabiti artefaktu na odkryvani mapy
+
+export view_data;                   // pomocna promenna pro deaktivaci artefaktovniho oka
+
+export function init_alien_research;
+var i;
+begin
+  sib_to_view:=1+difficulty;                // 2, 3, 4
+  sib_to_destroy:=2+(3*difficulty);         // 5, 8, 11
+  sib_to_teleport:=30+(10*difficulty);      // 40, 50, 60
+
+  recharge_destroy:=(0$30)+(2*difficulty);  // 1m  2m  3m
+  recharge_view:=(0$10)*(3*difficulty);     // 30s 60s 90s
+
+  for i=1 to 8 do
+    SetArtifactRes(i,state_enabled);
+
+  nearest_labs:=[0,0,0];                      // seznam nejblizsich labu k artefaktu o velikosti indexu v seznamu
+  art_num:=3;                                 // pocet artefaktu ve hre
+  art_progres:=[0,0,0];                       // pamet pro progres bar pro jednotlive artefakty
+  art_researched:=[0,0,0];                    // vysledek odvozeny z progres baru (100= true, else false)
+  art_in_research:=[];                        // seznam aktualne vynalezanych artefaktu
+  art_difficulty:=[200,500,800];              // obtiznost vynalezani jednotlivych artefaktu
+  art_status:=[ [art_exp_left, art_use_eye],
+                [art_exp_mid, art_use_sibexplosion],
+                [art_exp_right, art_use_teleport],
+              ];
+
+  can_use_artefact:=[true,true,true];
+end;
+
+
+//---------------------------------//
+//-----  ARTEFAKTOVNI FUNKCE  -----//
+function Show_me_map(side,x,y);
+var vysledek,base;
+begin
+  vysledek:=true;
+  base:=GetBase(nearest_labs[1]);
+  if GetResources(base)[3] >= sib_to_view then
+    begin
+      PlaceSeeing(x,y,side,-15);
+      SetResourceType(base,mat_siberit,GetResources(base)[3]-sib_to_view);
+      view_data:=[x,y,side];
+    end
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+function Destroy_siberite(un);
+var vysledek,base;
+begin
+  vysledek:=true;
+  base:=GetBase(nearest_labs[2]);
+  if ((GetType(un)=unit_vehicle) and (GetEngine(un)=engine_siberite)) or
+     ((GetType(un)=unit_building) and (GetBType(un)=b_siberite_power)) and
+     (GetResources(base)[3] >= sib_to_destroy) then
+    begin
+      KillUnit(un);
+      SetResourceType(base,mat_siberit,GetResources(base)[3]-sib_to_destroy);
+    end
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+function Mass_Teleport(x,y);
+var vysledek,base,
+    list,un;
+begin
+  vysledek:=true;
+  base:=GetBase(nearest_labs[3]);
+  if (GetResources(base)[3] >= sib_to_teleport) then
+    begin
+      SetAreaMapShow(teleport_area,1);
+      for un=1 to 11 do
+        begin
+          display_strings:=[(11-un)];
+          wait(0$1);
+        end;
+      display_strings:='';
+      SetAreaMapShow(teleport_area,0);
+
+      list:=FilterAllUnits([ f_not, [f_type,unit_building] ]);
+      for un in list do
+        TeleportUnit(un,x,y,12,true);                      // 12 je vzdalenost, do ktere se to bude pokouset umistnit
+    end
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+//------
+every 0$1 trigger view_data do
+begin
+  wait(0$10);
+  RemoveSeeing(view_data[1],view_data[2],view_data[3]);
+  view_data:=0;
+  enable;
+end;
+
+//-----------------------------------//
+//-----  RECHARGOVACI TRIGGERY  -----//
+every 0$1 Marked 24 do          // recharge of Show Me Map
+begin
+  wait(recharge_view);
+  can_use_artefact:=Delete(can_use_artefact,1);
+  can_use_artefact:=Insert(can_use_artefact,1,true);
+  Highlight_Artefact(1);
+end;
+
+every 0$1 Marked 25 do          // recharge of Destroy Siberite unit
+begin
+  wait(recharge_destroy);
+  can_use_artefact:=Delete(can_use_artefact,2);
+  can_use_artefact:=Insert(can_use_artefact,2,true);
+  Highlight_Artefact(2);
+end;
+
+every 0$1 Marked 26 do          // recharge Mass Teleport (never recharge)
+begin
+end;
+
+
+//-------------------------------------------------//
+//-----  HLAVNI EVENTY PRO OBSLUHU ARTEFAKTU  -----//
+
+// Inicializace a deinicializace vyzkumu artefaktu v laboratori
+on ArtifactUnloaded(un,size) do
+begin
+  Init_Lab(size);
+end;
+
+on ArtifactLoaded(un,size) do
+begin
+  DeInit_Lab(size);
+end;
+
+// update ikon pri dovynalezani zakladni Artefakt Technology
+on ArtifactResearchComplete(lab) do
+var un;
+begin
+  for un=1 to art_num do
+    if nearest_labs[un] then
+      Init_Lab(un);
+end;
+
+
+// klikani na ikony v laboratorich
+on ArtifactUsed(side,number,p1,p2) do
+var un,succes;
+begin
+  if number<=3 then
+    begin
+      SetSpecResearch(nearest_labs[number],art_difficulty[number],true);
+      SetWorkingProgress(nearest_labs[number],art_progres[number]);
+      art_in_research:=art_in_research ^ number;
+      for un=1 to art_num do
+        if nearest_labs[un]=nearest_labs[number] then
+          DeInit_Lab(un);
+    end
+  else
+    begin
+      succes:=false;
+        case number of                                                  // volani samotne artefaktovni funkce
+      4: succes:=Show_me_map(side,p1,p2);
+      5: succes:=Destroy_siberite(p1);
+      6: succes:=Mass_Teleport(p1,p2);
+        end;
+
+      if succes then
+        begin
+          can_use_artefact:=Delete(can_use_artefact,number-3);
+          can_use_artefact:=Insert(can_use_artefact,number-3,false);    // oznaceni ikony do seda
+
+          Shadow_Artefact(number-3);                                    // zasednuti ikony
+          Enable(20+number);                                            // zpusteni counteru pro dalsi pouziti artefaktu
+        end;
+    end;
+end;
+
+// zacatek vyzkumu
+on SpecResearchComplete(lab) do
+var un,
+    pom_status;
+begin
+  for un=1 to art_num do
+    if (nearest_labs[un]=lab) and            // pokud odpovida laborator
+       (un in art_in_research) then          // i artefakt
+      begin
+        DeInit_Lab(un);
+
+        art_researched:=Delete(art_researched,un);
+        art_researched:=Insert(art_researched,un,true);
+        art_in_research:=art_in_research diff un;
+
+        pom_status:=art_status[un][2];
+        art_status:=Delete(art_status,un);
+        art_status:=Insert(art_status,un,[pom_status]);
+
+      end;
+  for un=1 to art_num do
+    Init_Lab(un);
+end;
+
+on SpecResearchCancel(lab,progress) do
+var un;
+begin
+  for un=1 to art_num do
+    if (lab=nearest_labs[un]) and
+       (un in art_in_research) then
+      begin
+        art_progres:=Delete(art_progres,un);
+        art_progres:=Insert(art_progres,un,progress);
+        art_in_research:=art_in_research diff un;
+        break;
+      end;
+  for un=1 to art_num do
+    Init_Lab(un);
+end;
+//-------------------------------------------------//
+//-------------------------------------------------//
+
+
+// Nastavovani ikon do laboratori
+function Init_Lab(size);
+var dist,               // vzdalenost nejlizsi laboratore k danemu artefaktu
+    ar_place,           // souradnice daneho artefaktu
+    lab_list,           // seznam moznych laboratori pro vyzkum artefaktu
+    nearest_lab,        // nejblizsi siberitova laborator k danemu artefaktu
+    state;              // stav ikonky (zavisi na vynalezeni artefakt technolgy)
+
+begin
+  ar_place:=FindArtifact(size);
+    case size of
+  1: lab_list:=FilterAllUnits([ [f_side,you], [f_nation,nation_american], [f_or, [f_btype,b_lab], [f_btype,b_lab_half], [f_btype,b_lab_full]] ]);
+  2: lab_list:=FilterAllUnits([ [f_side,you], [f_nation,nation_russian], [f_or, [f_btype,b_lab], [f_btype,b_lab_half], [f_btype,b_lab_full]] ]);
+  3: lab_list:=FilterAllUnits([ [f_side,you], [f_btype,b_alien_tower] ]);
+    end;
+  nearest_lab:=NearestUnitToXY(lab_list,ar_place[1],ar_place[2]);
+  dist:=GetDistUnitXY(nearest_lab,ar_place[1],ar_place[2]);
+
+  if dist<6 then
+    begin
+      DeInit_Lab(size);
+      if GetTech(tech_Artifact,you)=state_enabled then
+        state:=art_gray
+      else
+        if art_researched[size] then
+          begin
+            if can_use_artefact[size] then
+                case size of
+              1: state:=art_place;
+              2: state:=art_unit;
+              3: state:=art_place;
+              end
+            else
+              state:=art_gray;
+          end
+        else
+          state:=art_instant;
+
+      nearest_labs:=Delete(nearest_labs,size);
+      nearest_labs:=Insert(nearest_labs,size,nearest_lab);
+
+      SetArtifactUse(you,art_status[size][1],state,nearest_labs[size]);
+    end;
+end;
+
+
+// Deaktivovani ikon v laboratorich
+function DeInit_Lab(size);
+begin
+  SetArtifactUse(you,art_status[size][1],art_no,nearest_labs[size]);
+//  nearest_labs:=Delete(nearest_labs,size);
+//  nearest_labs:=Insert(nearest_labs,size,0);
+end;
+
+
+// Highlightovani a shadowovani ikon pri pouziti artefaktu
+function Shadow_Artefact(size);
+begin
+  SetArtifactUse(you,art_status[size][1],art_gray,nearest_labs[size]);
+end;
+
+function Highlight_Artefact(size);
+var state;
+begin
+    case size of
+  1: state:=art_place;
+  2: state:=art_unit;
+  3: state:=art_place;
+    end;
+
+  SetArtifactUse(you,art_status[size][1],state,nearest_labs[size]);
+end;

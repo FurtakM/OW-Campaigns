@@ -1,0 +1,285 @@
+export ru_ing,ru_sol,ru_sci,ru_mec;     // seznamy ruskych specializaci
+export russians_forces;                 // seznam vsech ruskych lidi
+export ru_collector;                    // ident ruskeho nakladniho vozidla
+
+export checking;
+
+export reserved_people;
+
+// Creating russians forces in russians base
+export function prepare_ru_base;
+var un,i,num_sol,num_ing,num_sci,num_mec,lev;
+begin
+  RevealFogArea(russians,ru_crates);
+
+  num_ing:=[1,2,2] [difficulty];   // pocet ruskych inzenyru
+  num_sol:=[2,2,3] [difficulty];   // pocet ruskych vojaku
+  num_sci:=[1,3,6] [difficulty];   // pocet ruskych vedcu
+  num_mec:=[2,2,4] [difficulty];   // pocet ruskych mechaniku
+
+  lev:=[6,8,10] [difficulty];
+
+  russians_forces:=[];  // vsechny zive ruske jednotky
+  ru_ing:=[];   // mnozina ruskych inzenyru
+  ru_sol:=[];   // mnozina ruskych vojaku
+  ru_sci:=[];   // mnozina ruskych vedcu
+  ru_mec:=[];   // mnozina ruskych mechaniku
+
+  reserved_people:=[];
+
+  uc_nation=nation_russian;
+  uc_side=russians;
+  uc_direction:=Rand(0,5);
+
+  hc_gallery:='';
+  hc_name:='';
+  hc_importance:=0;
+
+  for i:=1 to num_ing do
+    begin
+      hc_last_mission:=Rand(2,5);
+      PrepareEngineer((Rand(2,4) mod 2)+1,lev+Rand(0,3));
+      un:=CreateHuman;
+      ru_ing:=ru_ing^un;
+      PlaceUnitArea(un,russians_start,false);
+      wait(1);
+    end;
+
+  for i:=1 to num_sol do
+    begin
+      hc_last_mission:=Rand(2,5);
+      PrepareSoldier((Rand(2,4) mod 2)+1,lev+Rand(0,3));
+      un:=CreateHuman;
+      ru_sol:=ru_sol^un;
+      PlaceUnitArea(un,russians_start,false);
+      wait(1);
+    end;
+
+  for i:=1 to num_sci do
+    begin
+      hc_last_mission:=Rand(2,5);
+      PrepareScientist((Rand(2,4) mod 2)+1,lev+Rand(0,3));
+      un:=CreateHuman;
+      ru_sci:=ru_sci^un;
+      PlaceUnitArea(un,russians_start,false);
+      wait(1);
+    end;
+
+  for i:=1 to num_mec do
+    begin
+      hc_last_mission:=Rand(2,5);
+      PrepareMechanic((Rand(2,4) mod 2)+1,lev+Rand(0,3));
+      un:=CreateHuman;
+      ru_mec:=ru_mec^un;
+      PlaceUnitArea(un,russians_start,false);
+      wait(1);
+    end;
+
+  russians_forces:=ru_ing^ru_sol^ru_sci^ru_mec;  // * priorita povolani - lze preskladat
+
+  // Placing russians mechanics into factories
+  i:=1;
+  for un in ru_mec do
+    begin
+      If (i mod 2)=0 then
+        ComEnterUnit(un,ru_fact2)
+      else
+        ComEnterUnit(un,ru_fact1);
+      i:=i+1;
+      wait(1);
+    end;
+
+  // Placing russians sciencists into laboratories
+  for un in ru_sci do
+    begin
+      If (un mod 2)=0 then
+        ComEnterUnit(un,ru_lab1)
+      else
+        ComEnterunit(un,ru_lab2);
+      wait(1);
+    end;
+
+  // Creating russian cargo bay vehicle
+  uc_direction:=Rand(0,5);
+  vc_chassis:=ru_medium_wheeled;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=ru_cargo_bay;
+  ru_collector:=CreateVehicle;
+  PlaceUnitXYR(ru_collector,ShiftX(GetX(ru_depot),4,5),GetY(ru_depot),5,false);
+
+  // Az bude doladena veskera obtiznost, tak se to tu muze regulovat
+end;
+
+
+export crate_list;
+
+// Collecting crates by any free person
+every 0$5 trigger GetListOfCratesInArea(ru_crates) do
+var un,free_unit,x,y,max,i,clear_crates,
+    old_class,attempt;
+begin
+  crate_list:=GetListOfCratesInArea(ru_crates);
+
+  free_unit:=false;
+
+  i:=russians_forces diff reserved_people;
+  for un in i do
+    begin
+      if not (HasTask(un) or GetUnitMc(un)) then      // pouzit HasTask nebo radsi IsBusy ???????????
+        begin
+          free_unit:=un;
+          break;
+        end;
+    end;
+
+  if free_unit and IsOK(free_unit) then
+    begin
+      reserved_people:=reserved_people ^ free_unit;
+      ComRemember(free_unit);
+
+      if IsLive(ru_collector) then
+        begin
+          repeat
+            ComEnterUnit(free_unit,ru_collector);
+            wait(0$1);
+          until (IsInUnit(free_unit)) OR NOT IsLive(ru_collector);
+
+          if NOT IsLive(ru_collector) then
+            begin
+              un:=free_unit;
+              old_class:=GetClass(un);
+              while not (GetClass(un)=class_engineer) do
+                begin
+                  ComEnterUnit(un,ru_depot);
+                  AddComChangeProfession(un,class_engineer);
+                  wait(0$1);
+                end;
+            end
+            else
+              un:=ru_collector;
+        end
+      else
+        begin
+          un:=free_unit;
+          old_class:=GetClass(un);
+          while not (GetClass(un)=class_engineer) do
+            begin
+              ComEnterUnit(un,ru_depot);
+              AddComChangeProfession(un,class_engineer);
+              wait(0$1);
+            end;
+        end;
+
+      if IsLive(ru_collector) then
+        ComCollect(un,crate_list[1],crate_list[2])
+      else
+        ComGet(un,crate_list[1],crate_list[2]);
+
+      clear_crates:=false;
+      repeat
+        wait(0$1);
+        if IsLive(ru_collector) AND GetFuel(un)<25 then
+          begin
+            clear_crates:=true;
+            if not SeeXY(you,crate_list[1],crate_list[2]) then
+              begin
+                MoveAreaXY(crates_end,crate_list[1],crate_list[2]);
+                EraseResourceArea(crates_end,mat_cans);
+                AddResourceType(GetBase(ru_depot),mat_cans,50);
+              end;
+          end;
+      until (not IsBusy(un)) OR clear_crates {OR NOT IsLive(ru_collector)};
+
+      if IsLive(ru_collector) then
+        begin
+          ComMoveUnit(ru_collector,ru_depot);
+          AddComExitVehicle(ru_collector);
+          ComReturn(free_unit);
+        end
+      else
+        begin
+          case old_class of
+            class_mechanic:
+              begin
+                if IsOK(ru_fact1) then
+                  ComEnterUnit(un,ru_fact1)
+                else
+                  ComEnterUnit(un,ru_fact2);
+                AddComChangeProfession(un,old_class);
+              end;
+            class_scientistic:
+              begin
+                if IsOK(ru_lab1) then
+                  ComEnterUnit(un,ru_lab1)
+                else
+                  ComEnterUnit(un,ru_lab2);
+                AddComChangeProfession(un,old_class);
+              end;
+            class_soldier:
+              begin
+                ComEnterUnit(un,ru_barac);
+                AddComChangeProfession(un,old_class);
+              end;
+            class_engineer:ComMoveUnit(un,ru_depot);
+          end;
+          AddComReturn(un);
+        end;
+
+      reserved_people:=reserved_people diff free_unit;
+    end;
+
+    Enable;
+end;
+
+// Ruska hlidka na obhlidce silnice - moznost nalezeni MacMillanova auta
+function ukradni_macmillanovi_auto;
+var un;
+begin
+  for un in ru_sol do
+    if IsOK(un) then
+      ComEnterUnit(un,truck1);
+  AddComAgressiveMove(ru_sol,69,35);
+  AddComReturn(ru_sol);
+  wait(0$20);
+end;
+
+every 6$0 do
+var way_ru_patrol,
+    x,y,i,max;
+begin
+  way_ru_patrol:=[88,47, 69,36, 42,16, 33,14, 16,6, 6,6, 19,29, 34,38, 47,42, 44,27, 61,45, 66,33, 110,58];
+
+  ComRemember(ru_sol);
+  reserved_people:=reserved_people ^ ru_sol;
+
+  max:=0+way_ru_patrol;
+  for i:=1 to (max div 2) do
+    begin               
+      x:=way_ru_patrol[(2*i)-1];
+      y:=way_ru_patrol[(2*i)];
+      AddComAgressiveMove(ru_sol,x,y);
+    end;
+
+  repeat
+    if See(russians,truck1) then
+      ukradni_macmillanovi_auto;
+    wait(0$1);
+  until at_home(ru_sol);
+
+  reserved_people:=reserved_people diff ru_sol;
+end;
+
+
+function at_home(list);
+var un,vysledek;
+begin
+  vysledek:=true;
+  for un in list do
+    if IsOK(un) and not IsInArea(un,RU_Base) then
+      begin
+        vysledek:=false;
+        break;
+      end;
+  result:=vysledek;
+end;

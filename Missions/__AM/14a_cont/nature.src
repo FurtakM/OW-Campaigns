@@ -1,0 +1,7 @@
+every 0$2 do
+var un,animal_out;
+begin
+  animal_out:=FilterAllUnits([[f_nation,nation_nature]]);
+  ComMoveToArea(animal_out,nature);
+  Enable;
+end;

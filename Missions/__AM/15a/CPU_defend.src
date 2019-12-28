@@ -1,0 +1,285 @@
+var id_reg,                            // seznam identu makra registry pro vsechny strany
+    id_def;                            // seznam identu makra obrany pro vsechny strany
+
+var BaseArea,                          // seznam areji jednotlivych bazi
+    DefendArea,                        // seznam areji ktere jsou chranene vozitky
+    Heal;                              // seznam polnich nemocnic u jednotlivych bazi
+
+var docs;                              // seznam vedcu v roli mastickare (opet u vsech stran)
+
+
+var healing_un,
+    wounded_un;
+
+var central_base,
+    mc_id_defend;
+
+//----------------------------------//
+//----- INICIALIAZACE OBRANNY  -----//
+export function init_defend;
+var side;
+begin
+  BaseArea:=[us_base,ar_base,ru_base];
+  DefendArea:=[us_defend_base,ar_defend_base,ru_base];
+  Heal:=[us_heal,ar_heal,ru_heal];
+  docs:=[[],[],[],[],[],[],[],[]];
+  central_base:=[[44,62],[251,193],[177,72]];
+  healing_un:=[];
+  wounded_un:=[];
+  mc_id_defend:=false;
+  start_defend;
+end;
+
+
+//-------------------------------------//
+//-----  UPDATE OBRANNYCH ZDROJU  -----//
+function prepare_defend(side);
+var seznam,
+    def_buildings,                     // seznam seznamu obrannych budov jednotlivych stran
+    def_vehicles,                      // seznam vozidel pro obranny ucel
+    def_peoples;                       // lidi pouzitelni k obrane
+begin
+  def_buildings:=FilterAllUnits([ [f_side,side], [f_or, [f_btype,b_bunker], [f_btype,b_breastwork]] ]);
+
+  def_peoples:=FilterAllUnits([ [f_side,side], [f_type,unit_human], f_not, [f_class,class_scientistic] ]);
+
+  def_vehicles:=FilterAllUnits([ [f_side,side], [f_type,unit_vehicle],
+                                 f_not, [f_or, [f_weapon,us_cargo_bay], [f_weapon,us_crane],
+                                               [f_weapon,ar_cargo_bay],
+                                               [f_weapon,ru_cargo_bay], [f_weapon,ru_crane]] ]);
+                                 
+  seznam:=def_buildings ^ def_peoples ^ def_vehicles;
+
+  result:=seznam;
+end;
+
+
+//--------------------------------------------//
+//-----  ZPUSTENI MAKRA OBRANY ZAKLADNY  -----//
+function start_defend;
+var side;
+begin
+  id_reg:=[];
+  id_def:=[];
+  for side=1 to 8 do
+    if side in cpu_list then
+      begin
+        id_reg:=id_reg ^ McRegistry( 1, [ [mc_reg_refresh_time,0$1],
+                                          [mc_reg_expire_stops_to_attack,0$4],
+                                          [mc_reg_area_to_guard,BaseArea[side]],
+                                          [mc_reg_area_to_protect,BaseArea[side]],
+                                          [mc_reg_units_to_protect,prepare_defend(side)],
+                                          mc_reg_only_important,
+                                          -mc_reg_ignore_fog ]
+                                   );
+
+        id_def:=id_def ^ McDefend( 200, id_reg, prepare_defend(side),
+                                     [ [mc_def_advantage,5000],
+                                       [mc_area_dont_leave,BaseArea[side]],
+                                       [mc_retreat_area_people,Heal[side]],
+                                       [mc_retreat_lives_people,600], ]
+                                 );
+      end
+    else
+      begin
+        id_reg:=id_reg ^ [0];
+        id_def:=id_reg ^ [0];
+      end;
+end;
+
+
+// Zasobovani obrany a utoku pocitacu novymi daty
+on McRegistryResultChanges(mcid,n,s) do
+var side;
+begin
+  for side=1 to id_reg do
+    if id_reg[side]=mcid then
+      begin
+        AddMcUnits(mcid,prepare_defend(side));
+        SendForces(side);
+        break;
+      end;
+end;
+
+
+// zjistovani, jestli maji pro danou stranu makra jeste smysl (strana dobyta)
+every 0$7.7 do
+var side,list;
+begin
+  list:=[];
+  for side=1 to 8 do
+    if (not side in cpu_list) and id_reg[side] then
+      begin
+        KillMc(id_reg[side]);
+        id_reg:=Delete(id_reg,side);
+        id_reg:=Insert(id_reg,side,0);
+
+        KillMc(id_def[side]);
+        id_def:=Delete(id_def,side);
+        id_def:=Insert(id_def,side,0);
+      end;
+  enable;
+end;
+
+
+// healovani jednotek
+every 0$5.3 do
+var side,sci,list,wounded,un;
+begin
+  for side=1 to 8 do
+    if side in cpu_list then
+      begin
+        wounded:=FilterUnitsInArea(Heal[side],[ [f_side,side], [f_type,unit_human], f_not, [f_lives,1000] ]);
+        if wounded then
+          begin
+            if not docs[side] then
+              begin
+                sci:=request_people(side,class_scientistic,5);
+                docs:=Delete(docs,side);
+                docs:=Insert(docs,side,sci);
+                list:=reserved_people[side] ^ sci;
+                reserved_people:=Delete(reserved_people,side);
+                reserved_people:=Insert(reserved_people,side,list);
+
+                ComRemember(sci);
+                ComMoveToArea(sci,Heal[side]);
+              end;
+            for un in wounded do
+              AddComHeal(sci,un);
+          end
+        else
+          if docs[side] then
+            begin
+              list:=reserved_people[side] diff docs[side];
+              reserved_people:=Delete(reserved_people,side);
+              reserved_people:=Insert(reserved_people,side,list);
+              ComReturn(docs[side]);
+              docs:=Delete(docs,side);
+              docs:=Insert(docs,side,[]);
+            end;
+      end;
+  enable;
+end;
+
+// Defend arabu - pouzivani self propelled bomb
+every 0$3.1 do
+var list,self;
+begin
+  list:=FilterUnitsInArea(ar_base,[[f_side,you], [f_ok]]);
+  if list then
+    begin
+      self:=FilterAllUnits([[f_side,ar], [f_type,unit_vehicle], [f_weapon,ar_selfpropelled_bomb]]);
+      if self then
+        self:=self[1]
+      else
+        exit;
+      ComAttackUnit(self,NearestUnitToUnit(list,self));;
+    end;
+  enable;
+end;
+
+
+// stahovani pochroumanych jednotek na leceni
+every 0$3 do
+var side,list;
+begin
+  for side in cpu_list do
+    if side then
+      begin
+        list:=FilterAllUnits([ [f_side,side], [f_type,unit_human], f_not, [f_lives,800]]) diff healing_un;
+        if list then
+          wounded_un:=wounded_un ^ list;
+      end;
+  enable;
+end;
+
+
+every 0$2 do
+var list,un;
+begin
+  for un in wounded_un do
+    if not (un in healing_un) then
+      begin
+        healing_un:=healing_un ^ un;
+        McCustom(100,un);
+        ComMoveToArea(un,Heal[GetSide(un)]);
+        wounded_un:=wounded_un diff un;
+      end;
+  enable;
+end;
+
+every 0$2+0$1 do
+var un;
+begin
+  for un in healing_un do
+    if GetLives(un)=1000 then
+      begin
+        KillMc(GetUnitMc(un));
+        healing_un:=healing_un diff un;
+      end
+    else
+      if not IsInArea(un,Heal[GetSide(un)]) then
+        ComMoveToArea(un,Heal[GetSide(un)]);
+  enable;
+end;
+
+// Moje vlastni obrana vozitky
+function SendForces(side);
+var un,list,target,defenders;
+begin
+  ComRemember(defend_forces[side]);
+  if ExistMc(mc_id_defend) then
+    KillMc(mc_id_defend);
+  mc_id_defend:=McCustom(500,defend_forces[side]);
+  wait(1);
+  repeat
+    list:=FilterUnitsInArea(DefendArea[side],[ [f_side,you], [f_ok] ]);
+    target:=NearestUnitToXY(list,central_base[side][1],central_base[side][2]);
+    defenders:=prepare_defend(side);
+
+    if list = 0 or defenders = 0 then
+         break;
+
+    for un in defenders do
+      if GetWeapon(un) in [us_rocket_launcher,ar_rocket_launcher,ru_rocket_launcher,ru_rocket] then
+        ComAttackPlace(defend_forces[side],GetX(target),GetY(target))
+      else
+        ComAttackUnit(defend_forces[side],target);
+
+    wait(50);
+  until false; //not (list or defenders);
+  KillMc(mc_id_defend);
+  mc_id_defend:=false;
+  wait(2);
+  ComReturn(defend_forces[side]);
+end;
+
+every 0$5.1 do
+var side;
+begin
+  for side=1 to 3 do
+    if (not defend_forces[side]) and ready_forces[side] then
+      begin
+        defend_forces := Replace(defend_forces,side,ready_forces[side]);
+        ready_forces  := Replace(ready_forces,side,[]);
+        jammed_forces := Replace(jammed_forces,side,jammed_forces[side] diff defend_forces[side]);
+          case side of
+        1: ComMoveXY(defend_forces[side],40,46);
+        3: ComMoveXY(defend_forces[side],175,50);
+          end;
+        wait(2);
+      end;
+  enable;
+end;
+
+// Removing death vehicles from defend forces
+export function Update_defend(un);
+var side;
+begin
+  if GetSide(un)=you then
+    exit;
+
+  for side=1 to 3 do
+    if un in defend_forces[side] then
+      defend_forces:=Replace(defend_forces,side,defend_forces[side] diff un);
+end;

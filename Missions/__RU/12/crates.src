@@ -1,0 +1,44 @@
+var objevovani_zasilek;
+every 1 do
+begin
+  objevovani_zasilek:=[2,3,1,5,1,1,4,1,0,3,3,1,5,1,1,4,1,0,3,3,1,5,1,1,4,1,0,3];
+  Randomize;
+end;
+every 5$0 do
+begin
+  Randomize;
+  enable;
+end;
+
+//prvnich 5 minut
+every 0$15 do
+begin
+  padaji_bedny;
+end;
+//kazdych dalsich 5 minut
+every 5$0 + 0$15 do
+begin
+  padaji_bedny;
+  enable;
+end;
+
+function padaji_bedny; //bedny
+var x, i, cek, cek2, last, min5;
+begin
+  min5:=((tick div 5$0)+1) mod objevovani_zasilek;
+  cek:=[];
+  cek2:=[];
+  last:=0;
+  x:=objevovani_zasilek[min5];
+  for i:=1 to x do
+    cek:=cek ^ Rand(0$15, 5$0);
+  cek:=SortListByListAsc(cek, cek);
+  for i in cek do begin
+    cek2:=cek2 ^ i-last;
+    last:=i;
+  end;
+  for i:=1 to x do begin
+    CreateCratesAnywhere(5, true);
+    Wait(cek2[i]);
+  end;
+end;

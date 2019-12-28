@@ -1,0 +1,31 @@
+var b_list;                         // seznam seznamu budov v zakladnach jednotlivych stran
+
+//--------------------------------------------------------//
+//-----  NACTENI JEDNOTLIVYCH POCITACOVYCH ZAKLADEN  -----//
+export function init_keep_base;
+var un,list;
+begin
+  b_list:=[];
+
+  un:=FilterAllUnits([ [f_side,russians], [f_type,unit_building] ]);
+
+  if un then
+    b_list:=GetBuildList(GetBase(un[1]));
+
+  Enable(2);
+end;
+
+
+//----------------------------------------------------//
+//-----  ZPOUSTENI MAKRA PRO UDRZOVANI ZAKLADNY  -----//
+every 0$3 trigger FilterUnitsInArea(manual_defend,[ [f_side,you], [f_ok] ]) Marked 2 do
+var engineers;
+begin
+  engineers:=ru_ing;
+  if not engineers then
+    engineers:=ru_sol;
+  ComRemember(engineers);
+  WaitForMc(McBase(3,engineers,b_list,0,0,0));
+  ComReturn(engineers);
+  enable;
+end;

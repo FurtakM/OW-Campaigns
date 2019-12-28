@@ -1,0 +1,96 @@
+export under_attack; //bool[5]
+export near_base_area; //area[5]
+
+export function inicializace_ai_defend;
+begin
+  under_attack:=[false,false,false,false,false];
+  near_base_area:=[nearA,nearB,nearC,nearD,nearE];
+end;
+
+
+export BehMcRegId,BehMcAttId;
+export function BehemothUtok;
+begin
+  if GetSide(behemoth) = you then
+       exit;
+
+  BehMcRegId:=McRegistry(ai_s[1], [[mc_reg_refresh_time, 0$4],
+                                 [mc_reg_units_to_protect, [Platonov]],
+                                 [mc_reg_units_to_guard, [Burlak]],
+                                 [mc_reg_area_to_protect,near_base_area[plat_i]],
+                                 mc_reg_ignore_fog,
+                                 -mc_reg_only_important]);
+
+  BehMcAttId:=McAttack(12, BehMcRegId, [behemoth],
+                          [[mc_retreat_area_vehicles, nearA],
+                           [mc_retreat_area_people, nearA],
+                           [mc_retreat_lives_vehicles, 600],
+                           [mc_retreat_lives_people, 800],
+                           mc_no_stop]);
+end;
+export ZouMcRegId,ZouMcAttId;
+export function ZoufalUtok;
+begin
+  ZouMcRegId:=McRegistry(ai_s[plat_i], [[mc_reg_refresh_time, 0$4],
+                                 [mc_reg_units_to_protect, [Platonov]],
+                                 [mc_reg_units_to_guard, [Burlak]],
+                                 [mc_reg_area_to_protect,near_base_area[plat_i]],
+                                 mc_reg_ignore_fog,
+                                 -mc_reg_only_important]);
+
+  ZouMcAttId:=McAttack(12, ZouMcRegId, vehicles[plat_i],
+                          [[mc_retreat_area_vehicles, near_base_area[plat_i]],
+                           [mc_retreat_area_people, near_base_area[plat_i]],
+                           [mc_retreat_lives_vehicles, 100],
+                           [mc_retreat_lives_people, 800],
+                           mc_no_stop]);
+end;
+export NorMcRegId,NorMcAttId;
+export function NormalUtok;
+begin
+  NorMcRegId:=McRegistry(ai_s[plat_i], [[mc_reg_refresh_time, 0$4],
+                                 [mc_reg_units_to_protect, [Platonov]],
+                                 [mc_reg_units_to_guard, [your_humans]],
+                                 [mc_reg_area_to_protect,near_base_area[plat_i]],
+                                 mc_reg_ignore_fog,
+                                 -mc_reg_only_important]);
+
+  NorMcAttId:=McAttack(12, NorMcRegId, vehicles[plat_i],
+                          [[mc_retreat_area_vehicles, near_base_area[plat_i]],
+                           [mc_retreat_area_people, near_base_area[plat_i]],
+                           [mc_retreat_lives_vehicles, 100],
+                           [mc_retreat_lives_people, 800],
+                           mc_no_stop]);
+end;
+
+// obrana base alert
+function utok_na_vetrelce(vetrelci, index_strany);
+var nearest, units;
+begin
+  if vetrelci and (ai_s[index_strany] in aiZ) then begin
+    nearest:=NearestUnitToUnit(vetrelci, depots[index_strany]);
+    if nearest then begin
+      units:=attack_units isect vehicles[index_strany];
+      ComRemember(units);
+      AddComAgressiveMove(units, GetX(nearest), GetY(nearest));
+      AddComReturn(units);
+    end;
+  end;
+end;
+
+// obrana base alert/pohov
+every 0$10 do
+var i, a;
+begin
+  for i:=1 to 5 do begin
+    a:=UnitFilter(your_humans^your_cars, [[f_inarea,near_base_area[i]]]);
+    if a and ai_s[i] in aiZ then begin
+      under_attack:=replace(under_attack,i,true);
+      utok_na_vetrelce(a, i);
+    end
+    else
+      under_attack:=replace(under_attack,i,false);
+    wait(0$2);
+  end;
+  enable;
+end;

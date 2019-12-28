@@ -1,0 +1,179 @@
+var vehicles,attack;
+
+every 0$1 marked 333 do
+var filter,i,rnd,typ,auto,clovek,un;
+begin
+  Wait(Rand(min,max));
+
+  vehicles:=
+  [//[ru_heavy_tracked,control_computer,engine_siberite,ru_time_lapser],
+  [ru_heavy_wheeled,control_computer,engine_combustion,ru_time_lapser],
+  [ru_medium_tracked,control_computer,engine_combustion,ru_gatling_gun],
+  [ru_heavy_tracked,control_computer,engine_siberite,ru_heavy_gun],
+  [ru_medium_wheeled,control_computer,engine_combustion,ru_gatling_gun],
+  [ru_heavy_wheeled,control_computer,engine_siberite,ru_heavy_gun],
+  [ru_medium_wheeled,control_computer,engine_combustion,ru_rocket_launcher],
+  [ru_heavy_wheeled,control_computer,engine_siberite,ru_rocket],
+  [ru_medium_wheeled,control_computer,engine_combustion,ru_heavy_machine_gun],
+  [ru_medium_tracked,control_computer,engine_combustion,ru_gun],
+  [ru_heavy_tracked,control_computer,engine_siberite,ru_heavy_gun]];
+
+  for i:=1 to (tick div 13000) do
+  begin
+    uc_side:=rus;
+    uc_nation:=nation_russian;
+    uc_direction:=5;
+
+    typ:=rand(1,10);
+    vc_chassis:=vehicles[typ][1];
+    vc_control:=vehicles[typ][2];
+    vc_engine:=vehicles[typ][3];
+    vc_weapon:=vehicles[typ][4];
+
+    auto:=CreateVehicle;
+    PlaceUnitArea(auto,EnterArea,false);
+    attack:=attack^auto;
+    ComAgressiveMove(auto,52,61);
+    AddComAgressiveMove(auto,52,61);
+    case Rand(1,2) of
+      1:AddComAgressiveMove(auto,35,30);
+      2:AddComAgressiveMove(auto,17,29);
+    end;
+    AddComAgressiveMove(auto,29,5);
+    case Rand(1,2) of
+      1:AddComAgressiveMove(auto,60,30);
+      2:AddComAgressiveMove(auto,84,30);
+    end;
+    case Rand(1,2) of
+      1:AddComAgressiveMove(auto,71,59);
+      2:AddComAgressiveMove(auto,92,66);
+    end;
+    AddComAgressiveMove(auto,78,88);
+    AddComAgressiveMove(auto,117,90);
+    AddComAgressiveMove(auto,136,61);
+    if i>maxaut then exit;
+    Wait(0$4);
+  end;
+
+  rnd:=Rand(2,4);
+  for i:=1 to rnd do
+  begin
+    uc_side=rus;
+    uc_nation:=nation_russian;
+
+    case Rand(1,2) of
+      1:PrepareHuman(sex_male,class_soldier,Rand(4,8));
+      2:PrepareHuman(sex_male,class_bazooker,Rand(3,7));
+    end;
+    hc_name:='';
+    clovek:=CreateHuman;
+    PlaceUnitArea(clovek,EnterArea,false);
+    attack:=attack^clovek;
+    ComAgressiveMove(clovek,52,61);
+    case Rand(1,2) of
+      1:AddComAgressiveMove(clovek,35,30);
+      2:AddComAgressiveMove(clovek,17,29);
+    end;
+    AddComAgressiveMove(clovek,29,5);
+    case Rand(1,2) of
+      1:AddComAgressiveMove(clovek,60,30);
+      2:AddComAgressiveMove(clovek,84,30);
+    end;
+    case Rand(1,2) of
+      1:AddComAgressiveMove(clovek,71,59);
+      2:AddComAgressiveMove(clovek,92,66);
+    end;
+    AddComAgressiveMove(clovek,78,88);
+    AddComAgressiveMove(clovek,117,90);
+    AddComAgressiveMove(clovek,136,61);
+    Wait(0$4);
+  end;
+  enable;
+end;
+
+every 0$30 marked 334 do
+var un_rus,un_you,filter_rus,filter_you;
+begin
+  if 0+attack>0 then
+    for un_rus in attack do
+      if NOT IsOK(un_rus) then attack:=attack diff un_rus;
+  filter_rus:=FilterUnitsInArea(BehindWaterArea,[f_side,rus]);
+  filter_you:=FilterUnitsInArea(BehindWaterArea,[f_side,you]);
+  if ((0+filter_rus)>0) AND ((0+filter_you)>0) then
+    ComAttackUnit(filter_rus,filter_you[0+filter_you]);
+  if (0+filter_you)=0 then
+    ComAttackUnit(filter_rus,Burlak);
+  enable;
+end;
+
+
+//***************************************************************************************
+//***************************************************************************************
+{
+var vehicles,attack;
+
+every 0$1 marked 333 do
+var filter,i,rnd,typ,auto,clovek,un;
+begin
+  BuildQuery('Attack','Ok');
+
+  Wait(Rand(min,max));
+
+  vehicles:=
+  [[ru_medium_tracked,control_computer,engine_combustion,ru_gatling_gun],
+  [ru_heavy_tracked,control_computer,engine_siberite,ru_heavy_gun],
+  [ru_medium_wheeled,control_computer,engine_combustion,ru_gatling_gun],
+  [ru_heavy_wheeled,control_computer,engine_siberite,ru_heavy_gun],
+  [ru_medium_wheeled,control_computer,engine_combustion,ru_rocket_launcher],
+  [ru_heavy_wheeled,control_computer,engine_siberite,ru_rocket],
+  [ru_heavy_tracked,control_computer,engine_siberite,ru_time_lapser],
+  [ru_heavy_wheeled,control_computer,engine_combustion,ru_time_lapser],
+  [ru_medium_wheeled,control_computer,engine_combustion,ru_heavy_machine_gun],
+  [ru_medium_tracked,control_computer,engine_combustion,ru_gun],
+  [ru_heavy_tracked,control_computer,engine_siberite,ru_heavy_gun]];
+
+  for i:=1 to (3+(tick div 13000)) do
+  begin
+    uc_side:=rus;
+    uc_nation:=nation_russian;
+    uc_direction:=5;
+
+    typ:=rand(1,11);
+    vc_chassis:=vehicles[typ][1];
+    vc_control:=vehicles[typ][2];
+    vc_engine:=vehicles[typ][3];
+    vc_weapon:=vehicles[typ][4];
+
+    auto:=CreateVehicle;
+    PlaceUnitArea(auto,EnterArea,false);
+    ComAgressiveMove(auto,52,61);
+    attack:=attack^auto;
+    if i>maxaut then exit;
+    Wait(0$4);
+  end;
+
+  rnd:=Rand(2,4);
+  for i:=1 to rnd do
+  begin
+    uc_side=rus;
+    uc_nation:=nation_russian;
+
+    case Rand(1,2) of
+      1:PrepareHuman(sex_male,class_soldier,Rand(4,8));
+      2:PrepareHuman(sex_male,class_bazooker,Rand(3,7));
+    end;
+    hc_name:='';
+    clovek:=CreateHuman;
+    PlaceUnitArea(clovek,EnterArea,false);
+    ComAgressiveMove(clovek,52,61);
+    attack:=attack^clovek;
+    Wait(0$4);
+  end;
+
+  for un in attack do if NOT IsOK(un) then attack:=attack diff un;
+  Wait(1$0);
+  McMove(1, attack, [[50,44],[25,9],[75,48],[73,76],[138,70],[118,13]],[[mc_move_wait,15],mc_move_agressive]);
+  enable;
+end;}
+
+

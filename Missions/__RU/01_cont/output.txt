@@ -1,0 +1,6962 @@
+// export you , russians , americans , americans2 ; export pokryshkin_met , gnyevko_met , kirilenkova_met , follow_pokryshkin , gladstone_escaped , soldier_escaped , preparing_trap , attacking_brown , attacking_bunker , retreating , returning , betrayed , it_is_your , start_to_run , kirilenkova_appears , saw_apeman , radio_found , burlak_killed_apeman , soldiers_killed_apeman ; export rus_soldiers , number_of_gladstones_apemen , number_of_wild_apemen , browns_combat_level , am1_combat_skill , gladstone_speed , bunker_level , gladstones_running_idle , bunker_see , bunker_lives , apemen_range , apemen_time , apeman_braveness ; function prepare_difficulty ; begin
+   0: LD_INT 0
+   2: PPUSH
+// number_of_wild_apemen = [ 4 , 5 , 6 ] [ difficulty ] ;
+   3: LD_ADDR_EXP 26
+   7: PUSH
+   8: LD_INT 4
+  10: PUSH
+  11: LD_INT 5
+  13: PUSH
+  14: LD_INT 6
+  16: PUSH
+  17: EMPTY
+  18: LIST
+  19: LIST
+  20: LIST
+  21: PUSH
+  22: LD_OWVAR 67
+  26: ARRAY
+  27: ST_TO_ADDR
+// number_of_gladstones_apemen = [ 3 , 4 , 5 ] [ difficulty ] ;
+  28: LD_ADDR_EXP 25
+  32: PUSH
+  33: LD_INT 3
+  35: PUSH
+  36: LD_INT 4
+  38: PUSH
+  39: LD_INT 5
+  41: PUSH
+  42: EMPTY
+  43: LIST
+  44: LIST
+  45: LIST
+  46: PUSH
+  47: LD_OWVAR 67
+  51: ARRAY
+  52: ST_TO_ADDR
+// rus_soldiers = [ [ 3 , 3 , 2 , 2 ] , [ 2 , 3 , 2 , 1 ] , [ 2 , 3 , 1 ] ] [ difficulty ] ;
+  53: LD_ADDR_EXP 24
+  57: PUSH
+  58: LD_INT 3
+  60: PUSH
+  61: LD_INT 3
+  63: PUSH
+  64: LD_INT 2
+  66: PUSH
+  67: LD_INT 2
+  69: PUSH
+  70: EMPTY
+  71: LIST
+  72: LIST
+  73: LIST
+  74: LIST
+  75: PUSH
+  76: LD_INT 2
+  78: PUSH
+  79: LD_INT 3
+  81: PUSH
+  82: LD_INT 2
+  84: PUSH
+  85: LD_INT 1
+  87: PUSH
+  88: EMPTY
+  89: LIST
+  90: LIST
+  91: LIST
+  92: LIST
+  93: PUSH
+  94: LD_INT 2
+  96: PUSH
+  97: LD_INT 3
+  99: PUSH
+ 100: LD_INT 1
+ 102: PUSH
+ 103: EMPTY
+ 104: LIST
+ 105: LIST
+ 106: LIST
+ 107: PUSH
+ 108: EMPTY
+ 109: LIST
+ 110: LIST
+ 111: LIST
+ 112: PUSH
+ 113: LD_OWVAR 67
+ 117: ARRAY
+ 118: ST_TO_ADDR
+// browns_combat_level = [ 2 , 3 , 4 ] [ difficulty ] ;
+ 119: LD_ADDR_EXP 27
+ 123: PUSH
+ 124: LD_INT 2
+ 126: PUSH
+ 127: LD_INT 3
+ 129: PUSH
+ 130: LD_INT 4
+ 132: PUSH
+ 133: EMPTY
+ 134: LIST
+ 135: LIST
+ 136: LIST
+ 137: PUSH
+ 138: LD_OWVAR 67
+ 142: ARRAY
+ 143: ST_TO_ADDR
+// am1_combat_skill = [ 0 , 1 , 2 ] [ difficulty ] ;
+ 144: LD_ADDR_EXP 28
+ 148: PUSH
+ 149: LD_INT 0
+ 151: PUSH
+ 152: LD_INT 1
+ 154: PUSH
+ 155: LD_INT 2
+ 157: PUSH
+ 158: EMPTY
+ 159: LIST
+ 160: LIST
+ 161: LIST
+ 162: PUSH
+ 163: LD_OWVAR 67
+ 167: ARRAY
+ 168: ST_TO_ADDR
+// gladstone_speed = [ 8 , 10 , 12 ] [ difficulty ] ;
+ 169: LD_ADDR_EXP 29
+ 173: PUSH
+ 174: LD_INT 8
+ 176: PUSH
+ 177: LD_INT 10
+ 179: PUSH
+ 180: LD_INT 12
+ 182: PUSH
+ 183: EMPTY
+ 184: LIST
+ 185: LIST
+ 186: LIST
+ 187: PUSH
+ 188: LD_OWVAR 67
+ 192: ARRAY
+ 193: ST_TO_ADDR
+// bunker_level = [ 0 , 2 , 4 ] [ difficulty ] ;
+ 194: LD_ADDR_EXP 30
+ 198: PUSH
+ 199: LD_INT 0
+ 201: PUSH
+ 202: LD_INT 2
+ 204: PUSH
+ 205: LD_INT 4
+ 207: PUSH
+ 208: EMPTY
+ 209: LIST
+ 210: LIST
+ 211: LIST
+ 212: PUSH
+ 213: LD_OWVAR 67
+ 217: ARRAY
+ 218: ST_TO_ADDR
+// bunker_lives = [ 850 , 900 , 1000 ] [ difficulty ] ;
+ 219: LD_ADDR_EXP 33
+ 223: PUSH
+ 224: LD_INT 850
+ 226: PUSH
+ 227: LD_INT 900
+ 229: PUSH
+ 230: LD_INT 1000
+ 232: PUSH
+ 233: EMPTY
+ 234: LIST
+ 235: LIST
+ 236: LIST
+ 237: PUSH
+ 238: LD_OWVAR 67
+ 242: ARRAY
+ 243: ST_TO_ADDR
+// gladstones_running_idle = [ 0 0$6 , 0 0$3 , 0 0$1 ] ;
+ 244: LD_ADDR_EXP 31
+ 248: PUSH
+ 249: LD_INT 210
+ 251: PUSH
+ 252: LD_INT 105
+ 254: PUSH
+ 255: LD_INT 35
+ 257: PUSH
+ 258: EMPTY
+ 259: LIST
+ 260: LIST
+ 261: LIST
+ 262: ST_TO_ADDR
+// if difficulty <> 1 then
+ 263: LD_OWVAR 67
+ 267: PUSH
+ 268: LD_INT 1
+ 270: NONEQUAL
+ 271: IFFALSE 283
+// RemoveEnvironment ( 48 , 26 ) ;
+ 273: LD_INT 48
+ 275: PPUSH
+ 276: LD_INT 26
+ 278: PPUSH
+ 279: CALL_OW 347
+// if difficulty <> 2 then
+ 283: LD_OWVAR 67
+ 287: PUSH
+ 288: LD_INT 2
+ 290: NONEQUAL
+ 291: IFFALSE 303
+// RemoveEnvironment ( 48 , 27 ) ;
+ 293: LD_INT 48
+ 295: PPUSH
+ 296: LD_INT 27
+ 298: PPUSH
+ 299: CALL_OW 347
+// bunker_see = [ See1 , See2 , See3 ] [ difficulty ] ;
+ 303: LD_ADDR_EXP 32
+ 307: PUSH
+ 308: LD_INT 4
+ 310: PUSH
+ 311: LD_INT 5
+ 313: PUSH
+ 314: LD_INT 6
+ 316: PUSH
+ 317: EMPTY
+ 318: LIST
+ 319: LIST
+ 320: LIST
+ 321: PUSH
+ 322: LD_OWVAR 67
+ 326: ARRAY
+ 327: ST_TO_ADDR
+// apemen_range = [ 1 , 2 , 3 ] [ difficulty ] ;
+ 328: LD_ADDR_EXP 34
+ 332: PUSH
+ 333: LD_INT 1
+ 335: PUSH
+ 336: LD_INT 2
+ 338: PUSH
+ 339: LD_INT 3
+ 341: PUSH
+ 342: EMPTY
+ 343: LIST
+ 344: LIST
+ 345: LIST
+ 346: PUSH
+ 347: LD_OWVAR 67
+ 351: ARRAY
+ 352: ST_TO_ADDR
+// apemen_time = [ 0 0$2 , 0 0$4 , 0 0$6 ] [ difficulty ] ;
+ 353: LD_ADDR_EXP 35
+ 357: PUSH
+ 358: LD_INT 70
+ 360: PUSH
+ 361: LD_INT 140
+ 363: PUSH
+ 364: LD_INT 210
+ 366: PUSH
+ 367: EMPTY
+ 368: LIST
+ 369: LIST
+ 370: LIST
+ 371: PUSH
+ 372: LD_OWVAR 67
+ 376: ARRAY
+ 377: ST_TO_ADDR
+// apeman_braveness = [ 240 , 150 , 90 ] [ difficulty ] ;
+ 378: LD_ADDR_EXP 36
+ 382: PUSH
+ 383: LD_INT 240
+ 385: PUSH
+ 386: LD_INT 150
+ 388: PUSH
+ 389: LD_INT 90
+ 391: PUSH
+ 392: EMPTY
+ 393: LIST
+ 394: LIST
+ 395: LIST
+ 396: PUSH
+ 397: LD_OWVAR 67
+ 401: ARRAY
+ 402: ST_TO_ADDR
+// end ;
+ 403: LD_VAR 0 1
+ 407: RET
+// function prepare_sides ; begin
+ 408: LD_INT 0
+ 410: PPUSH
+// americans = 1 ;
+ 411: LD_ADDR_EXP 3
+ 415: PUSH
+ 416: LD_INT 1
+ 418: ST_TO_ADDR
+// americans2 = 4 ;
+ 419: LD_ADDR_EXP 4
+ 423: PUSH
+ 424: LD_INT 4
+ 426: ST_TO_ADDR
+// you = 3 ;
+ 427: LD_ADDR_EXP 1
+ 431: PUSH
+ 432: LD_INT 3
+ 434: ST_TO_ADDR
+// russians = 6 ;
+ 435: LD_ADDR_EXP 2
+ 439: PUSH
+ 440: LD_INT 6
+ 442: ST_TO_ADDR
+// end ;
+ 443: LD_VAR 0 1
+ 447: RET
+// starting begin disable ( 666 ) ;
+ 448: LD_INT 666
+ 450: DISABLE_MARKED
+// prepare_sides ;
+ 451: CALL 408 0 0
+// prepare_difficulty ;
+ 455: CALL 0 0 0
+// prepare_people ;
+ 459: CALL 2222 0 0
+// place_wild_apemen ;
+ 463: CALL 2412 0 0
+// place_americans ;
+ 467: CALL 2453 0 0
+// place_team ;
+ 471: CALL 2278 0 0
+// burlak_appears ;
+ 475: CALL 2651 0 0
+// end ; end_of_file
+ 479: END
+// export burlak , pokryshkin , belkov , gnyevko , kirilenkova , kurin , team , brown , gladstone , am1 , am_bunker , wild_apemen , gladstones_apemen , trappers , your_units ; function prepare_burlak ; begin
+ 480: LD_INT 0
+ 482: PPUSH
+// uc_side := you ;
+ 483: LD_ADDR_OWVAR 20
+ 487: PUSH
+ 488: LD_EXP 1
+ 492: ST_TO_ADDR
+// Burlak := NewCharacter ( Burlak ) ;
+ 493: LD_ADDR_EXP 37
+ 497: PUSH
+ 498: LD_STRING Burlak
+ 500: PPUSH
+ 501: CALL_OW 25
+ 505: ST_TO_ADDR
+// exit ;
+ 506: GO 619
+// uc_nation := nation_russian ;
+ 508: LD_ADDR_OWVAR 21
+ 512: PUSH
+ 513: LD_INT 3
+ 515: ST_TO_ADDR
+// hc_importance = 110 ;
+ 516: LD_ADDR_OWVAR 32
+ 520: PUSH
+ 521: LD_INT 110
+ 523: ST_TO_ADDR
+// hc_sex = sex_male ;
+ 524: LD_ADDR_OWVAR 27
+ 528: PUSH
+ 529: LD_INT 1
+ 531: ST_TO_ADDR
+// hc_class = class_mechanic ;
+ 532: LD_ADDR_OWVAR 28
+ 536: PUSH
+ 537: LD_INT 3
+ 539: ST_TO_ADDR
+// hc_basic_skills = [ 0 , 1 , 2 , 0 ] ;
+ 540: LD_ADDR_OWVAR 30
+ 544: PUSH
+ 545: LD_INT 0
+ 547: PUSH
+ 548: LD_INT 1
+ 550: PUSH
+ 551: LD_INT 2
+ 553: PUSH
+ 554: LD_INT 0
+ 556: PUSH
+ 557: EMPTY
+ 558: LIST
+ 559: LIST
+ 560: LIST
+ 561: LIST
+ 562: ST_TO_ADDR
+// hc_skills = [ 0 , 1 , 2 , 0 ] ;
+ 563: LD_ADDR_OWVAR 31
+ 567: PUSH
+ 568: LD_INT 0
+ 570: PUSH
+ 571: LD_INT 1
+ 573: PUSH
+ 574: LD_INT 2
+ 576: PUSH
+ 577: LD_INT 0
+ 579: PUSH
+ 580: EMPTY
+ 581: LIST
+ 582: LIST
+ 583: LIST
+ 584: LIST
+ 585: ST_TO_ADDR
+// hc_attr = [ 12 , 11 ] ;
+ 586: LD_ADDR_OWVAR 29
+ 590: PUSH
+ 591: LD_INT 12
+ 593: PUSH
+ 594: LD_INT 11
+ 596: PUSH
+ 597: EMPTY
+ 598: LIST
+ 599: LIST
+ 600: ST_TO_ADDR
+// hc_name := Y. I. Gorky ;
+ 601: LD_ADDR_OWVAR 26
+ 605: PUSH
+ 606: LD_STRING Y. I. Gorky
+ 608: ST_TO_ADDR
+// burlak := CreateHuman ;
+ 609: LD_ADDR_EXP 37
+ 613: PUSH
+ 614: CALL_OW 44
+ 618: ST_TO_ADDR
+// end ;
+ 619: LD_VAR 0 1
+ 623: RET
+// function prepare_pokryshkin ; begin
+ 624: LD_INT 0
+ 626: PPUSH
+// uc_side := russians ;
+ 627: LD_ADDR_OWVAR 20
+ 631: PUSH
+ 632: LD_EXP 2
+ 636: ST_TO_ADDR
+// Pokryshkin := NewCharacter ( Pokryshkin ) ;
+ 637: LD_ADDR_EXP 38
+ 641: PUSH
+ 642: LD_STRING Pokryshkin
+ 644: PPUSH
+ 645: CALL_OW 25
+ 649: ST_TO_ADDR
+// SetAttr ( Pokryshkin , attr_speed , 12 ) ;
+ 650: LD_EXP 38
+ 654: PPUSH
+ 655: LD_INT 2
+ 657: PPUSH
+ 658: LD_INT 12
+ 660: PPUSH
+ 661: CALL_OW 239
+// SetAttr ( Pokryshkin , attr_stamina , 8 ) ;
+ 665: LD_EXP 38
+ 669: PPUSH
+ 670: LD_INT 1
+ 672: PPUSH
+ 673: LD_INT 8
+ 675: PPUSH
+ 676: CALL_OW 239
+// exit ;
+ 680: GO 793
+// uc_nation := nation_russian ;
+ 682: LD_ADDR_OWVAR 21
+ 686: PUSH
+ 687: LD_INT 3
+ 689: ST_TO_ADDR
+// hc_sex = sex_male ;
+ 690: LD_ADDR_OWVAR 27
+ 694: PUSH
+ 695: LD_INT 1
+ 697: ST_TO_ADDR
+// hc_class = class_soldier ;
+ 698: LD_ADDR_OWVAR 28
+ 702: PUSH
+ 703: LD_INT 1
+ 705: ST_TO_ADDR
+// hc_basic_skills = [ 2 , 0 , 0 , 0 ] ;
+ 706: LD_ADDR_OWVAR 30
+ 710: PUSH
+ 711: LD_INT 2
+ 713: PUSH
+ 714: LD_INT 0
+ 716: PUSH
+ 717: LD_INT 0
+ 719: PUSH
+ 720: LD_INT 0
+ 722: PUSH
+ 723: EMPTY
+ 724: LIST
+ 725: LIST
+ 726: LIST
+ 727: LIST
+ 728: ST_TO_ADDR
+// hc_skills = [ 4 , 1 , 2 , 0 ] ;
+ 729: LD_ADDR_OWVAR 31
+ 733: PUSH
+ 734: LD_INT 4
+ 736: PUSH
+ 737: LD_INT 1
+ 739: PUSH
+ 740: LD_INT 2
+ 742: PUSH
+ 743: LD_INT 0
+ 745: PUSH
+ 746: EMPTY
+ 747: LIST
+ 748: LIST
+ 749: LIST
+ 750: LIST
+ 751: ST_TO_ADDR
+// hc_attr = [ 10 , 10 ] ;
+ 752: LD_ADDR_OWVAR 29
+ 756: PUSH
+ 757: LD_INT 10
+ 759: PUSH
+ 760: LD_INT 10
+ 762: PUSH
+ 763: EMPTY
+ 764: LIST
+ 765: LIST
+ 766: ST_TO_ADDR
+// hc_importance = 0 ;
+ 767: LD_ADDR_OWVAR 32
+ 771: PUSH
+ 772: LD_INT 0
+ 774: ST_TO_ADDR
+// hc_name := Pokryshkin ;
+ 775: LD_ADDR_OWVAR 26
+ 779: PUSH
+ 780: LD_STRING Pokryshkin
+ 782: ST_TO_ADDR
+// pokryshkin := CreateHuman ;
+ 783: LD_ADDR_EXP 38
+ 787: PUSH
+ 788: CALL_OW 44
+ 792: ST_TO_ADDR
+// end ;
+ 793: LD_VAR 0 1
+ 797: RET
+// function prepare_belkov ; begin
+ 798: LD_INT 0
+ 800: PPUSH
+// uc_side := russians ;
+ 801: LD_ADDR_OWVAR 20
+ 805: PUSH
+ 806: LD_EXP 2
+ 810: ST_TO_ADDR
+// Belkov := NewCharacter ( Belkov ) ;
+ 811: LD_ADDR_EXP 39
+ 815: PUSH
+ 816: LD_STRING Belkov
+ 818: PPUSH
+ 819: CALL_OW 25
+ 823: ST_TO_ADDR
+// exit ;
+ 824: GO 937
+// uc_nation := nation_russian ;
+ 826: LD_ADDR_OWVAR 21
+ 830: PUSH
+ 831: LD_INT 3
+ 833: ST_TO_ADDR
+// hc_sex = sex_male ;
+ 834: LD_ADDR_OWVAR 27
+ 838: PUSH
+ 839: LD_INT 1
+ 841: ST_TO_ADDR
+// hc_class = class_soldier ;
+ 842: LD_ADDR_OWVAR 28
+ 846: PUSH
+ 847: LD_INT 1
+ 849: ST_TO_ADDR
+// hc_basic_skills = [ 1 , 1 , 1 , 0 ] ;
+ 850: LD_ADDR_OWVAR 30
+ 854: PUSH
+ 855: LD_INT 1
+ 857: PUSH
+ 858: LD_INT 1
+ 860: PUSH
+ 861: LD_INT 1
+ 863: PUSH
+ 864: LD_INT 0
+ 866: PUSH
+ 867: EMPTY
+ 868: LIST
+ 869: LIST
+ 870: LIST
+ 871: LIST
+ 872: ST_TO_ADDR
+// hc_skills = [ 2 , 1 , 1 , 0 ] ;
+ 873: LD_ADDR_OWVAR 31
+ 877: PUSH
+ 878: LD_INT 2
+ 880: PUSH
+ 881: LD_INT 1
+ 883: PUSH
+ 884: LD_INT 1
+ 886: PUSH
+ 887: LD_INT 0
+ 889: PUSH
+ 890: EMPTY
+ 891: LIST
+ 892: LIST
+ 893: LIST
+ 894: LIST
+ 895: ST_TO_ADDR
+// hc_attr = [ 10 , 10 ] ;
+ 896: LD_ADDR_OWVAR 29
+ 900: PUSH
+ 901: LD_INT 10
+ 903: PUSH
+ 904: LD_INT 10
+ 906: PUSH
+ 907: EMPTY
+ 908: LIST
+ 909: LIST
+ 910: ST_TO_ADDR
+// hc_importance = 40 ;
+ 911: LD_ADDR_OWVAR 32
+ 915: PUSH
+ 916: LD_INT 40
+ 918: ST_TO_ADDR
+// hc_name := Petr Belkov ;
+ 919: LD_ADDR_OWVAR 26
+ 923: PUSH
+ 924: LD_STRING Petr Belkov
+ 926: ST_TO_ADDR
+// belkov := CreateHuman ;
+ 927: LD_ADDR_EXP 39
+ 931: PUSH
+ 932: CALL_OW 44
+ 936: ST_TO_ADDR
+// end ;
+ 937: LD_VAR 0 1
+ 941: RET
+// function prepare_gnyevko ; begin
+ 942: LD_INT 0
+ 944: PPUSH
+// uc_side := russians ;
+ 945: LD_ADDR_OWVAR 20
+ 949: PUSH
+ 950: LD_EXP 2
+ 954: ST_TO_ADDR
+// Gnyevko := NewCharacter ( Gnyevko ) ;
+ 955: LD_ADDR_EXP 40
+ 959: PUSH
+ 960: LD_STRING Gnyevko
+ 962: PPUSH
+ 963: CALL_OW 25
+ 967: ST_TO_ADDR
+// exit ;
+ 968: GO 1073
+// hc_sex = sex_male ;
+ 970: LD_ADDR_OWVAR 27
+ 974: PUSH
+ 975: LD_INT 1
+ 977: ST_TO_ADDR
+// hc_class = class_soldier ;
+ 978: LD_ADDR_OWVAR 28
+ 982: PUSH
+ 983: LD_INT 1
+ 985: ST_TO_ADDR
+// hc_basic_skills = [ 1 , 2 , 0 , 0 ] ;
+ 986: LD_ADDR_OWVAR 30
+ 990: PUSH
+ 991: LD_INT 1
+ 993: PUSH
+ 994: LD_INT 2
+ 996: PUSH
+ 997: LD_INT 0
+ 999: PUSH
+1000: LD_INT 0
+1002: PUSH
+1003: EMPTY
+1004: LIST
+1005: LIST
+1006: LIST
+1007: LIST
+1008: ST_TO_ADDR
+// hc_skills = [ 1 , 2 , 0 , 0 ] ;
+1009: LD_ADDR_OWVAR 31
+1013: PUSH
+1014: LD_INT 1
+1016: PUSH
+1017: LD_INT 2
+1019: PUSH
+1020: LD_INT 0
+1022: PUSH
+1023: LD_INT 0
+1025: PUSH
+1026: EMPTY
+1027: LIST
+1028: LIST
+1029: LIST
+1030: LIST
+1031: ST_TO_ADDR
+// hc_attr = [ 10 , 10 ] ;
+1032: LD_ADDR_OWVAR 29
+1036: PUSH
+1037: LD_INT 10
+1039: PUSH
+1040: LD_INT 10
+1042: PUSH
+1043: EMPTY
+1044: LIST
+1045: LIST
+1046: ST_TO_ADDR
+// hc_importance = 40 ;
+1047: LD_ADDR_OWVAR 32
+1051: PUSH
+1052: LD_INT 40
+1054: ST_TO_ADDR
+// hc_name := Gnyevko ;
+1055: LD_ADDR_OWVAR 26
+1059: PUSH
+1060: LD_STRING Gnyevko
+1062: ST_TO_ADDR
+// gnyevko := CreateHuman ;
+1063: LD_ADDR_EXP 40
+1067: PUSH
+1068: CALL_OW 44
+1072: ST_TO_ADDR
+// end ;
+1073: LD_VAR 0 1
+1077: RET
+// function prepare_kurin ; begin
+1078: LD_INT 0
+1080: PPUSH
+// uc_side := russians ;
+1081: LD_ADDR_OWVAR 20
+1085: PUSH
+1086: LD_EXP 2
+1090: ST_TO_ADDR
+// Kurin := NewCharacter ( Kurin ) ;
+1091: LD_ADDR_EXP 42
+1095: PUSH
+1096: LD_STRING Kurin
+1098: PPUSH
+1099: CALL_OW 25
+1103: ST_TO_ADDR
+// exit ;
+1104: GO 1217
+// uc_nation := nation_russian ;
+1106: LD_ADDR_OWVAR 21
+1110: PUSH
+1111: LD_INT 3
+1113: ST_TO_ADDR
+// hc_sex = sex_male ;
+1114: LD_ADDR_OWVAR 27
+1118: PUSH
+1119: LD_INT 1
+1121: ST_TO_ADDR
+// hc_class = class_soldier ;
+1122: LD_ADDR_OWVAR 28
+1126: PUSH
+1127: LD_INT 1
+1129: ST_TO_ADDR
+// hc_basic_skills = [ 2 , 0 , 1 , 0 ] ;
+1130: LD_ADDR_OWVAR 30
+1134: PUSH
+1135: LD_INT 2
+1137: PUSH
+1138: LD_INT 0
+1140: PUSH
+1141: LD_INT 1
+1143: PUSH
+1144: LD_INT 0
+1146: PUSH
+1147: EMPTY
+1148: LIST
+1149: LIST
+1150: LIST
+1151: LIST
+1152: ST_TO_ADDR
+// hc_skills = [ 4 , 2 , 2 , 1 ] ;
+1153: LD_ADDR_OWVAR 31
+1157: PUSH
+1158: LD_INT 4
+1160: PUSH
+1161: LD_INT 2
+1163: PUSH
+1164: LD_INT 2
+1166: PUSH
+1167: LD_INT 1
+1169: PUSH
+1170: EMPTY
+1171: LIST
+1172: LIST
+1173: LIST
+1174: LIST
+1175: ST_TO_ADDR
+// hc_attr = [ 12 , 11 ] ;
+1176: LD_ADDR_OWVAR 29
+1180: PUSH
+1181: LD_INT 12
+1183: PUSH
+1184: LD_INT 11
+1186: PUSH
+1187: EMPTY
+1188: LIST
+1189: LIST
+1190: ST_TO_ADDR
+// hc_importance = 60 ;
+1191: LD_ADDR_OWVAR 32
+1195: PUSH
+1196: LD_INT 60
+1198: ST_TO_ADDR
+// hc_name := Kurin ;
+1199: LD_ADDR_OWVAR 26
+1203: PUSH
+1204: LD_STRING Kurin
+1206: ST_TO_ADDR
+// kurin := CreateHuman ;
+1207: LD_ADDR_EXP 42
+1211: PUSH
+1212: CALL_OW 44
+1216: ST_TO_ADDR
+// end ;
+1217: LD_VAR 0 1
+1221: RET
+// function prepare_kirilenkova ; begin
+1222: LD_INT 0
+1224: PPUSH
+// uc_side := russians ;
+1225: LD_ADDR_OWVAR 20
+1229: PUSH
+1230: LD_EXP 2
+1234: ST_TO_ADDR
+// Kirilenkova := NewCharacter ( Kirilenkova ) ;
+1235: LD_ADDR_EXP 41
+1239: PUSH
+1240: LD_STRING Kirilenkova
+1242: PPUSH
+1243: CALL_OW 25
+1247: ST_TO_ADDR
+// exit ;
+1248: GO 1361
+// uc_nation := nation_russian ;
+1250: LD_ADDR_OWVAR 21
+1254: PUSH
+1255: LD_INT 3
+1257: ST_TO_ADDR
+// hc_sex = sex_female ;
+1258: LD_ADDR_OWVAR 27
+1262: PUSH
+1263: LD_INT 2
+1265: ST_TO_ADDR
+// hc_class = class_scientistic ;
+1266: LD_ADDR_OWVAR 28
+1270: PUSH
+1271: LD_INT 4
+1273: ST_TO_ADDR
+// hc_basic_skills = [ 1 , 0 , 0 , 2 ] ;
+1274: LD_ADDR_OWVAR 30
+1278: PUSH
+1279: LD_INT 1
+1281: PUSH
+1282: LD_INT 0
+1284: PUSH
+1285: LD_INT 0
+1287: PUSH
+1288: LD_INT 2
+1290: PUSH
+1291: EMPTY
+1292: LIST
+1293: LIST
+1294: LIST
+1295: LIST
+1296: ST_TO_ADDR
+// hc_skills = [ 1 , 0 , 0 , 2 ] ;
+1297: LD_ADDR_OWVAR 31
+1301: PUSH
+1302: LD_INT 1
+1304: PUSH
+1305: LD_INT 0
+1307: PUSH
+1308: LD_INT 0
+1310: PUSH
+1311: LD_INT 2
+1313: PUSH
+1314: EMPTY
+1315: LIST
+1316: LIST
+1317: LIST
+1318: LIST
+1319: ST_TO_ADDR
+// hc_attr = [ 10 , 10 ] ;
+1320: LD_ADDR_OWVAR 29
+1324: PUSH
+1325: LD_INT 10
+1327: PUSH
+1328: LD_INT 10
+1330: PUSH
+1331: EMPTY
+1332: LIST
+1333: LIST
+1334: ST_TO_ADDR
+// hc_importance = 40 ;
+1335: LD_ADDR_OWVAR 32
+1339: PUSH
+1340: LD_INT 40
+1342: ST_TO_ADDR
+// hc_name := Kirilenkova ;
+1343: LD_ADDR_OWVAR 26
+1347: PUSH
+1348: LD_STRING Kirilenkova
+1350: ST_TO_ADDR
+// kirilenkova := CreateHuman ;
+1351: LD_ADDR_EXP 41
+1355: PUSH
+1356: CALL_OW 44
+1360: ST_TO_ADDR
+// end ;
+1361: LD_VAR 0 1
+1365: RET
+// function prepare_team ; var l , s ; begin
+1366: LD_INT 0
+1368: PPUSH
+1369: PPUSH
+1370: PPUSH
+// uc_side := russians ;
+1371: LD_ADDR_OWVAR 20
+1375: PUSH
+1376: LD_EXP 2
+1380: ST_TO_ADDR
+// uc_nation := nation_russian ;
+1381: LD_ADDR_OWVAR 21
+1385: PUSH
+1386: LD_INT 3
+1388: ST_TO_ADDR
+// s := 2 ;
+1389: LD_ADDR_VAR 0 3
+1393: PUSH
+1394: LD_INT 2
+1396: ST_TO_ADDR
+// team := [ ] ;
+1397: LD_ADDR_EXP 43
+1401: PUSH
+1402: EMPTY
+1403: ST_TO_ADDR
+// hc_name :=  ;
+1404: LD_ADDR_OWVAR 26
+1408: PUSH
+1409: LD_STRING 
+1411: ST_TO_ADDR
+// hc_gallery :=  ;
+1412: LD_ADDR_OWVAR 33
+1416: PUSH
+1417: LD_STRING 
+1419: ST_TO_ADDR
+// hc_importance = 30 ;
+1420: LD_ADDR_OWVAR 32
+1424: PUSH
+1425: LD_INT 30
+1427: ST_TO_ADDR
+// for l in rus_soldiers do
+1428: LD_ADDR_VAR 0 2
+1432: PUSH
+1433: LD_EXP 24
+1437: PUSH
+1438: FOR_IN
+1439: IFFALSE 1489
+// begin PrepareSoldier ( s , l ) ;
+1441: LD_VAR 0 3
+1445: PPUSH
+1446: LD_VAR 0 2
+1450: PPUSH
+1451: CALL_OW 381
+// team := team ^ CreateHuman ;
+1455: LD_ADDR_EXP 43
+1459: PUSH
+1460: LD_EXP 43
+1464: PUSH
+1465: CALL_OW 44
+1469: ADD
+1470: ST_TO_ADDR
+// hc_importance = 20 ;
+1471: LD_ADDR_OWVAR 32
+1475: PUSH
+1476: LD_INT 20
+1478: ST_TO_ADDR
+// s := 1 ;
+1479: LD_ADDR_VAR 0 3
+1483: PUSH
+1484: LD_INT 1
+1486: ST_TO_ADDR
+// end ;
+1487: GO 1438
+1489: POP
+1490: POP
+// hc_importance = 0 ;
+1491: LD_ADDR_OWVAR 32
+1495: PUSH
+1496: LD_INT 0
+1498: ST_TO_ADDR
+// end ;
+1499: LD_VAR 0 1
+1503: RET
+// function prepare_brown ; begin
+1504: LD_INT 0
+1506: PPUSH
+// uc_side := americans2 ;
+1507: LD_ADDR_OWVAR 20
+1511: PUSH
+1512: LD_EXP 4
+1516: ST_TO_ADDR
+// uc_nation := nation_american ;
+1517: LD_ADDR_OWVAR 21
+1521: PUSH
+1522: LD_INT 1
+1524: ST_TO_ADDR
+// hc_sex = sex_male ;
+1525: LD_ADDR_OWVAR 27
+1529: PUSH
+1530: LD_INT 1
+1532: ST_TO_ADDR
+// hc_class = class_soldier ;
+1533: LD_ADDR_OWVAR 28
+1537: PUSH
+1538: LD_INT 1
+1540: ST_TO_ADDR
+// hc_basic_skills = [ browns_combat_level , 0 , 1 , 1 ] ;
+1541: LD_ADDR_OWVAR 30
+1545: PUSH
+1546: LD_EXP 27
+1550: PUSH
+1551: LD_INT 0
+1553: PUSH
+1554: LD_INT 1
+1556: PUSH
+1557: LD_INT 1
+1559: PUSH
+1560: EMPTY
+1561: LIST
+1562: LIST
+1563: LIST
+1564: LIST
+1565: ST_TO_ADDR
+// hc_skills = [ browns_combat_level , 0 , 1 , 1 ] ;
+1566: LD_ADDR_OWVAR 31
+1570: PUSH
+1571: LD_EXP 27
+1575: PUSH
+1576: LD_INT 0
+1578: PUSH
+1579: LD_INT 1
+1581: PUSH
+1582: LD_INT 1
+1584: PUSH
+1585: EMPTY
+1586: LIST
+1587: LIST
+1588: LIST
+1589: LIST
+1590: ST_TO_ADDR
+// hc_attr = [ 10 , 10 ] ;
+1591: LD_ADDR_OWVAR 29
+1595: PUSH
+1596: LD_INT 10
+1598: PUSH
+1599: LD_INT 10
+1601: PUSH
+1602: EMPTY
+1603: LIST
+1604: LIST
+1605: ST_TO_ADDR
+// hc_name := Charles Brown ;
+1606: LD_ADDR_OWVAR 26
+1610: PUSH
+1611: LD_STRING Charles Brown
+1613: ST_TO_ADDR
+// Brown := CreateHuman ;
+1614: LD_ADDR_EXP 44
+1618: PUSH
+1619: CALL_OW 44
+1623: ST_TO_ADDR
+// end ;
+1624: LD_VAR 0 1
+1628: RET
+// function prepare_am1 ; begin
+1629: LD_INT 0
+1631: PPUSH
+// uc_side := americans ;
+1632: LD_ADDR_OWVAR 20
+1636: PUSH
+1637: LD_EXP 3
+1641: ST_TO_ADDR
+// uc_nation := nation_american ;
+1642: LD_ADDR_OWVAR 21
+1646: PUSH
+1647: LD_INT 1
+1649: ST_TO_ADDR
+// hc_sex = sex_female ;
+1650: LD_ADDR_OWVAR 27
+1654: PUSH
+1655: LD_INT 2
+1657: ST_TO_ADDR
+// hc_class = class_soldier ;
+1658: LD_ADDR_OWVAR 28
+1662: PUSH
+1663: LD_INT 1
+1665: ST_TO_ADDR
+// hc_basic_skills = [ am1_combat_skill , 1 , 0 , 0 ] ;
+1666: LD_ADDR_OWVAR 30
+1670: PUSH
+1671: LD_EXP 28
+1675: PUSH
+1676: LD_INT 1
+1678: PUSH
+1679: LD_INT 0
+1681: PUSH
+1682: LD_INT 0
+1684: PUSH
+1685: EMPTY
+1686: LIST
+1687: LIST
+1688: LIST
+1689: LIST
+1690: ST_TO_ADDR
+// hc_skills = [ am1_combat_skill , 1 , 0 , 0 ] ;
+1691: LD_ADDR_OWVAR 31
+1695: PUSH
+1696: LD_EXP 28
+1700: PUSH
+1701: LD_INT 1
+1703: PUSH
+1704: LD_INT 0
+1706: PUSH
+1707: LD_INT 0
+1709: PUSH
+1710: EMPTY
+1711: LIST
+1712: LIST
+1713: LIST
+1714: LIST
+1715: ST_TO_ADDR
+// hc_attr = [ 10 , 10 ] ;
+1716: LD_ADDR_OWVAR 29
+1720: PUSH
+1721: LD_INT 10
+1723: PUSH
+1724: LD_INT 10
+1726: PUSH
+1727: EMPTY
+1728: LIST
+1729: LIST
+1730: ST_TO_ADDR
+// hc_name :=  ;
+1731: LD_ADDR_OWVAR 26
+1735: PUSH
+1736: LD_STRING 
+1738: ST_TO_ADDR
+// am1 := CreateHuman ;
+1739: LD_ADDR_EXP 46
+1743: PUSH
+1744: CALL_OW 44
+1748: ST_TO_ADDR
+// end ;
+1749: LD_VAR 0 1
+1753: RET
+// function prepare_gladstone ; begin
+1754: LD_INT 0
+1756: PPUSH
+// uc_side := americans ;
+1757: LD_ADDR_OWVAR 20
+1761: PUSH
+1762: LD_EXP 3
+1766: ST_TO_ADDR
+// Gladstone := NewCharacter ( Gladstone ) ;
+1767: LD_ADDR_EXP 45
+1771: PUSH
+1772: LD_STRING Gladstone
+1774: PPUSH
+1775: CALL_OW 25
+1779: ST_TO_ADDR
+// exit ;
+1780: GO 1887
+// uc_nation := nation_american ;
+1782: LD_ADDR_OWVAR 21
+1786: PUSH
+1787: LD_INT 1
+1789: ST_TO_ADDR
+// hc_sex = sex_male ;
+1790: LD_ADDR_OWVAR 27
+1794: PUSH
+1795: LD_INT 1
+1797: ST_TO_ADDR
+// hc_class = class_scientistic ;
+1798: LD_ADDR_OWVAR 28
+1802: PUSH
+1803: LD_INT 4
+1805: ST_TO_ADDR
+// hc_basic_skills = [ 1 , 0 , 0 , 1 ] ;
+1806: LD_ADDR_OWVAR 30
+1810: PUSH
+1811: LD_INT 1
+1813: PUSH
+1814: LD_INT 0
+1816: PUSH
+1817: LD_INT 0
+1819: PUSH
+1820: LD_INT 1
+1822: PUSH
+1823: EMPTY
+1824: LIST
+1825: LIST
+1826: LIST
+1827: LIST
+1828: ST_TO_ADDR
+// hc_skills = [ 2 , 1 , 0 , 3 ] ;
+1829: LD_ADDR_OWVAR 31
+1833: PUSH
+1834: LD_INT 2
+1836: PUSH
+1837: LD_INT 1
+1839: PUSH
+1840: LD_INT 0
+1842: PUSH
+1843: LD_INT 3
+1845: PUSH
+1846: EMPTY
+1847: LIST
+1848: LIST
+1849: LIST
+1850: LIST
+1851: ST_TO_ADDR
+// hc_attr = [ 10 , gladstone_speed ] ;
+1852: LD_ADDR_OWVAR 29
+1856: PUSH
+1857: LD_INT 10
+1859: PUSH
+1860: LD_EXP 29
+1864: PUSH
+1865: EMPTY
+1866: LIST
+1867: LIST
+1868: ST_TO_ADDR
+// hc_name := Timothy Gladstone ;
+1869: LD_ADDR_OWVAR 26
+1873: PUSH
+1874: LD_STRING Timothy Gladstone
+1876: ST_TO_ADDR
+// gladstone := CreateHuman ;
+1877: LD_ADDR_EXP 45
+1881: PUSH
+1882: CALL_OW 44
+1886: ST_TO_ADDR
+// end ;
+1887: LD_VAR 0 1
+1891: RET
+// function prepare_gladstones_apemen ; var i , s ; begin
+1892: LD_INT 0
+1894: PPUSH
+1895: PPUSH
+1896: PPUSH
+// uc_side := americans ;
+1897: LD_ADDR_OWVAR 20
+1901: PUSH
+1902: LD_EXP 3
+1906: ST_TO_ADDR
+// uc_nation := nation_nature ;
+1907: LD_ADDR_OWVAR 21
+1911: PUSH
+1912: LD_INT 0
+1914: ST_TO_ADDR
+// gladstones_apemen := [ ] ;
+1915: LD_ADDR_EXP 49
+1919: PUSH
+1920: EMPTY
+1921: ST_TO_ADDR
+// hc_name :=  ;
+1922: LD_ADDR_OWVAR 26
+1926: PUSH
+1927: LD_STRING 
+1929: ST_TO_ADDR
+// hc_basic_skills := [ 0 , 0 , 0 , 0 ] ;
+1930: LD_ADDR_OWVAR 30
+1934: PUSH
+1935: LD_INT 0
+1937: PUSH
+1938: LD_INT 0
+1940: PUSH
+1941: LD_INT 0
+1943: PUSH
+1944: LD_INT 0
+1946: PUSH
+1947: EMPTY
+1948: LIST
+1949: LIST
+1950: LIST
+1951: LIST
+1952: ST_TO_ADDR
+// hc_skills := [ 0 , 0 , 0 , 0 ] ;
+1953: LD_ADDR_OWVAR 31
+1957: PUSH
+1958: LD_INT 0
+1960: PUSH
+1961: LD_INT 0
+1963: PUSH
+1964: LD_INT 0
+1966: PUSH
+1967: LD_INT 0
+1969: PUSH
+1970: EMPTY
+1971: LIST
+1972: LIST
+1973: LIST
+1974: LIST
+1975: ST_TO_ADDR
+// hc_agressivity := 20 ;
+1976: LD_ADDR_OWVAR 35
+1980: PUSH
+1981: LD_INT 20
+1983: ST_TO_ADDR
+// hc_attr := [ 10 , 12 ] ;
+1984: LD_ADDR_OWVAR 29
+1988: PUSH
+1989: LD_INT 10
+1991: PUSH
+1992: LD_INT 12
+1994: PUSH
+1995: EMPTY
+1996: LIST
+1997: LIST
+1998: ST_TO_ADDR
+// hc_class := class_apeman ;
+1999: LD_ADDR_OWVAR 28
+2003: PUSH
+2004: LD_INT 12
+2006: ST_TO_ADDR
+// hc_sex := sex_male ;
+2007: LD_ADDR_OWVAR 27
+2011: PUSH
+2012: LD_INT 1
+2014: ST_TO_ADDR
+// for i := 1 to number_of_gladstones_apemen do
+2015: LD_ADDR_VAR 0 2
+2019: PUSH
+2020: DOUBLE
+2021: LD_INT 1
+2023: DEC
+2024: ST_TO_ADDR
+2025: LD_EXP 25
+2029: PUSH
+2030: FOR_TO
+2031: IFFALSE 2051
+// gladstones_apemen := gladstones_apemen ^ CreateHuman ;
+2033: LD_ADDR_EXP 49
+2037: PUSH
+2038: LD_EXP 49
+2042: PUSH
+2043: CALL_OW 44
+2047: ADD
+2048: ST_TO_ADDR
+2049: GO 2030
+2051: POP
+2052: POP
+// end ;
+2053: LD_VAR 0 1
+2057: RET
+// function prepare_wild_apemen ; var i , s ; begin
+2058: LD_INT 0
+2060: PPUSH
+2061: PPUSH
+2062: PPUSH
+// uc_side := 0 ;
+2063: LD_ADDR_OWVAR 20
+2067: PUSH
+2068: LD_INT 0
+2070: ST_TO_ADDR
+// uc_nation := nation_nature ;
+2071: LD_ADDR_OWVAR 21
+2075: PUSH
+2076: LD_INT 0
+2078: ST_TO_ADDR
+// wild_apemen := [ ] ;
+2079: LD_ADDR_EXP 48
+2083: PUSH
+2084: EMPTY
+2085: ST_TO_ADDR
+// hc_name :=  ;
+2086: LD_ADDR_OWVAR 26
+2090: PUSH
+2091: LD_STRING 
+2093: ST_TO_ADDR
+// hc_basic_skills := [ 0 , 0 , 0 , 0 ] ;
+2094: LD_ADDR_OWVAR 30
+2098: PUSH
+2099: LD_INT 0
+2101: PUSH
+2102: LD_INT 0
+2104: PUSH
+2105: LD_INT 0
+2107: PUSH
+2108: LD_INT 0
+2110: PUSH
+2111: EMPTY
+2112: LIST
+2113: LIST
+2114: LIST
+2115: LIST
+2116: ST_TO_ADDR
+// hc_skills := [ 0 , 0 , 0 , 0 ] ;
+2117: LD_ADDR_OWVAR 31
+2121: PUSH
+2122: LD_INT 0
+2124: PUSH
+2125: LD_INT 0
+2127: PUSH
+2128: LD_INT 0
+2130: PUSH
+2131: LD_INT 0
+2133: PUSH
+2134: EMPTY
+2135: LIST
+2136: LIST
+2137: LIST
+2138: LIST
+2139: ST_TO_ADDR
+// hc_agressivity := 20 ;
+2140: LD_ADDR_OWVAR 35
+2144: PUSH
+2145: LD_INT 20
+2147: ST_TO_ADDR
+// hc_attr := [ 10 , 12 ] ;
+2148: LD_ADDR_OWVAR 29
+2152: PUSH
+2153: LD_INT 10
+2155: PUSH
+2156: LD_INT 12
+2158: PUSH
+2159: EMPTY
+2160: LIST
+2161: LIST
+2162: ST_TO_ADDR
+// hc_class := class_apeman ;
+2163: LD_ADDR_OWVAR 28
+2167: PUSH
+2168: LD_INT 12
+2170: ST_TO_ADDR
+// hc_sex := sex_male ;
+2171: LD_ADDR_OWVAR 27
+2175: PUSH
+2176: LD_INT 1
+2178: ST_TO_ADDR
+// for i := 1 to number_of_wild_apemen do
+2179: LD_ADDR_VAR 0 2
+2183: PUSH
+2184: DOUBLE
+2185: LD_INT 1
+2187: DEC
+2188: ST_TO_ADDR
+2189: LD_EXP 26
+2193: PUSH
+2194: FOR_TO
+2195: IFFALSE 2215
+// wild_apemen := wild_apemen ^ CreateHuman ;
+2197: LD_ADDR_EXP 48
+2201: PUSH
+2202: LD_EXP 48
+2206: PUSH
+2207: CALL_OW 44
+2211: ADD
+2212: ST_TO_ADDR
+2213: GO 2194
+2215: POP
+2216: POP
+// end ;
+2217: LD_VAR 0 1
+2221: RET
+// export function prepare_people ; begin
+2222: LD_INT 0
+2224: PPUSH
+// prepare_burlak ;
+2225: CALL 480 0 0
+// prepare_pokryshkin ;
+2229: CALL 624 0 0
+// prepare_belkov ;
+2233: CALL 798 0 0
+// prepare_gnyevko ;
+2237: CALL 942 0 0
+// prepare_kurin ;
+2241: CALL 1078 0 0
+// prepare_kirilenkova ;
+2245: CALL 1222 0 0
+// prepare_team ;
+2249: CALL 1366 0 0
+// prepare_brown ;
+2253: CALL 1504 0 0
+// prepare_gladstone ;
+2257: CALL 1754 0 0
+// prepare_am1 ;
+2261: CALL 1629 0 0
+// prepare_gladstones_apemen ;
+2265: CALL 1892 0 0
+// prepare_wild_apemen ;
+2269: CALL 2058 0 0
+// end ;
+2273: LD_VAR 0 1
+2277: RET
+// export function place_team ; var un ; begin
+2278: LD_INT 0
+2280: PPUSH
+2281: PPUSH
+// PlaceUnitXY ( Pokryshkin , 90 , 66 , false ) ;
+2282: LD_EXP 38
+2286: PPUSH
+2287: LD_INT 90
+2289: PPUSH
+2290: LD_INT 66
+2292: PPUSH
+2293: LD_INT 0
+2295: PPUSH
+2296: CALL_OW 48
+// PlaceUnitXY ( Belkov , 87 , 66 , false ) ;
+2300: LD_EXP 39
+2304: PPUSH
+2305: LD_INT 87
+2307: PPUSH
+2308: LD_INT 66
+2310: PPUSH
+2311: LD_INT 0
+2313: PPUSH
+2314: CALL_OW 48
+// for un in team do
+2318: LD_ADDR_VAR 0 2
+2322: PUSH
+2323: LD_EXP 43
+2327: PUSH
+2328: FOR_IN
+2329: IFFALSE 2354
+// PlaceUnitXYR ( un , 85 , 63 , 3 , false ) ;
+2331: LD_VAR 0 2
+2335: PPUSH
+2336: LD_INT 85
+2338: PPUSH
+2339: LD_INT 63
+2341: PPUSH
+2342: LD_INT 3
+2344: PPUSH
+2345: LD_INT 0
+2347: PPUSH
+2348: CALL_OW 50
+2352: GO 2328
+2354: POP
+2355: POP
+// end ;
+2356: LD_VAR 0 1
+2360: RET
+// export function place_gnyevko ( x , y ) ; begin
+2361: LD_INT 0
+2363: PPUSH
+// SetLives ( Gnyevko , 450 ) ;
+2364: LD_EXP 40
+2368: PPUSH
+2369: LD_INT 450
+2371: PPUSH
+2372: CALL_OW 234
+// PlaceUnitXY ( Gnyevko , x , y , false ) ;
+2376: LD_EXP 40
+2380: PPUSH
+2381: LD_VAR 0 1
+2385: PPUSH
+2386: LD_VAR 0 2
+2390: PPUSH
+2391: LD_INT 0
+2393: PPUSH
+2394: CALL_OW 48
+// ComHold ( Gnyevko ) ;
+2398: LD_EXP 40
+2402: PPUSH
+2403: CALL_OW 140
+// end ;
+2407: LD_VAR 0 3
+2411: RET
+// export function place_wild_apemen ; var un ; begin
+2412: LD_INT 0
+2414: PPUSH
+2415: PPUSH
+// for un in wild_apemen do
+2416: LD_ADDR_VAR 0 2
+2420: PUSH
+2421: LD_EXP 48
+2425: PUSH
+2426: FOR_IN
+2427: IFFALSE 2446
+// PlaceUnitArea ( un , CaveEntrance , false ) ;
+2429: LD_VAR 0 2
+2433: PPUSH
+2434: LD_INT 2
+2436: PPUSH
+2437: LD_INT 0
+2439: PPUSH
+2440: CALL_OW 49
+2444: GO 2426
+2446: POP
+2447: POP
+// end ;
+2448: LD_VAR 0 1
+2452: RET
+// export function place_americans ; var un ; begin
+2453: LD_INT 0
+2455: PPUSH
+2456: PPUSH
+// uc_side := americans ;
+2457: LD_ADDR_OWVAR 20
+2461: PUSH
+2462: LD_EXP 3
+2466: ST_TO_ADDR
+// uc_nation := nation_american ;
+2467: LD_ADDR_OWVAR 21
+2471: PUSH
+2472: LD_INT 1
+2474: ST_TO_ADDR
+// bc_type := b_breastwork ;
+2475: LD_ADDR_OWVAR 42
+2479: PUSH
+2480: LD_INT 31
+2482: ST_TO_ADDR
+// bc_level := bunker_level ;
+2483: LD_ADDR_OWVAR 43
+2487: PUSH
+2488: LD_EXP 30
+2492: ST_TO_ADDR
+// am_bunker := CreateAndPlaceBuildingXYD ( 54 , 25 , 5 ) ;
+2493: LD_ADDR_EXP 47
+2497: PUSH
+2498: LD_INT 54
+2500: PPUSH
+2501: LD_INT 25
+2503: PPUSH
+2504: LD_INT 5
+2506: PPUSH
+2507: CALL_OW 47
+2511: ST_TO_ADDR
+// SetLives ( am_bunker , bunker_lives ) ;
+2512: LD_EXP 47
+2516: PPUSH
+2517: LD_EXP 33
+2521: PPUSH
+2522: CALL_OW 234
+// PlaceUnitXYR ( Gladstone , 40 , 7 , 2 , false ) ;
+2526: LD_EXP 45
+2530: PPUSH
+2531: LD_INT 40
+2533: PPUSH
+2534: LD_INT 7
+2536: PPUSH
+2537: LD_INT 2
+2539: PPUSH
+2540: LD_INT 0
+2542: PPUSH
+2543: CALL_OW 50
+// for un in gladstones_apemen do
+2547: LD_ADDR_VAR 0 2
+2551: PUSH
+2552: LD_EXP 49
+2556: PUSH
+2557: FOR_IN
+2558: IFFALSE 2583
+// PlaceUnitXYR ( un , 37 , 9 , 5 , false ) ;
+2560: LD_VAR 0 2
+2564: PPUSH
+2565: LD_INT 37
+2567: PPUSH
+2568: LD_INT 9
+2570: PPUSH
+2571: LD_INT 5
+2573: PPUSH
+2574: LD_INT 0
+2576: PPUSH
+2577: CALL_OW 50
+2581: GO 2557
+2583: POP
+2584: POP
+// PlaceUnitXYR ( Am1 , 51 , 22 , 2 , false ) ;
+2585: LD_EXP 46
+2589: PPUSH
+2590: LD_INT 51
+2592: PPUSH
+2593: LD_INT 22
+2595: PPUSH
+2596: LD_INT 2
+2598: PPUSH
+2599: LD_INT 0
+2601: PPUSH
+2602: CALL_OW 50
+// ComEnterUnit ( Am1 , am_bunker ) ;
+2606: LD_EXP 46
+2610: PPUSH
+2611: LD_EXP 47
+2615: PPUSH
+2616: CALL_OW 120
+// end ;
+2620: LD_VAR 0 1
+2624: RET
+// export function place_brown ; begin
+2625: LD_INT 0
+2627: PPUSH
+// PlaceUnitXY ( Brown , 28 , 53 , true ) ;
+2628: LD_EXP 44
+2632: PPUSH
+2633: LD_INT 28
+2635: PPUSH
+2636: LD_INT 53
+2638: PPUSH
+2639: LD_INT 1
+2641: PPUSH
+2642: CALL_OW 48
+// end ; end_of_file
+2646: LD_VAR 0 1
+2650: RET
+// var getting_up , kirilenkova_spoke ; export function burlak_appears ; begin
+2651: LD_INT 0
+2653: PPUSH
+// InGameOn ;
+2654: CALL_OW 8
+// CenterNowOnXY ( 82 , 87 ) ;
+2658: LD_INT 82
+2660: PPUSH
+2661: LD_INT 87
+2663: PPUSH
+2664: CALL_OW 86
+// DWait ( 0 0$1 ) ;
+2668: LD_INT 35
+2670: PPUSH
+2671: CALL_OW 68
+// PlaceUnitXY ( Burlak , 82 , 87 , true ) ;
+2675: LD_EXP 37
+2679: PPUSH
+2680: LD_INT 82
+2682: PPUSH
+2683: LD_INT 87
+2685: PPUSH
+2686: LD_INT 1
+2688: PPUSH
+2689: CALL_OW 48
+// Wait ( 0 0$3 ) ;
+2693: LD_INT 105
+2695: PPUSH
+2696: CALL_OW 67
+// ComWait ( Burlak , 0 0$2 ) ;
+2700: LD_EXP 37
+2704: PPUSH
+2705: LD_INT 70
+2707: PPUSH
+2708: CALL_OW 142
+// AddComMoveXY ( Burlak , 91 , 88 ) ;
+2712: LD_EXP 37
+2716: PPUSH
+2717: LD_INT 91
+2719: PPUSH
+2720: LD_INT 88
+2722: PPUSH
+2723: CALL_OW 171
+// Say ( Burlak , D1-Bur-1 ) ;
+2727: LD_EXP 37
+2731: PPUSH
+2732: LD_STRING D1-Bur-1
+2734: PPUSH
+2735: CALL_OW 88
+// CenterOnUnits ( Burlak ) ;
+2739: LD_EXP 37
+2743: PPUSH
+2744: CALL_OW 85
+// DWait ( 0 0$2 ) ;
+2748: LD_INT 70
+2750: PPUSH
+2751: CALL_OW 68
+// ComWait ( Burlak , 0 0$1 ) ;
+2755: LD_EXP 37
+2759: PPUSH
+2760: LD_INT 35
+2762: PPUSH
+2763: CALL_OW 142
+// AddComMoveXY ( Burlak , 104 , 96 ) ;
+2767: LD_EXP 37
+2771: PPUSH
+2772: LD_INT 104
+2774: PPUSH
+2775: LD_INT 96
+2777: PPUSH
+2778: CALL_OW 171
+// Say ( Burlak , D1-Bur-1a ) ;
+2782: LD_EXP 37
+2786: PPUSH
+2787: LD_STRING D1-Bur-1a
+2789: PPUSH
+2790: CALL_OW 88
+// CenterOnUnits ( Burlak ) ;
+2794: LD_EXP 37
+2798: PPUSH
+2799: CALL_OW 85
+// DWait ( 0 0$2 ) ;
+2803: LD_INT 70
+2805: PPUSH
+2806: CALL_OW 68
+// ComMoveXY ( Burlak , 103 , 90 ) ;
+2810: LD_EXP 37
+2814: PPUSH
+2815: LD_INT 103
+2817: PPUSH
+2818: LD_INT 90
+2820: PPUSH
+2821: CALL_OW 111
+// Say ( Burlak , D1-Bur-1b ) ;
+2825: LD_EXP 37
+2829: PPUSH
+2830: LD_STRING D1-Bur-1b
+2832: PPUSH
+2833: CALL_OW 88
+// CenterOnUnits ( Burlak ) ;
+2837: LD_EXP 37
+2841: PPUSH
+2842: CALL_OW 85
+// Wait ( 0 0$0.5 ) ;
+2846: LD_INT 18
+2848: PPUSH
+2849: CALL_OW 67
+// InGameOff ;
+2853: CALL_OW 9
+// SaveForQuickRestart ;
+2857: CALL_OW 22
+// Wait ( 0 0$0.5 ) ;
+2861: LD_INT 18
+2863: PPUSH
+2864: CALL_OW 67
+// ChangeMissionObjectives ( M1 ) ;
+2868: LD_STRING M1
+2870: PPUSH
+2871: CALL_OW 337
+// Hint ( Selection ) ;
+2875: LD_STRING Selection
+2877: PPUSH
+2878: CALL_OW 339
+// end ;
+2882: LD_VAR 0 1
+2886: RET
+// every 0 0$1.5 trigger SeeXY ( you , 71 , 85 ) and SeeXY ( you , 73 , 83 ) do
+2887: LD_EXP 1
+2891: PPUSH
+2892: LD_INT 71
+2894: PPUSH
+2895: LD_INT 85
+2897: PPUSH
+2898: CALL_OW 293
+2902: PUSH
+2903: LD_EXP 1
+2907: PPUSH
+2908: LD_INT 73
+2910: PPUSH
+2911: LD_INT 83
+2913: PPUSH
+2914: CALL_OW 293
+2918: AND
+2919: IFFALSE 2972
+2921: GO 2923
+2923: DISABLE
+// begin if ( GetDistUnitXY ( Burlak , 72 , 85 ) <= 15 ) and ( GetY ( Burlak ) > 75 ) then
+2924: LD_EXP 37
+2928: PPUSH
+2929: LD_INT 72
+2931: PPUSH
+2932: LD_INT 85
+2934: PPUSH
+2935: CALL_OW 297
+2939: PUSH
+2940: LD_INT 15
+2942: LESSEQUAL
+2943: PUSH
+2944: LD_EXP 37
+2948: PPUSH
+2949: CALL_OW 251
+2953: PUSH
+2954: LD_INT 75
+2956: GREATER
+2957: AND
+2958: IFFALSE 2972
+// Say ( Burlak , DWaterfall-Bur-1 ) ;
+2960: LD_EXP 37
+2964: PPUSH
+2965: LD_STRING DWaterfall-Bur-1
+2967: PPUSH
+2968: CALL_OW 88
+// end ;
+2972: END
+// every 0 0$1.5 + 0 0$0.75 trigger SeeXY ( you , 126 , 94 ) and SeeXY ( you , 127 , 92 ) do
+2973: LD_EXP 1
+2977: PPUSH
+2978: LD_INT 126
+2980: PPUSH
+2981: LD_INT 94
+2983: PPUSH
+2984: CALL_OW 293
+2988: PUSH
+2989: LD_EXP 1
+2993: PPUSH
+2994: LD_INT 127
+2996: PPUSH
+2997: LD_INT 92
+2999: PPUSH
+3000: CALL_OW 293
+3004: AND
+3005: IFFALSE 3058
+3007: GO 3009
+3009: DISABLE
+// begin if ( GetDistUnitXY ( Burlak , 126 , 93 ) <= 15 ) and ( GetY ( Burlak ) > 73 ) then
+3010: LD_EXP 37
+3014: PPUSH
+3015: LD_INT 126
+3017: PPUSH
+3018: LD_INT 93
+3020: PPUSH
+3021: CALL_OW 297
+3025: PUSH
+3026: LD_INT 15
+3028: LESSEQUAL
+3029: PUSH
+3030: LD_EXP 37
+3034: PPUSH
+3035: CALL_OW 251
+3039: PUSH
+3040: LD_INT 73
+3042: GREATER
+3043: AND
+3044: IFFALSE 3058
+// Say ( Burlak , DCorpse-Bur-1 ) ;
+3046: LD_EXP 37
+3050: PPUSH
+3051: LD_STRING DCorpse-Bur-1
+3053: PPUSH
+3054: CALL_OW 88
+// end ;
+3058: END
+// every 0 0$1.1 trigger GetLives ( Burlak ) < 940 do
+3059: LD_EXP 37
+3063: PPUSH
+3064: CALL_OW 256
+3068: PUSH
+3069: LD_INT 940
+3071: LESS
+3072: IFFALSE 3084
+3074: GO 3076
+3076: DISABLE
+// begin Hint ( Wound ) ;
+3077: LD_STRING Wound
+3079: PPUSH
+3080: CALL_OW 339
+// end ;
+3084: END
+// every 0 0$0.5 trigger SeeXY ( you , 134 , 83 ) do var un , un1 ;
+3085: LD_EXP 1
+3089: PPUSH
+3090: LD_INT 134
+3092: PPUSH
+3093: LD_INT 83
+3095: PPUSH
+3096: CALL_OW 293
+3100: IFFALSE 3550
+3102: GO 3104
+3104: DISABLE
+3105: LD_INT 0
+3107: PPUSH
+3108: PPUSH
+// begin place_gnyevko ( 134 , 83 ) ;
+3109: LD_INT 134
+3111: PPUSH
+3112: LD_INT 83
+3114: PPUSH
+3115: CALL 2361 0 2
+// if your_units <= 0 then
+3119: LD_EXP 51
+3123: PUSH
+3124: LD_INT 0
+3126: LESSEQUAL
+3127: IFFALSE 3141
+// un := Burlak else
+3129: LD_ADDR_VAR 0 1
+3133: PUSH
+3134: LD_EXP 37
+3138: ST_TO_ADDR
+3139: GO 3207
+// begin un := NearestUnitToUnit ( your_units , Gnyevko ) ;
+3141: LD_ADDR_VAR 0 1
+3145: PUSH
+3146: LD_EXP 51
+3150: PPUSH
+3151: LD_EXP 40
+3155: PPUSH
+3156: CALL_OW 74
+3160: ST_TO_ADDR
+// if GetDistUnits ( un , Gnyevko ) < GetDistUnits ( Burlak , Gnyevko ) + 6 then
+3161: LD_VAR 0 1
+3165: PPUSH
+3166: LD_EXP 40
+3170: PPUSH
+3171: CALL_OW 296
+3175: PUSH
+3176: LD_EXP 37
+3180: PPUSH
+3181: LD_EXP 40
+3185: PPUSH
+3186: CALL_OW 296
+3190: PUSH
+3191: LD_INT 6
+3193: PLUS
+3194: LESS
+3195: IFFALSE 3207
+// un := Burlak ;
+3197: LD_ADDR_VAR 0 1
+3201: PUSH
+3202: LD_EXP 37
+3206: ST_TO_ADDR
+// end ; CenterOnUnits ( Gnyevko ) ;
+3207: LD_EXP 40
+3211: PPUSH
+3212: CALL_OW 85
+// DialogueOn ;
+3216: CALL_OW 6
+// interface_hidden := true ;
+3220: LD_ADDR_OWVAR 54
+3224: PUSH
+3225: LD_INT 1
+3227: ST_TO_ADDR
+// if un = Burlak then
+3228: LD_VAR 0 1
+3232: PUSH
+3233: LD_EXP 37
+3237: EQUAL
+3238: IFFALSE 3254
+// Say ( Burlak , D3-Bur-1 ) else
+3240: LD_EXP 37
+3244: PPUSH
+3245: LD_STRING D3-Bur-1
+3247: PPUSH
+3248: CALL_OW 88
+3252: GO 3295
+// if GetSex ( un ) = sex_male then
+3254: LD_VAR 0 1
+3258: PPUSH
+3259: CALL_OW 258
+3263: PUSH
+3264: LD_INT 1
+3266: EQUAL
+3267: IFFALSE 3283
+// Say ( un , D3-RSol1-1 ) else
+3269: LD_VAR 0 1
+3273: PPUSH
+3274: LD_STRING D3-RSol1-1
+3276: PPUSH
+3277: CALL_OW 88
+3281: GO 3295
+// Say ( un , D3-RFSol1-1 ) ;
+3283: LD_VAR 0 1
+3287: PPUSH
+3288: LD_STRING D3-RFSol1-1
+3290: PPUSH
+3291: CALL_OW 88
+// Say ( Gnyevko , D3-Gny-1 ) ;
+3295: LD_EXP 40
+3299: PPUSH
+3300: LD_STRING D3-Gny-1
+3302: PPUSH
+3303: CALL_OW 88
+// if burlak_killed_apeman then
+3307: LD_EXP 22
+3311: IFFALSE 3327
+// Say ( Burlak , D3-Bur-2 ) else
+3313: LD_EXP 37
+3317: PPUSH
+3318: LD_STRING D3-Bur-2
+3320: PPUSH
+3321: CALL_OW 88
+3325: GO 3345
+// if soldiers_killed_apeman then
+3327: LD_EXP 23
+3331: IFFALSE 3345
+// Say ( Burlak , D3-Bur-2a ) ;
+3333: LD_EXP 37
+3337: PPUSH
+3338: LD_STRING D3-Bur-2a
+3340: PPUSH
+3341: CALL_OW 88
+// if un = Burlak then
+3345: LD_VAR 0 1
+3349: PUSH
+3350: LD_EXP 37
+3354: EQUAL
+3355: IFFALSE 3369
+// Say ( Burlak , D3-Bur-2b ) ;
+3357: LD_EXP 37
+3361: PPUSH
+3362: LD_STRING D3-Bur-2b
+3364: PPUSH
+3365: CALL_OW 88
+// if not pokryshkin_met then
+3369: LD_EXP 5
+3373: NOT
+3374: IFFALSE 3402
+// begin Say ( Burlak , D3-Bur-2c ) ;
+3376: LD_EXP 37
+3380: PPUSH
+3381: LD_STRING D3-Bur-2c
+3383: PPUSH
+3384: CALL_OW 88
+// Say ( Gnyevko , D3-Gny-2 ) ;
+3388: LD_EXP 40
+3392: PPUSH
+3393: LD_STRING D3-Gny-2
+3395: PPUSH
+3396: CALL_OW 88
+// end else
+3400: GO 3502
+// begin if not returning then
+3402: LD_EXP 15
+3406: NOT
+3407: IFFALSE 3423
+// Say ( Burlak , D3-Bur-2d ) else
+3409: LD_EXP 37
+3413: PPUSH
+3414: LD_STRING D3-Bur-2d
+3416: PPUSH
+3417: CALL_OW 88
+3421: GO 3490
+// begin if un = Burlak then
+3423: LD_VAR 0 1
+3427: PUSH
+3428: LD_EXP 37
+3432: EQUAL
+3433: IFFALSE 3449
+// Say ( Burlak , D3-Bur-2e ) else
+3435: LD_EXP 37
+3439: PPUSH
+3440: LD_STRING D3-Bur-2e
+3442: PPUSH
+3443: CALL_OW 88
+3447: GO 3490
+// if GetSex ( un ) = sex_male then
+3449: LD_VAR 0 1
+3453: PPUSH
+3454: CALL_OW 258
+3458: PUSH
+3459: LD_INT 1
+3461: EQUAL
+3462: IFFALSE 3478
+// Say ( un , D3-RSol1-2 ) else
+3464: LD_VAR 0 1
+3468: PPUSH
+3469: LD_STRING D3-RSol1-2
+3471: PPUSH
+3472: CALL_OW 88
+3476: GO 3490
+// Say ( un , D3-RFSol1-2 ) end ;
+3478: LD_VAR 0 1
+3482: PPUSH
+3483: LD_STRING D3-RFSol1-2
+3485: PPUSH
+3486: CALL_OW 88
+// Say ( Gnyevko , D3-Gny-2a ) ;
+3490: LD_EXP 40
+3494: PPUSH
+3495: LD_STRING D3-Gny-2a
+3497: PPUSH
+3498: CALL_OW 88
+// end ; SetSide ( Gnyevko , you ) ;
+3502: LD_EXP 40
+3506: PPUSH
+3507: LD_EXP 1
+3511: PPUSH
+3512: CALL_OW 235
+// interface_hidden := false ;
+3516: LD_ADDR_OWVAR 54
+3520: PUSH
+3521: LD_INT 0
+3523: ST_TO_ADDR
+// DialogueOff ;
+3524: CALL_OW 7
+// if not pokryshkin_met then
+3528: LD_EXP 5
+3532: NOT
+3533: IFFALSE 3542
+// Hint ( selection2 ) ;
+3535: LD_STRING selection2
+3537: PPUSH
+3538: CALL_OW 339
+// gnyevko_met := true ;
+3542: LD_ADDR_EXP 6
+3546: PUSH
+3547: LD_INT 1
+3549: ST_TO_ADDR
+// end ;
+3550: PPOPN 2
+3552: END
+// every 0 0$1 + 0 0$0.16 do var un ;
+3553: GO 3555
+3555: DISABLE
+3556: LD_INT 0
+3558: PPUSH
+// begin if not wild_apemen then
+3559: LD_EXP 48
+3563: NOT
+3564: IFFALSE 3568
+// exit ;
+3566: GO 3635
+// for un in wild_apemen do
+3568: LD_ADDR_VAR 0 1
+3572: PUSH
+3573: LD_EXP 48
+3577: PUSH
+3578: FOR_IN
+3579: IFFALSE 3632
+// if Attacks ( un ) then
+3581: LD_VAR 0 1
+3585: PPUSH
+3586: CALL_OW 320
+3590: IFFALSE 3630
+// if GetSide ( Attacks ( un ) ) = you then
+3592: LD_VAR 0 1
+3596: PPUSH
+3597: CALL_OW 320
+3601: PPUSH
+3602: CALL_OW 255
+3606: PUSH
+3607: LD_EXP 1
+3611: EQUAL
+3612: IFFALSE 3630
+// begin Say ( Burlak , D2-Bur-1a ) ;
+3614: LD_EXP 37
+3618: PPUSH
+3619: LD_STRING D2-Bur-1a
+3621: PPUSH
+3622: CALL_OW 88
+// exit ;
+3626: POP
+3627: POP
+3628: GO 3635
+// end ;
+3630: GO 3578
+3632: POP
+3633: POP
+// enable ;
+3634: ENABLE
+// end ;
+3635: PPOPN 1
+3637: END
+// every 0 0$2.7 trigger radio_dropped and SeeXY ( you , radio_x , radio_y ) do var un ;
+3638: LD_EXP 53
+3642: PUSH
+3643: LD_EXP 1
+3647: PPUSH
+3648: LD_EXP 54
+3652: PPUSH
+3653: LD_EXP 55
+3657: PPUSH
+3658: CALL_OW 293
+3662: AND
+3663: IFFALSE 4068
+3665: GO 3667
+3667: DISABLE
+3668: LD_INT 0
+3670: PPUSH
+// begin wait ( 0 0$2 ) ;
+3671: LD_INT 70
+3673: PPUSH
+3674: CALL_OW 67
+// if not SeeXY ( you , radio_x , radio_y ) then
+3678: LD_EXP 1
+3682: PPUSH
+3683: LD_EXP 54
+3687: PPUSH
+3688: LD_EXP 55
+3692: PPUSH
+3693: CALL_OW 293
+3697: NOT
+3698: IFFALSE 3705
+// begin enable ;
+3700: ENABLE
+// exit ;
+3701: GO 4068
+// end else
+3703: GO 4068
+// begin if not pokryshkin_met then
+3705: LD_EXP 5
+3709: NOT
+3710: IFFALSE 3754
+// begin DialogueOn ;
+3712: CALL_OW 6
+// Say ( Burlak , D2a-Bur-1 ) ;
+3716: LD_EXP 37
+3720: PPUSH
+3721: LD_STRING D2a-Bur-1
+3723: PPUSH
+3724: CALL_OW 88
+// Say ( Burlak , D2a-Bur-2 ) ;
+3728: LD_EXP 37
+3732: PPUSH
+3733: LD_STRING D2a-Bur-2
+3735: PPUSH
+3736: CALL_OW 88
+// DialogueOff ;
+3740: CALL_OW 7
+// radio_found := true ;
+3744: LD_ADDR_EXP 21
+3748: PUSH
+3749: LD_INT 1
+3751: ST_TO_ADDR
+// exit ;
+3752: GO 4068
+// end ; un := NearestUnitToXY ( your_units union [ Gnyevko , Burlak , Kirilenkova ] , radio_x , radio_y ) ;
+3754: LD_ADDR_VAR 0 1
+3758: PUSH
+3759: LD_EXP 51
+3763: PUSH
+3764: LD_EXP 40
+3768: PUSH
+3769: LD_EXP 37
+3773: PUSH
+3774: LD_EXP 41
+3778: PUSH
+3779: EMPTY
+3780: LIST
+3781: LIST
+3782: LIST
+3783: UNION
+3784: PPUSH
+3785: LD_EXP 54
+3789: PPUSH
+3790: LD_EXP 55
+3794: PPUSH
+3795: CALL_OW 73
+3799: ST_TO_ADDR
+// ComMoveXY ( un , ( GetX ( un ) + radio_x ) div 2 , ( GetY ( un ) + radio_y ) div 2 ) ;
+3800: LD_VAR 0 1
+3804: PPUSH
+3805: LD_VAR 0 1
+3809: PPUSH
+3810: CALL_OW 250
+3814: PUSH
+3815: LD_EXP 54
+3819: PLUS
+3820: PUSH
+3821: LD_INT 2
+3823: DIV
+3824: PPUSH
+3825: LD_VAR 0 1
+3829: PPUSH
+3830: CALL_OW 251
+3834: PUSH
+3835: LD_EXP 55
+3839: PLUS
+3840: PUSH
+3841: LD_INT 2
+3843: DIV
+3844: PPUSH
+3845: CALL_OW 111
+// wait ( 0 0$2 ) ;
+3849: LD_INT 70
+3851: PPUSH
+3852: CALL_OW 67
+// DialogueOn ;
+3856: CALL_OW 6
+// case un of Burlak :
+3860: LD_VAR 0 1
+3864: PUSH
+3865: LD_EXP 37
+3869: DOUBLE
+3870: EQUAL
+3871: IFTRUE 3875
+3873: GO 3890
+3875: POP
+// Say ( Burlak , D2a-Bur-1 ) ; Belkov :
+3876: LD_EXP 37
+3880: PPUSH
+3881: LD_STRING D2a-Bur-1
+3883: PPUSH
+3884: CALL_OW 88
+3888: GO 4007
+3890: LD_EXP 39
+3894: DOUBLE
+3895: EQUAL
+3896: IFTRUE 3900
+3898: GO 3915
+3900: POP
+// Say ( Belkov , D2a-Bel-1 ) ; Kirilenkova :
+3901: LD_EXP 39
+3905: PPUSH
+3906: LD_STRING D2a-Bel-1
+3908: PPUSH
+3909: CALL_OW 88
+3913: GO 4007
+3915: LD_EXP 41
+3919: DOUBLE
+3920: EQUAL
+3921: IFTRUE 3925
+3923: GO 3940
+3925: POP
+// Say ( Kirilenkova , D2a-Kir-1 ) ; Gnyevko :
+3926: LD_EXP 41
+3930: PPUSH
+3931: LD_STRING D2a-Kir-1
+3933: PPUSH
+3934: CALL_OW 88
+3938: GO 4007
+3940: LD_EXP 40
+3944: DOUBLE
+3945: EQUAL
+3946: IFTRUE 3950
+3948: GO 3965
+3950: POP
+// Say ( Gnyevko , D2a-Gny-1 ) ; else
+3951: LD_EXP 40
+3955: PPUSH
+3956: LD_STRING D2a-Gny-1
+3958: PPUSH
+3959: CALL_OW 88
+3963: GO 4007
+3965: POP
+// if GetSex ( un ) = sex_male then
+3966: LD_VAR 0 1
+3970: PPUSH
+3971: CALL_OW 258
+3975: PUSH
+3976: LD_INT 1
+3978: EQUAL
+3979: IFFALSE 3995
+// Say ( un , D2a-RSol1-1 ) else
+3981: LD_VAR 0 1
+3985: PPUSH
+3986: LD_STRING D2a-RSol1-1
+3988: PPUSH
+3989: CALL_OW 88
+3993: GO 4007
+// Say ( un , D2a-RFSol1-1 ) ; end ;
+3995: LD_VAR 0 1
+3999: PPUSH
+4000: LD_STRING D2a-RFSol1-1
+4002: PPUSH
+4003: CALL_OW 88
+// if gnyevko_met and ( un <> Gnyevko ) then
+4007: LD_EXP 6
+4011: PUSH
+4012: LD_VAR 0 1
+4016: PUSH
+4017: LD_EXP 40
+4021: NONEQUAL
+4022: AND
+4023: IFFALSE 4037
+// begin Say ( Gnyevko , D2a-Gny-1 ) ;
+4025: LD_EXP 40
+4029: PPUSH
+4030: LD_STRING D2a-Gny-1
+4032: PPUSH
+4033: CALL_OW 88
+// end ; if not gnyevko_met then
+4037: LD_EXP 6
+4041: NOT
+4042: IFFALSE 4056
+// Say ( Burlak , D2a-Bur-2 ) ;
+4044: LD_EXP 37
+4048: PPUSH
+4049: LD_STRING D2a-Bur-2
+4051: PPUSH
+4052: CALL_OW 88
+// radio_found := true ;
+4056: LD_ADDR_EXP 21
+4060: PUSH
+4061: LD_INT 1
+4063: ST_TO_ADDR
+// DialogueOff ;
+4064: CALL_OW 7
+// end ; end ;
+4068: PPOPN 1
+4070: END
+// export function d_burlak_alone_meets_apemen ; begin
+4071: LD_INT 0
+4073: PPUSH
+// Say ( Burlak , D2-Bur-1 ) ;
+4074: LD_EXP 37
+4078: PPUSH
+4079: LD_STRING D2-Bur-1
+4081: PPUSH
+4082: CALL_OW 88
+// end ;
+4086: LD_VAR 0 1
+4090: RET
+// function d_burlak_and_gnyevko_meet_pokryshkin ; var x , y , d , un ; var gn , gn_before ; begin
+4091: LD_INT 0
+4093: PPUSH
+4094: PPUSH
+4095: PPUSH
+4096: PPUSH
+4097: PPUSH
+4098: PPUSH
+4099: PPUSH
+// disable ( 1 ) ;
+4100: LD_INT 1
+4102: DISABLE_MARKED
+// ComMoveToArea ( wild_apemen , CaveEntrance ) ;
+4103: LD_EXP 48
+4107: PPUSH
+4108: LD_INT 2
+4110: PPUSH
+4111: CALL_OW 113
+// InGameOn ;
+4115: CALL_OW 8
+// gn := gnyevko_met and IsOk ( Gnyevko ) and GetSide ( Gnyevko ) = you ;
+4119: LD_ADDR_VAR 0 6
+4123: PUSH
+4124: LD_EXP 6
+4128: PUSH
+4129: LD_EXP 40
+4133: PPUSH
+4134: CALL_OW 302
+4138: AND
+4139: PUSH
+4140: LD_EXP 40
+4144: PPUSH
+4145: CALL_OW 255
+4149: PUSH
+4150: LD_EXP 1
+4154: EQUAL
+4155: AND
+4156: ST_TO_ADDR
+// gn_before := gnyevko_met and GetSide ( Gnyevko ) = russians ;
+4157: LD_ADDR_VAR 0 7
+4161: PUSH
+4162: LD_EXP 6
+4166: PUSH
+4167: LD_EXP 40
+4171: PPUSH
+4172: CALL_OW 255
+4176: PUSH
+4177: LD_EXP 2
+4181: EQUAL
+4182: AND
+4183: ST_TO_ADDR
+// ComHold ( [ gnyevko , Burlak ] ) ;
+4184: LD_EXP 40
+4188: PUSH
+4189: LD_EXP 37
+4193: PUSH
+4194: EMPTY
+4195: LIST
+4196: LIST
+4197: PPUSH
+4198: CALL_OW 140
+// if gn and ( GetDistUnits ( Pokryshkin , Gnyevko ) + 4 < GetDistUnits ( Pokryshkin , Burlak ) ) then
+4202: LD_VAR 0 6
+4206: PUSH
+4207: LD_EXP 38
+4211: PPUSH
+4212: LD_EXP 40
+4216: PPUSH
+4217: CALL_OW 296
+4221: PUSH
+4222: LD_INT 4
+4224: PLUS
+4225: PUSH
+4226: LD_EXP 38
+4230: PPUSH
+4231: LD_EXP 37
+4235: PPUSH
+4236: CALL_OW 296
+4240: LESS
+4241: AND
+4242: IFFALSE 4321
+// ComMoveXY ( Pokryshkin , ( GetX ( Pokryshkin ) * 7 + GetX ( Gnyevko ) * 3 ) div 10 , ( GetY ( Pokryshkin ) * 7 + GetY ( Gnyevko ) * 3 ) div 10 ) else
+4244: LD_EXP 38
+4248: PPUSH
+4249: LD_EXP 38
+4253: PPUSH
+4254: CALL_OW 250
+4258: PUSH
+4259: LD_INT 7
+4261: MUL
+4262: PUSH
+4263: LD_EXP 40
+4267: PPUSH
+4268: CALL_OW 250
+4272: PUSH
+4273: LD_INT 3
+4275: MUL
+4276: PLUS
+4277: PUSH
+4278: LD_INT 10
+4280: DIV
+4281: PPUSH
+4282: LD_EXP 38
+4286: PPUSH
+4287: CALL_OW 251
+4291: PUSH
+4292: LD_INT 7
+4294: MUL
+4295: PUSH
+4296: LD_EXP 40
+4300: PPUSH
+4301: CALL_OW 251
+4305: PUSH
+4306: LD_INT 3
+4308: MUL
+4309: PLUS
+4310: PUSH
+4311: LD_INT 10
+4313: DIV
+4314: PPUSH
+4315: CALL_OW 111
+4319: GO 4486
+// begin ComMoveXY ( Pokryshkin , ( GetX ( Pokryshkin ) * 7 + GetX ( Burlak ) * 3 ) div 10 , ( GetY ( Pokryshkin ) * 7 + GetY ( Burlak ) * 3 ) div 10 ) ;
+4321: LD_EXP 38
+4325: PPUSH
+4326: LD_EXP 38
+4330: PPUSH
+4331: CALL_OW 250
+4335: PUSH
+4336: LD_INT 7
+4338: MUL
+4339: PUSH
+4340: LD_EXP 37
+4344: PPUSH
+4345: CALL_OW 250
+4349: PUSH
+4350: LD_INT 3
+4352: MUL
+4353: PLUS
+4354: PUSH
+4355: LD_INT 10
+4357: DIV
+4358: PPUSH
+4359: LD_EXP 38
+4363: PPUSH
+4364: CALL_OW 251
+4368: PUSH
+4369: LD_INT 7
+4371: MUL
+4372: PUSH
+4373: LD_EXP 37
+4377: PPUSH
+4378: CALL_OW 251
+4382: PUSH
+4383: LD_INT 3
+4385: MUL
+4386: PLUS
+4387: PUSH
+4388: LD_INT 10
+4390: DIV
+4391: PPUSH
+4392: CALL_OW 111
+// if gn_before then
+4396: LD_VAR 0 7
+4400: IFFALSE 4486
+// begin ComMoveXY ( Gnyevko , ( GetX ( Gnyevko ) * 7 + GetX ( Burlak ) * 3 ) div 10 , ( GetY ( Gnyevko ) * 7 + GetY ( Burlak ) * 3 ) div 10 ) ;
+4402: LD_EXP 40
+4406: PPUSH
+4407: LD_EXP 40
+4411: PPUSH
+4412: CALL_OW 250
+4416: PUSH
+4417: LD_INT 7
+4419: MUL
+4420: PUSH
+4421: LD_EXP 37
+4425: PPUSH
+4426: CALL_OW 250
+4430: PUSH
+4431: LD_INT 3
+4433: MUL
+4434: PLUS
+4435: PUSH
+4436: LD_INT 10
+4438: DIV
+4439: PPUSH
+4440: LD_EXP 40
+4444: PPUSH
+4445: CALL_OW 251
+4449: PUSH
+4450: LD_INT 7
+4452: MUL
+4453: PUSH
+4454: LD_EXP 37
+4458: PPUSH
+4459: CALL_OW 251
+4463: PUSH
+4464: LD_INT 3
+4466: MUL
+4467: PLUS
+4468: PUSH
+4469: LD_INT 10
+4471: DIV
+4472: PPUSH
+4473: CALL_OW 111
+// AddComHold ( Gnyevko ) ;
+4477: LD_EXP 40
+4481: PPUSH
+4482: CALL_OW 200
+// end ; end ; AddComHold ( Pokryshkin ) ;
+4486: LD_EXP 38
+4490: PPUSH
+4491: CALL_OW 200
+// if gn_before then
+4495: LD_VAR 0 7
+4499: IFFALSE 4524
+// begin CenterOnUnits ( Gnyevko ) ;
+4501: LD_EXP 40
+4505: PPUSH
+4506: CALL_OW 85
+// Say ( Gnyevko , D4-Gny-3 ) ;
+4510: LD_EXP 40
+4514: PPUSH
+4515: LD_STRING D4-Gny-3
+4517: PPUSH
+4518: CALL_OW 88
+// end else
+4522: GO 4545
+// begin CenterOnUnits ( Pokryshkin ) ;
+4524: LD_EXP 38
+4528: PPUSH
+4529: CALL_OW 85
+// Say ( Pokryshkin , D4-Pok-1 ) ;
+4533: LD_EXP 38
+4537: PPUSH
+4538: LD_STRING D4-Pok-1
+4540: PPUSH
+4541: CALL_OW 88
+// end ; ChangeSideFog ( russians , you ) ;
+4545: LD_EXP 2
+4549: PPUSH
+4550: LD_EXP 1
+4554: PPUSH
+4555: CALL_OW 343
+// RevealFogArea ( you , RusFog ) ;
+4559: LD_EXP 1
+4563: PPUSH
+4564: LD_INT 3
+4566: PPUSH
+4567: CALL_OW 332
+// d := GetDistUnits ( Burlak , Pokryshkin ) ;
+4571: LD_ADDR_VAR 0 4
+4575: PUSH
+4576: LD_EXP 37
+4580: PPUSH
+4581: LD_EXP 38
+4585: PPUSH
+4586: CALL_OW 296
+4590: ST_TO_ADDR
+// if d > 6 then
+4591: LD_VAR 0 4
+4595: PUSH
+4596: LD_INT 6
+4598: GREATER
+4599: IFFALSE 4701
+// begin ComMoveXY ( Burlak , ( GetX ( Burlak ) * 6 + GetX ( Pokryshkin ) * ( d - 6 ) ) div d , ( GetY ( Burlak ) * 6 + GetY ( Pokryshkin ) * ( d - 6 ) ) div d ) ;
+4601: LD_EXP 37
+4605: PPUSH
+4606: LD_EXP 37
+4610: PPUSH
+4611: CALL_OW 250
+4615: PUSH
+4616: LD_INT 6
+4618: MUL
+4619: PUSH
+4620: LD_EXP 38
+4624: PPUSH
+4625: CALL_OW 250
+4629: PUSH
+4630: LD_VAR 0 4
+4634: PUSH
+4635: LD_INT 6
+4637: MINUS
+4638: MUL
+4639: PLUS
+4640: PUSH
+4641: LD_VAR 0 4
+4645: DIV
+4646: PPUSH
+4647: LD_EXP 37
+4651: PPUSH
+4652: CALL_OW 251
+4656: PUSH
+4657: LD_INT 6
+4659: MUL
+4660: PUSH
+4661: LD_EXP 38
+4665: PPUSH
+4666: CALL_OW 251
+4670: PUSH
+4671: LD_VAR 0 4
+4675: PUSH
+4676: LD_INT 6
+4678: MINUS
+4679: MUL
+4680: PLUS
+4681: PUSH
+4682: LD_VAR 0 4
+4686: DIV
+4687: PPUSH
+4688: CALL_OW 111
+// AddComHold ( Burlak ) ;
+4692: LD_EXP 37
+4696: PPUSH
+4697: CALL_OW 200
+// end ; if gn then
+4701: LD_VAR 0 6
+4705: IFFALSE 4837
+// begin d := GetDistUnits ( Gnyevko , Pokryshkin ) ;
+4707: LD_ADDR_VAR 0 4
+4711: PUSH
+4712: LD_EXP 40
+4716: PPUSH
+4717: LD_EXP 38
+4721: PPUSH
+4722: CALL_OW 296
+4726: ST_TO_ADDR
+// if d > 6 then
+4727: LD_VAR 0 4
+4731: PUSH
+4732: LD_INT 6
+4734: GREATER
+4735: IFFALSE 4837
+// begin ComMoveXY ( Gnyevko , ( GetX ( Gnyevko ) * 6 + GetX ( Pokryshkin ) * ( d - 6 ) ) div d , ( GetY ( Gnyevko ) * 6 + GetY ( Pokryshkin ) * ( d - 6 ) ) div d ) ;
+4737: LD_EXP 40
+4741: PPUSH
+4742: LD_EXP 40
+4746: PPUSH
+4747: CALL_OW 250
+4751: PUSH
+4752: LD_INT 6
+4754: MUL
+4755: PUSH
+4756: LD_EXP 38
+4760: PPUSH
+4761: CALL_OW 250
+4765: PUSH
+4766: LD_VAR 0 4
+4770: PUSH
+4771: LD_INT 6
+4773: MINUS
+4774: MUL
+4775: PLUS
+4776: PUSH
+4777: LD_VAR 0 4
+4781: DIV
+4782: PPUSH
+4783: LD_EXP 40
+4787: PPUSH
+4788: CALL_OW 251
+4792: PUSH
+4793: LD_INT 6
+4795: MUL
+4796: PUSH
+4797: LD_EXP 38
+4801: PPUSH
+4802: CALL_OW 251
+4806: PUSH
+4807: LD_VAR 0 4
+4811: PUSH
+4812: LD_INT 6
+4814: MINUS
+4815: MUL
+4816: PLUS
+4817: PUSH
+4818: LD_VAR 0 4
+4822: DIV
+4823: PPUSH
+4824: CALL_OW 111
+// AddComHold ( Gnyevko ) ;
+4828: LD_EXP 40
+4832: PPUSH
+4833: CALL_OW 200
+// end ; end ; if gn then
+4837: LD_VAR 0 6
+4841: IFFALSE 4898
+// begin if GetDistUnits ( Gnyevko , Pokryshkin ) < 20 then
+4843: LD_EXP 40
+4847: PPUSH
+4848: LD_EXP 38
+4852: PPUSH
+4853: CALL_OW 296
+4857: PUSH
+4858: LD_INT 20
+4860: LESS
+4861: IFFALSE 4884
+// begin CenterOnUnits ( Gnyevko ) ;
+4863: LD_EXP 40
+4867: PPUSH
+4868: CALL_OW 85
+// Say ( Gnyevko , D4-Gny-1 ) ;
+4872: LD_EXP 40
+4876: PPUSH
+4877: LD_STRING D4-Gny-1
+4879: PPUSH
+4880: CALL_OW 88
+// end ; SetSide ( Gnyevko , russians ) ;
+4884: LD_EXP 40
+4888: PPUSH
+4889: LD_EXP 2
+4893: PPUSH
+4894: CALL_OW 235
+// end ; CenterOnUnits ( [ Burlak , Pokryshkin ] ) ;
+4898: LD_EXP 37
+4902: PUSH
+4903: LD_EXP 38
+4907: PUSH
+4908: EMPTY
+4909: LIST
+4910: LIST
+4911: PPUSH
+4912: CALL_OW 85
+// Say ( Burlak , D4-Bur-3 ) ;
+4916: LD_EXP 37
+4920: PPUSH
+4921: LD_STRING D4-Bur-3
+4923: PPUSH
+4924: CALL_OW 88
+// Say ( Pokryshkin , D4-Pok-4 ) ;
+4928: LD_EXP 38
+4932: PPUSH
+4933: LD_STRING D4-Pok-4
+4935: PPUSH
+4936: CALL_OW 88
+// place_brown ;
+4940: CALL 2625 0 0
+// wait ( 0 0$3 ) ;
+4944: LD_INT 105
+4946: PPUSH
+4947: CALL_OW 67
+// Say ( Burlak , D4-Bur-4 ) ;
+4951: LD_EXP 37
+4955: PPUSH
+4956: LD_STRING D4-Bur-4
+4958: PPUSH
+4959: CALL_OW 88
+// Say ( Pokryshkin , D4-Pok-5 ) ;
+4963: LD_EXP 38
+4967: PPUSH
+4968: LD_STRING D4-Pok-5
+4970: PPUSH
+4971: CALL_OW 88
+// DWait ( 0 0$3 ) ;
+4975: LD_INT 105
+4977: PPUSH
+4978: CALL_OW 68
+// SayRadio ( Brown , D4-Sol1-5 ) ;
+4982: LD_EXP 44
+4986: PPUSH
+4987: LD_STRING D4-Sol1-5
+4989: PPUSH
+4990: CALL_OW 94
+// Say ( Pokryshkin , D4-Pok-6 ) ;
+4994: LD_EXP 38
+4998: PPUSH
+4999: LD_STRING D4-Pok-6
+5001: PPUSH
+5002: CALL_OW 88
+// Say ( Pokryshkin , D4-Pok-6a ) ;
+5006: LD_EXP 38
+5010: PPUSH
+5011: LD_STRING D4-Pok-6a
+5013: PPUSH
+5014: CALL_OW 88
+// Say ( Burlak , D4-Bur-6 ) ;
+5018: LD_EXP 37
+5022: PPUSH
+5023: LD_STRING D4-Bur-6
+5025: PPUSH
+5026: CALL_OW 88
+// Say ( Pokryshkin , D4-Pok-7 ) ;
+5030: LD_EXP 38
+5034: PPUSH
+5035: LD_STRING D4-Pok-7
+5037: PPUSH
+5038: CALL_OW 88
+// InGameOff ;
+5042: CALL_OW 9
+// ChangeMissionObjectives ( M2 ) ;
+5046: LD_STRING M2
+5048: PPUSH
+5049: CALL_OW 337
+// Hint ( Follow ) ;
+5053: LD_STRING Follow
+5055: PPUSH
+5056: CALL_OW 339
+// pokryshkin_met := true ;
+5060: LD_ADDR_EXP 5
+5064: PUSH
+5065: LD_INT 1
+5067: ST_TO_ADDR
+// follow_pokryshkin := true ;
+5068: LD_ADDR_EXP 8
+5072: PUSH
+5073: LD_INT 1
+5075: ST_TO_ADDR
+// preparing_trap := true ;
+5076: LD_ADDR_EXP 11
+5080: PUSH
+5081: LD_INT 1
+5083: ST_TO_ADDR
+// trappers := [ Pokryshkin ] ^ team ^ [ Belkov ] ;
+5084: LD_ADDR_EXP 50
+5088: PUSH
+5089: LD_EXP 38
+5093: PUSH
+5094: EMPTY
+5095: LIST
+5096: PUSH
+5097: LD_EXP 43
+5101: ADD
+5102: PUSH
+5103: LD_EXP 39
+5107: PUSH
+5108: EMPTY
+5109: LIST
+5110: ADD
+5111: ST_TO_ADDR
+// if gnyevko_met then
+5112: LD_EXP 6
+5116: IFFALSE 5137
+// trappers := trappers ^ [ Gnyevko ] ;
+5118: LD_ADDR_EXP 50
+5122: PUSH
+5123: LD_EXP 50
+5127: PUSH
+5128: LD_EXP 40
+5132: PUSH
+5133: EMPTY
+5134: LIST
+5135: ADD
+5136: ST_TO_ADDR
+// Wait ( 0 0$2 ) ;
+5137: LD_INT 70
+5139: PPUSH
+5140: CALL_OW 67
+// prepare_trap ;
+5144: CALL 9995 0 0
+// ComWait ( Brown , 0 0$6 ) ;
+5148: LD_EXP 44
+5152: PPUSH
+5153: LD_INT 210
+5155: PPUSH
+5156: CALL_OW 142
+// AddComMoveXY ( Brown , 66 , 58 ) ;
+5160: LD_EXP 44
+5164: PPUSH
+5165: LD_INT 66
+5167: PPUSH
+5168: LD_INT 58
+5170: PPUSH
+5171: CALL_OW 171
+// end ;
+5175: LD_VAR 0 1
+5179: RET
+// function d_gnyevko_alone_meets_pokryshkin ; begin
+5180: LD_INT 0
+5182: PPUSH
+// InGameOn ;
+5183: CALL_OW 8
+// ComRemember ( Pokryshkin ) ;
+5187: LD_EXP 38
+5191: PPUSH
+5192: CALL_OW 143
+// CenterNowOnUnits ( Pokryshkin ) ;
+5196: LD_EXP 38
+5200: PPUSH
+5201: CALL_OW 87
+// ComHold ( Gnyevko ) ;
+5205: LD_EXP 40
+5209: PPUSH
+5210: CALL_OW 140
+// ComHold ( Burlak ) ;
+5214: LD_EXP 37
+5218: PPUSH
+5219: CALL_OW 140
+// ComMoveXY ( Pokryshkin , ( GetX ( Pokryshkin ) * 7 + GetX ( Gnyevko ) * 3 ) div 10 , ( GetY ( Pokryshkin ) * 7 + GetY ( Gnyevko ) * 3 ) div 10 ) ;
+5223: LD_EXP 38
+5227: PPUSH
+5228: LD_EXP 38
+5232: PPUSH
+5233: CALL_OW 250
+5237: PUSH
+5238: LD_INT 7
+5240: MUL
+5241: PUSH
+5242: LD_EXP 40
+5246: PPUSH
+5247: CALL_OW 250
+5251: PUSH
+5252: LD_INT 3
+5254: MUL
+5255: PLUS
+5256: PUSH
+5257: LD_INT 10
+5259: DIV
+5260: PPUSH
+5261: LD_EXP 38
+5265: PPUSH
+5266: CALL_OW 251
+5270: PUSH
+5271: LD_INT 7
+5273: MUL
+5274: PUSH
+5275: LD_EXP 40
+5279: PPUSH
+5280: CALL_OW 251
+5284: PUSH
+5285: LD_INT 3
+5287: MUL
+5288: PLUS
+5289: PUSH
+5290: LD_INT 10
+5292: DIV
+5293: PPUSH
+5294: CALL_OW 111
+// Say ( Pokryshkin , D4-Pok-1 ) ;
+5298: LD_EXP 38
+5302: PPUSH
+5303: LD_STRING D4-Pok-1
+5305: PPUSH
+5306: CALL_OW 88
+// Say ( Gnyevko , D4-Gny-1 ) ;
+5310: LD_EXP 40
+5314: PPUSH
+5315: LD_STRING D4-Gny-1
+5317: PPUSH
+5318: CALL_OW 88
+// Say ( Pokryshkin , D4-Pok-2 ) ;
+5322: LD_EXP 38
+5326: PPUSH
+5327: LD_STRING D4-Pok-2
+5329: PPUSH
+5330: CALL_OW 88
+// Say ( Gnyevko , D4-Gny-2 ) ;
+5334: LD_EXP 40
+5338: PPUSH
+5339: LD_STRING D4-Gny-2
+5341: PPUSH
+5342: CALL_OW 88
+// Say ( Pokryshkin , D4-Pok-3 ) ;
+5346: LD_EXP 38
+5350: PPUSH
+5351: LD_STRING D4-Pok-3
+5353: PPUSH
+5354: CALL_OW 88
+// ComReturn ( Pokryshkin ) ;
+5358: LD_EXP 38
+5362: PPUSH
+5363: CALL_OW 144
+// ComMoveXY ( Gnyevko , GetRememberedX ( Pokryshkin ) + 2 , GetRememberedY ( Pokryshkin ) + 2 ) ;
+5367: LD_EXP 40
+5371: PPUSH
+5372: LD_EXP 38
+5376: PPUSH
+5377: CALL_OW 252
+5381: PUSH
+5382: LD_INT 2
+5384: PLUS
+5385: PPUSH
+5386: LD_EXP 38
+5390: PPUSH
+5391: CALL_OW 253
+5395: PUSH
+5396: LD_INT 2
+5398: PLUS
+5399: PPUSH
+5400: CALL_OW 111
+// wait ( 0 0$1 ) ;
+5404: LD_INT 35
+5406: PPUSH
+5407: CALL_OW 67
+// InGameOff ;
+5411: CALL_OW 9
+// CenterNowOnUnits ( Burlak ) ;
+5415: LD_EXP 37
+5419: PPUSH
+5420: CALL_OW 87
+// SetSide ( Gnyevko , russians ) ;
+5424: LD_EXP 40
+5428: PPUSH
+5429: LD_EXP 2
+5433: PPUSH
+5434: CALL_OW 235
+// end ;
+5438: LD_VAR 0 1
+5442: RET
+// every 0 0$0.5 trigger See ( russians , burlak ) marked 1 do
+5443: LD_EXP 2
+5447: PPUSH
+5448: LD_EXP 37
+5452: PPUSH
+5453: CALL_OW 292
+5457: IFFALSE 5466
+5459: GO 5461
+5461: DISABLE
+// begin d_burlak_and_gnyevko_meet_pokryshkin ;
+5462: CALL 4091 0 0
+// end ;
+5466: END
+// every 0 0$0.5 + 0 0$0.25 trigger gnyevko_met and See ( russians , Gnyevko ) marked 1 do
+5467: LD_EXP 6
+5471: PUSH
+5472: LD_EXP 2
+5476: PPUSH
+5477: LD_EXP 40
+5481: PPUSH
+5482: CALL_OW 292
+5486: AND
+5487: IFFALSE 5522
+5489: GO 5491
+5491: DISABLE
+// begin if GetDistUnits ( Burlak , Pokryshkin ) < 25 then
+5492: LD_EXP 37
+5496: PPUSH
+5497: LD_EXP 38
+5501: PPUSH
+5502: CALL_OW 296
+5506: PUSH
+5507: LD_INT 25
+5509: LESS
+5510: IFFALSE 5518
+// d_burlak_and_gnyevko_meet_pokryshkin else
+5512: CALL 4091 0 0
+5516: GO 5522
+// d_gnyevko_alone_meets_pokryshkin ;
+5518: CALL 5180 0 0
+// end ;
+5522: END
+// every 0 0$0.2 trigger getting_up do var un ;
+5523: LD_LOC 1
+5527: IFFALSE 5576
+5529: GO 5531
+5531: DISABLE
+5532: LD_INT 0
+5534: PPUSH
+// begin for un in trappers do
+5535: LD_ADDR_VAR 0 1
+5539: PUSH
+5540: LD_EXP 50
+5544: PUSH
+5545: FOR_IN
+5546: IFFALSE 5574
+// begin ComWalk ( un ) ;
+5548: LD_VAR 0 1
+5552: PPUSH
+5553: CALL_OW 138
+// wait ( Rand ( 1 , 6 ) ) ;
+5557: LD_INT 1
+5559: PPUSH
+5560: LD_INT 6
+5562: PPUSH
+5563: CALL_OW 12
+5567: PPUSH
+5568: CALL_OW 67
+// end ;
+5572: GO 5545
+5574: POP
+5575: POP
+// end ;
+5576: PPOPN 1
+5578: END
+// function d_trap_sprung ; begin
+5579: LD_INT 0
+5581: PPUSH
+// follow_pokryshkin := false ;
+5582: LD_ADDR_EXP 8
+5586: PUSH
+5587: LD_INT 0
+5589: ST_TO_ADDR
+// ComStop ( Brown ) ;
+5590: LD_EXP 44
+5594: PPUSH
+5595: CALL_OW 141
+// Say ( Brown , D5-Sol1-1 ) ;
+5599: LD_EXP 44
+5603: PPUSH
+5604: LD_STRING D5-Sol1-1
+5606: PPUSH
+5607: CALL_OW 88
+// Say ( Pokryshkin , D5-Pok-1 ) ;
+5611: LD_EXP 38
+5615: PPUSH
+5616: LD_STRING D5-Pok-1
+5618: PPUSH
+5619: CALL_OW 88
+// SetAttitude ( americans2 , russians , att_enemy , true ) ;
+5623: LD_EXP 4
+5627: PPUSH
+5628: LD_EXP 2
+5632: PPUSH
+5633: LD_INT 2
+5635: PPUSH
+5636: LD_INT 1
+5638: PPUSH
+5639: CALL_OW 80
+// SetAttitude ( americans2 , you , att_enemy , true ) ;
+5643: LD_EXP 4
+5647: PPUSH
+5648: LD_EXP 1
+5652: PPUSH
+5653: LD_INT 2
+5655: PPUSH
+5656: LD_INT 1
+5658: PPUSH
+5659: CALL_OW 80
+// getting_up := true ;
+5663: LD_ADDR_LOC 1
+5667: PUSH
+5668: LD_INT 1
+5670: ST_TO_ADDR
+// ForceSay ( Brown , D5-Sol1-2 ) ;
+5671: LD_EXP 44
+5675: PPUSH
+5676: LD_STRING D5-Sol1-2
+5678: PPUSH
+5679: CALL_OW 91
+// while IsLive ( Brown ) do
+5683: LD_EXP 44
+5687: PPUSH
+5688: CALL_OW 300
+5692: IFFALSE 5703
+// wait ( 0 0$1 ) ;
+5694: LD_INT 35
+5696: PPUSH
+5697: CALL_OW 67
+5701: GO 5683
+// preparing_trap := false ;
+5703: LD_ADDR_EXP 11
+5707: PUSH
+5708: LD_INT 0
+5710: ST_TO_ADDR
+// end ;
+5711: LD_VAR 0 1
+5715: RET
+// function d_after_trap ( x , y ) ; var un ; begin
+5716: LD_INT 0
+5718: PPUSH
+5719: PPUSH
+// InGameOn ;
+5720: CALL_OW 8
+// for un in trappers ^ [ Burlak ] do
+5724: LD_ADDR_VAR 0 4
+5728: PUSH
+5729: LD_EXP 50
+5733: PUSH
+5734: LD_EXP 37
+5738: PUSH
+5739: EMPTY
+5740: LIST
+5741: ADD
+5742: PUSH
+5743: FOR_IN
+5744: IFFALSE 5802
+// begin ComWalk ( un ) ;
+5746: LD_VAR 0 4
+5750: PPUSH
+5751: CALL_OW 138
+// ComMoveXY ( un , x + rand ( - 3 , 3 ) , y + rand ( - 3 , 3 ) ) ;
+5755: LD_VAR 0 4
+5759: PPUSH
+5760: LD_VAR 0 1
+5764: PUSH
+5765: LD_INT 3
+5767: NEG
+5768: PPUSH
+5769: LD_INT 3
+5771: PPUSH
+5772: CALL_OW 12
+5776: PLUS
+5777: PPUSH
+5778: LD_VAR 0 2
+5782: PUSH
+5783: LD_INT 3
+5785: NEG
+5786: PPUSH
+5787: LD_INT 3
+5789: PPUSH
+5790: CALL_OW 12
+5794: PLUS
+5795: PPUSH
+5796: CALL_OW 111
+// end ;
+5800: GO 5743
+5802: POP
+5803: POP
+// wait ( 0 0$1 ) ;
+5804: LD_INT 35
+5806: PPUSH
+5807: CALL_OW 67
+// Say ( Burlak , D5-Bur-2 ) ;
+5811: LD_EXP 37
+5815: PPUSH
+5816: LD_STRING D5-Bur-2
+5818: PPUSH
+5819: CALL_OW 88
+// Say ( Pokryshkin , D5-Pok-2 ) ;
+5823: LD_EXP 38
+5827: PPUSH
+5828: LD_STRING D5-Pok-2
+5830: PPUSH
+5831: CALL_OW 88
+// Say ( Belkov , D5-Bel-2 ) ;
+5835: LD_EXP 39
+5839: PPUSH
+5840: LD_STRING D5-Bel-2
+5842: PPUSH
+5843: CALL_OW 88
+// Say ( Pokryshkin , D5-Pok-3 ) ;
+5847: LD_EXP 38
+5851: PPUSH
+5852: LD_STRING D5-Pok-3
+5854: PPUSH
+5855: CALL_OW 88
+// if gnyevko_met then
+5859: LD_EXP 6
+5863: IFFALSE 5877
+// Say ( Gnyevko , D5-Gny-3 ) ;
+5865: LD_EXP 40
+5869: PPUSH
+5870: LD_STRING D5-Gny-3
+5872: PPUSH
+5873: CALL_OW 88
+// Say ( Burlak , D5-Bur-3 ) ;
+5877: LD_EXP 37
+5881: PPUSH
+5882: LD_STRING D5-Bur-3
+5884: PPUSH
+5885: CALL_OW 88
+// InGameOff ;
+5889: CALL_OW 9
+// follow_pokryshkin := true ;
+5893: LD_ADDR_EXP 8
+5897: PUSH
+5898: LD_INT 1
+5900: ST_TO_ADDR
+// end ;
+5901: LD_VAR 0 3
+5905: RET
+// function d_message_about_gladstone ; var ok , un ; begin
+5906: LD_INT 0
+5908: PPUSH
+5909: PPUSH
+5910: PPUSH
+// follow_pokryshkin := false ;
+5911: LD_ADDR_EXP 8
+5915: PUSH
+5916: LD_INT 0
+5918: ST_TO_ADDR
+// InGameOn ;
+5919: CALL_OW 8
+// CenterOnUnits ( Pokryshkin ) ;
+5923: LD_EXP 38
+5927: PPUSH
+5928: CALL_OW 85
+// ComStop ( Burlak ) ;
+5932: LD_EXP 37
+5936: PPUSH
+5937: CALL_OW 141
+// Say ( Pokryshkin , D6-Pok-1 ) ;
+5941: LD_EXP 38
+5945: PPUSH
+5946: LD_STRING D6-Pok-1
+5948: PPUSH
+5949: CALL_OW 88
+// ComMoveXY ( Burlak , GetX ( Pokryshkin ) , GetY ( Pokryshkin ) ) ;
+5953: LD_EXP 37
+5957: PPUSH
+5958: LD_EXP 38
+5962: PPUSH
+5963: CALL_OW 250
+5967: PPUSH
+5968: LD_EXP 38
+5972: PPUSH
+5973: CALL_OW 251
+5977: PPUSH
+5978: CALL_OW 111
+// CenterOnUnits ( Pokryshkin ) ;
+5982: LD_EXP 38
+5986: PPUSH
+5987: CALL_OW 85
+// Say ( Burlak , D6-Bur-1 ) ;
+5991: LD_EXP 37
+5995: PPUSH
+5996: LD_STRING D6-Bur-1
+5998: PPUSH
+5999: CALL_OW 88
+// CenterOnUnits ( Pokryshkin ) ;
+6003: LD_EXP 38
+6007: PPUSH
+6008: CALL_OW 85
+// ComMoveXY ( trappers ^ [ Burlak ] , 94 , 68 ) ;
+6012: LD_EXP 50
+6016: PUSH
+6017: LD_EXP 37
+6021: PUSH
+6022: EMPTY
+6023: LIST
+6024: ADD
+6025: PPUSH
+6026: LD_INT 94
+6028: PPUSH
+6029: LD_INT 68
+6031: PPUSH
+6032: CALL_OW 111
+// Say ( Pokryshkin , D6-Pok-2 ) ;
+6036: LD_EXP 38
+6040: PPUSH
+6041: LD_STRING D6-Pok-2
+6043: PPUSH
+6044: CALL_OW 88
+// CenterOnUnits ( Pokryshkin ) ;
+6048: LD_EXP 38
+6052: PPUSH
+6053: CALL_OW 85
+// Say ( Belkov , D6-Bel-2 ) ;
+6057: LD_EXP 39
+6061: PPUSH
+6062: LD_STRING D6-Bel-2
+6064: PPUSH
+6065: CALL_OW 88
+// CenterOnUnits ( Pokryshkin ) ;
+6069: LD_EXP 38
+6073: PPUSH
+6074: CALL_OW 85
+// Say ( Burlak , D6-Bur-2 ) ;
+6078: LD_EXP 37
+6082: PPUSH
+6083: LD_STRING D6-Bur-2
+6085: PPUSH
+6086: CALL_OW 88
+// CenterOnUnits ( Pokryshkin ) ;
+6090: LD_EXP 38
+6094: PPUSH
+6095: CALL_OW 85
+// Say ( Pokryshkin , D6-Pok-3 ) ;
+6099: LD_EXP 38
+6103: PPUSH
+6104: LD_STRING D6-Pok-3
+6106: PPUSH
+6107: CALL_OW 88
+// CenterOnUnits ( Pokryshkin ) ;
+6111: LD_EXP 38
+6115: PPUSH
+6116: CALL_OW 85
+// ComStop ( trappers ^ [ Burlak ] ) ;
+6120: LD_EXP 50
+6124: PUSH
+6125: LD_EXP 37
+6129: PUSH
+6130: EMPTY
+6131: LIST
+6132: ADD
+6133: PPUSH
+6134: CALL_OW 141
+// SayRadio ( Kurin , D6-Kur-3 ) ;
+6138: LD_EXP 42
+6142: PPUSH
+6143: LD_STRING D6-Kur-3
+6145: PPUSH
+6146: CALL_OW 94
+// CenterOnUnits ( Pokryshkin ) ;
+6150: LD_EXP 38
+6154: PPUSH
+6155: CALL_OW 85
+// Say ( Pokryshkin , D6-Pok-4 ) ;
+6159: LD_EXP 38
+6163: PPUSH
+6164: LD_STRING D6-Pok-4
+6166: PPUSH
+6167: CALL_OW 88
+// CenterOnUnits ( Pokryshkin ) ;
+6171: LD_EXP 38
+6175: PPUSH
+6176: CALL_OW 85
+// SetAttitude ( americans , russians , att_enemy , true ) ;
+6180: LD_EXP 3
+6184: PPUSH
+6185: LD_EXP 2
+6189: PPUSH
+6190: LD_INT 2
+6192: PPUSH
+6193: LD_INT 1
+6195: PPUSH
+6196: CALL_OW 80
+// SetAttitude ( americans , you , att_enemy , true ) ;
+6200: LD_EXP 3
+6204: PPUSH
+6205: LD_EXP 1
+6209: PPUSH
+6210: LD_INT 2
+6212: PPUSH
+6213: LD_INT 1
+6215: PPUSH
+6216: CALL_OW 80
+// InGameOff ;
+6220: CALL_OW 9
+// async ;
+6224: ASYNC
+// Say ( Belkov , D6-Bel-4 ) ;
+6225: LD_EXP 39
+6229: PPUSH
+6230: LD_STRING D6-Bel-4
+6232: PPUSH
+6233: CALL_OW 88
+// sync ;
+6237: SYNC
+// wait ( 0 0$1 ) ;
+6238: LD_INT 35
+6240: PPUSH
+6241: CALL_OW 67
+// ComAttackUnit ( Pokryshkin , am_bunker ) ;
+6245: LD_EXP 38
+6249: PPUSH
+6250: LD_EXP 47
+6254: PPUSH
+6255: CALL_OW 115
+// repeat wait ( 0 0$1 ) ;
+6259: LD_INT 35
+6261: PPUSH
+6262: CALL_OW 67
+// ok := true ;
+6266: LD_ADDR_VAR 0 2
+6270: PUSH
+6271: LD_INT 1
+6273: ST_TO_ADDR
+// for un in trappers do
+6274: LD_ADDR_VAR 0 3
+6278: PUSH
+6279: LD_EXP 50
+6283: PUSH
+6284: FOR_IN
+6285: IFFALSE 6341
+// if GetY ( un ) + GetX ( un ) < GetY ( Pokryshkin ) + GetX ( Pokryshkin ) then
+6287: LD_VAR 0 3
+6291: PPUSH
+6292: CALL_OW 251
+6296: PUSH
+6297: LD_VAR 0 3
+6301: PPUSH
+6302: CALL_OW 250
+6306: PLUS
+6307: PUSH
+6308: LD_EXP 38
+6312: PPUSH
+6313: CALL_OW 251
+6317: PUSH
+6318: LD_EXP 38
+6322: PPUSH
+6323: CALL_OW 250
+6327: PLUS
+6328: LESS
+6329: IFFALSE 6339
+// ok := false ;
+6331: LD_ADDR_VAR 0 2
+6335: PUSH
+6336: LD_INT 0
+6338: ST_TO_ADDR
+6339: GO 6284
+6341: POP
+6342: POP
+// until ok ;
+6343: LD_VAR 0 2
+6347: IFFALSE 6259
+// wait ( 0 0$1 ) ;
+6349: LD_INT 35
+6351: PPUSH
+6352: CALL_OW 67
+// ComAttackUnit ( trappers diff Pokryshkin , am_bunker ) ;
+6356: LD_EXP 50
+6360: PUSH
+6361: LD_EXP 38
+6365: DIFF
+6366: PPUSH
+6367: LD_EXP 47
+6371: PPUSH
+6372: CALL_OW 115
+// attacking_bunker := true ;
+6376: LD_ADDR_EXP 13
+6380: PUSH
+6381: LD_INT 1
+6383: ST_TO_ADDR
+// end ;
+6384: LD_VAR 0 1
+6388: RET
+// every 0 0$0.6 trigger preparing_trap and UnitFilter ( trappers , [ f_see , americans2 ] ) do var x , y ;
+6389: LD_EXP 11
+6393: PUSH
+6394: LD_EXP 50
+6398: PPUSH
+6399: LD_INT 101
+6401: PUSH
+6402: LD_EXP 4
+6406: PUSH
+6407: EMPTY
+6408: LIST
+6409: LIST
+6410: PPUSH
+6411: CALL_OW 72
+6415: AND
+6416: IFFALSE 6495
+6418: GO 6420
+6420: DISABLE
+6421: LD_INT 0
+6423: PPUSH
+6424: PPUSH
+// begin x := GetX ( Brown ) + 3 ;
+6425: LD_ADDR_VAR 0 1
+6429: PUSH
+6430: LD_EXP 44
+6434: PPUSH
+6435: CALL_OW 250
+6439: PUSH
+6440: LD_INT 3
+6442: PLUS
+6443: ST_TO_ADDR
+// y := GetY ( Brown ) ;
+6444: LD_ADDR_VAR 0 2
+6448: PUSH
+6449: LD_EXP 44
+6453: PPUSH
+6454: CALL_OW 251
+6458: ST_TO_ADDR
+// d_trap_sprung ;
+6459: CALL 5579 0 0
+// wait ( 0 0$1 ) ;
+6463: LD_INT 35
+6465: PPUSH
+6466: CALL_OW 67
+// d_after_trap ( x , y ) ;
+6470: LD_VAR 0 1
+6474: PPUSH
+6475: LD_VAR 0 2
+6479: PPUSH
+6480: CALL 5716 0 2
+// wait ( 0 0$5 ) ;
+6484: LD_INT 175
+6486: PPUSH
+6487: CALL_OW 67
+// d_message_about_gladstone ;
+6491: CALL 5906 0 0
+// end ;
+6495: PPOPN 2
+6497: END
+// every 0 0$0.4 trigger attacking_bunker and See ( you , am_bunker ) do
+6498: LD_EXP 13
+6502: PUSH
+6503: LD_EXP 1
+6507: PPUSH
+6508: LD_EXP 47
+6512: PPUSH
+6513: CALL_OW 292
+6517: AND
+6518: IFFALSE 6562
+6520: GO 6522
+6522: DISABLE
+// begin music_class = music_combat ;
+6523: LD_ADDR_OWVAR 72
+6527: PUSH
+6528: LD_INT 1
+6530: ST_TO_ADDR
+// wait ( 0 0$1 ) ;
+6531: LD_INT 35
+6533: PPUSH
+6534: CALL_OW 67
+// Say ( Pokryshkin , D7-Pok-1 ) ;
+6538: LD_EXP 38
+6542: PPUSH
+6543: LD_STRING D7-Pok-1
+6545: PPUSH
+6546: CALL_OW 88
+// Say ( am1 , D7-FSol1-1 ) ;
+6550: LD_EXP 46
+6554: PPUSH
+6555: LD_STRING D7-FSol1-1
+6557: PPUSH
+6558: CALL_OW 88
+// end ;
+6562: END
+// every 0 0$0.4 trigger attacking_bunker and See ( you , am_bunker ) do
+6563: LD_EXP 13
+6567: PUSH
+6568: LD_EXP 1
+6572: PPUSH
+6573: LD_EXP 47
+6577: PPUSH
+6578: CALL_OW 292
+6582: AND
+6583: IFFALSE 6637
+6585: GO 6587
+6587: DISABLE
+// begin while IsOk ( Pokryshkin ) do
+6588: LD_EXP 38
+6592: PPUSH
+6593: CALL_OW 302
+6597: IFFALSE 6622
+// begin ComAttackUnit ( am_bunker , Pokryshkin ) ;
+6599: LD_EXP 47
+6603: PPUSH
+6604: LD_EXP 38
+6608: PPUSH
+6609: CALL_OW 115
+// wait ( 0 0$1 ) ;
+6613: LD_INT 35
+6615: PPUSH
+6616: CALL_OW 67
+// end ;
+6620: GO 6588
+// wait ( 0 0$3 ) ;
+6622: LD_INT 105
+6624: PPUSH
+6625: CALL_OW 67
+// music_class = music_auto ;
+6629: LD_ADDR_OWVAR 72
+6633: PUSH
+6634: LD_INT 0
+6636: ST_TO_ADDR
+// end ;
+6637: END
+// every 0 0$0.3 + 0 0$0.15 trigger attacking_bunker do var un ;
+6638: LD_EXP 13
+6642: IFFALSE 6712
+6644: GO 6646
+6646: DISABLE
+6647: LD_INT 0
+6649: PPUSH
+// begin for un in trappers diff [ Burlak , pokryshkin ] do
+6650: LD_ADDR_VAR 0 1
+6654: PUSH
+6655: LD_EXP 50
+6659: PUSH
+6660: LD_EXP 37
+6664: PUSH
+6665: LD_EXP 38
+6669: PUSH
+6670: EMPTY
+6671: LIST
+6672: LIST
+6673: DIFF
+6674: PUSH
+6675: FOR_IN
+6676: IFFALSE 6709
+// begin if GetLives ( un ) < 500 then
+6678: LD_VAR 0 1
+6682: PPUSH
+6683: CALL_OW 256
+6687: PUSH
+6688: LD_INT 500
+6690: LESS
+6691: IFFALSE 6707
+// DoNotAttack ( americans , un ) ;
+6693: LD_EXP 3
+6697: PPUSH
+6698: LD_VAR 0 1
+6702: PPUSH
+6703: CALL_OW 471
+// end ;
+6707: GO 6675
+6709: POP
+6710: POP
+// enable ;
+6711: ENABLE
+// end ;
+6712: PPOPN 1
+6714: END
+// every 0 0$0.2 + 0 0$0.1 trigger attacking_bunker and not IsOk ( Pokryshkin ) do var posible ;
+6715: LD_EXP 13
+6719: PUSH
+6720: LD_EXP 38
+6724: PPUSH
+6725: CALL_OW 302
+6729: NOT
+6730: AND
+6731: IFFALSE 6883
+6733: GO 6735
+6735: DISABLE
+6736: LD_INT 0
+6738: PPUSH
+// begin ComWait ( trappers , 0 0$3 ) ;
+6739: LD_EXP 50
+6743: PPUSH
+6744: LD_INT 105
+6746: PPUSH
+6747: CALL_OW 142
+// AddComMoveXY ( trappers , 76 , 53 ) ;
+6751: LD_EXP 50
+6755: PPUSH
+6756: LD_INT 76
+6758: PPUSH
+6759: LD_INT 53
+6761: PPUSH
+6762: CALL_OW 171
+// retreating := true ;
+6766: LD_ADDR_EXP 14
+6770: PUSH
+6771: LD_INT 1
+6773: ST_TO_ADDR
+// Say ( Belkov , D7a-Bel-1 ) ;
+6774: LD_EXP 39
+6778: PPUSH
+6779: LD_STRING D7a-Bel-1
+6781: PPUSH
+6782: CALL_OW 88
+// posible := UnitFilter ( team ^ [ Gnyevko , Belkov ] , [ [ f_ok ] , [ f_sex , sex_male ] , [ f_side , russians ] ] ) ;
+6786: LD_ADDR_VAR 0 1
+6790: PUSH
+6791: LD_EXP 43
+6795: PUSH
+6796: LD_EXP 40
+6800: PUSH
+6801: LD_EXP 39
+6805: PUSH
+6806: EMPTY
+6807: LIST
+6808: LIST
+6809: ADD
+6810: PPUSH
+6811: LD_INT 50
+6813: PUSH
+6814: EMPTY
+6815: LIST
+6816: PUSH
+6817: LD_INT 26
+6819: PUSH
+6820: LD_INT 1
+6822: PUSH
+6823: EMPTY
+6824: LIST
+6825: LIST
+6826: PUSH
+6827: LD_INT 22
+6829: PUSH
+6830: LD_EXP 2
+6834: PUSH
+6835: EMPTY
+6836: LIST
+6837: LIST
+6838: PUSH
+6839: EMPTY
+6840: LIST
+6841: LIST
+6842: LIST
+6843: PPUSH
+6844: CALL_OW 72
+6848: ST_TO_ADDR
+// if posible then
+6849: LD_VAR 0 1
+6853: IFFALSE 6871
+// say ( posible [ 1 ] , D7a-RSol1-1 ) ;
+6855: LD_VAR 0 1
+6859: PUSH
+6860: LD_INT 1
+6862: ARRAY
+6863: PPUSH
+6864: LD_STRING D7a-RSol1-1
+6866: PPUSH
+6867: CALL_OW 88
+// Say ( am1 , D7a-FSol1-1 ) ;
+6871: LD_EXP 46
+6875: PPUSH
+6876: LD_STRING D7a-FSol1-1
+6878: PPUSH
+6879: CALL_OW 88
+// end ;
+6883: PPOPN 1
+6885: END
+// function all_near ( x , y , r ) ; var un ; begin
+6886: LD_INT 0
+6888: PPUSH
+6889: PPUSH
+// result := true ;
+6890: LD_ADDR_VAR 0 4
+6894: PUSH
+6895: LD_INT 1
+6897: ST_TO_ADDR
+// for un in trappers do
+6898: LD_ADDR_VAR 0 5
+6902: PUSH
+6903: LD_EXP 50
+6907: PUSH
+6908: FOR_IN
+6909: IFFALSE 6959
+// if IsOk ( un ) then
+6911: LD_VAR 0 5
+6915: PPUSH
+6916: CALL_OW 302
+6920: IFFALSE 6957
+// if GetDistUnitXY ( un , x , y ) > r then
+6922: LD_VAR 0 5
+6926: PPUSH
+6927: LD_VAR 0 1
+6931: PPUSH
+6932: LD_VAR 0 2
+6936: PPUSH
+6937: CALL_OW 297
+6941: PUSH
+6942: LD_VAR 0 3
+6946: GREATER
+6947: IFFALSE 6957
+// result := false ;
+6949: LD_ADDR_VAR 0 4
+6953: PUSH
+6954: LD_INT 0
+6956: ST_TO_ADDR
+6957: GO 6908
+6959: POP
+6960: POP
+// end ;
+6961: LD_VAR 0 4
+6965: RET
+// every 0 0$2 + 0 0$0.3 trigger retreating and all_near ( 76 , 53 , 5 ) do var posible , un ;
+6966: LD_EXP 14
+6970: PUSH
+6971: LD_INT 76
+6973: PPUSH
+6974: LD_INT 53
+6976: PPUSH
+6977: LD_INT 5
+6979: PPUSH
+6980: CALL 6886 0 3
+6984: AND
+6985: IFFALSE 7495
+6987: GO 6989
+6989: DISABLE
+6990: LD_INT 0
+6992: PPUSH
+6993: PPUSH
+// begin if betrayed then
+6994: LD_EXP 16
+6998: IFFALSE 7002
+// exit ;
+7000: GO 7495
+// music_class = music_auto ;
+7002: LD_ADDR_OWVAR 72
+7006: PUSH
+7007: LD_INT 0
+7009: ST_TO_ADDR
+// attacking_bunker := false ;
+7010: LD_ADDR_EXP 13
+7014: PUSH
+7015: LD_INT 0
+7017: ST_TO_ADDR
+// for un in trappers do
+7018: LD_ADDR_VAR 0 2
+7022: PUSH
+7023: LD_EXP 50
+7027: PUSH
+7028: FOR_IN
+7029: IFFALSE 7047
+// NormalAttack ( americans , un ) ;
+7031: LD_EXP 3
+7035: PPUSH
+7036: LD_VAR 0 2
+7040: PPUSH
+7041: CALL_OW 472
+7045: GO 7028
+7047: POP
+7048: POP
+// Say ( Belkov , D7b-Bel-1 ) ;
+7049: LD_EXP 39
+7053: PPUSH
+7054: LD_STRING D7b-Bel-1
+7056: PPUSH
+7057: CALL_OW 88
+// Say ( team [ 1 ] , D7b-FSol1-1 ) ;
+7061: LD_EXP 43
+7065: PUSH
+7066: LD_INT 1
+7068: ARRAY
+7069: PPUSH
+7070: LD_STRING D7b-FSol1-1
+7072: PPUSH
+7073: CALL_OW 88
+// Say ( Belkov , D7b-Bel-2 ) ;
+7077: LD_EXP 39
+7081: PPUSH
+7082: LD_STRING D7b-Bel-2
+7084: PPUSH
+7085: CALL_OW 88
+// posible := UnitFilter ( team ^ [ Gnyevko ] , [ [ f_ok ] , [ f_sex , sex_male ] , [ f_side , russians ] ] ) ;
+7089: LD_ADDR_VAR 0 1
+7093: PUSH
+7094: LD_EXP 43
+7098: PUSH
+7099: LD_EXP 40
+7103: PUSH
+7104: EMPTY
+7105: LIST
+7106: ADD
+7107: PPUSH
+7108: LD_INT 50
+7110: PUSH
+7111: EMPTY
+7112: LIST
+7113: PUSH
+7114: LD_INT 26
+7116: PUSH
+7117: LD_INT 1
+7119: PUSH
+7120: EMPTY
+7121: LIST
+7122: LIST
+7123: PUSH
+7124: LD_INT 22
+7126: PUSH
+7127: LD_EXP 2
+7131: PUSH
+7132: EMPTY
+7133: LIST
+7134: LIST
+7135: PUSH
+7136: EMPTY
+7137: LIST
+7138: LIST
+7139: LIST
+7140: PPUSH
+7141: CALL_OW 72
+7145: ST_TO_ADDR
+// if posible then
+7146: LD_VAR 0 1
+7150: IFFALSE 7168
+// say ( posible [ 1 ] , D7b-RSol1-2 ) ;
+7152: LD_VAR 0 1
+7156: PUSH
+7157: LD_INT 1
+7159: ARRAY
+7160: PPUSH
+7161: LD_STRING D7b-RSol1-2
+7163: PPUSH
+7164: CALL_OW 88
+// if GetDistUnitXY ( Burlak , 76 , 53 ) > 15 then
+7168: LD_EXP 37
+7172: PPUSH
+7173: LD_INT 76
+7175: PPUSH
+7176: LD_INT 53
+7178: PPUSH
+7179: CALL_OW 297
+7183: PUSH
+7184: LD_INT 15
+7186: GREATER
+7187: IFFALSE 7240
+// begin Say ( Belkov , D7b-Bel-3 ) ;
+7189: LD_EXP 39
+7193: PPUSH
+7194: LD_STRING D7b-Bel-3
+7196: PPUSH
+7197: CALL_OW 88
+// repeat wait ( 0 0$2 ) ;
+7201: LD_INT 70
+7203: PPUSH
+7204: CALL_OW 67
+// until GetDistUnits ( Burlak , Belkov ) < 10 ;
+7208: LD_EXP 37
+7212: PPUSH
+7213: LD_EXP 39
+7217: PPUSH
+7218: CALL_OW 296
+7222: PUSH
+7223: LD_INT 10
+7225: LESS
+7226: IFFALSE 7201
+// Say ( Belkov , D7b-Bel-3a ) ;
+7228: LD_EXP 39
+7232: PPUSH
+7233: LD_STRING D7b-Bel-3a
+7235: PPUSH
+7236: CALL_OW 88
+// end ; InGameOn ;
+7240: CALL_OW 8
+// ComMoveXY ( Burlak , 71 , 48 ) ;
+7244: LD_EXP 37
+7248: PPUSH
+7249: LD_INT 71
+7251: PPUSH
+7252: LD_INT 48
+7254: PPUSH
+7255: CALL_OW 111
+// Say ( Burlak , D7b-Bur-3 ) ;
+7259: LD_EXP 37
+7263: PPUSH
+7264: LD_STRING D7b-Bur-3
+7266: PPUSH
+7267: CALL_OW 88
+// CenterOnUnits ( Burlak ) ;
+7271: LD_EXP 37
+7275: PPUSH
+7276: CALL_OW 85
+// Say ( Belkov , D7b-Bel-4 ) ;
+7280: LD_EXP 39
+7284: PPUSH
+7285: LD_STRING D7b-Bel-4
+7287: PPUSH
+7288: CALL_OW 88
+// Say ( Burlak , D7b-Bur-4 ) ;
+7292: LD_EXP 37
+7296: PPUSH
+7297: LD_STRING D7b-Bur-4
+7299: PPUSH
+7300: CALL_OW 88
+// Say ( Belkov , D7b-Bel-5 ) ;
+7304: LD_EXP 39
+7308: PPUSH
+7309: LD_STRING D7b-Bel-5
+7311: PPUSH
+7312: CALL_OW 88
+// if team then
+7316: LD_EXP 43
+7320: IFFALSE 7369
+// if GetSex ( team [ 1 ] ) = sex_female then
+7322: LD_EXP 43
+7326: PUSH
+7327: LD_INT 1
+7329: ARRAY
+7330: PPUSH
+7331: CALL_OW 258
+7335: PUSH
+7336: LD_INT 2
+7338: EQUAL
+7339: IFFALSE 7369
+// begin Say ( team [ 1 ] , D7b-FSol1-5 ) ;
+7341: LD_EXP 43
+7345: PUSH
+7346: LD_INT 1
+7348: ARRAY
+7349: PPUSH
+7350: LD_STRING D7b-FSol1-5
+7352: PPUSH
+7353: CALL_OW 88
+// Say ( Belkov , D7b-Bel-6 ) ;
+7357: LD_EXP 39
+7361: PPUSH
+7362: LD_STRING D7b-Bel-6
+7364: PPUSH
+7365: CALL_OW 88
+// end ; Say ( Burlak , D7b-Bur-6 ) ;
+7369: LD_EXP 37
+7373: PPUSH
+7374: LD_STRING D7b-Bur-6
+7376: PPUSH
+7377: CALL_OW 88
+// if posible then
+7381: LD_VAR 0 1
+7385: IFFALSE 7403
+// say ( posible [ 1 ] , D7b-RSol1-6 ) ;
+7387: LD_VAR 0 1
+7391: PUSH
+7392: LD_INT 1
+7394: ARRAY
+7395: PPUSH
+7396: LD_STRING D7b-RSol1-6
+7398: PPUSH
+7399: CALL_OW 88
+// InGameOff ;
+7403: CALL_OW 9
+// SetSide ( trappers , you ) ;
+7407: LD_EXP 50
+7411: PPUSH
+7412: LD_EXP 1
+7416: PPUSH
+7417: CALL_OW 235
+// your_units := trappers ^ [ Burlak ] diff 0 ;
+7421: LD_ADDR_EXP 51
+7425: PUSH
+7426: LD_EXP 50
+7430: PUSH
+7431: LD_EXP 37
+7435: PUSH
+7436: EMPTY
+7437: LIST
+7438: ADD
+7439: PUSH
+7440: LD_INT 0
+7442: DIFF
+7443: ST_TO_ADDR
+// ChangeMissionObjectives ( M3 ) ;
+7444: LD_STRING M3
+7446: PPUSH
+7447: CALL_OW 337
+// it_is_your := true ;
+7451: LD_ADDR_EXP 17
+7455: PUSH
+7456: LD_INT 1
+7458: ST_TO_ADDR
+// if gnyevko_met then
+7459: LD_EXP 6
+7463: IFFALSE 7474
+// Hint ( selection2a ) else
+7465: LD_STRING selection2a
+7467: PPUSH
+7468: CALL_OW 339
+7472: GO 7481
+// Hint ( selection2b ) ;
+7474: LD_STRING selection2b
+7476: PPUSH
+7477: CALL_OW 339
+// wait ( 0 0$5 ) ;
+7481: LD_INT 175
+7483: PPUSH
+7484: CALL_OW 67
+// Hint ( visibility ) ;
+7488: LD_STRING visibility
+7490: PPUSH
+7491: CALL_OW 339
+// end ;
+7495: PPOPN 2
+7497: END
+// every 0 0$1 trigger it_is_your and not IsOk ( am_depot ) and not IsOk ( am_bunker ) and not IsOk ( Gladstone ) and not IsOk ( am1 ) do var un ;
+7498: LD_EXP 17
+7502: PUSH
+7503: LD_INT 1
+7505: PPUSH
+7506: CALL_OW 302
+7510: NOT
+7511: AND
+7512: PUSH
+7513: LD_EXP 47
+7517: PPUSH
+7518: CALL_OW 302
+7522: NOT
+7523: AND
+7524: PUSH
+7525: LD_EXP 45
+7529: PPUSH
+7530: CALL_OW 302
+7534: NOT
+7535: AND
+7536: PUSH
+7537: LD_EXP 46
+7541: PPUSH
+7542: CALL_OW 302
+7546: NOT
+7547: AND
+7548: IFFALSE 7750
+7550: GO 7552
+7552: DISABLE
+7553: LD_INT 0
+7555: PPUSH
+// begin DialogueOn ;
+7556: CALL_OW 6
+// if IsOk ( Belkov ) then
+7560: LD_EXP 39
+7564: PPUSH
+7565: CALL_OW 302
+7569: IFFALSE 7609
+// begin Say ( Belkov , D10-Bel-1 ) ;
+7571: LD_EXP 39
+7575: PPUSH
+7576: LD_STRING D10-Bel-1
+7578: PPUSH
+7579: CALL_OW 88
+// Say ( Burlak , D10-Bur-1 ) ;
+7583: LD_EXP 37
+7587: PPUSH
+7588: LD_STRING D10-Bur-1
+7590: PPUSH
+7591: CALL_OW 88
+// Say ( Belkov , D10-Bel-1a ) ;
+7595: LD_EXP 39
+7599: PPUSH
+7600: LD_STRING D10-Bel-1a
+7602: PPUSH
+7603: CALL_OW 88
+// end else
+7607: GO 7678
+// begin Say ( Burlak , D10-Bur-1 ) ;
+7609: LD_EXP 37
+7613: PPUSH
+7614: LD_STRING D10-Bur-1
+7616: PPUSH
+7617: CALL_OW 88
+// un := UnitFilter ( trappers , [ [ f_sex , sex_male ] , [ f_ok ] ] ) ;
+7621: LD_ADDR_VAR 0 1
+7625: PUSH
+7626: LD_EXP 50
+7630: PPUSH
+7631: LD_INT 26
+7633: PUSH
+7634: LD_INT 1
+7636: PUSH
+7637: EMPTY
+7638: LIST
+7639: LIST
+7640: PUSH
+7641: LD_INT 50
+7643: PUSH
+7644: EMPTY
+7645: LIST
+7646: PUSH
+7647: EMPTY
+7648: LIST
+7649: LIST
+7650: PPUSH
+7651: CALL_OW 72
+7655: ST_TO_ADDR
+// if un then
+7656: LD_VAR 0 1
+7660: IFFALSE 7678
+// Say ( un [ 1 ] , D10-RSol1-1 ) ;
+7662: LD_VAR 0 1
+7666: PUSH
+7667: LD_INT 1
+7669: ARRAY
+7670: PPUSH
+7671: LD_STRING D10-RSol1-1
+7673: PPUSH
+7674: CALL_OW 88
+// end ; Say ( Burlak , D10-Bur-2 ) ;
+7678: LD_EXP 37
+7682: PPUSH
+7683: LD_STRING D10-Bur-2
+7685: PPUSH
+7686: CALL_OW 88
+// if gladstone_escaped or soldier_escaped then
+7690: LD_EXP 9
+7694: PUSH
+7695: LD_EXP 10
+7699: OR
+7700: IFFALSE 7711
+// ChangeMissionObjectives ( M4b ) else
+7702: LD_STRING M4b
+7704: PPUSH
+7705: CALL_OW 337
+7709: GO 7718
+// ChangeMissionObjectives ( M4a ) ;
+7711: LD_STRING M4a
+7713: PPUSH
+7714: CALL_OW 337
+// SetAreaMapShow ( ExitArea , 1 ) ;
+7718: LD_INT 1
+7720: PPUSH
+7721: LD_INT 1
+7723: PPUSH
+7724: CALL_OW 424
+// enable ( 666 ) ;
+7728: LD_INT 666
+7730: ENABLE_MARKED
+// Hint ( ExitArea ) ;
+7731: LD_STRING ExitArea
+7733: PPUSH
+7734: CALL_OW 339
+// DialogueOff ;
+7738: CALL_OW 7
+// returning := true ;
+7742: LD_ADDR_EXP 15
+7746: PUSH
+7747: LD_INT 1
+7749: ST_TO_ADDR
+// end ;
+7750: PPOPN 1
+7752: END
+// every 0 0$5 trigger returning do
+7753: LD_EXP 15
+7757: IFFALSE 7785
+7759: GO 7761
+7761: DISABLE
+// begin wait ( Rand ( 0 0$30 , 1 1$00 ) ) ;
+7762: LD_INT 1050
+7764: PPUSH
+7765: LD_INT 2100
+7767: PPUSH
+7768: CALL_OW 12
+7772: PPUSH
+7773: CALL_OW 67
+// kirilenkova_appears := true ;
+7777: LD_ADDR_EXP 19
+7781: PUSH
+7782: LD_INT 1
+7784: ST_TO_ADDR
+// end ;
+7785: END
+// every 0 0$3.1 trigger returning and not kirilenkova_appears do var un ;
+7786: LD_EXP 15
+7790: PUSH
+7791: LD_EXP 19
+7795: NOT
+7796: AND
+7797: IFFALSE 7872
+7799: GO 7801
+7801: DISABLE
+7802: LD_INT 0
+7804: PPUSH
+// begin for un in FilterAllUnits ( [ [ f_ok ] , [ f_side , you ] ] ) do
+7805: LD_ADDR_VAR 0 1
+7809: PUSH
+7810: LD_INT 50
+7812: PUSH
+7813: EMPTY
+7814: LIST
+7815: PUSH
+7816: LD_INT 22
+7818: PUSH
+7819: LD_EXP 1
+7823: PUSH
+7824: EMPTY
+7825: LIST
+7826: LIST
+7827: PUSH
+7828: EMPTY
+7829: LIST
+7830: LIST
+7831: PPUSH
+7832: CALL_OW 69
+7836: PUSH
+7837: FOR_IN
+7838: IFFALSE 7862
+// if GetY ( un ) < 110 then
+7840: LD_VAR 0 1
+7844: PPUSH
+7845: CALL_OW 251
+7849: PUSH
+7850: LD_INT 110
+7852: LESS
+7853: IFFALSE 7860
+// begin enable ;
+7855: ENABLE
+// exit ;
+7856: POP
+7857: POP
+7858: GO 7872
+// end ;
+7860: GO 7837
+7862: POP
+7863: POP
+// kirilenkova_appears := true ;
+7864: LD_ADDR_EXP 19
+7868: PUSH
+7869: LD_INT 1
+7871: ST_TO_ADDR
+// end ;
+7872: PPOPN 1
+7874: END
+// every 0 0$2.1 trigger kirilenkova_appears do var un ;
+7875: LD_EXP 19
+7879: IFFALSE 8608
+7881: GO 7883
+7883: DISABLE
+7884: LD_INT 0
+7886: PPUSH
+// begin ChangeSideFog ( russians , russians ) ;
+7887: LD_EXP 2
+7891: PPUSH
+7892: LD_EXP 2
+7896: PPUSH
+7897: CALL_OW 343
+// PlaceUnitXYR ( kirilenkova , 74 , 110 , 2 , true ) ;
+7901: LD_EXP 41
+7905: PPUSH
+7906: LD_INT 74
+7908: PPUSH
+7909: LD_INT 110
+7911: PPUSH
+7912: LD_INT 2
+7914: PPUSH
+7915: LD_INT 1
+7917: PPUSH
+7918: CALL_OW 50
+// wait ( 0 0$3 ) ;
+7922: LD_INT 105
+7924: PPUSH
+7925: CALL_OW 67
+// ComMoveXY ( kirilenkova , 64 , 110 ) ;
+7929: LD_EXP 41
+7933: PPUSH
+7934: LD_INT 64
+7936: PPUSH
+7937: LD_INT 110
+7939: PPUSH
+7940: CALL_OW 111
+// un := NearestUnitToUnit ( FilterAllUnits ( [ [ f_ok ] , [ f_side , you ] ] ) , kirilenkova ) ;
+7944: LD_ADDR_VAR 0 1
+7948: PUSH
+7949: LD_INT 50
+7951: PUSH
+7952: EMPTY
+7953: LIST
+7954: PUSH
+7955: LD_INT 22
+7957: PUSH
+7958: LD_EXP 1
+7962: PUSH
+7963: EMPTY
+7964: LIST
+7965: LIST
+7966: PUSH
+7967: EMPTY
+7968: LIST
+7969: LIST
+7970: PPUSH
+7971: CALL_OW 69
+7975: PPUSH
+7976: LD_EXP 41
+7980: PPUSH
+7981: CALL_OW 74
+7985: ST_TO_ADDR
+// kirilenkova_spoke := true ;
+7986: LD_ADDR_LOC 2
+7990: PUSH
+7991: LD_INT 1
+7993: ST_TO_ADDR
+// if GetDistUnits ( un , Kirilenkova ) <= 15 then
+7994: LD_VAR 0 1
+7998: PPUSH
+7999: LD_EXP 41
+8003: PPUSH
+8004: CALL_OW 296
+8008: PUSH
+8009: LD_INT 15
+8011: LESSEQUAL
+8012: IFFALSE 8164
+// begin SetSide ( Kirilenkova , you ) ;
+8014: LD_EXP 41
+8018: PPUSH
+8019: LD_EXP 1
+8023: PPUSH
+8024: CALL_OW 235
+// kirilenkova_met := true ;
+8028: LD_ADDR_EXP 7
+8032: PUSH
+8033: LD_INT 1
+8035: ST_TO_ADDR
+// wait ( 0 0$2 ) ;
+8036: LD_INT 70
+8038: PPUSH
+8039: CALL_OW 67
+// DialogueOn ;
+8043: CALL_OW 6
+// Say ( Kirilenkova , D11a-Kir-1 ) ;
+8047: LD_EXP 41
+8051: PPUSH
+8052: LD_STRING D11a-Kir-1
+8054: PPUSH
+8055: CALL_OW 88
+// if GetDistUnits ( Kirilenkova , Belkov ) < 25 then
+8059: LD_EXP 41
+8063: PPUSH
+8064: LD_EXP 39
+8068: PPUSH
+8069: CALL_OW 296
+8073: PUSH
+8074: LD_INT 25
+8076: LESS
+8077: IFFALSE 8117
+// begin Say ( Belkov , D11a-Bel-1 ) ;
+8079: LD_EXP 39
+8083: PPUSH
+8084: LD_STRING D11a-Bel-1
+8086: PPUSH
+8087: CALL_OW 88
+// Say ( Kirilenkova , D11a-Kir-2 ) ;
+8091: LD_EXP 41
+8095: PPUSH
+8096: LD_STRING D11a-Kir-2
+8098: PPUSH
+8099: CALL_OW 88
+// Say ( Belkov , D11a-Bel-2 ) ;
+8103: LD_EXP 39
+8107: PPUSH
+8108: LD_STRING D11a-Bel-2
+8110: PPUSH
+8111: CALL_OW 88
+// end else
+8115: GO 8158
+// if GetSex ( un ) = sex_male then
+8117: LD_VAR 0 1
+8121: PPUSH
+8122: CALL_OW 258
+8126: PUSH
+8127: LD_INT 1
+8129: EQUAL
+8130: IFFALSE 8146
+// Say ( un , D11a-RSol1-2 ) else
+8132: LD_VAR 0 1
+8136: PPUSH
+8137: LD_STRING D11a-RSol1-2
+8139: PPUSH
+8140: CALL_OW 88
+8144: GO 8158
+// Say ( un , D11a-RFSol1-2 ) ;
+8146: LD_VAR 0 1
+8150: PPUSH
+8151: LD_STRING D11a-RFSol1-2
+8153: PPUSH
+8154: CALL_OW 88
+// DialogueOff ;
+8158: CALL_OW 7
+// end else
+8162: GO 8608
+// begin DialogueOn ;
+8164: CALL_OW 6
+// SayRadio ( Kirilenkova , D11b-Kir-1 ) ;
+8168: LD_EXP 41
+8172: PPUSH
+8173: LD_STRING D11b-Kir-1
+8175: PPUSH
+8176: CALL_OW 94
+// if IsOk ( Belkov ) then
+8180: LD_EXP 39
+8184: PPUSH
+8185: CALL_OW 302
+8189: IFFALSE 8217
+// begin Say ( Belkov , D11b-Bel-1 ) ;
+8191: LD_EXP 39
+8195: PPUSH
+8196: LD_STRING D11b-Bel-1
+8198: PPUSH
+8199: CALL_OW 88
+// Say ( Belkov , D11b-Bel-1a ) ;
+8203: LD_EXP 39
+8207: PPUSH
+8208: LD_STRING D11b-Bel-1a
+8210: PPUSH
+8211: CALL_OW 88
+// end else
+8215: GO 8338
+// begin un := FilterAllUnits ( [ [ f_ok ] , [ f_side , you ] ] ) diff Burlak ;
+8217: LD_ADDR_VAR 0 1
+8221: PUSH
+8222: LD_INT 50
+8224: PUSH
+8225: EMPTY
+8226: LIST
+8227: PUSH
+8228: LD_INT 22
+8230: PUSH
+8231: LD_EXP 1
+8235: PUSH
+8236: EMPTY
+8237: LIST
+8238: LIST
+8239: PUSH
+8240: EMPTY
+8241: LIST
+8242: LIST
+8243: PPUSH
+8244: CALL_OW 69
+8248: PUSH
+8249: LD_EXP 37
+8253: DIFF
+8254: ST_TO_ADDR
+// if un then
+8255: LD_VAR 0 1
+8259: IFFALSE 8287
+// un := un [ Rand ( 1 , un ) ] else
+8261: LD_ADDR_VAR 0 1
+8265: PUSH
+8266: LD_VAR 0 1
+8270: PUSH
+8271: LD_INT 1
+8273: PPUSH
+8274: LD_VAR 0 1
+8278: PPUSH
+8279: CALL_OW 12
+8283: ARRAY
+8284: ST_TO_ADDR
+8285: GO 8297
+// un := Burlak ;
+8287: LD_ADDR_VAR 0 1
+8291: PUSH
+8292: LD_EXP 37
+8296: ST_TO_ADDR
+// if GetSex ( un ) = sex_male then
+8297: LD_VAR 0 1
+8301: PPUSH
+8302: CALL_OW 258
+8306: PUSH
+8307: LD_INT 1
+8309: EQUAL
+8310: IFFALSE 8326
+// Say ( un , D11b-RSol1-1 ) else
+8312: LD_VAR 0 1
+8316: PPUSH
+8317: LD_STRING D11b-RSol1-1
+8319: PPUSH
+8320: CALL_OW 88
+8324: GO 8338
+// Say ( un , D11b-RFSol1-1 ) ;
+8326: LD_VAR 0 1
+8330: PPUSH
+8331: LD_STRING D11b-RFSol1-1
+8333: PPUSH
+8334: CALL_OW 88
+// end ; if SeeArea ( you , Lake ) or not UnitFilter ( wild_apemen , [ f_ok ] ) then
+8338: LD_EXP 1
+8342: PPUSH
+8343: LD_INT 8
+8345: PPUSH
+8346: CALL_OW 294
+8350: PUSH
+8351: LD_EXP 48
+8355: PPUSH
+8356: LD_INT 50
+8358: PUSH
+8359: EMPTY
+8360: LIST
+8361: PPUSH
+8362: CALL_OW 72
+8366: NOT
+8367: OR
+8368: IFFALSE 8494
+// begin SayRadio ( Kirilenkova , D11b2-Kir-1 ) ;
+8370: LD_EXP 41
+8374: PPUSH
+8375: LD_STRING D11b2-Kir-1
+8377: PPUSH
+8378: CALL_OW 94
+// if not UnitFilter ( wild_apemen , [ f_ok ] ) then
+8382: LD_EXP 48
+8386: PPUSH
+8387: LD_INT 50
+8389: PUSH
+8390: EMPTY
+8391: LIST
+8392: PPUSH
+8393: CALL_OW 72
+8397: NOT
+8398: IFFALSE 8417
+// ComMoveXY ( Kirilenkova , 69 , 98 ) else
+8400: LD_EXP 41
+8404: PPUSH
+8405: LD_INT 69
+8407: PPUSH
+8408: LD_INT 98
+8410: PPUSH
+8411: CALL_OW 111
+8415: GO 8426
+// ComStop ( Kirilenkova ) ;
+8417: LD_EXP 41
+8421: PPUSH
+8422: CALL_OW 141
+// if IsOk ( Belkov ) then
+8426: LD_EXP 39
+8430: PPUSH
+8431: CALL_OW 302
+8435: IFFALSE 8451
+// Say ( Belkov , D11b2-Bel-1 ) else
+8437: LD_EXP 39
+8441: PPUSH
+8442: LD_STRING D11b2-Bel-1
+8444: PPUSH
+8445: CALL_OW 88
+8449: GO 8492
+// if GetSex ( un ) = sex_male then
+8451: LD_VAR 0 1
+8455: PPUSH
+8456: CALL_OW 258
+8460: PUSH
+8461: LD_INT 1
+8463: EQUAL
+8464: IFFALSE 8480
+// Say ( un , D11b1-RSol1-1 ) else
+8466: LD_VAR 0 1
+8470: PPUSH
+8471: LD_STRING D11b1-RSol1-1
+8473: PPUSH
+8474: CALL_OW 88
+8478: GO 8492
+// Say ( un , D11b1-RFSol1-1 ) ;
+8480: LD_VAR 0 1
+8484: PPUSH
+8485: LD_STRING D11b1-RFSol1-1
+8487: PPUSH
+8488: CALL_OW 88
+// end else
+8492: GO 8604
+// begin SayRadio ( Kirilenkova , D11b1-Kir-1 ) ;
+8494: LD_EXP 41
+8498: PPUSH
+8499: LD_STRING D11b1-Kir-1
+8501: PPUSH
+8502: CALL_OW 94
+// if saw_apeman then
+8506: LD_EXP 20
+8510: IFFALSE 8526
+// Say ( Burlak , D11b1-Bur-1 ) else
+8512: LD_EXP 37
+8516: PPUSH
+8517: LD_STRING D11b1-Bur-1
+8519: PPUSH
+8520: CALL_OW 88
+8524: GO 8538
+// Say ( Burlak , D11b1-Bur-1a ) ;
+8526: LD_EXP 37
+8530: PPUSH
+8531: LD_STRING D11b1-Bur-1a
+8533: PPUSH
+8534: CALL_OW 88
+// if IsOk ( Belkov ) then
+8538: LD_EXP 39
+8542: PPUSH
+8543: CALL_OW 302
+8547: IFFALSE 8563
+// Say ( Belkov , D11b1-Bel-1 ) else
+8549: LD_EXP 39
+8553: PPUSH
+8554: LD_STRING D11b1-Bel-1
+8556: PPUSH
+8557: CALL_OW 88
+8561: GO 8604
+// if GetSex ( un ) = sex_male then
+8563: LD_VAR 0 1
+8567: PPUSH
+8568: CALL_OW 258
+8572: PUSH
+8573: LD_INT 1
+8575: EQUAL
+8576: IFFALSE 8592
+// Say ( un , D11b1-RSol1-1 ) else
+8578: LD_VAR 0 1
+8582: PPUSH
+8583: LD_STRING D11b1-RSol1-1
+8585: PPUSH
+8586: CALL_OW 88
+8590: GO 8604
+// Say ( un , D11b1-RFSol1-1 ) ;
+8592: LD_VAR 0 1
+8596: PPUSH
+8597: LD_STRING D11b1-RFSol1-1
+8599: PPUSH
+8600: CALL_OW 88
+// end ; DialogueOff ;
+8604: CALL_OW 7
+// end ; end ;
+8608: PPOPN 1
+8610: END
+// every 0 0$2 + 0 0$0.31 trigger not kirilenkova_met and kirilenkova_spoke and See ( you , kirilenkova ) do
+8611: LD_EXP 7
+8615: NOT
+8616: PUSH
+8617: LD_LOC 2
+8621: AND
+8622: PUSH
+8623: LD_EXP 1
+8627: PPUSH
+8628: LD_EXP 41
+8632: PPUSH
+8633: CALL_OW 292
+8637: AND
+8638: IFFALSE 8704
+8640: GO 8642
+8642: DISABLE
+// begin DialogueOn ;
+8643: CALL_OW 6
+// SetSide ( Kirilenkova , you ) ;
+8647: LD_EXP 41
+8651: PPUSH
+8652: LD_EXP 1
+8656: PPUSH
+8657: CALL_OW 235
+// Say ( Kirilenkova , D11c-Kir-1 ) ;
+8661: LD_EXP 41
+8665: PPUSH
+8666: LD_STRING D11c-Kir-1
+8668: PPUSH
+8669: CALL_OW 88
+// Say ( Burlak , D11c-Bur-1 ) ;
+8673: LD_EXP 37
+8677: PPUSH
+8678: LD_STRING D11c-Bur-1
+8680: PPUSH
+8681: CALL_OW 88
+// DialogueOff ;
+8685: CALL_OW 7
+// Hint ( Healing ) ;
+8689: LD_STRING Healing
+8691: PPUSH
+8692: CALL_OW 339
+// kirilenkova_met := true ;
+8696: LD_ADDR_EXP 7
+8700: PUSH
+8701: LD_INT 1
+8703: ST_TO_ADDR
+// end ; end_of_file
+8704: END
+// var apemen_dist , engels_work ; every 0 0$1 trigger not SeeXY ( russians , 86 , 53 ) marked 1 do var un ;
+8705: LD_EXP 2
+8709: PPUSH
+8710: LD_INT 86
+8712: PPUSH
+8713: LD_INT 53
+8715: PPUSH
+8716: CALL_OW 293
+8720: NOT
+8721: IFFALSE 8807
+8723: GO 8725
+8725: DISABLE
+8726: LD_INT 0
+8728: PPUSH
+// begin if pokryshkin_met then
+8729: LD_EXP 5
+8733: IFFALSE 8737
+// exit ;
+8735: GO 8807
+// un := team [ Rand ( 1 , team ) ] ;
+8737: LD_ADDR_VAR 0 1
+8741: PUSH
+8742: LD_EXP 43
+8746: PUSH
+8747: LD_INT 1
+8749: PPUSH
+8750: LD_EXP 43
+8754: PPUSH
+8755: CALL_OW 12
+8759: ARRAY
+8760: ST_TO_ADDR
+// ComMoveXY ( un , 86 , 53 ) ;
+8761: LD_VAR 0 1
+8765: PPUSH
+8766: LD_INT 86
+8768: PPUSH
+8769: LD_INT 53
+8771: PPUSH
+8772: CALL_OW 111
+// repeat Wait ( 0 0$1 ) ;
+8776: LD_INT 35
+8778: PPUSH
+8779: CALL_OW 67
+// until SeeXY ( russians , 86 , 53 ) or pokryshkin_met ;
+8783: LD_EXP 2
+8787: PPUSH
+8788: LD_INT 86
+8790: PPUSH
+8791: LD_INT 53
+8793: PPUSH
+8794: CALL_OW 293
+8798: PUSH
+8799: LD_EXP 5
+8803: OR
+8804: IFFALSE 8776
+// enable ;
+8806: ENABLE
+// end ;
+8807: PPOPN 1
+8809: END
+// every 0 0$1 trigger not SeeXY ( russians , 85 , 73 ) marked 1 do var un ;
+8810: LD_EXP 2
+8814: PPUSH
+8815: LD_INT 85
+8817: PPUSH
+8818: LD_INT 73
+8820: PPUSH
+8821: CALL_OW 293
+8825: NOT
+8826: IFFALSE 8921
+8828: GO 8830
+8830: DISABLE
+8831: LD_INT 0
+8833: PPUSH
+// begin if pokryshkin_met then
+8834: LD_EXP 5
+8838: IFFALSE 8842
+// exit ;
+8840: GO 8921
+// un := team [ Rand ( 1 , team ) ] ;
+8842: LD_ADDR_VAR 0 1
+8846: PUSH
+8847: LD_EXP 43
+8851: PUSH
+8852: LD_INT 1
+8854: PPUSH
+8855: LD_EXP 43
+8859: PPUSH
+8860: CALL_OW 12
+8864: ARRAY
+8865: ST_TO_ADDR
+// ComMoveXY ( un , 85 , 73 ) ;
+8866: LD_VAR 0 1
+8870: PPUSH
+8871: LD_INT 85
+8873: PPUSH
+8874: LD_INT 73
+8876: PPUSH
+8877: CALL_OW 111
+// repeat Wait ( 0 0$1 ) ;
+8881: LD_INT 35
+8883: PPUSH
+8884: CALL_OW 67
+// until SeeXY ( russians , 85 , 73 ) or pokryshkin_met ;
+8888: LD_EXP 2
+8892: PPUSH
+8893: LD_INT 85
+8895: PPUSH
+8896: LD_INT 73
+8898: PPUSH
+8899: CALL_OW 293
+8903: PUSH
+8904: LD_EXP 5
+8908: OR
+8909: IFFALSE 8881
+// ComStop ( un ) ;
+8911: LD_VAR 0 1
+8915: PPUSH
+8916: CALL_OW 141
+// enable ;
+8920: ENABLE
+// end ;
+8921: PPOPN 1
+8923: END
+// every 0 0$0.61 trigger IsOk ( Pokryshkin ) and ( GetSide ( Attacks ( Burlak ) ) = russians ) do
+8924: LD_EXP 38
+8928: PPUSH
+8929: CALL_OW 302
+8933: PUSH
+8934: LD_EXP 37
+8938: PPUSH
+8939: CALL_OW 320
+8943: PPUSH
+8944: CALL_OW 255
+8948: PUSH
+8949: LD_EXP 2
+8953: EQUAL
+8954: AND
+8955: IFFALSE 9051
+8957: GO 8959
+8959: DISABLE
+// begin ComAttackUnit ( FilterAllUnits ( [ f_side , russians ] ) , Burlak ) ;
+8960: LD_INT 22
+8962: PUSH
+8963: LD_EXP 2
+8967: PUSH
+8968: EMPTY
+8969: LIST
+8970: LIST
+8971: PPUSH
+8972: CALL_OW 69
+8976: PPUSH
+8977: LD_EXP 37
+8981: PPUSH
+8982: CALL_OW 115
+// betrayed := true ;
+8986: LD_ADDR_EXP 16
+8990: PUSH
+8991: LD_INT 1
+8993: ST_TO_ADDR
+// Say ( Pokryshkin , DAttack-Pok-1 ) ;
+8994: LD_EXP 38
+8998: PPUSH
+8999: LD_STRING DAttack-Pok-1
+9001: PPUSH
+9002: CALL_OW 88
+// repeat wait ( 0 0$6 ) ;
+9006: LD_INT 210
+9008: PPUSH
+9009: CALL_OW 67
+// ComAttackUnit ( FilterAllUnits ( [ f_side , russians ] ) , Burlak ) ;
+9013: LD_INT 22
+9015: PUSH
+9016: LD_EXP 2
+9020: PUSH
+9021: EMPTY
+9022: LIST
+9023: LIST
+9024: PPUSH
+9025: CALL_OW 69
+9029: PPUSH
+9030: LD_EXP 37
+9034: PPUSH
+9035: CALL_OW 115
+// until not IsOk ( Burlak ) ;
+9039: LD_EXP 37
+9043: PPUSH
+9044: CALL_OW 302
+9048: NOT
+9049: IFFALSE 9006
+// end ;
+9051: END
+// every 0 0$1 trigger not pokryshkin_met and not gnyevko_met and UnitFilter ( wild_apemen , [ f_see , you ] ) marked 11 do var un ;
+9052: LD_EXP 5
+9056: NOT
+9057: PUSH
+9058: LD_EXP 6
+9062: NOT
+9063: AND
+9064: PUSH
+9065: LD_EXP 48
+9069: PPUSH
+9070: LD_INT 101
+9072: PUSH
+9073: LD_EXP 1
+9077: PUSH
+9078: EMPTY
+9079: LIST
+9080: LIST
+9081: PPUSH
+9082: CALL_OW 72
+9086: AND
+9087: IFFALSE 9543
+9089: GO 9091
+9091: DISABLE
+9092: LD_INT 0
+9094: PPUSH
+// begin async ;
+9095: ASYNC
+// if not saw_apeman then
+9096: LD_EXP 20
+9100: NOT
+9101: IFFALSE 9107
+// d_burlak_alone_meets_apemen ;
+9103: CALL 4071 0 0
+// sync ;
+9107: SYNC
+// saw_apeman := true ;
+9108: LD_ADDR_EXP 20
+9112: PUSH
+9113: LD_INT 1
+9115: ST_TO_ADDR
+// apemen_dist := 10 * 10 ;
+9116: LD_ADDR_LOC 3
+9120: PUSH
+9121: LD_INT 10
+9123: PUSH
+9124: LD_INT 10
+9126: MUL
+9127: ST_TO_ADDR
+// repeat for un in wild_apemen do
+9128: LD_ADDR_VAR 0 1
+9132: PUSH
+9133: LD_EXP 48
+9137: PUSH
+9138: FOR_IN
+9139: IFFALSE 9312
+// begin if GetDistUnits ( un , Burlak ) * 10 > apemen_dist then
+9141: LD_VAR 0 1
+9145: PPUSH
+9146: LD_EXP 37
+9150: PPUSH
+9151: CALL_OW 296
+9155: PUSH
+9156: LD_INT 10
+9158: MUL
+9159: PUSH
+9160: LD_LOC 3
+9164: GREATER
+9165: IFFALSE 9198
+// ComMoveXY ( un , GetX ( Burlak ) , GetY ( Burlak ) ) else
+9167: LD_VAR 0 1
+9171: PPUSH
+9172: LD_EXP 37
+9176: PPUSH
+9177: CALL_OW 250
+9181: PPUSH
+9182: LD_EXP 37
+9186: PPUSH
+9187: CALL_OW 251
+9191: PPUSH
+9192: CALL_OW 111
+9196: GO 9310
+// if GetDistUnits ( un , Burlak ) * 10 < apemen_dist - 20 then
+9198: LD_VAR 0 1
+9202: PPUSH
+9203: LD_EXP 37
+9207: PPUSH
+9208: CALL_OW 296
+9212: PUSH
+9213: LD_INT 10
+9215: MUL
+9216: PUSH
+9217: LD_LOC 3
+9221: PUSH
+9222: LD_INT 20
+9224: MINUS
+9225: LESS
+9226: IFFALSE 9289
+// ComMoveXY ( un , 2 * GetX ( un ) - GetX ( Burlak ) , 2 * GetY ( un ) - GetY ( Burlak ) ) else
+9228: LD_VAR 0 1
+9232: PPUSH
+9233: LD_INT 2
+9235: PUSH
+9236: LD_VAR 0 1
+9240: PPUSH
+9241: CALL_OW 250
+9245: MUL
+9246: PUSH
+9247: LD_EXP 37
+9251: PPUSH
+9252: CALL_OW 250
+9256: MINUS
+9257: PPUSH
+9258: LD_INT 2
+9260: PUSH
+9261: LD_VAR 0 1
+9265: PPUSH
+9266: CALL_OW 251
+9270: MUL
+9271: PUSH
+9272: LD_EXP 37
+9276: PPUSH
+9277: CALL_OW 251
+9281: MINUS
+9282: PPUSH
+9283: CALL_OW 111
+9287: GO 9310
+// begin ComStop ( un ) ;
+9289: LD_VAR 0 1
+9293: PPUSH
+9294: CALL_OW 141
+// ComWait ( un , 0 0$0.6 ) ;
+9298: LD_VAR 0 1
+9302: PPUSH
+9303: LD_INT 21
+9305: PPUSH
+9306: CALL_OW 142
+// end ; end ;
+9310: GO 9138
+9312: POP
+9313: POP
+// wait ( 0 0$0.5 ) ;
+9314: LD_INT 18
+9316: PPUSH
+9317: CALL_OW 67
+// apemen_dist := apemen_dist - 1 ;
+9321: LD_ADDR_LOC 3
+9325: PUSH
+9326: LD_LOC 3
+9330: PUSH
+9331: LD_INT 1
+9333: MINUS
+9334: ST_TO_ADDR
+// un := NearestUnitToUnit ( wild_apemen , Burlak ) ;
+9335: LD_ADDR_VAR 0 1
+9339: PUSH
+9340: LD_EXP 48
+9344: PPUSH
+9345: LD_EXP 37
+9349: PPUSH
+9350: CALL_OW 74
+9354: ST_TO_ADDR
+// if apeman_killed then
+9355: LD_EXP 52
+9359: IFFALSE 9363
+// exit ;
+9361: GO 9543
+// until ( apemen_dist = 4 * 10 ) or ( GetDistUnits ( un , Burlak ) * 10 > apemen_dist + apemen_range ) ;
+9363: LD_LOC 3
+9367: PUSH
+9368: LD_INT 4
+9370: PUSH
+9371: LD_INT 10
+9373: MUL
+9374: EQUAL
+9375: PUSH
+9376: LD_VAR 0 1
+9380: PPUSH
+9381: LD_EXP 37
+9385: PPUSH
+9386: CALL_OW 296
+9390: PUSH
+9391: LD_INT 10
+9393: MUL
+9394: PUSH
+9395: LD_LOC 3
+9399: PUSH
+9400: LD_EXP 34
+9404: PLUS
+9405: GREATER
+9406: OR
+9407: IFFALSE 9128
+// wait ( apemen_time ) ;
+9409: LD_EXP 35
+9413: PPUSH
+9414: CALL_OW 67
+// if apeman_killed then
+9418: LD_EXP 52
+9422: IFFALSE 9426
+// exit ;
+9424: GO 9543
+// ComMoveXY ( wild_apemen , 64 , 88 ) ;
+9426: LD_EXP 48
+9430: PPUSH
+9431: LD_INT 64
+9433: PPUSH
+9434: LD_INT 88
+9436: PPUSH
+9437: CALL_OW 111
+// repeat wait ( 0 0$1 ) ;
+9441: LD_INT 35
+9443: PPUSH
+9444: CALL_OW 67
+// if apeman_killed then
+9448: LD_EXP 52
+9452: IFFALSE 9456
+// exit ;
+9454: GO 9543
+// until FilterUnitsInArea ( Cave , [ [ f_class , class_apeman ] , [ f_ok ] ] ) + 0 = UnitFilter ( wild_apemen , [ f_ok ] ) + 0 ;
+9456: LD_INT 10
+9458: PPUSH
+9459: LD_INT 25
+9461: PUSH
+9462: LD_INT 12
+9464: PUSH
+9465: EMPTY
+9466: LIST
+9467: LIST
+9468: PUSH
+9469: LD_INT 50
+9471: PUSH
+9472: EMPTY
+9473: LIST
+9474: PUSH
+9475: EMPTY
+9476: LIST
+9477: LIST
+9478: PPUSH
+9479: CALL_OW 70
+9483: PUSH
+9484: LD_INT 0
+9486: PLUS
+9487: PUSH
+9488: LD_EXP 48
+9492: PPUSH
+9493: LD_INT 50
+9495: PUSH
+9496: EMPTY
+9497: LIST
+9498: PPUSH
+9499: CALL_OW 72
+9503: PUSH
+9504: LD_INT 0
+9506: PLUS
+9507: EQUAL
+9508: IFFALSE 9441
+// apemen_range := apemen_range + 1 ;
+9510: LD_ADDR_EXP 34
+9514: PUSH
+9515: LD_EXP 34
+9519: PUSH
+9520: LD_INT 1
+9522: PLUS
+9523: ST_TO_ADDR
+// apemen_time := apemen_time * 150 div 100 ;
+9524: LD_ADDR_EXP 35
+9528: PUSH
+9529: LD_EXP 35
+9533: PUSH
+9534: LD_INT 150
+9536: MUL
+9537: PUSH
+9538: LD_INT 100
+9540: DIV
+9541: ST_TO_ADDR
+// enable ;
+9542: ENABLE
+// end ;
+9543: PPOPN 1
+9545: END
+// every 0 0$1 trigger kirilenkova_appears do
+9546: LD_EXP 19
+9550: IFFALSE 9570
+9552: GO 9554
+9554: DISABLE
+// begin apeman_braveness := apeman_braveness - 1 ;
+9555: LD_ADDR_EXP 36
+9559: PUSH
+9560: LD_EXP 36
+9564: PUSH
+9565: LD_INT 1
+9567: MINUS
+9568: ST_TO_ADDR
+// enable ;
+9569: ENABLE
+// end ;
+9570: END
+// every 0 0$1.5 + 0 0$0.7 trigger kirilenkova_appears do var un ;
+9571: LD_EXP 19
+9575: IFFALSE 9784
+9577: GO 9579
+9579: DISABLE
+9580: LD_INT 0
+9582: PPUSH
+// begin if not wild_apemen then
+9583: LD_EXP 48
+9587: NOT
+9588: IFFALSE 9592
+// exit ;
+9590: GO 9784
+// if apeman_braveness > 0 then
+9592: LD_EXP 36
+9596: PUSH
+9597: LD_INT 0
+9599: GREATER
+9600: IFFALSE 9755
+// begin for un in wild_apemen do
+9602: LD_ADDR_VAR 0 1
+9606: PUSH
+9607: LD_EXP 48
+9611: PUSH
+9612: FOR_IN
+9613: IFFALSE 9750
+// if GetDistUnits ( un , Kirilenkova ) < 6 then
+9615: LD_VAR 0 1
+9619: PPUSH
+9620: LD_EXP 41
+9624: PPUSH
+9625: CALL_OW 296
+9629: PUSH
+9630: LD_INT 6
+9632: LESS
+9633: IFFALSE 9748
+// ComMoveXY ( un , GetX ( un ) + 10 * ( GetX ( un ) - GetX ( Kirilenkova ) ) div GetDistUnits ( un , Kirilenkova ) , GetY ( un ) + 10 * ( GetY ( un ) - GetY ( Kirilenkova ) ) div GetDistUnits ( un , Kirilenkova ) ) ;
+9635: LD_VAR 0 1
+9639: PPUSH
+9640: LD_VAR 0 1
+9644: PPUSH
+9645: CALL_OW 250
+9649: PUSH
+9650: LD_INT 10
+9652: PUSH
+9653: LD_VAR 0 1
+9657: PPUSH
+9658: CALL_OW 250
+9662: PUSH
+9663: LD_EXP 41
+9667: PPUSH
+9668: CALL_OW 250
+9672: MINUS
+9673: MUL
+9674: PUSH
+9675: LD_VAR 0 1
+9679: PPUSH
+9680: LD_EXP 41
+9684: PPUSH
+9685: CALL_OW 296
+9689: DIV
+9690: PLUS
+9691: PPUSH
+9692: LD_VAR 0 1
+9696: PPUSH
+9697: CALL_OW 251
+9701: PUSH
+9702: LD_INT 10
+9704: PUSH
+9705: LD_VAR 0 1
+9709: PPUSH
+9710: CALL_OW 251
+9714: PUSH
+9715: LD_EXP 41
+9719: PPUSH
+9720: CALL_OW 251
+9724: MINUS
+9725: MUL
+9726: PUSH
+9727: LD_VAR 0 1
+9731: PPUSH
+9732: LD_EXP 41
+9736: PPUSH
+9737: CALL_OW 296
+9741: DIV
+9742: PLUS
+9743: PPUSH
+9744: CALL_OW 111
+9748: GO 9612
+9750: POP
+9751: POP
+// enable ;
+9752: ENABLE
+// end else
+9753: GO 9784
+// ComMoveXY ( wild_apemen , GetX ( Kirilenkova ) , GetY ( Kirilenkova ) ) ;
+9755: LD_EXP 48
+9759: PPUSH
+9760: LD_EXP 41
+9764: PPUSH
+9765: CALL_OW 250
+9769: PPUSH
+9770: LD_EXP 41
+9774: PPUSH
+9775: CALL_OW 251
+9779: PPUSH
+9780: CALL_OW 111
+// end ;
+9784: PPOPN 1
+9786: END
+// every 0 0$1.8 trigger it_is_your do var un , saved ;
+9787: LD_EXP 17
+9791: IFFALSE 9992
+9793: GO 9795
+9795: DISABLE
+9796: LD_INT 0
+9798: PPUSH
+9799: PPUSH
+// begin if not wild_apemen then
+9800: LD_EXP 48
+9804: NOT
+9805: IFFALSE 9809
+// exit ;
+9807: GO 9992
+// if FilterUnitsInArea ( CaveEntrance , [ f_side , you ] ) > 2 then
+9809: LD_INT 2
+9811: PPUSH
+9812: LD_INT 22
+9814: PUSH
+9815: LD_EXP 1
+9819: PUSH
+9820: EMPTY
+9821: LIST
+9822: LIST
+9823: PPUSH
+9824: CALL_OW 70
+9828: PUSH
+9829: LD_INT 2
+9831: GREATER
+9832: IFFALSE 9991
+// begin ComAttackUnit ( wild_apemen [ 1 ] , NearestUnitToUnit ( your_units , wild_apemen [ 1 ] ) ) ;
+9834: LD_EXP 48
+9838: PUSH
+9839: LD_INT 1
+9841: ARRAY
+9842: PPUSH
+9843: LD_EXP 51
+9847: PPUSH
+9848: LD_EXP 48
+9852: PUSH
+9853: LD_INT 1
+9855: ARRAY
+9856: PPUSH
+9857: CALL_OW 74
+9861: PPUSH
+9862: CALL_OW 115
+// ComMoveToArea ( wild_apemen diff wild_apemen [ 1 ] , InnerCave ) ;
+9866: LD_EXP 48
+9870: PUSH
+9871: LD_EXP 48
+9875: PUSH
+9876: LD_INT 1
+9878: ARRAY
+9879: DIFF
+9880: PPUSH
+9881: LD_INT 11
+9883: PPUSH
+9884: CALL_OW 113
+// AddComWait ( wild_apemen diff wild_apemen [ 1 ] , 0 0$1 ) ;
+9888: LD_EXP 48
+9892: PUSH
+9893: LD_EXP 48
+9897: PUSH
+9898: LD_INT 1
+9900: ARRAY
+9901: DIFF
+9902: PPUSH
+9903: LD_INT 35
+9905: PPUSH
+9906: CALL_OW 202
+// repeat wait ( 0 0$0.3 ) ;
+9910: LD_INT 10
+9912: PPUSH
+9913: CALL_OW 67
+// saved := FilterUnitsInArea ( InnerCave , [ f_side , 0 ] ) ;
+9917: LD_ADDR_VAR 0 2
+9921: PUSH
+9922: LD_INT 11
+9924: PPUSH
+9925: LD_INT 22
+9927: PUSH
+9928: LD_INT 0
+9930: PUSH
+9931: EMPTY
+9932: LIST
+9933: LIST
+9934: PPUSH
+9935: CALL_OW 70
+9939: ST_TO_ADDR
+// for un in saved do
+9940: LD_ADDR_VAR 0 1
+9944: PUSH
+9945: LD_VAR 0 2
+9949: PUSH
+9950: FOR_IN
+9951: IFFALSE 9980
+// begin RemoveUnit ( un ) ;
+9953: LD_VAR 0 1
+9957: PPUSH
+9958: CALL_OW 64
+// wild_apemen := wild_apemen diff un ;
+9962: LD_ADDR_EXP 48
+9966: PUSH
+9967: LD_EXP 48
+9971: PUSH
+9972: LD_VAR 0 1
+9976: DIFF
+9977: ST_TO_ADDR
+// end ;
+9978: GO 9950
+9980: POP
+9981: POP
+// until not wild_apemen ;
+9982: LD_EXP 48
+9986: NOT
+9987: IFFALSE 9910
+// end else
+9989: GO 9992
+// enable ;
+9991: ENABLE
+// end ;
+9992: PPOPN 2
+9994: END
+// export function prepare_trap ; var un , coord , i ; begin
+9995: LD_INT 0
+9997: PPUSH
+9998: PPUSH
+9999: PPUSH
+10000: PPUSH
+// coord = [ [ - 2 , 0 ] , [ 0 , - 2 ] , [ 0 , 2 ] , [ 1 , 0 ] , [ - 1 , 1 ] , [ - 1 , - 3 ] , [ 2 , 1 ] , [ 2 , - 2 ] , [ 3 , 3 ] , [ 3 , - 3 ] ] ;
+10001: LD_ADDR_VAR 0 3
+10005: PUSH
+10006: LD_INT 2
+10008: NEG
+10009: PUSH
+10010: LD_INT 0
+10012: PUSH
+10013: EMPTY
+10014: LIST
+10015: LIST
+10016: PUSH
+10017: LD_INT 0
+10019: PUSH
+10020: LD_INT 2
+10022: NEG
+10023: PUSH
+10024: EMPTY
+10025: LIST
+10026: LIST
+10027: PUSH
+10028: LD_INT 0
+10030: PUSH
+10031: LD_INT 2
+10033: PUSH
+10034: EMPTY
+10035: LIST
+10036: LIST
+10037: PUSH
+10038: LD_INT 1
+10040: PUSH
+10041: LD_INT 0
+10043: PUSH
+10044: EMPTY
+10045: LIST
+10046: LIST
+10047: PUSH
+10048: LD_INT 1
+10050: NEG
+10051: PUSH
+10052: LD_INT 1
+10054: PUSH
+10055: EMPTY
+10056: LIST
+10057: LIST
+10058: PUSH
+10059: LD_INT 1
+10061: NEG
+10062: PUSH
+10063: LD_INT 3
+10065: NEG
+10066: PUSH
+10067: EMPTY
+10068: LIST
+10069: LIST
+10070: PUSH
+10071: LD_INT 2
+10073: PUSH
+10074: LD_INT 1
+10076: PUSH
+10077: EMPTY
+10078: LIST
+10079: LIST
+10080: PUSH
+10081: LD_INT 2
+10083: PUSH
+10084: LD_INT 2
+10086: NEG
+10087: PUSH
+10088: EMPTY
+10089: LIST
+10090: LIST
+10091: PUSH
+10092: LD_INT 3
+10094: PUSH
+10095: LD_INT 3
+10097: PUSH
+10098: EMPTY
+10099: LIST
+10100: LIST
+10101: PUSH
+10102: LD_INT 3
+10104: PUSH
+10105: LD_INT 3
+10107: NEG
+10108: PUSH
+10109: EMPTY
+10110: LIST
+10111: LIST
+10112: PUSH
+10113: EMPTY
+10114: LIST
+10115: LIST
+10116: LIST
+10117: LIST
+10118: LIST
+10119: LIST
+10120: LIST
+10121: LIST
+10122: LIST
+10123: LIST
+10124: ST_TO_ADDR
+// i = 1 ;
+10125: LD_ADDR_VAR 0 4
+10129: PUSH
+10130: LD_INT 1
+10132: ST_TO_ADDR
+// for un in [ Pokryshkin ] ^ team ^ [ Gnyevko , Belkov ] do
+10133: LD_ADDR_VAR 0 2
+10137: PUSH
+10138: LD_EXP 38
+10142: PUSH
+10143: EMPTY
+10144: LIST
+10145: PUSH
+10146: LD_EXP 43
+10150: ADD
+10151: PUSH
+10152: LD_EXP 40
+10156: PUSH
+10157: LD_EXP 39
+10161: PUSH
+10162: EMPTY
+10163: LIST
+10164: LIST
+10165: ADD
+10166: PUSH
+10167: FOR_IN
+10168: IFFALSE 10242
+// begin ComMoveXY ( un , 65 + coord [ i ] [ 1 ] , 57 + coord [ i ] [ 2 ] ) ;
+10170: LD_VAR 0 2
+10174: PPUSH
+10175: LD_INT 65
+10177: PUSH
+10178: LD_VAR 0 3
+10182: PUSH
+10183: LD_VAR 0 4
+10187: ARRAY
+10188: PUSH
+10189: LD_INT 1
+10191: ARRAY
+10192: PLUS
+10193: PPUSH
+10194: LD_INT 57
+10196: PUSH
+10197: LD_VAR 0 3
+10201: PUSH
+10202: LD_VAR 0 4
+10206: ARRAY
+10207: PUSH
+10208: LD_INT 2
+10210: ARRAY
+10211: PLUS
+10212: PPUSH
+10213: CALL_OW 111
+// i = i + 1 ;
+10217: LD_ADDR_VAR 0 4
+10221: PUSH
+10222: LD_VAR 0 4
+10226: PUSH
+10227: LD_INT 1
+10229: PLUS
+10230: ST_TO_ADDR
+// AddComCrawl ( un ) ;
+10231: LD_VAR 0 2
+10235: PPUSH
+10236: CALL_OW 197
+// end ;
+10240: GO 10167
+10242: POP
+10243: POP
+// end ;
+10244: LD_VAR 0 1
+10248: RET
+// every 0 0$1 trigger follow_pokryshkin and GetDistUnits ( Burlak , Pokryshkin ) > 14 do
+10249: LD_EXP 8
+10253: PUSH
+10254: LD_EXP 37
+10258: PPUSH
+10259: LD_EXP 38
+10263: PPUSH
+10264: CALL_OW 296
+10268: PUSH
+10269: LD_INT 14
+10271: GREATER
+10272: AND
+10273: IFFALSE 10433
+10275: GO 10277
+10277: DISABLE
+// begin InGameOn ;
+10278: CALL_OW 8
+// ComStop ( team ^ [ Pokryshkin , Gnyevko , Belkov , Brown ] ) ;
+10282: LD_EXP 43
+10286: PUSH
+10287: LD_EXP 38
+10291: PUSH
+10292: LD_EXP 40
+10296: PUSH
+10297: LD_EXP 39
+10301: PUSH
+10302: LD_EXP 44
+10306: PUSH
+10307: EMPTY
+10308: LIST
+10309: LIST
+10310: LIST
+10311: LIST
+10312: ADD
+10313: PPUSH
+10314: CALL_OW 141
+// ComStop ( Burlak ) ;
+10318: LD_EXP 37
+10322: PPUSH
+10323: CALL_OW 141
+// Say ( Pokryshkin , DSplit-Pok-1 ) ;
+10327: LD_EXP 38
+10331: PPUSH
+10332: LD_STRING DSplit-Pok-1
+10334: PPUSH
+10335: CALL_OW 88
+// ComMoveUnit ( Burlak , Pokryshkin ) ;
+10339: LD_EXP 37
+10343: PPUSH
+10344: LD_EXP 38
+10348: PPUSH
+10349: CALL_OW 112
+// Say ( Burlak , DSplit-Bur-1 ) ;
+10353: LD_EXP 37
+10357: PPUSH
+10358: LD_STRING DSplit-Bur-1
+10360: PPUSH
+10361: CALL_OW 88
+// while GetDistUnits ( Burlak , Pokryshkin ) > 7 do
+10365: LD_EXP 37
+10369: PPUSH
+10370: LD_EXP 38
+10374: PPUSH
+10375: CALL_OW 296
+10379: PUSH
+10380: LD_INT 7
+10382: GREATER
+10383: IFFALSE 10394
+// wait ( 0 0$1 ) ;
+10385: LD_INT 35
+10387: PPUSH
+10388: CALL_OW 67
+10392: GO 10365
+// ComStop ( Burlak ) ;
+10394: LD_EXP 37
+10398: PPUSH
+10399: CALL_OW 141
+// InGameOff ;
+10403: CALL_OW 9
+// if preparing_trap then
+10407: LD_EXP 11
+10411: IFFALSE 10417
+// begin prepare_trap ;
+10413: CALL 9995 0 0
+// end ; ComMoveXY ( Brown , 66 , 58 ) ;
+10417: LD_EXP 44
+10421: PPUSH
+10422: LD_INT 66
+10424: PPUSH
+10425: LD_INT 58
+10427: PPUSH
+10428: CALL_OW 111
+// enable ;
+10432: ENABLE
+// end ;
+10433: END
+// function someone_attacks_breastwork ; var un ; begin
+10434: LD_INT 0
+10436: PPUSH
+10437: PPUSH
+// result := false ;
+10438: LD_ADDR_VAR 0 1
+10442: PUSH
+10443: LD_INT 0
+10445: ST_TO_ADDR
+// for un in your_units do
+10446: LD_ADDR_VAR 0 2
+10450: PUSH
+10451: LD_EXP 51
+10455: PUSH
+10456: FOR_IN
+10457: IFFALSE 10486
+// if Attacks ( un ) = am_bunker then
+10459: LD_VAR 0 2
+10463: PPUSH
+10464: CALL_OW 320
+10468: PUSH
+10469: LD_EXP 47
+10473: EQUAL
+10474: IFFALSE 10484
+// result := true ;
+10476: LD_ADDR_VAR 0 1
+10480: PUSH
+10481: LD_INT 1
+10483: ST_TO_ADDR
+10484: GO 10456
+10486: POP
+10487: POP
+// end ;
+10488: LD_VAR 0 1
+10492: RET
+// every 0 0$1 trigger it_is_your and someone_attacks_breastwork do
+10493: LD_EXP 17
+10497: PUSH
+10498: CALL 10434 0 0
+10502: AND
+10503: IFFALSE 10682
+10505: GO 10507
+10507: DISABLE
+// begin ComWait ( gladstones_apemen , 0 0$5 ) ;
+10508: LD_EXP 49
+10512: PPUSH
+10513: LD_INT 175
+10515: PPUSH
+10516: CALL_OW 142
+// AddComAgressiveMove ( gladstones_apemen , 52 , 25 ) ;
+10520: LD_EXP 49
+10524: PPUSH
+10525: LD_INT 52
+10527: PPUSH
+10528: LD_INT 25
+10530: PPUSH
+10531: CALL_OW 174
+// Say ( am1 , D8-FSol1-1 ) ;
+10535: LD_EXP 46
+10539: PPUSH
+10540: LD_STRING D8-FSol1-1
+10542: PPUSH
+10543: CALL_OW 88
+// Say ( Gladstone , D8-Glad-1 ) ;
+10547: LD_EXP 45
+10551: PPUSH
+10552: LD_STRING D8-Glad-1
+10554: PPUSH
+10555: CALL_OW 88
+// repeat wait ( 0 0$1 ) ;
+10559: LD_INT 35
+10561: PPUSH
+10562: CALL_OW 67
+// until UnitFilter ( gladstones_apemen , [ f_see , you ] ) ;
+10566: LD_EXP 49
+10570: PPUSH
+10571: LD_INT 101
+10573: PUSH
+10574: LD_EXP 1
+10578: PUSH
+10579: EMPTY
+10580: LIST
+10581: LIST
+10582: PPUSH
+10583: CALL_OW 72
+10587: IFFALSE 10559
+// Say ( Burlak , D8-Bur-1 ) ;
+10589: LD_EXP 37
+10593: PPUSH
+10594: LD_STRING D8-Bur-1
+10596: PPUSH
+10597: CALL_OW 88
+// repeat wait ( 0 0$1 ) ;
+10601: LD_INT 35
+10603: PPUSH
+10604: CALL_OW 67
+// until not IsOk ( am_bunker ) ;
+10608: LD_EXP 47
+10612: PPUSH
+10613: CALL_OW 302
+10617: NOT
+10618: IFFALSE 10601
+// if not start_to_run then
+10620: LD_EXP 18
+10624: NOT
+10625: IFFALSE 10639
+// Say ( am1 , D8-FSol1-2a ) ;
+10627: LD_EXP 46
+10631: PPUSH
+10632: LD_STRING D8-FSol1-2a
+10634: PPUSH
+10635: CALL_OW 88
+// start_to_run := true ;
+10639: LD_ADDR_EXP 18
+10643: PUSH
+10644: LD_INT 1
+10646: ST_TO_ADDR
+// if IsOk ( Gladstone ) then
+10647: LD_EXP 45
+10651: PPUSH
+10652: CALL_OW 302
+10656: IFFALSE 10682
+// begin Say ( Gladstone , D8-Glad-2 ) ;
+10658: LD_EXP 45
+10662: PPUSH
+10663: LD_STRING D8-Glad-2
+10665: PPUSH
+10666: CALL_OW 88
+// Say ( Burlak , D8-Bur-2 ) ;
+10670: LD_EXP 37
+10674: PPUSH
+10675: LD_STRING D8-Bur-2
+10677: PPUSH
+10678: CALL_OW 88
+// end ; end ;
+10682: END
+// every 0 0$1 trigger it_is_your and not UnitFilter ( gladstones_apemen , [ f_ok ] ) do var i ;
+10683: LD_EXP 17
+10687: PUSH
+10688: LD_EXP 49
+10692: PPUSH
+10693: LD_INT 50
+10695: PUSH
+10696: EMPTY
+10697: LIST
+10698: PPUSH
+10699: CALL_OW 72
+10703: NOT
+10704: AND
+10705: IFFALSE 10811
+10707: GO 10709
+10709: DISABLE
+10710: LD_INT 0
+10712: PPUSH
+// begin if not IsOk ( Gladstone ) then
+10713: LD_EXP 45
+10717: PPUSH
+10718: CALL_OW 302
+10722: NOT
+10723: IFFALSE 10727
+// exit ;
+10725: GO 10811
+// for i := 1 to 6 do
+10727: LD_ADDR_VAR 0 1
+10731: PUSH
+10732: DOUBLE
+10733: LD_INT 1
+10735: DEC
+10736: ST_TO_ADDR
+10737: LD_INT 6
+10739: PUSH
+10740: FOR_TO
+10741: IFFALSE 10786
+// begin if not someone_attacks_breastwork or Attacks ( am_bunker ) then
+10743: CALL 10434 0 0
+10747: NOT
+10748: PUSH
+10749: LD_EXP 47
+10753: PPUSH
+10754: CALL_OW 320
+10758: OR
+10759: IFFALSE 10777
+// begin if IsOk ( am_bunker ) then
+10761: LD_EXP 47
+10765: PPUSH
+10766: CALL_OW 302
+10770: IFFALSE 10773
+// enable ;
+10772: ENABLE
+// exit ;
+10773: POP
+10774: POP
+10775: GO 10811
+// end ; wait ( 0 0$0.5 ) ;
+10777: LD_INT 18
+10779: PPUSH
+10780: CALL_OW 67
+// end ;
+10784: GO 10740
+10786: POP
+10787: POP
+// if IsOk ( am_bunker ) then
+10788: LD_EXP 47
+10792: PPUSH
+10793: CALL_OW 302
+10797: IFFALSE 10811
+// Say ( am1 , D8-FSol1-2 ) ;
+10799: LD_EXP 46
+10803: PPUSH
+10804: LD_STRING D8-FSol1-2
+10806: PPUSH
+10807: CALL_OW 88
+// end ;
+10811: PPOPN 1
+10813: END
+// every 0 0$1.1 trigger start_to_run do
+10814: LD_EXP 18
+10818: IFFALSE 10904
+10820: GO 10822
+10822: DISABLE
+// begin wait ( gladstones_running_idle ) ;
+10823: LD_EXP 31
+10827: PPUSH
+10828: CALL_OW 67
+// ComMoveXY ( [ Gladstone , am1 ] , 59 , 16 ) ;
+10832: LD_EXP 45
+10836: PUSH
+10837: LD_EXP 46
+10841: PUSH
+10842: EMPTY
+10843: LIST
+10844: LIST
+10845: PPUSH
+10846: LD_INT 59
+10848: PPUSH
+10849: LD_INT 16
+10851: PPUSH
+10852: CALL_OW 111
+// AddComMoveXY ( [ Gladstone , am1 ] , 74 , 15 ) ;
+10856: LD_EXP 45
+10860: PUSH
+10861: LD_EXP 46
+10865: PUSH
+10866: EMPTY
+10867: LIST
+10868: LIST
+10869: PPUSH
+10870: LD_INT 74
+10872: PPUSH
+10873: LD_INT 15
+10875: PPUSH
+10876: CALL_OW 171
+// ComMoveXY ( [ Gladstone , am1 ] , 71 , 1 ) ;
+10880: LD_EXP 45
+10884: PUSH
+10885: LD_EXP 46
+10889: PUSH
+10890: EMPTY
+10891: LIST
+10892: LIST
+10893: PPUSH
+10894: LD_INT 71
+10896: PPUSH
+10897: LD_INT 1
+10899: PPUSH
+10900: CALL_OW 111
+// end ; end_of_file
+10904: END
+// var was_info , was_end_dialog , losses ; export apeman_killed , radio_dropped , radio_x , radio_y ; function evaluate_escapes ; begin
+10905: LD_INT 0
+10907: PPUSH
+// if gladstone_escaped and soldier_escaped then
+10908: LD_EXP 9
+10912: PUSH
+10913: LD_EXP 10
+10917: AND
+10918: IFFALSE 10934
+// Say ( Burlak , D9-Bur-1c ) else
+10920: LD_EXP 37
+10924: PPUSH
+10925: LD_STRING D9-Bur-1c
+10927: PPUSH
+10928: CALL_OW 88
+10932: GO 11037
+// if soldier_escaped and not IsOk ( Gladstone ) then
+10934: LD_EXP 10
+10938: PUSH
+10939: LD_EXP 45
+10943: PPUSH
+10944: CALL_OW 302
+10948: NOT
+10949: AND
+10950: IFFALSE 10966
+// Say ( Burlak , D9-Bur-1b ) else
+10952: LD_EXP 37
+10956: PPUSH
+10957: LD_STRING D9-Bur-1b
+10959: PPUSH
+10960: CALL_OW 88
+10964: GO 11037
+// if gladstone_escaped and not IsOk ( am1 ) then
+10966: LD_EXP 9
+10970: PUSH
+10971: LD_EXP 46
+10975: PPUSH
+10976: CALL_OW 302
+10980: NOT
+10981: AND
+10982: IFFALSE 10998
+// Say ( Burlak , D9-Bur-1a ) else
+10984: LD_EXP 37
+10988: PPUSH
+10989: LD_STRING D9-Bur-1a
+10991: PPUSH
+10992: CALL_OW 88
+10996: GO 11037
+// if not IsOk ( am1 ) and not IsOk ( Gladstone ) then
+10998: LD_EXP 46
+11002: PPUSH
+11003: CALL_OW 302
+11007: NOT
+11008: PUSH
+11009: LD_EXP 45
+11013: PPUSH
+11014: CALL_OW 302
+11018: NOT
+11019: AND
+11020: IFFALSE 11036
+// Say ( Burlak , D9-Bur-1 ) else
+11022: LD_EXP 37
+11026: PPUSH
+11027: LD_STRING D9-Bur-1
+11029: PPUSH
+11030: CALL_OW 88
+11034: GO 11037
+// enable ;
+11036: ENABLE
+// end ;
+11037: LD_VAR 0 1
+11041: RET
+// every 0 0$1 trigger IsInArea ( Gladstone , AmEsc ) do
+11042: LD_EXP 45
+11046: PPUSH
+11047: LD_INT 7
+11049: PPUSH
+11050: CALL_OW 308
+11054: IFFALSE 11094
+11056: GO 11058
+11058: DISABLE
+// begin if not IsOk ( Gladstone ) then
+11059: LD_EXP 45
+11063: PPUSH
+11064: CALL_OW 302
+11068: NOT
+11069: IFFALSE 11073
+// exit ;
+11071: GO 11094
+// RemoveUnit ( Gladstone ) ;
+11073: LD_EXP 45
+11077: PPUSH
+11078: CALL_OW 64
+// gladstone_escaped := true ;
+11082: LD_ADDR_EXP 9
+11086: PUSH
+11087: LD_INT 1
+11089: ST_TO_ADDR
+// evaluate_escapes ;
+11090: CALL 10905 0 0
+// end ;
+11094: END
+// every 0 0$1 + 0 0$0.5 trigger IsInArea ( am1 , AmEsc ) do
+11095: LD_EXP 46
+11099: PPUSH
+11100: LD_INT 7
+11102: PPUSH
+11103: CALL_OW 308
+11107: IFFALSE 11147
+11109: GO 11111
+11111: DISABLE
+// begin if not IsOk ( am1 ) then
+11112: LD_EXP 46
+11116: PPUSH
+11117: CALL_OW 302
+11121: NOT
+11122: IFFALSE 11126
+// exit ;
+11124: GO 11147
+// RemoveUnit ( am1 ) ;
+11126: LD_EXP 46
+11130: PPUSH
+11131: CALL_OW 64
+// soldier_escaped := true ;
+11135: LD_ADDR_EXP 10
+11139: PUSH
+11140: LD_INT 1
+11142: ST_TO_ADDR
+// evaluate_escapes ;
+11143: CALL 10905 0 0
+// end ;
+11147: END
+// on UnitGoesToRed ( un ) do begin if un = Burlak then
+11148: LD_VAR 0 1
+11152: PUSH
+11153: LD_EXP 37
+11157: EQUAL
+11158: IFFALSE 11186
+// begin ExclusiveOn ;
+11160: CALL_OW 4
+// Wait ( 0 0$5 ) ;
+11164: LD_INT 175
+11166: PPUSH
+11167: CALL_OW 67
+// YouLost ( Burlak ) ;
+11171: LD_STRING Burlak
+11173: PPUSH
+11174: CALL_OW 104
+// ExclusiveOff ;
+11178: CALL_OW 5
+// exit ;
+11182: GO 11412
+// end else
+11184: GO 11412
+// if ( ( un = Gladstone ) or ( un = am1 ) ) and start_to_run then
+11186: LD_VAR 0 1
+11190: PUSH
+11191: LD_EXP 45
+11195: EQUAL
+11196: PUSH
+11197: LD_VAR 0 1
+11201: PUSH
+11202: LD_EXP 46
+11206: EQUAL
+11207: OR
+11208: PUSH
+11209: LD_EXP 18
+11213: AND
+11214: IFFALSE 11222
+// evaluate_escapes else
+11216: CALL 10905 0 0
+11220: GO 11412
+// if ( un = Gladstone ) and not start_to_run then
+11222: LD_VAR 0 1
+11226: PUSH
+11227: LD_EXP 45
+11231: EQUAL
+11232: PUSH
+11233: LD_EXP 18
+11237: NOT
+11238: AND
+11239: IFFALSE 11251
+// begin start_to_run := true ;
+11241: LD_ADDR_EXP 18
+11245: PUSH
+11246: LD_INT 1
+11248: ST_TO_ADDR
+// end else
+11249: GO 11412
+// if un = am_bunker then
+11251: LD_VAR 0 1
+11255: PUSH
+11256: LD_EXP 47
+11260: EQUAL
+11261: IFFALSE 11288
+// begin if IsOk ( Pokryshkin ) then
+11263: LD_EXP 38
+11267: PPUSH
+11268: CALL_OW 302
+11272: IFFALSE 11286
+// SetLives ( Pokryshkin , 240 ) ;
+11274: LD_EXP 38
+11278: PPUSH
+11279: LD_INT 240
+11281: PPUSH
+11282: CALL_OW 234
+// end else
+11286: GO 11412
+// if un in wild_apemen then
+11288: LD_VAR 0 1
+11292: PUSH
+11293: LD_EXP 48
+11297: IN
+11298: IFFALSE 11412
+// begin if not radio_dropped and ( un = wild_apemen [ 1 ] ) then
+11300: LD_EXP 53
+11304: NOT
+11305: PUSH
+11306: LD_VAR 0 1
+11310: PUSH
+11311: LD_EXP 48
+11315: PUSH
+11316: LD_INT 1
+11318: ARRAY
+11319: EQUAL
+11320: AND
+11321: IFFALSE 11361
+// begin radio_dropped := true ;
+11323: LD_ADDR_EXP 53
+11327: PUSH
+11328: LD_INT 1
+11330: ST_TO_ADDR
+// radio_x := GetX ( un ) ;
+11331: LD_ADDR_EXP 54
+11335: PUSH
+11336: LD_VAR 0 1
+11340: PPUSH
+11341: CALL_OW 250
+11345: ST_TO_ADDR
+// radio_y := GetY ( un ) ;
+11346: LD_ADDR_EXP 55
+11350: PUSH
+11351: LD_VAR 0 1
+11355: PPUSH
+11356: CALL_OW 251
+11360: ST_TO_ADDR
+// end ; apeman_killed := true ;
+11361: LD_ADDR_EXP 52
+11365: PUSH
+11366: LD_INT 1
+11368: ST_TO_ADDR
+// if pokryshkin_met then
+11369: LD_EXP 5
+11373: IFFALSE 11385
+// soldiers_killed_apeman := true else
+11375: LD_ADDR_EXP 23
+11379: PUSH
+11380: LD_INT 1
+11382: ST_TO_ADDR
+11383: GO 11393
+// burlak_killed_apeman := true ;
+11385: LD_ADDR_EXP 22
+11389: PUSH
+11390: LD_INT 1
+11392: ST_TO_ADDR
+// wild_apemen := wild_apemen diff un ;
+11393: LD_ADDR_EXP 48
+11397: PUSH
+11398: LD_EXP 48
+11402: PUSH
+11403: LD_VAR 0 1
+11407: DIFF
+11408: ST_TO_ADDR
+// disable ( 11 ) ;
+11409: LD_INT 11
+11411: DISABLE_MARKED
+// end ; end ;
+11412: PPOPN 1
+11414: END
+// on UnitDestroyed ( un ) do begin if GetSide ( un ) = you and un <> pokryshkin then
+11415: LD_VAR 0 1
+11419: PPUSH
+11420: CALL_OW 255
+11424: PUSH
+11425: LD_EXP 1
+11429: EQUAL
+11430: PUSH
+11431: LD_VAR 0 1
+11435: PUSH
+11436: LD_EXP 38
+11440: NONEQUAL
+11441: AND
+11442: IFFALSE 11452
+// losses := true end ;
+11444: LD_ADDR_LOC 7
+11448: PUSH
+11449: LD_INT 1
+11451: ST_TO_ADDR
+11452: PPOPN 1
+11454: END
+// every 0 0$1 + 0 0$0.45 trigger IsInArea ( Burlak , ExitArea ) marked 666 do var posible ;
+11455: LD_EXP 37
+11459: PPUSH
+11460: LD_INT 1
+11462: PPUSH
+11463: CALL_OW 308
+11467: IFFALSE 11801
+11469: GO 11471
+11471: DISABLE
+11472: LD_INT 0
+11474: PPUSH
+// begin if FilterAllUnits ( [ [ f_side , you ] , [ f_ok ] ] ) diff FilterUnitsInArea ( BigExit , [ [ f_side , you ] , [ f_ok ] ] ) then
+11475: LD_INT 22
+11477: PUSH
+11478: LD_EXP 1
+11482: PUSH
+11483: EMPTY
+11484: LIST
+11485: LIST
+11486: PUSH
+11487: LD_INT 50
+11489: PUSH
+11490: EMPTY
+11491: LIST
+11492: PUSH
+11493: EMPTY
+11494: LIST
+11495: LIST
+11496: PPUSH
+11497: CALL_OW 69
+11501: PUSH
+11502: LD_INT 9
+11504: PPUSH
+11505: LD_INT 22
+11507: PUSH
+11508: LD_EXP 1
+11512: PUSH
+11513: EMPTY
+11514: LIST
+11515: LIST
+11516: PUSH
+11517: LD_INT 50
+11519: PUSH
+11520: EMPTY
+11521: LIST
+11522: PUSH
+11523: EMPTY
+11524: LIST
+11525: LIST
+11526: PPUSH
+11527: CALL_OW 70
+11531: DIFF
+11532: IFFALSE 11561
+// begin if not was_info then
+11534: LD_LOC 5
+11538: NOT
+11539: IFFALSE 11548
+// Query ( QExit1 ) ;
+11541: LD_STRING QExit1
+11543: PPUSH
+11544: CALL_OW 97
+// was_info := true ;
+11548: LD_ADDR_LOC 5
+11552: PUSH
+11553: LD_INT 1
+11555: ST_TO_ADDR
+// enable ;
+11556: ENABLE
+// exit ;
+11557: GO 11801
+// end else
+11559: GO 11801
+// begin if not was_end_dialog then
+11561: LD_LOC 6
+11565: NOT
+11566: IFFALSE 11706
+// begin if IsOk ( Belkov ) then
+11568: LD_EXP 39
+11572: PPUSH
+11573: CALL_OW 302
+11577: IFFALSE 11593
+// Say ( Belkov , D12-Bel-1 ) else
+11579: LD_EXP 39
+11583: PPUSH
+11584: LD_STRING D12-Bel-1
+11586: PPUSH
+11587: CALL_OW 88
+11591: GO 11658
+// begin posible := FilterAllUnits ( [ [ f_side , you ] , [ f_sex , sex_male ] , [ f_ok ] ] ) ;
+11593: LD_ADDR_VAR 0 1
+11597: PUSH
+11598: LD_INT 22
+11600: PUSH
+11601: LD_EXP 1
+11605: PUSH
+11606: EMPTY
+11607: LIST
+11608: LIST
+11609: PUSH
+11610: LD_INT 26
+11612: PUSH
+11613: LD_INT 1
+11615: PUSH
+11616: EMPTY
+11617: LIST
+11618: LIST
+11619: PUSH
+11620: LD_INT 50
+11622: PUSH
+11623: EMPTY
+11624: LIST
+11625: PUSH
+11626: EMPTY
+11627: LIST
+11628: LIST
+11629: LIST
+11630: PPUSH
+11631: CALL_OW 69
+11635: ST_TO_ADDR
+// if posible then
+11636: LD_VAR 0 1
+11640: IFFALSE 11658
+// Say ( posible [ 1 ] , D12-RSol1-1 ) ;
+11642: LD_VAR 0 1
+11646: PUSH
+11647: LD_INT 1
+11649: ARRAY
+11650: PPUSH
+11651: LD_STRING D12-RSol1-1
+11653: PPUSH
+11654: CALL_OW 88
+// end ; if not gnyevko_met and radio_found then
+11658: LD_EXP 6
+11662: NOT
+11663: PUSH
+11664: LD_EXP 21
+11668: AND
+11669: IFFALSE 11706
+// begin Say ( Burlak , D12-Bur-1 ) ;
+11671: LD_EXP 37
+11675: PPUSH
+11676: LD_STRING D12-Bur-1
+11678: PPUSH
+11679: CALL_OW 88
+// if IsOk ( Belkov ) then
+11683: LD_EXP 39
+11687: PPUSH
+11688: CALL_OW 302
+11692: IFFALSE 11706
+// Say ( Belkov , D12-Bel-2 ) ;
+11694: LD_EXP 39
+11698: PPUSH
+11699: LD_STRING D12-Bel-2
+11701: PPUSH
+11702: CALL_OW 88
+// end ; end ; was_end_dialog := true ;
+11706: LD_ADDR_LOC 6
+11710: PUSH
+11711: LD_INT 1
+11713: ST_TO_ADDR
+// if not gnyevko_met then
+11714: LD_EXP 6
+11718: NOT
+11719: IFFALSE 11797
+// if Query ( QExit2 ) = 1 then
+11721: LD_STRING QExit2
+11723: PPUSH
+11724: CALL_OW 97
+11728: PUSH
+11729: LD_INT 1
+11731: EQUAL
+11732: IFFALSE 11740
+// mission_ends else
+11734: CALL 11804 0 0
+11738: GO 11795
+// begin end_the_mission_allowed := true ;
+11740: LD_ADDR_OWVAR 57
+11744: PUSH
+11745: LD_INT 1
+11747: ST_TO_ADDR
+// repeat wait ( 0 0$2 ) ;
+11748: LD_INT 70
+11750: PPUSH
+11751: CALL_OW 67
+// until FilterUnitsExceptArea ( BigExit , [ [ f_side , you ] , [ f_ok ] ] ) ;
+11755: LD_INT 9
+11757: PPUSH
+11758: LD_INT 22
+11760: PUSH
+11761: LD_EXP 1
+11765: PUSH
+11766: EMPTY
+11767: LIST
+11768: LIST
+11769: PUSH
+11770: LD_INT 50
+11772: PUSH
+11773: EMPTY
+11774: LIST
+11775: PUSH
+11776: EMPTY
+11777: LIST
+11778: LIST
+11779: PPUSH
+11780: CALL_OW 71
+11784: IFFALSE 11748
+// end_the_mission_allowed := false ;
+11786: LD_ADDR_OWVAR 57
+11790: PUSH
+11791: LD_INT 0
+11793: ST_TO_ADDR
+// enable ;
+11794: ENABLE
+// end else
+11795: GO 11801
+// mission_ends ;
+11797: CALL 11804 0 0
+// end ; end ;
+11801: PPOPN 1
+11803: END
+// function mission_ends ; var gn , kir ; begin
+11804: LD_INT 0
+11806: PPUSH
+11807: PPUSH
+11808: PPUSH
+// wait ( 0 0$1 ) ;
+11809: LD_INT 35
+11811: PPUSH
+11812: CALL_OW 67
+// AddMedal ( NoEscape , 1 - ( gladstone_escaped or soldier_escaped ) - soldier_escaped * 2 - gladstone_escaped ) ;
+11816: LD_STRING NoEscape
+11818: PPUSH
+11819: LD_INT 1
+11821: PUSH
+11822: LD_EXP 9
+11826: PUSH
+11827: LD_EXP 10
+11831: OR
+11832: MINUS
+11833: PUSH
+11834: LD_EXP 10
+11838: PUSH
+11839: LD_INT 2
+11841: MUL
+11842: MINUS
+11843: PUSH
+11844: LD_EXP 9
+11848: MINUS
+11849: PPUSH
+11850: CALL_OW 101
+// if GetSide ( Gnyevko ) <> you then
+11854: LD_EXP 40
+11858: PPUSH
+11859: CALL_OW 255
+11863: PUSH
+11864: LD_EXP 1
+11868: NONEQUAL
+11869: IFFALSE 11883
+// SetLives ( Gnyevko , 0 ) ;
+11871: LD_EXP 40
+11875: PPUSH
+11876: LD_INT 0
+11878: PPUSH
+11879: CALL_OW 234
+// if GetSide ( Kirilenkova ) <> you then
+11883: LD_EXP 41
+11887: PPUSH
+11888: CALL_OW 255
+11892: PUSH
+11893: LD_EXP 1
+11897: NONEQUAL
+11898: IFFALSE 11912
+// SetLives ( Kirilenkova , 0 ) ;
+11900: LD_EXP 41
+11904: PPUSH
+11905: LD_INT 0
+11907: PPUSH
+11908: CALL_OW 234
+// AddMedal ( Gnyevko , 1 - 3 * ( not IsOk ( Gnyevko ) or not IsOk ( Kirilenkova ) ) - ( not IsOk ( Gnyevko ) and not IsOk ( Kirilenkova ) ) ) ;
+11912: LD_STRING Gnyevko
+11914: PPUSH
+11915: LD_INT 1
+11917: PUSH
+11918: LD_INT 3
+11920: PUSH
+11921: LD_EXP 40
+11925: PPUSH
+11926: CALL_OW 302
+11930: NOT
+11931: PUSH
+11932: LD_EXP 41
+11936: PPUSH
+11937: CALL_OW 302
+11941: NOT
+11942: OR
+11943: MUL
+11944: MINUS
+11945: PUSH
+11946: LD_EXP 40
+11950: PPUSH
+11951: CALL_OW 302
+11955: NOT
+11956: PUSH
+11957: LD_EXP 41
+11961: PPUSH
+11962: CALL_OW 302
+11966: NOT
+11967: AND
+11968: MINUS
+11969: PPUSH
+11970: CALL_OW 101
+// AddMedal ( NoLosses , not losses ) ;
+11974: LD_STRING NoLosses
+11976: PPUSH
+11977: LD_LOC 7
+11981: NOT
+11982: PPUSH
+11983: CALL_OW 101
+// GiveMedals ( Main ) ;
+11987: LD_STRING Main
+11989: PPUSH
+11990: CALL_OW 102
+// if IsOk ( Gnyevko ) and ( GetSide ( Gnyevko ) = you ) then
+11994: LD_EXP 40
+11998: PPUSH
+11999: CALL_OW 302
+12003: PUSH
+12004: LD_EXP 40
+12008: PPUSH
+12009: CALL_OW 255
+12013: PUSH
+12014: LD_EXP 1
+12018: EQUAL
+12019: AND
+12020: IFFALSE 12041
+// your_units := your_units union [ Gnyevko ] ;
+12022: LD_ADDR_EXP 51
+12026: PUSH
+12027: LD_EXP 51
+12031: PUSH
+12032: LD_EXP 40
+12036: PUSH
+12037: EMPTY
+12038: LIST
+12039: UNION
+12040: ST_TO_ADDR
+// if IsOk ( Kirilenkova ) and ( GetSide ( Kirilenkova ) = you ) then
+12041: LD_EXP 41
+12045: PPUSH
+12046: CALL_OW 302
+12050: PUSH
+12051: LD_EXP 41
+12055: PPUSH
+12056: CALL_OW 255
+12060: PUSH
+12061: LD_EXP 1
+12065: EQUAL
+12066: AND
+12067: IFFALSE 12088
+// your_units := your_units union [ Kirilenkova ] ;
+12069: LD_ADDR_EXP 51
+12073: PUSH
+12074: LD_EXP 51
+12078: PUSH
+12079: LD_EXP 41
+12083: PUSH
+12084: EMPTY
+12085: LIST
+12086: UNION
+12087: ST_TO_ADDR
+// RewardPeople ( your_units ) ;
+12088: LD_EXP 51
+12092: PPUSH
+12093: CALL_OW 43
+// SaveCharacters ( Burlak , Burlak ) ;
+12097: LD_EXP 37
+12101: PPUSH
+12102: LD_STRING Burlak
+12104: PPUSH
+12105: CALL_OW 38
+// SaveCharacters ( Gnyevko , Gnyevko ) ;
+12109: LD_EXP 40
+12113: PPUSH
+12114: LD_STRING Gnyevko
+12116: PPUSH
+12117: CALL_OW 38
+// SaveCharacters ( Kirilenkova , Kirilenkova ) ;
+12121: LD_EXP 41
+12125: PPUSH
+12126: LD_STRING Kirilenkova
+12128: PPUSH
+12129: CALL_OW 38
+// SaveCharacters ( Belkov , Belkov ) ;
+12133: LD_EXP 39
+12137: PPUSH
+12138: LD_STRING Belkov
+12140: PPUSH
+12141: CALL_OW 38
+// SaveCharacters ( Pokryshkin , Pokryshkin ) ;
+12145: LD_EXP 38
+12149: PPUSH
+12150: LD_STRING Pokryshkin
+12152: PPUSH
+12153: CALL_OW 38
+// SaveCharacters ( your_units diff [ Burlak , Gnyevko , Kirilenkova , Belkov , Pokryshkin , 0 ] , survivors1 ) ;
+12157: LD_EXP 51
+12161: PUSH
+12162: LD_EXP 37
+12166: PUSH
+12167: LD_EXP 40
+12171: PUSH
+12172: LD_EXP 41
+12176: PUSH
+12177: LD_EXP 39
+12181: PUSH
+12182: LD_EXP 38
+12186: PUSH
+12187: LD_INT 0
+12189: PUSH
+12190: EMPTY
+12191: LIST
+12192: LIST
+12193: LIST
+12194: LIST
+12195: LIST
+12196: LIST
+12197: DIFF
+12198: PPUSH
+12199: LD_STRING survivors1
+12201: PPUSH
+12202: CALL_OW 38
+// YouWin ;
+12206: CALL_OW 103
+// end ;
+12210: LD_VAR 0 1
+12214: RET

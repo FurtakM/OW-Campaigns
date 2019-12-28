@@ -1,0 +1,355 @@
+on ResearchComplete(tech,lab) do
+begin
+  if GetSide(lab)=you then
+     case tech of
+        tech_MatPred : DNoMaterial;
+        tech_TauField : DStasis;
+     end;
+end;
+
+on EndTheMissionRaised(aa) do
+begin
+  end_the_mission_allowed := false;
+  VyhraExit;
+end;
+
+
+
+on UnitDestroyed(un) do
+begin
+   remove_from_vehicles(un);
+   remove_from_humans(un);
+   remove_from_builds(un);
+   if un=Burlak then
+     YouLost('Burlak');
+   if un=Gleb and utok_na_gleba then
+     YouLost('Gleb');
+   if un=Vsevolod then begin
+     mrtvi_vsevolodaci:=mrtvi_vsevolodaci ^ ['Vsevolod'];
+     SetSide(Vsevolod2, GetSide(Vsevolod));
+     if kecali then
+       DDieVsev2
+     else
+       DDieVsev1;
+   end;
+   if un in Vsevolod_uderna_group then begin
+     Vsevolod_uderna_group:=Vsevolod_uderna_group diff un;
+     mrtvi_vsevolodaci:=mrtvi_vsevolodaci ^ ['vsev_g_'&(mrtvi_vsevolodaci+1)];
+   end;
+
+end;
+
+on UnitGoesToRed(un) do
+begin
+  if GetSide(un)=ai then begin
+     case GetType(un) of
+        unit_vehicle : ;
+        unit_human   : begin
+           zachranka(un);
+        end;
+        unit_building: begin
+        end;
+     end;
+  end;
+  if MyGodMode and GetSide(un)=you then
+    SetLives(un,1000);
+end;
+export MyGodMode;
+
+on VehicleCaptured(vehnew, vehold, origside, hum) do
+begin
+   if origside=ai then begin
+      remove_from_vehicles(vehold);
+   end;
+end;
+
+on BuildingCaptured(build, origside, eng) do
+begin
+   if origside=ai then begin
+      remove_from_builds(build);
+      if GetBType(build)=b_siberite_mine then
+        SetResourceVisibility(GetX(build),GetY(build),you);
+   end;
+   if origside=you then begin
+      add_to_builds(build);
+   end;
+end;
+
+export was_DMatPrediction;
+on BuildingComplete(build) do
+begin
+   if GetSide(build)=ai then begin
+      add_to_builds(build);
+   end;
+   if GetSide(build)=you then begin
+      if not was_DMatPrediction and GetBType(build)=b_lab then begin
+        was_DMatPrediction:=true;
+        DMatPrediction;
+      end;
+   end;
+end;
+
+on UpgradeComplete(build) do
+begin
+  if GetSide(build)=you and GetBType(build) in all_labs then
+    if not byl_sib_research and ((GetLabKind(build, 1)=b_lab_spacetime or GetLabKind(build, 2)=b_lab_spacetime)) then begin
+      DSibResearch;
+      disable(66);
+    end;
+end;  
+
+on VehicleConstructed(veh, fact) do
+begin
+   if GetSide(veh)=ai then begin
+      if veh in attack then
+         ComMoveToArea(veh, pro_att)
+      else
+         ComMoveToArea(veh, pro_def);
+      AddComExitVehicle(veh);
+      add_to_vehicles(veh);
+   end;
+end;
+
+on LeaveBuilding(b, un) do
+begin
+   if GetSide(un)=you and GetBType(b)=b_control_tower then
+      add_to_humans(un);
+end;
+
+on SailEvent(num) do
+begin
+   case num of
+      0 : begin
+//         MyGodMode:=not MyGodMode;
+      end;
+      normal1_utok: begin
+         f_normal1_utok;
+      end;
+      normal2_utok: begin
+         f_normal2_utok;
+      end;
+      normal3_utok: begin
+         f_normal3_utok;
+      end;
+      normal4_utok: begin
+         f_normal4_utok;
+      end;
+      vsevolod_attack: begin
+         f_vsevolod_utok;          
+      end;
+      vsevolod_final_attack: begin
+         f_vsevolod_final_utok;
+      end;
+   end;
+end;
+
+on Contact(side1, side2) do
+var a;
+begin
+  if IsLive(a1eng) then
+    if (side1=you and side2=ai) or (side2=you and side1=ai) then begin
+      if a1eng then begin
+        remove_from_humans(a1eng);
+        while IsInUnit(a1eng) and IsLive(a1eng) do begin
+          ComExitBuilding(a1eng);
+          wait(0$1);
+        end;
+        while IsLive(sib_dul) and IsLive(a1eng) do begin
+          a:=GetLives(sib_dul)-25*difficulty;
+          if a>1 then
+            SetLives(sib_dul, a);
+          ComDismantle(a1eng, sib_dul);
+          wait(0$1);
+        end;
+        AddComEnterUnit(a1eng, Rudepot);
+        add_to_humans(a1eng);
+      end;
+    end;
+
+end;
+
+var mcdef1,mcdef2,mcatt1;
+on McDefendTakesUnit(mcid, un) do
+begin
+   if mcid=idDef1 then mcdef1:=mcdef1 union un;
+   if mcid=idDef2 then mcdef2:=mcdef2 union un;
+   if mcid=idAtt1 then mcatt1:=mcatt1 union un;
+   Remove_From_Humans(un);
+   Remove_From_Vehicles(un);
+   Remove_From_Builds(un);
+end;
+on McDefendReturnsUnit(mcid, un) do
+begin
+   if mcid=idDef1 then mcdef1:=mcdef1 diff un;
+   if mcid=idDef2 then mcdef2:=mcdef2 diff un;
+   if mcid=idAtt1 then mcatt1:=mcatt1 diff un;
+   add_to_Humans(un);
+   add_to_Vehicles(un);
+   add_to_Builds(un);
+end;
+
+on McRegistryResultChanges(mcid, count, strength) do
+var i;
+begin
+   if mcid=idAtt1 then begin
+     if count=0 then begin
+       for i in FilterUnitsInArea(mc_attack, [[f_side,you]]) do
+         PriorityAttack(ai, i);
+     end
+     else begin
+       for i in FilterUnitsInArea(mc_attack, [[f_side,you]]) do
+         NormalAttack(ai, i);
+     end;
+   end;
+end;
+
+on McAttackOutOfFuel(mcid, un) do
+begin
+  Attack:=Attack diff un;
+  while IsLive(un) and not IsInArea(un, near_base) do begin
+    ComMoveToArea(un, near_base);
+    wait(0$2);
+  end;
+end;
+
+
+
+
+
+
+
+//////// pridani do seznamu ///////////////
+export function add_to(un);
+var i;
+begin
+  for i in un do 
+    case GetType(i) of
+      unit_human: add_to_humans(i);
+      unit_vehicle: add_to_vehicles(i);
+      unit_building: add_to_builds(i);
+    end;
+end;
+export function add_to_humans(un);
+var i;
+begin
+  if GetSide(un)=ai then
+    for i in un do begin
+     case Getclass(i) of
+       class_soldier : sol:=sol union i;
+       class_engineer : eng:=eng union i;
+       class_mechanic : mec:=mec union i;
+       class_scientistic : sci:=sci union i;
+     end;
+     case GetTag(i) of
+       1 : a1:=a1 union i;
+       2 : a2:=a2 union i;
+       3 : a3:=a3 union i;
+       4 : a4:=a4 union i;
+       5 : a5:=a5 union i;
+       else begin
+           a3:=a3 union i;
+           SetTag(i, 3);
+       end;
+     end;
+    end;
+end;
+
+export function add_to_vehicles(un);
+var i;
+begin
+  for i in un do begin
+    if GetSide(un)=ai then
+      if GetControl(i)=control_remote then begin
+        attack:=attack union i;
+      end
+      else begin
+        defence:=defence union i;
+      end;
+  end;
+end;
+
+export function add_to_builds(un);
+var i,j, bt;
+begin
+  for i in un do begin
+    if GetSide(un)=ai then
+      for j in builds1 do
+        if GetX(i)=j[2] and GetY(i)=j[3] then
+           b1:=b1 union i;
+      for j in builds2 do
+        if GetX(i)=j[2] and GetY(i)=j[3] then
+           b2:=b2 union i;
+      for j in builds3 do
+        if GetX(i)=j[2] and GetY(i)=j[3] then
+           b3:=b3 union i;
+      for j in builds4 do
+        if GetX(i)=j[2] and GetY(i)=j[3] then
+           b4:=b4 union i;
+      for j in builds5 do
+        if GetX(i)=j[2] and GetY(i)=j[3] then
+           b5:=b5 union i;
+      bt:=GetBType(i);
+      if bt=b_barracks or bt=b_armoury or bt=b_bunker or bt=b_breastwork then
+        fort:=fort union i;
+      if bt=b_lab or bt=b_lab_full or bt=b_lab_half then
+        lab:=lab union i;
+      if bt=b_workshop or bt=b_factory then
+        fact:=fact union i;
+      if bt=b_depot or bt=b_warehouse then
+        dep:=dep union i;
+  end;
+end;
+
+//////// odebrani ze seznamu ///////////////
+export function remove_from(un);
+var i;
+begin
+  for i in un do 
+    case GetType(i) of
+      unit_human: remove_from_humans(i);
+      unit_vehicle: remove_from_vehicles(i);
+      unit_building: remove_from_builds(i);
+    end;
+end;
+export function remove_from_builds(un);
+var i;
+begin
+  for i in un do begin
+           fact:=fact diff i;
+           fort:=fort diff i;
+           lab:=lab diff i;
+           dep:=dep diff i;
+           ctrl:=ctrl diff i;
+           b1:=b1 diff i;
+           b2:=b2 diff i;
+           b3:=b3 diff i;
+           b4:=b4 diff i;
+           b5:=b5 diff i;
+  end;
+end;
+
+export function remove_from_humans(un);
+var i;
+begin
+  for i in un do begin
+           sol:=sol diff i;
+           eng:=eng diff i;
+           mec:=mec diff i;
+           sci:=sci diff i;
+           a1:=a1 diff i;
+           a2:=a2 diff i;
+           a3:=a3 diff i;
+           a4:=a4 diff i;
+           a5:=a5 diff i;
+  end;
+end;
+
+export function remove_from_vehicles(un);
+var i;
+begin
+  for i in un do begin
+   attack:=attack diff i;
+   defence:=defence diff i;
+  end;
+end;
+

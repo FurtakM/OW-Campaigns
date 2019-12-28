@@ -1,0 +1,537 @@
+export you,russians,neutral;
+
+export Bobby,Cyrus,Lisa,MacMillan,Cornell,
+       Powell,Khatam,Frank;
+export Kobra1,other_survivors,cornells,yours;
+export atack,saved_units;
+export mrtvi_lide;
+
+export JMMinvehicle,
+       Cyrusinvehicle;
+
+export Mikhail,rus_vehicle;
+export rus_south,rus_guard1,rus_guard2,rus_guard3,rus_guard4;
+export South_russian_patrol,forest_force1,forest_force2;
+export grass_force1,grass_force2,grass_force3;
+export Cornell_group,amtruck1,amtruck2,cans,cans1;
+
+export Dialogue_wait,
+       time_to_return,
+       time_to_attack,
+       solar_constructed,
+       solar_saved,
+       Meet_Frank,
+       base_reached,
+       cornell_lost,
+       Frank_Query;
+
+
+var time_crates;
+
+
+
+function prepare_units;
+var un,i,
+    JMM_group,         // list of yours lived accompany
+    cornell_limit;     // number of cornells group
+begin
+  JMM_group:=[];
+  cornell_limit:=0;
+
+  // prepares human unit  MacMillan
+  uc_direction=rand(0,5);
+  uc_nation=nation_american;
+  uc_side=you;
+
+  MacMillan:=CreateCharacter('JMM');
+  Lisa:=CreateCharacter('Lisa');
+  Bobby:=CreateCharacter('Bobby');
+  Cyrus:=CreateCharacter('Cyrus');
+  Khatam:=CreateCharacter('Khatam');
+  Frank:=NewCharacter('Frank');
+  Cornell:=NewCharacter('Cornell');
+
+  JMM_group:=[Lisa, Bobby, Cyrus, Khatam] diff 0;
+
+  PlaceUnitXY(Cornell,163,100,false);
+
+  Powell:=NewCharacter('Powell');
+        
+  hc_gallery:='';
+  hc_importance:=0;
+  cornells:=[];
+  cornell_limit:=5+(4-JMM_group);
+  for i:=1 to cornell_limit do
+    begin
+      PrepareHuman(2-i mod 2,0,2);
+      hc_class:=class_soldier;
+      un:=CreateHuman;
+      cornells:=cornells^un;
+      PlaceUnitArea(un,cornellsarea,false);
+    end;
+
+  if TestCharacters('other_survivors') then
+    other_survivors:=CreateCharacterSet('other_survivors')
+  else
+    other_survivors:=[];
+
+  uc_nation=nation_russian;
+  uc_side=russians;
+
+  if (LoadVariable('us2mikhail_state',0)=5) and TestCharacters('Mikhail') and CheckCharacterSet('Mikhail') then
+    Mikhail:=CreateCharacter('Mikhail');
+
+  JMMinvehicle:=LoadVariable('us2JMMInVehicle',false);
+  Cyrusinvehicle:=LoadVariable('us2CyrusInVehicle',false);
+
+  // some starting settings of free/hold mode
+  ComFree([am1,am2,am4,am5]);
+
+  // place all new units on the map
+
+  Kobra1:=[MacMillan,Bobby,Lisa,Cyrus,Mikhail,Khatam]^other_survivors diff [0];
+  SetClass(Kobra1 diff Mikhail,class_soldier);
+
+
+  Kobra1:=Kobra1 diff [0];
+
+  cans:=LoadVariable('us2cans',60);
+
+  if cans>200 then
+    cans:=200;
+
+  cans1:=30;
+  cans1:=cans1+((cans-30+10) div 30)*10;
+
+  if cans1>100 then
+    cans1:=100;
+  cans:=cans-cans1;
+  if cans>100 then
+    cans:=100;
+
+  uc_side:=you;
+  uc_nation:=nation_russian;
+  uc_direction:=5;
+
+  vc_chassis:=ru_medium_tracked;
+  vc_engine:=engine_combustion;
+  vc_weapon:=ru_cargo_bay;
+  vc_control:=control_manual;
+
+  if cans1>0 then
+    begin
+      amtruck1:=CreateVehicle;
+      PlaceHumanInUnit(Macmillan,amtruck1);
+      SetCargo(amtruck1,mat_cans,cans1);
+      SetFuel(amtruck1,50);
+      PlaceUnitXY(amtruck1,174,115,false);
+    end
+  else
+    PlaceUnitXY(MacMillan,174,115,false);
+
+  if (cans>0)and(Kobra1>1) then
+    begin
+      amtruck2:=CreateVehicle;
+      PlaceHumanInUnit(Kobra1[2],amtruck2);
+      SetCargo(amtruck2,mat_cans,cans);
+      SetFuel(amtruck2,50);
+      PlaceUnitXY(amtruck2,171,115,false);
+    end;
+
+  for un in Kobra1 do
+    if not IsInUnit(un) then
+      PlaceUnitArea(un,enterarea,false);
+
+end;
+
+function prepare_sides;
+begin
+// who is who in this mission
+  you=1;
+  neutral=4;
+  russians=3;
+
+  atack=0;
+  time_to_return:=[25$0,12$0,2$0] [difficulty];
+  time_to_attack:=[40$0,25$0,15$0] [difficulty];
+  solar_constructed:=false;
+  solar_saved:=true;
+  saved_units=[];
+  time_crates:=Rand(0$20,0$40);
+  mrtvi_lide:=0;
+  Meet_Frank:=false;
+  base_reached:=false;
+  cornell_lost:=false;
+
+  Dialogue_wait:=false;
+
+  forest_force1=[forest11,forest12];
+  forest_force2=[forest21,forest22];
+
+  ComEnterUnit(guard1,bunker1);
+  ComEnterUnit(guard2,bunker2);
+  ComEnterUnit(guard3,bunker3);
+  ComEnterUnit(guard4,bunker4);
+  ComEnterUnit(guard5,bunker5);
+  ComEnterUnit(guard6,bunker6);
+  ComEnterUnit(guard7,bunker7);
+
+  ComEnterUnit(maker_1,factory1);
+  ComEnterUnit(maker_2,factory2);
+  ComEnterUnit(sci1,labor1);
+
+  ComHold(am1);
+
+// starting setting of attitiudes (you remain neutral with anyone as long as you attack him or he attack you)
+  SetAttitude(russians,you,att_friend,true);
+  SetAttitude(you,neutral,att_friend,true);
+  SetAttitude(russians,neutral,att_friend,true);
+
+  Disable(1);
+  Disable(2);
+  Disable(3);
+  Disable(4);
+  Disable(5);
+  Disable(7);
+  Disable(8);
+  Disable(10);
+  Enable(11);
+end;
+
+
+//------------------------------------------------------------------------------------------------------//
+//-------- Main Starting Block -------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------//
+starting
+begin
+  interface_hidden:=true;
+  RandomizeAll;
+
+  prepare_sides;
+  prepare_russian_side;
+  fix_difficulty;
+  prepare_units;
+
+  starting_scene;
+  init_hints;
+
+  run_ru_guarding;
+end;
+
+//---------------------------//
+//-----  Loadin crates  -----//
+every 0$5 trigger TICK>=time_crates do
+begin
+  CreateCratesArea(Rand(2,3),Am_Base,true);
+  time_crates:=TICK+Rand(0$50,0$100);
+  enable;
+end;
+
+//------------------------------//
+//-----  Final Conditions  -----//
+function Konec_Mise;
+var m1,m2,m3,
+    dying_units,
+    units_for_save;
+begin
+  wait(5);
+  gained_medals:=[];
+  missing_medals:=[];
+  dying_units:=FilterAllUnits([ [f_side,you], [f_type,unit_human], f_not, [f_ok] ]) diff MacMillan;
+  mrtvi_lide:=mrtvi_lide+dying_units;
+  saved_units:=saved_units diff mrtvi_lide;
+
+  if IsDead(MacMillan) or IsDying(MacMillan) then
+    begin
+      YouLost('0');
+      exit;
+    end;
+
+  if saved_units and not base_reached then
+    begin
+      YouLost('4');
+      exit;
+    end;
+
+  if saved_units<4 then
+    begin
+      YouLost('1');
+      exit;
+    end;
+
+  If IsOK(MacMillan) then
+    begin
+      m1:=IsInUnit(MacMillan);
+      RemoveUnit(MacMillan);
+      if m1 then
+        RemoveUnit(m1);
+      wait(20);
+    end;
+
+  AddMedal('No',not mrtvi_lide);
+  AddMedal('Solar1',solar_constructed);
+  if solar_constructed then
+    begin
+      if solar_saved then
+        AddMedal('Solar2',1)
+      else
+        AddMedal('Solar2',-2);
+    end
+  else
+    AddMedal('Solar2',-1);
+
+  GiveMedals('Main');
+  saved_units:=saved_units diff 0;
+  if Meet_Frank then
+     saved_units:=saved_units union Frank;
+
+  RewardPeople(saved_units union MacMillan);
+
+  DeleteVariable('us2cans');
+  DeleteVariable('us2JMMInVehicle');
+  DeleteVariable('us2CyrusInVehicle');
+
+  SaveCharacters(MacMillan,'JMM');
+  SaveCharacters(Cyrus,'Cyrus');
+  SaveCharacters(Bobby,'Bobby');
+  SaveCharacters(Lisa,'Lisa');
+  SaveCharacters(Khatam,'Khatam');
+  if Meet_Frank then
+    SaveCharacters(Frank,'Frank');
+
+  SaveCharacters(Mikhail,'Mikhail');
+  SaveCharacters(Cornell,'Cornell');
+
+  units_for_save:=other_survivors ^ saved_units;
+  units_for_save:=units_for_save diff [MacMillan, Frank, Cyrus, Bobby, Lisa, Khatam];
+  units_for_save:=units_for_save union units_for_save;
+  SaveCharacters(units_for_save,'other_survivors');
+
+  YouWin;
+  exit;
+end;
+
+//--------------------------------------------------------------------//
+//-----  Frankuv navrat na scenu, kdyz byl poslan z5 na pruzkum  -----//
+function return_of_frank;
+var koncova_area;
+begin
+  koncova_area:=true;
+  SetSide(Frank,you);
+
+    case koncova_area of
+  IsInArea(MacMillan,Top_1): PlaceUnitArea(Frank,frank_1,false);
+  IsInArea(MacMillan,Top_2): PlaceUnitArea(Frank,frank_2,false);
+  IsInArea(MacMillan,Top_3): PlaceUnitArea(Frank,frank_3,false);
+  IsInArea(MacMillan,Top_4): PlaceUnitArea(Frank,frank_4,false);
+  IsInArea(MacMillan,Top_5): PlaceUnitArea(Frank,frank_5,false);
+  IsInArea(MacMillan,Top_6): PlaceUnitArea(Frank,frank_6,false);
+    end;
+
+  wait(10);
+  ComRemember(Frank);
+  ComMoveUnit(Frank,MacMillan);
+  Wait(0$2);
+  ComStop(Frank);
+  ComTurnUnit(Frank,MacMillan);
+
+  CenterOnUnits(Frank);
+  wait(20);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(Frank,'D6a-Frank-1');
+  interface_hidden:=false;
+  DialogueOff;
+
+  ComReturn(Frank);
+  repeat
+    wait(10);
+    if GetLives(Frank)<900 then
+      SetLives(Frank,GetLives(Frank)+50);
+  until not HasTask(Frank);
+  RemoveUnit(Frank);
+end;
+
+//-----------------------------------------------------//
+//-----  MacMillan se priblizil severnimu okraji  -----//
+export function GridY(un);
+var veh,grid;
+begin
+  veh:=false;
+  veh:=IsInUnit(un);
+  if veh then
+    grid:=GetY(veh)
+  else
+    grid:=GetY(un);
+
+  result:=grid;
+end;
+
+every 0$1 trigger GridY(MacMillan)<18 do
+var un;
+begin
+  if GetSide(Frank)=neutral then
+    return_of_frank;                         // Frank meeting MacMillan on top border of the map
+end;
+
+//------------------------------------------------------------------------------------------------
+//--------   Triggery testujici pocet lidi ve hre a mimo hru a jestli to ma cele jeste smysl   ---
+//Event pocitajici lidi pri zabiti jednotky
+on UnitDestroyed(un) do
+begin
+  if (GetSide(un)=you) and (GetType(un)=unit_human) then
+    mrtvi_lide:=mrtvi_lide + 1;  
+  if un=MacMillan then
+    Konec_Mise;
+  if un=sklad then
+    begin
+      YouLost('2');
+      exit;
+    end;
+
+  ru_trucks:=ru_trucks diff un;
+end;
+
+//------------------------------------------------------------------------//
+//-----  Overovani poctu lidi, kteri jeste muzou projit ruskou bazi  -----//
+every 0$5.1 do
+begin
+  if ((FilterAllUnits([ [f_nation,nation_american], [f_lives, 0], [f_type,unit_human] ]) diff MacMillan) + saved_units)<4 then
+    Konec_Mise;
+  enable;
+end;
+
+//-----------------------------------------------//
+//-----  MacMillan na severnim okraji mapy  -----//
+every 0$1 trigger IsInArea(MacMillan,TopBorder) or IsInArea(IsInUnit(MacMillan),TopBorder) do
+var un,list,car,
+    isin,         // ident zda je MacMillan porad jeste u severniho okraje
+    living;       // americke jednotky mimo severni areu
+begin
+  living:=FilterAllUnits([ [f_side,you], [f_type,unit_human], [f_ok] ]) diff MacMillan;
+  car:=IsInUnit(MacMillan);
+
+  if not living then
+    begin
+      RemoveUnit(MacMillan);
+      if car then
+        begin
+          if GetEngine(car)=engine_solar then
+            solar_saved:=true;
+          RemoveUnit(car);
+        end;
+      Konec_mise;
+      exit;
+    end
+  else
+    if Query('Q2')=1 then
+      begin                    // wait for them
+        repeat
+          wait(0$1);
+          living:=FilterAllUnits([ [f_side,you], [f_type,unit_human], [f_ok] ]) diff MacMillan;
+          isin:=IsInArea(MacMillan,TopBorder);
+        until not (living and isin);
+
+        if isin then
+          begin
+            car:=IsInUnit(MacMillan);
+            RemoveUnit(MacMillan);
+            if car then
+              begin
+                if GetEngine(car)=engine_solar then
+                  solar_saved:=true;
+                RemoveUnit(car);
+              end;
+            Konec_mise;
+            exit;
+          end;
+      end
+    else                       // nechat je dojit samotne
+      begin
+        RemoveUnit(MacMillan);
+        if car then
+          begin
+            if GetEngine(car)=engine_solar then
+              solar_saved:=true;
+            RemoveUnit(car);
+          end;
+        ingame_video:=true;
+        interface_hidden:=true;
+        repeat
+          living:=FilterAllUnits([ [f_side,you], [f_type,unit_human], [f_ok] ]);
+          CenterOnNorthestUnit(living);
+
+          for un in living do
+            ComMoveXY(un,GetX(un)-(GetY(un) div 2)+Rand(-3,3),Rand(1,2));
+
+          wait(0$3);
+        until not living;
+        ingame_video:=false;
+        Konec_mise;
+        exit;
+      end;
+  enable;
+end;
+
+//-----  Vyber nejsevernejsi jednotky ze seznamu  -----//
+function CenterOnNorthestUnit(list);
+var un,north,x,y,car;
+begin
+  north:=200;
+  for un in list do
+    begin
+      car:=IsInUnit(un);
+      if car then
+        begin
+          x:=GetX(car);
+          y:=GetY(car);
+        end
+      else
+        begin
+          x:=GetX(un);
+          y:=GetY(un);
+        end;
+
+      if y<north then
+        north:=un;
+    end;
+  CenterOnXY(x-2,y-4);
+end;
+
+//-----------------------------------------------//
+//-----  Odchytavani lidi na severni hrane  -----//
+every 0$1 trigger FilterUnitsInArea(TopBorder, [ [f_side,you] ]) do
+var un,car,list;
+begin
+  // vyber vsech lidi kteri dosahli severniho okraje
+  list:=FilterUnitsInArea(TopBorder,[ [f_side,you], [f_type,unit_human], [f_ok] ]);
+  car:=FilterUnitsInArea(TopBorder,[ [f_side,you], [f_type,unit_vehicle], [f_ok] ]);
+
+  for un in car do
+    if IsDrivenBy(un) then
+      list:=list ^ IsDrivenBy(un);
+
+  list:=list union list;
+  list:=list diff [0, MacMillan];
+  if Frank_Query=1 then
+    list:=list diff Frank;
+
+  for un in list do
+    begin
+      car:=IsInUnit(un);
+      RemoveUnit(un);
+      if car then
+        begin
+          if GetEngine(car)=engine_solar then
+            solar_saved:=true;
+          RemoveUnit(car);
+        end;
+      saved_units:=saved_units union un;
+    end;
+
+  // vsichni jsou bud mrtvi, nebo prave umiraji nebo uz jsou removnuti z mapy
+  if not FilterAllUnits([ [f_side,you], [f_type,unit_human], [f_ok] ]) then
+    Konec_mise;
+
+  enable;
+end;

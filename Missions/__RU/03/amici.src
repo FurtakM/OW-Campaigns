@@ -1,0 +1,514 @@
+VAR Am_hlidka;
+VAR Am_pomoc;
+EXPORT Am_posily;
+EXPORT Prezite_posily;
+
+// nastaveni pocatecnich hodnot + disable triggeru
+EVERY 0$0.1 DO
+VAR i;
+begin
+  Am_hlidka=[];
+  Am_pomoc=[];
+  Prezite_posily=0;
+
+  for i in [101,102,103] do enable(i)
+end;
+
+// uklid amiku do budov apod.
+EVERY 0$1 DO
+VAR budovy;
+begin
+  // pruzkumnici
+  ComEnterUnit(Am_pru1,Am_bar2);
+  ComEnterUnit(Am_pru2,Am_bar2);
+  ComEnterUnit(Am_pru3,Am_bar2);
+
+  // lidi do bunkru a breastworku
+  ComEnterUnit(Am_vb1,Am_bu1);
+  ComEnterUnit(Am_vb2,Am_bu2);
+  ComEnterUnit(Am_vb3,Am_bu3);
+  ComEnterUnit(Am_vb4,Am_bu4);
+
+  // armory 1
+  ComEnterUnit(Am_sol1,Am_bar1);
+  ComEnterUnit(Am_sol2,Am_bar1);
+  ComEnterUnit(Am_sol3,Am_bar1);
+
+  // armoury 2
+  ComEnterUnit(pitomec,Am_bar2);
+
+  // depot
+  ComEnterUnit(Am_sol4,Am_dep);
+  ComEnterUnit(Am_eng1,Am_dep);
+
+  // laborator
+  ComEnterUnit(Am_sci1,Am_lab);
+
+  // tovarna
+  ComEnterUnit(Am_me1,Am_fac);
+  ComEnterUnit(Am_me2,Am_fac);
+  ComEnterUnit(Am_me3,Am_fac);
+
+  // set levelu budov u amiku
+  budovy=[Am_bu1,Am_bu2,Am_bu3,Am_bu4,Am_el1,Am_el2,Am_lab,Am_fac,Am_mine,Am_dep,Am_bar1,Am_bar2];
+  SetBLevel(budovy,levely_am_budov[difficulty]);
+end;
+
+// vyslani hlidky amiku
+EXPORT function amici_hlidka;
+begin
+  case difficulty of
+   1:Am_hlidka=[Am_pru1];
+   2:Am_hlidka=[Am_pru1,Am_pru2];
+   3:Am_hlidka=[Am_pru1,Am_pru2,Am_pru3];
+  end;
+  ComExitBuilding(Am_hlidka);
+  AddComAgressiveMove(Am_hlidka,34,16);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,51,19);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,54,5);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,77,16);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,81,32);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,73,32);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,57,33);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,45,24);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,34,13);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,34,16);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,51,19);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,54,5);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,77,16);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,81,32);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,73,32);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,57,33);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,45,24);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,34,13);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,34,16);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,51,19);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,54,5);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,77,16);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,81,32);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,73,32);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,57,33);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,45,24);
+  AddComWait(Am_hlidka,0$7);
+  AddComAgressiveMove(Am_hlidka,34,13);
+  AddComWait(Am_hlidka,0$7);
+  enable(101);    // volani o pomoc
+  enable(103);    // utoceni hlidky
+  enable(102);    // po case nalezeni shcholtzeho a zneskodneni
+end;
+
+// utok americke hlidky na kohokoliv
+EVERY 0$1 marked 102 DO
+VAR i,j,pom;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+  for i in Am_hlidka do if GetLives(i)<1000 then
+    for j in pom do
+      begin
+        if See(Amici,j) then ComAttackUnit(Am_hlidka,j);
+        break;
+      end;
+end;
+
+// posily pro americkou hlidku
+EVERY 0$1 marked 101 DO
+VAR i;
+VAR jedn;
+VAR posli;
+begin
+  jedn=[];
+  posli=false;
+  for i in Am_hlidka do if GetLives(i)<1000 then jedn=jedn^i;
+  if jedn>0 then
+    begin
+      wait(0$7);
+      for i in jedn do if IsOK(i) then posli=true;
+    end;
+  if posli then americka_pomoc_hlidce(jedn[1]);
+  enable;
+end;
+
+// zneskodneni scholtzeho
+EVERY 0$1 marked 102 DO
+begin
+  wait(schol_find_amikama[difficulty]);
+  if GetSide(schol)=You or GetSide(schol2)=You
+    then exit
+    else begin
+           ComAgressiveMove(Am_hlidka,38,2);
+           AddComAttackUnit(Am_hlidka,schol2);
+         end;
+end;
+
+// vypnuti americke hlidky
+EVERY 0$3 TRIGGER scholtze_saved or IsDead(schol2) DO
+begin
+  ComAgressiveMove(Am_hlidka,28,18);
+  AddComEnterUnit(Am_hlidka,Am_bar2);
+  ComAgressiveMove(Am_pomoc,21,32);
+  disable(101);
+  disable(102);
+end;
+
+// pomoc americke hlidce - pri zneskodneni scholtzeho
+function americka_pomoc_hlidce(jedn);
+VAR i;  
+begin
+  Am_pomoc=AMERICKA_POMOC_HLIDCE_LIST;
+  while SeeArea(Amici,Help_area)>0 do
+    wait(0$1);
+  for i in AMERICKA_POMOC_HLIDCE_LIST do PlaceUnitArea(i,Help_area,false);
+  wait(0$1);
+  ComAgressiveMove(Am_pomoc,GetX(jedn),GetY(jedn));
+end;
+
+// posily - kompletni chozeni posil
+EVERY 0$10 DO
+begin
+  wait(Rand(1,0$30));
+  wait(posily1[difficulty]);
+  posli_posily(1);
+  wait(posily11[difficulty]);
+  posli_posily(11);
+  wait(posily2[difficulty]);
+  posli_posily(2);
+  wait(posily3[difficulty]);
+  posli_posily(3);
+  wait(posily4[difficulty]);
+  posli_posily(4);
+end;
+
+// posilani posil americke zakladne - amici Omikron
+function posli_posily(ktere);
+VAR i,pom;
+VAR poc;
+begin
+  {poc=0;
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+  for i in pom do
+    begin
+      if i in Am_posily then poc=poc+1;
+      if Prezite_posily+poc>muze_prezit_posil[difficulty] then DestroyUnit(i);
+    end;
+  Prezite_posily=Prezite_posily+poc;}
+  case ktere of
+   1:for i in AMERICKE_POSILY1_LIST do PlaceUnitArea(i,posily_1,false);
+   2:for i in AMERICKE_POSILY2_LIST do PlaceUnitArea(i,posily_3,false);
+   3:for i in AMERICKE_POSILY3_LIST do PlaceUnitArea(i,posily_1,false);
+   4:for i in AMERICKE_POSILY4_LIST do PlaceUnitArea(i,posily_3,false);
+   11:for i in AMERICKE_POSILY11_LIST do PlaceUnitArea(i,posily_1,false);
+  end;
+  case ktere of
+   1:begin
+       Am_posily=AMERICKE_POSILY1_LIST;                   
+       ComAgressiveMove(Am_posily,42,69);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,42,69);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,42,69);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,20,12);
+     end;
+   2:begin
+       Am_posily=AMERICKE_POSILY2_LIST;
+       ComAgressiveMove(Am_posily,112,22);
+       AddComWait(Am_posily,0$2);
+       AddComAgressiveMove(Am_posily,86,18);
+       AddComWait(Am_posily,0$2);
+       AddComAgressiveMove(Am_posily,77,34);
+       AddComWait(Am_posily,0$2);
+       AddComAgressiveMove(Am_posily,51,37);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,23,12);
+     end;
+   3:begin
+       Am_posily=AMERICKE_POSILY3_LIST;
+       ComAgressiveMove(Am_posily,42,69);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,42,69);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,42,69);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,28,47);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,20,12);
+     end;
+   4:begin
+       Am_posily=AMERICKE_POSILY4_LIST;
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,27,13);
+     end;
+   11:begin
+       Am_posily=AMERICKE_POSILY11_LIST;
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       ComAgressiveMove(Am_posily,110,23);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,87,19);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,52,12);
+       AddComWait(Am_posily,0$1);
+       AddComAgressiveMove(Am_posily,27,13);
+      end;
+  end;
+end;
+
+// pohyb v bazi - vyzkum
+EVERY 1$7 DO
+begin
+  if Researched(Amici,tech_Weap1) then
+    begin
+      SetTech(tech_Weap1,Amici,state_enabled);
+      ComResearch(Am_lab,tech_Weap1);
+    end;
+  enable;
+end;
+
+// pocatek vyzkumu na zacatku !!!
+EVERY 0$19 DO
+begin
+  SetTech(tech_Weap1,Amici,state_enabled);
+  ComResearch(Am_lab,tech_Weap1);
+end;
+
+// odepsani posil
+{EVERY 0$23 TRIGGER Am_posily+0>0 DO
+VAR pom,i;
+VAR vymaz;
+begin
+  vymaz=true;
+  for i in Am_posily do
+    if (not IsInArea(i,Am_base)) and IsLive(i) then vymaz=false;
+  if vymaz then Am_posily=[];
+  enable;
+end;}
+Every 0$1 do
+     var i, temp_list;
+     begin
+          i = 1;
+          while i <= Am_posily do
+               begin
+                    if IsInArea(Am_posily[i],Am_base) or not IsLive(i) then
+                         begin
+                              if IsInArea(Am_posily[i],Am_base) then
+                                  begin
+                                       Prezite_posily = Prezite_posily + 1;
+                                       if Prezite_posily > muze_prezit_posil[difficulty] then
+                                            DestroyUnit(Am_posily[i]);
+                                  end;
+
+                              Am_posily = Delete(Am_posily,i);
+                              continue;
+                         end;
+
+                    i = i + 1;
+               end;
+
+          enable;
+     end;
+
+// poslani americkych mechaniku do tovarny
+EVERY 0$13 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_class,class_mechanic]]);
+  if pom>0 then ComEnterUnit(pom,Am_fac);
+  enable;
+end;
+
+// vyroba v americke tovarne (pokud jsou v ni vic nez 3 mechanici)
+EVERY 0$17 DO
+VAR pom;
+begin
+  pom=UnitsInside(Am_fac);
+  if pom>3 then ComConstruct(Am_fac,us_light_wheeled,engine_solar,control_manual,us_machine_gun);
+  while UnitsInside(Am_fac)>3 do wait(0$10);
+  enable;
+end;
+
+// jestli uz rusaci videli americke posily
+EXPORT function am_posily_videny_rusakama;
+VAR i;
+VAR videli;
+begin
+  videli=false;
+  for i in Am_posily do if See(You,i) then videli=true;
+  result:=videli;
+end;
+
+{// test, jestli je uz omicron zniceny z pulky
+EXPORT function omicron_half_destroyed;
+VAR pom,i;
+VAR zije;
+VAR a;
+begin
+  a=false;
+  zije=[];
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_building]]);
+  for i in pom do if IsOK(i) then zije=zije^i;
+  if zije+0<10 and (not IsOK(Am_bu1  then a=true;
+  result=a;
+end;
+}
+
+// test, jestli je uz omicron temer zniceny
+EXPORT function omicron_half_destroyed;
+VAR pom,i;
+VAR zije;
+VAR a;
+begin
+  a=false;
+{  zije=[];
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_building]]);
+  for i in pom do if IsOK(i) then zije=zije^i;}
+  if ((not IsOK(Am_bu1)) or (GetSide(Am_bu1)<>Amici))
+      and ((not IsOK(Am_bu2)) or GetSide(Am_bu2)<>Amici) 
+      and ((not IsOK(Am_bu3)) or GetSide(Am_bu3)<>Amici)
+      and ((not IsOK(Am_bar1)) or GetSide(Am_bar1)<>Amici)
+      and ((not IsOK(Am_bar2)) or GetSide(Am_bar2)<>Amici)
+       then a=true;
+  result=a;
+end;
+
+// amici vypadnou pryc z mapy
+EXPORT function stahnuti_amiku;
+VAR i;
+VAR pom,pom1,pom2,pomx;
+begin
+  // americka baze
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_human]]);
+  pom2=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_building]]);
+  for i in pom2 do if UnitsInside(i)<>0 then pom=pom^UnitsInside(i);
+  ComExitBuilding(pom);
+  AddComMoveXY(pom,6,2);
+  wait(0$1);
+  while pom>0 do
+    begin
+      pom1=FilterUnitsInArea(ODBER_AM2,[[f_side,Amici]]);
+      for i in pom1 do
+        begin
+          RemoveUnit(i);
+          pom=pom diff i;
+        end;
+      wait(0$1);
+      pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_human]]);
+      pom2=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_type,unit_building]]);
+      for i in pom2 do if UnitsInside(i)<>0 then pom=pom^UnitsInside(i);
+      ComExitBuilding(pom);
+      AddComMoveXY(pom,6,2);
+    end;
+  // bw na vychode ...
+  pom=FilterUnitsInArea(Am_bw_e,[[f_side,Amici],[f_type,unit_human]]);
+  pom2=FilterUnitsInArea(Am_bw_e,[[f_side,Amici],[f_type,unit_building]]);
+  for i in pom2 do if UnitsInside(i)<>0 then pom=pom^UnitsInside(i);
+  ComExitBuilding(pom);
+  AddComMoveXY(pom,138,40);
+  wait(0$1);
+  while pom+0>0 do
+    begin
+      pom1=FilterUnitsInArea(ODBER_AM,[[f_side,Amici]]);
+      for i in pom1 do
+        begin
+          RemoveUnit(i);
+          pom=pom diff i;
+        end;
+      wait(0$1);
+      pom=FilterUnitsInArea(Am_bw_e,[[f_side,Amici],[f_type,unit_human]]);
+      pom2=FilterUnitsInArea(Am_bw_e,[[f_side,Amici],[f_type,unit_building]]);
+      for i in pom2 do if UnitsInside(i)<>0 then pom=pom^UnitsInside(i);
+      ComExitBuilding(pom);
+      AddComMoveXY(pom,138,40);  //dopsal Martin
+    end;
+end;

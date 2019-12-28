@@ -1,0 +1,161 @@
+EXPORT Function Load;
+var i, Un, Gamma2Comander, Alpha, New_person,
+    tmp, weapon;
+ begin
+  Alpha= 1;
+
+  uc_nation= nation_american;
+  uc_side= americans;
+
+  // John Macmillan
+  JMM= CreateCharacter('JMM');
+  if not JMM then
+    BuildQuery('Error: John Macmillan not found!!!',['OK']);
+
+  Harrison= NewCharacter('Harisson');
+  if not Harrison then
+    BuildQuery('Error: Harrison not found!!!', ['OK']);
+
+  Bobby= CreateCharacter('Bobby');
+  BobbyLoc=LoadVariable('BobbyLoc', 1);
+  Lisa= CreateCharacter('Lisa');
+  LisaLoc=LoadVariable('LisaLoc', 2);
+  Cyrus= CreateCharacter('Cyrus');
+  CyrusLoc=LoadVariable('CyrusLoc', 1);
+  Brown= CreateCharacter('Brown');
+  BrownLoc=LoadVariable('BrownLoc', 0);
+  Donaldson= CreateCharacter('Donaldson');
+  DonaldsonLoc= LoadVariable('DonaldsonLoc', 0);
+  Gladstone= CreateCharacter('Gladstone');   //* New - located in G3
+  GladstoneLoc= LoadVariable('GladstoneLoc', 3);
+//  Khatam= CreateCharacter('Khatam');         //* New - located in G3
+  Denis= CreateCharacter('Denis');           //* New - located in G3
+  DenisLoc= LoadVariable('DenisLoc', 3);
+
+  Joan= CreateCharacter('Joan'); // She doesn't go.
+
+
+  Gamma2Commander= LoadVariable('Gamma2Commander', 3);
+  all_americans= [];   // without JMM - he must be selected
+
+  if Bobby and BobbyLoc <> Alpha then
+    all_americans= all_americans^[Bobby];
+  if Lisa and LisaLoc <> Alpha then
+    all_americans= all_americans^[Lisa];
+  if Cyrus and CyrusLoc <> Alpha then
+    all_americans= all_americans^[Cyrus];
+  if Brown and (BrownLoc <> Alpha) and (Gamma2Commander <> 2) then
+    all_americans= all_americans^[Brown];
+  if Donaldson and (DonaldsonLoc <> Alpha) and (Gamma2Commander <> 1) then
+    all_americans= all_americans^[Donaldson];
+  if Gladstone then
+    all_americans= all_americans^[Gladstone];
+//  if Khatam then
+//    all_americans= all_americans^[Khatam];
+  if Denis then
+    all_americans= all_americans^[Denis];
+
+
+  uc_side= americans;
+  otherGamma2= CreateCharacterSet('otherGamma2');
+  otherDelta= CreateCharacterSet('otherDelta');
+  otherUnplaced= CreateCharacterSet('otherUnplaced');
+
+  all_americans= all_americans ^ otherGamma2 ^ otherDelta ^ otherUnplaced;
+
+  uc_side= americans;
+  New_americans=[];
+
+  for i=1 to 18 - all_americans do //The team is replenished to 18 persons
+   begin
+    uc_direction= rand(0,5);
+
+    hc_name='';
+    hc_gallery='';
+    hc_importance=0;
+
+    case i mod 3 of
+     0: begin  // scienist
+         PrepareScientist(0, 4);  //0 - random sex
+        end;
+     1: begin  // soldier
+         PrepareSoldier(0, 4);
+        end;
+     2: begin  // mechanic
+         PrepareMechanic(0, 4);
+        end;
+    end; // End of for cycle
+
+    New_person= CreateHuman;
+    New_americans= New_americans ^ [New_person];
+   end;
+
+   // No of people will be engineer
+   for Un in All_americans ^ JMM do
+     if (GetClass(Un) = class_engineer) then SetClass(Un, class_soldier);
+
+
+   // vehicles
+    vc_chassis= us_light_wheeled;
+    vc_engine= engine_solar;
+    vc_control= control_manual;
+
+    vc_weapon= us_light_gun;
+    am_veh1= CreateVehicle;              // Light gun
+
+    vc_chassis= us_medium_wheeled;
+
+    vc_weapon= us_gatling_gun;
+    am_veh2= CreateVehicle;              // Gatling gun
+
+    vc_weapon= us_double_gun;
+    am_veh3= CreateVehicle;              // Double gun
+
+    vc_weapon= us_radar;
+    am_veh4= CreateVehicle;              // Radar
+
+    uc_direction= 2;
+    vc_chassis= us_light_wheeled;
+    vc_engine= engine_solar;
+    vc_control= control_manual;
+    vc_weapon= us_machine_gun;
+    har_veh= CreateVehicle;
+
+    am_vehicles= [am_veh1, am_veh2, am_veh3, am_veh4];
+
+
+  //Base Gamma2 (= Delta)
+  //This list consists of items: [x,y,direction,building_type,level]
+    blds= [];
+    Gamma2:=LoadVariable('Gamma2',[]);
+    for i in Gamma2 do
+     begin
+        weapon= 0;
+        bc_type:=i[4];
+        bc_level:=i[5];
+        uc_nation:=i[6];
+        case bc_type of
+             b_lab,b_lab_half,b_lab_full: begin
+                                             bc_kind1:=i[7];
+                                             bc_kind2:=i[8];
+                                          end;
+             b_bunker: begin
+                         weapon= i[7];
+                       end;
+        end;
+        tmp:=CreateAndPlaceBuildingXYD(i[1], i[2], i[3]);
+        if weapon then
+          PlaceWeaponTurret(tmp, weapon);
+        blds:=blds^tmp;
+    end;
+
+
+{   for i in Selected_americans do
+    PlaceUnitArea(i, Start, false);
+
+   for i in am_vehicles do
+    PlaceUnitArea(i, Start1, false);
+
+}
+
+ end;

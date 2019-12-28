@@ -1,0 +1,368 @@
+@ Arabian Question
+% Recent events have proved the Arabs and their mercenaries can never be trusted. John has also proved his abilities as a leader in the fight against the new enemy.
+& Base Epsilon 1; November 7, ERA + 1
+
+// Dialogue 1 
+$ D1-Pow-1
+- Here we can talk privately.
+$ D1-JMM-1
+- Why so much secretiveness, general.
+$ D1-Pow-2
+- I admit, I wasn't fair with you. I think you are now the best one of my commanders. I have to speak with somebody whose opinion I can trust.
+$ D1-JMM-2
+- All right, sir.
+$ D1-Pow-3
+- You know, this is no ordinary war. There are no civilians, there are only handful of soldiers, the military equipment is home made...
+$ D1-JMM-3
+- Cut to the chase, please.
+$ D1-Pow-4
+- I mean that all normal strategies and tactics are as good as useless, everything they told us at Point, is just the other way round Making decisions here is exhausting, Macmillan. You can only rely on your instincts... and it can betray you.
+$ D1-JMM-4
+- Do you refer to our alliance with Arabs, sir?
+$ D1-Pow-5
+- I have been sure it was the only possibility, Macmillan. When there are three sides, it's never good to be alone.
+$ D1-JMM-5
+- I'm afraid this is exactly our present situation, sir.
+$ D1-Pow-6
+- Maybe not... and this is exactly the matter I wanted to discuss with you. I've received a very strange communication from Arabians. Take a look at it.
+
+// Query Letter
+? QLetter
+TOMORROW YOU CAN GAIN ARABIAN MINING BASE SOUTH OF MUDDY RIVER STOP ATTACK BY DOWN FROM SOUTH WEST STOP OUR PEOPLE WILL MAN THE GUARDS STOP WHEN THEY SEE YOU THEY WILL LEAVE BASE AND YOU WILL LET THEM GO STOP THEN YOU CAN TAKE THE BASE EASILY STOP THIS OFFER IS TOP SECRET STOP DO NOT REPLY STOP IF YOU ACCEPT COME AT THE TIME INDICATED STOP WE REQUIRE TOTAL SECRECY STOP ARABIANS SHOULD CONSIDER OUR MEN KILLED IN ACTION STOP WE FURTHER REQUIRE RIGHT OF FREE PASSAGE THROUGH YOUR TERRITORY STOP
+- OK
+?
+$ D1-Pow-6a
+- Do you think they really want to handle their own base to us?
+$ D1-JMM-6
+- It's not their base... don't forget they're mercenaries.
+$ D1-Pow-7
+- But I don't like it anyway. Do you think we can believe them?
+$ D1-JMM-7
+- Maybe they fell off with their employers. This offer sounds tempting..
+$ D1-Pow-8
+- Maybe even too tempting.
+$ D1-JMM-8
+- If you want to know what I think... I'd go for it, sir.
+$ D1-Pow-9
+- Why?
+$ D1-JMM-9
+- Just as you said, instinct. Give me five men, sir, and I'll go there.
+$ D1-Pow-10
+- You can take much more men, Macmillan. Take the best we have, beside the ones from siberite research. If it is true, we mustn't stop with one base - we have a chance to deal them a deadly blow.
+$ D1-JMM-10
+- Yes, sir.
+$ D1-Pow-11
+- Break your nect, major.
+
+// Dialogue 1a (some without titles)
+$ D1a-Merc1-1
+- Hi. Can't you sleep?
+$ D1a-FMerc2-1
+- Hmm
+$ D1a-Merc1-2
+- (gurgles, falls to ground)
+$ D1a-FMerc2-2
+- (bird call)
+
+# M1
+Add Main capture
+- Capture the base
+#
+
+// Dialogue 2 (after capturing of base and elimination of remaining Arabs)
+$ D2-JMM-1
+- The base is in our hands, sir. Everything went as they said.
+$ D2-Pow-1
+- Excellent, Macmillan. Consolidate your position and attack other Arabian bases before they know what hit them.
+$ D2-JMM-2
+- Sure, pane.
+$ D2-Pow-2
+- Be fast and hard. We can't bind our forces too long. You have our best people and Russians can come any time.
+$ D2-JMM-3
+- Understood, sir.
+
+# M2
+Out capture
+Add Main destroy
+- Destroy all other Arabian bases. 
+Add Secondary time
+- Try to do it as fast as you can.
+#
+
+! CapturedBase
+Captured base
+You have captured Arabian depot. If you capture other buildings as well, they will be at your disposal up to a point. The barracks will enable you to equip your men with special Arabian weapon, mortar. You can produce Arabian vehicles in the factory, but you can't add any extensions to it. You can only research the technologies that are common to both nations in the lab, i.e. not those that are specific to either Arabs or Americans.
+
+Your engineers can build normal American buildings in this base.
+!
+
+// Dialogue 2a (after new objective use two or three of these lines)
+$ D2a-Gary-1
+- Finally we've got a mission that makes sense!
+$ D2a-Bobby-1
+- Those guys are gonna get what's coming to them.
+$ D2a-Frank-1
+- They won't be laughing by the time we're through with them.
+$ D2a-Lisa-1
+- We're gonna kick their asses to Mecca and back.
+$ D2a-Corn-1
+- Hell, John, I'm not fit yet. You'd rather let me rest.
+
+// Dialogue 3F (a short time after start of the mission, if Frank is present)
+$ D3F-Frank-1
+- Major?
+$ D3F-JMM-1
+- Yes, Frank?
+$ D3F-Frank-2
+- Well, I say what if you go up ahead to take a look a bit?
+
+// Query Frank
+? QFrank
+Frank thinks he could go on recon. Will you:
+-1 Let him go.
+-2 Tell him it's too dangerous.
+-3 Tell him you need him in base
+?
+
+// Dialogue 3Fa (QFank-1)
+$ D3Fa-JMM-1
+- OK, Frank, bring us some souvenirs from Arabian fortifications.
+
+// Dialogue 3Fb (QFrank-2)
+$ D3Fb-JMM-1
+- I don't know Frank, I think you rely on your luck too much. I wouldn't loos you.
+$ D3Fb-Frank-1
+- I'll be careful, I promise.
+
+// Query Frank2
+? QFrank2
+Frank promises he will be careful. So now, will you:
+-1 Let him go.
+-2 Let him stay.
+?
+
+// Dialogue 3Fba (QFrank2-1)
+$ D3Fba-JMM-1
+- OK, go. But no souvenirs, no showing off. Only basic recon. Understand?
+$ D3Fba-Frank-1
+- Sure.
+
+// Dialogue 3Fbb (QFrank2-2)
+$ D3Fbb-JMM-1
+- Frank, you'll stay here. This is an order.
+
+// Dialogue 3Fc (QFrank-1)
+$ D3Fc-JMM-1
+- A boring work in base is nothing for you, is it? I'm sorry Frank, but I'll need everybody here now.
+
+// Dialogue 4Fa (if Frank succeeds)
+$ D4Fa-JMM-1
+- So, have you some gossip from Arabian backyard?
+$ D4Fa-Frank-1
+- Well look, this base... it won't be that difficult.
+$ D4Fa-JMM-2
+- And here? What's here?
+$ D4Fa-Frank-2
+- I hate to admit it, sir, but I didn't get there. There is a swamp and behind it there are many Arabian contraptions armed to the teeth. They go to and fro and nothing escapes them.
+
+// Dialogue 4Fb (if Frank dies, after about eight minutes)
+$ D4Fb-JMM-1
+- Haven't you seen Frank, anybody? He's away for a long time... I fear we lost him.
+
+// Dialogue 4Fc (if Frank doesn't succeed, after about eight minutes)
+$ D4Fc-Frank-1
+- Reporting back, major.
+$ D4Fc-JMM-1
+- Look, Frank. Why do you look so sad?
+$ D4Fc-FSci1-1
+- [if any female present] Heck, sir, can't you see he's wounded?
+$ D4Fc-Frank-2
+- Seems the Arabs are more careful than Russians. I was glad I managed to get away. I'm sorry to disappoint you, sir.
+$ D4Fc-JMM-2
+- Don't worry about it , Frank. You'd only disappoint me if you got yourself killed.
+
+// Dialogue 3Y (a short time after start of the mission, if Yamoko is present and Frank isn't)
+$ D3Y-Yam-1
+- Sir?
+$ D3Y-JMM-1
+- Yes?
+$ D3Y-Yam-2
+- With your leave, I would undertake a basic reconnaissance of Arabian forces layout.
+
+// Query Yamoko
+? QYamoko
+Yamoko think she could go on recon. Will you:
+-1 Let her go.
+-2 Let her stay
+?
+
+// Dialogue 3Ya (QYamako-1)
+$ D3Ya-JMM-1
+- OK. But take care, I wouldn't loose you
+$ D3Ya-Yam-1
+- Yes, sir. Don't be afraid, I'm the best.
+
+// Dialogue 3Yb (QYamako-2)
+$ D3Yb-JMM-1
+- There is no time for recon, now Yamoko. Moreover, we need everybody here to prepare the breakthrough.
+
+// Dialogue 4Ya (if Yamoko succeeds)
+$ D4Ya-Yam-1
+- Reporting back, major.
+$ D4Ya-JMM-1
+- Excellent, I was beginning to worry. What have you found?
+$ D4Ya-Yam-2
+- Here is one not too well protected base.
+$ D4Ya-JMM-2
+- And here?
+$ D4Ya-Yam-3
+- I'm sorry, sir, but I didn't get behind that swamp. But there is a lot of armed vehicles there
+
+// Dialogue 4Yb (if Yamoko dies, after about eight minutes)
+$ D4Yb-JMM-1
+- Yamoko didn't report back, yet? I'm afraid we lost her.
+
+// Dialogue 4Yc (if Yamoko doesn't succeed, after about eight minutes)
+$ D4Yc-Yam-1
+- Reporting back.
+$ D4Yc-JMM-1
+- Yamoko! Oh, you are wounded.
+$ D4Yc-Yam-2
+- That's nothing. But I didn't manage to get through the sentries.
+$ D4Yc-JMM-2
+- Never mind. It's great you managed to get back.
+
+// Dialogue 5a (when first Apeman driven vehicle spotted)
+$ D5a-Sol1-1
+- God, is it possible? They've given the driving license to Apeman!
+$ D5a-FSol1-1
+- God, is it possible? They've given the driving license to Apeman!
+$ D5a-Sol2-1
+- And what about those wires and tubes connected to their heads? I don't think the Apeman are enjoying themselves.
+$ D5a-FSol2-1
+- And what about those wires and tubes connected to their heads? I don't think the Apeman are enjoying themselves.
+
+// Dialogue 5b (when first Apeman kamikaze spotted)
+$ D5b-Sol1-1
+- Look, that Apeman brings us something.
+$ D5b-FSol1-1
+- Look, that Apeman brings us something.
+$ D5b-Sol2-1
+- Oh fuck, this is dynamite!
+$ D5b-FSol2-1
+- Oh fuck, this is dynamite!
+
+// Dialogue 5c (when first Apeman kamikaze exploded)
+$ D5c-Sol1-1
+- The bastards are using HP like it didn't matter. We should do the same fucking thing.
+$ D5c-FSol1-1
+- The bastards are using HP like it didn't matter. We should do the same fucking thing.
+$ D5c-JMM-1
+- Then we're no better than them. We need the Apemen back on our side but we've got to win them round.
+
+// Dialogue 5d (after first of dialogues 5a, 5b and 5c)
+$ D5d-Lisa-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-Cyrus-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-Gary-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-Sol1-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-JMM-1
+- Better tell them then. Maybe they'll stop!
+
+// Dialogue 6 (when second base is captured)
+$ D6-Sci1-1
+- Major, there's some equipment the Arabs found while mining for Siberite. It looks like the same technology as EON, but it's larger and incomplete.
+$ D6-JMM-1
+- Can we take it back for testing?
+$ D6-Sci1-2
+- They had it loaded on a truck ready to go, so no problem.
+$ D6-JMM-2
+- If it's that valuable they're going to want it back. Better get ourselves prepared.
+
+# M3
+Add Secondary protect
+- Protect the artefact in the truck until end of mission
+#
+
+// Dialogue 7 (short time after second base is captured or destroyed)
+$ D7-Sol1-1
+- Major, we are receiving a broadcast on our encrypted frequency:
+$ D7-Ar1-1
+- (over radio) Yankee commander, I could be friend. I know Arabians are loosing fast, I'd like to stay on the right side. I can help you.
+$ D7-JMM-1
+- Who are you?
+$ D7-Ar1-2
+- This ain't important now. I am an electro technician and used to be in Arabian pay. But I'm fed up with this crazy war. I'd like to make a deal with you.
+$ D7-JMM-2
+- A deal about what?
+$ D7-Ar1-3
+- There are hidden cameras around our base, monitoring its vicinity. I've installed most of them myself. If you want, I can give you the frequency they broadcast on and the appropriate security code.
+$ D7-JMM-3
+- That sounds well. And what do you want.
+$ D7-Ar1-4
+- A little truck with siberite engine. And free passage for me and my new buddy Mike. Get the car east, to the river's blind shoulder (camera shows). Then I'll give you the code.
+
+// Query Cameras
+? QCameras
+Do you accept the mercenary's offer? It may result in valuable intelligence about the Northern Arabian base.
+-1 Yes.
+-2 No.
+?
+
+// Dialogue 7a (if transaction is successful)
+$ D7a-Ar1-1
+- Thank you, commander; I couldn't wait to get away with Mike from that madhouse. And now my part of the deal (camera shows the string of hidden cameras)
+
+// Dialogue 8 (if first remote controlled vehicle is spotted)
+$ D8-Sol1-1
+- Damn. It seem the Arabians finally discovered the advantages of remote control.
+$ D8-FSol1-1
+- Damn. It seem the Arabians finally discovered the advantages of remote control.
+$ D8-JMM-1
+- They have to have control towers somewhere! We've got to find them.
+
+// Dialogue 8a (if first remote control tower is spotted, at least 15 sec after 7a or 8)
+$ D8a-Sol2-1
+- Major, couldn't they have mobile control towers? Look at that car!
+$ D8a-FSol2-1
+- Major, couldn't they have mobile control towers? Look at that car!
+$ D8a-JMM-1
+- Bloody hell. That may be it.
+
+// Dialogue 9 (if mission is too long)
+$ D9-Pow-1
+- Macmillan, it was supposed to be a shock action. I need your men for other pressing tasks. Report completing your task in ten minutes!
+
+// Dialogue 9a (if mission is not completed 10 minutes after Dialogue 9)
+$ D9a-Pow-1
+- You've failed me, Macmillan, I trusted you to handle it. Cancel the action. We need your units here immediately.
+
+^ MAIN
+Arabian bases destroyed.
+
+| JMM
+John Macmillan is dying.
+
+| Command
+You were relieved of command
+
+* Time1
++
++ Quick action
+- The action could have been faster
+*
+
+* Time2
++ Lightning action
+- The action could have been faster
+- The action could have been much faster 
+*
+
+* Artefact
++ Artefact gained.
+- You didn't manage to save the Artefact.
+- You didn't find the special Artefact.
+*

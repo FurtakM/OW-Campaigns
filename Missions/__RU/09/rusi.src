@@ -1,0 +1,102 @@
+EXPORT Ru_base;
+EXPORT cislo_baze;
+
+EXPORT Ru_enter;
+
+EXPORT masha;
+EXPORT bur;
+EXPORT dol;
+EXPORT kapisto;
+EXPORT petro;
+EXPORT pop;
+
+VAR bedny;
+
+// nastaveni pocatecnich hodnot
+EVERY 0$0.1 DO
+begin
+  bedny=0;
+end;
+
+// placnuti resourcu podle vyberu mista pro stavbu
+EXPORT function place_resource(kam);
+begin
+  case kam of
+   1:begin
+       CreateDepositXY(45,72,mat_oil);
+       CreateDepositXY(51,86,mat_siberit);
+     end;
+   2:begin
+       CreateDepositXY(92,110,mat_oil);
+       CreateDepositXY(103,103,mat_siberit);
+     end;
+   3:begin
+       CreateDepositXY(151,84,mat_oil);
+       CreateDepositXY(139,60,mat_siberit);
+     end;
+  end;
+end;
+
+// hodi rusy na zacatek
+EXPORT function placni_rusy_na_zacatek;
+VAR ezone;
+VAR i;
+begin
+  case cislo_baze of
+   1:begin
+       ezone=ezone1;
+       RevealFogArea(You,Renter1);
+     end;
+   2:begin
+       ezone=ezone2;
+       RevealFogArea(You,Renter2);
+     end;
+   3:begin
+       ezone=ezone3;
+       RevealFogArea(You,Renter3);
+     end;
+  end;
+  for i in RUSI_ENTER_LIST do PlaceUnitArea(i,ezone,false);
+  chmo1;
+  CenterNowOnUnits(RUSI_ENTER_LIST);
+  InGameOff;
+end;
+
+// padani beden do ruske baze
+EVERY 0$1 DO
+begin
+  wait(delay_beden[difficulty]);
+  wait(Rand(1,bedny*0$10));
+  bedny=bedny+1;
+  case cislo_baze of
+   1:CreateCratesArea(base1,Rand(3,5),true);
+   2:CreateCratesArea(base2,Rand(3,5),true);
+   3:CreateCratesArea(base2,Rand(3,5),true);
+  end;
+  bedny=bedny+1;
+  enable;
+end;
+
+// padani beden po cle plose
+EVERY 1$30 DO
+begin
+  wait(Rand(1,1$0));
+  CreateCratesAnywhere(Rand(1,5),true);
+  enable;
+end;
+
+// test na ukonceni !!!
+EVERY 0$1 DO
+VAR okay;
+begin
+  okay=true;
+  if IsOK(Am_lab1) then
+    if GetSide(Am_lab1)=Amici then okay=false;
+  if IsOK(Am_lab2) then
+    if GetSide(Am_lab2)=Amici then okay=false;
+  if IsOK(Am_lab2) then
+    if GetSide(Am_lab2)=Amici then okay=false;
+  if okay then konec_mise;
+  enable;
+end;
+

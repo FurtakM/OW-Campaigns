@@ -1,0 +1,101 @@
+// Dialogue
+export function starting_scene;
+var selected,old_pos, counter;
+begin
+  interface_hidden:=true;
+  RevealFogArea(you,all_map);
+
+  CenterNowOnUnits(Burlak);
+
+  ComMoveUnit(Burlak,Yashin);
+  ComMoveUnit(Yashin,Burlak);
+
+  while (GetDistUnits(Burlak,Yashin)>4) do
+    wait(0$1);
+
+  CenterOnUnits([Burlak,Yashin]);
+  ComTurnUnit(Burlak,Yashin);
+  ComTurnUnit(Yashin,Burlak);
+  wait(5);
+  ComHold([Yashin,Burlak]);
+
+  if LabCaptured then                   // Dialogue Start1 (Burlak and Yashin stand in Trotsky; LabCaptured = True)
+    Say(Yashin,'DStart1-Yas-1')
+  else                                  // Dialogue Start2 (Burlak and Yashin stand in Trotsky, LabCaptured = False)
+    begin
+      Say(Yashin,'DStart2-Yas-1');
+      Say(Burlak,'DStart2-Bur-1');
+      Say(Yashin,'DStart2-Yas-2');
+    end;
+
+  ComMoveUnit(survivor,Yashin);
+
+  counter := 0;
+
+  repeat
+    old_pos:=[GetX(survivor),GetY(survivor)];
+    wait(0$2);
+    counter := counter + 2;
+
+    CenterOnUnits(IsInUnit(survivor));
+
+    if (old_pos[1]=GetX(survivor)) and (old_pos[2]=GetY(survivor)) then
+      break;
+
+    // if survivor can't move
+    if counter >= 30 then
+       break;
+
+  until GetDistUnits(IsInUnit(survivor),Yashin)<7;
+
+  ComExitVehicle(survivor);
+  while IsInUnit(survivor) do
+    wait(5);
+  AddComMoveUnit(survivor,Yashin);
+
+  counter := 0;
+
+  repeat
+    old_pos:=[GetX(survivor),GetY(survivor)];
+    wait(0$2);
+    counter := counter + 2;
+
+    CenterOnUnits(IsInUnit(survivor));
+
+    if (old_pos[1]=GetX(survivor)) and (old_pos[2]=GetY(survivor)) then
+      break;
+
+    if counter >= 30 then
+       break;
+
+  until GetDistUnits(survivor,Yashin)<4;
+
+  CenterOnUnits([Burlak,Yashin,survivor]);
+  ComTurnUnit(survivor,Yashin);
+  ComTurnUnit([Yashin,Burlak],survivor);
+  AddComHold([Yashin,Burlak,survivor]);
+
+  Say(survivor,'DStartCont-Vse-1');
+  Say(Yashin,'DStartCont-Yas-1');
+  SayRadio(Popov,'DStartCont-Pop-1');
+  Say(Yashin,'DStartCont-Yas-2');
+  SayRadio(Popov,'DStartCont-Pop-2');
+  Say(Yashin,'DStartCont-Yas-3');
+  Say(Yashin,'DStartCont-Yas-3a');
+  Say(Burlak,'DStartCont-Bur-3');
+  Say(Yashin,'DStartCont-Yas-4');
+  Say(Burlak,'DStartCont-Bur-4');
+  Say(survivor,'DStartCont-Vse-4');
+
+  wait(5);
+  ChangeMissionObjectives('MStart');
+
+  Query('QInfo');
+
+  selected:=CharacterSelection('',6,6,
+                [Burlak,sel_not_hired,Yashin,survivor,sel_changeable,sel_change_class] ^ people ^ survivors3,
+                [class_soldier,class_bazooker,class_scientistic,class_mechanic]);
+
+  save_for_mission(selected);
+  InGameOff;
+end;

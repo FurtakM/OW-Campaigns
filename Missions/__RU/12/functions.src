@@ -1,0 +1,194 @@
+//filtry
+export mf_sol;
+export mf_eng;
+export mf_mec;
+export mf_sci;
+export mf_lab;
+export mf_fort;
+export mf_bunk;
+export mf_dep;
+export mf_fact;
+export mf_comp;
+export mf_manu;
+
+export function inicializace_functions;
+begin
+  mf_sol:=[f_class,class_soldier];
+  mf_eng:=[f_class,class_engineer];
+  mf_mec:=[f_class,class_mechanic];
+  mf_sci:=[f_class,class_scientistic];
+  mf_lab:=[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]];
+  mf_fort:=[f_or,[f_btype,b_bunker],[f_btype,b_breastwork],[f_btype,b_armoury],[f_btype,b_barracks]];
+  mf_bunk:=[f_or,[f_btype,b_bunker],[f_btype,b_breastwork]];
+  mf_dep:=[f_or,[f_btype,b_depot],[f_btype,b_warehouse]];
+  mf_fact:=[f_or,[f_btype,b_factory],[f_btype,b_workshop]];
+  mf_comp:=[f_control,control_computer];
+  mf_manu:=[f_control,control_manual];
+end;
+
+export function get_x_best(lidi, num, skill, mclass, idle);
+var i, skills;
+begin
+    if mclass then
+      lidi:=UnitFilter(lidi, [[f_class, mclass]]);
+    skills:=[];
+    for i in lidi do
+        skills:=skills ^ [GetSkill(i, skill)];
+    lidi:=SortListByListDesc(lidi, skills);
+    if num>lidi then
+       num:=lidi+0;
+
+    i:=1;
+    result:=[];
+    while i<=lidi and result<num do begin
+      if idle then begin
+        if IsIdle(lidi[i]) then
+          result:=result ^ [lidi[i]];
+      end
+      else
+        result:=result ^ [lidi[i]];
+      i:=i+1;
+    end;
+end;
+
+
+//vynecha apemany
+//vybere prvniho z skupiny lidi se zadanym pohlavim sex (0=obe)
+//a zadanym Hclass (0=jakykoliv)
+export function WhoSayAny(lidi, side, sex, Hclass, index);
+begin
+     lidi:=UnitFilter(lidi, [[f_type,unit_human],[f_side,side],f_not,[f_nation,nation_nature]]);
+     if sex<>0 then
+        lidi:=UnitFilter(lidi, [f_sex,sex]);
+
+     if Hclass<>0 then
+        lidi:=UnitFilter(lidi, [f_class,Hclass]);
+
+     if index<=0 then index:=1;
+
+     if lidi>=index then
+        result:=lidi[index]
+     else
+        result:=0;
+end;
+
+
+export function see_any(strana, sez);
+var i;
+begin
+     result:=[];
+     for i in sez do
+         if See(strana,i) then begin
+            result:=result ^ i;
+         end;
+     ;
+end;
+
+export function TalkOn;
+begin
+     stop_talking:=true;
+end;
+export function TalkOff;
+begin
+     stop_talking:=false;
+end;
+
+export function FilterHumansInArea(area, filter);
+var inbase, i;
+begin
+     result:=[];
+     inbase:=FilterUnitsInArea(area, [f_side,you]);
+     for i in inbase do begin
+         if GetType(i)=unit_building or GetType(i)=unit_vehicle then begin
+            result:=result ^ UnitsInside(i);
+         end
+         else begin
+            result:=result ^ i;
+         end;
+     end;
+     result:=UnitFilter(result, filter);
+end;
+export function inside_units(uns);
+var i;
+begin
+   result:=[];
+   for i in uns do
+      result:=result ^ UnitsInside(i);
+end;
+
+export function find_drivers(cars, drivers, take_out);
+var empty, free, i, konec;
+begin
+     cars:=UnitFilter(cars, [f_alive]) union [];
+     drivers:=UnitFilter(drivers, [f_alive]) union [];
+
+     for i in cars do
+         if not IsDrivenBy(i) then
+            empty:=empty ^ [i];
+     if take_out then begin
+       for i in drivers do
+           if not (IsInUnit(i) in cars) then
+              free:=free ^ [i];
+     end
+     else begin
+       for i in drivers do
+           if not IsInUnit(i) then
+              free:=free ^ [i];
+     end;
+
+     result:=cars diff empty;
+
+     if empty <= free then
+        konec:=empty
+     else
+        konec:=free;
+
+     for i:=1 to konec do begin
+         ComEnterUnit(free[i], empty[i]);
+         result:=result ^ [empty[i]];
+     end;
+end;
+export function find_remotes(cars, mechs, remotes);
+var cas, i;
+begin
+     while remotes > mechs do
+        delete(remotes, 1);
+     for i:=1 to remotes do
+        ComEnterUnit(mechs[i], remotes[i]);
+end;
+export function wait_for_remotes(cars, remotes, cas);
+var c, unlinked, i;
+begin
+     c:=tick+cas;
+     while tick<c and (not (inside_units(remotes)+0)=remotes) do
+        wait(0$1);
+
+     unlinked:=cars;
+     for i in remotes do begin
+        ComLinkTo(unlinked, UnitsInside(i));
+        unlinked:=unlinked diff UnitsLinked(UnitsInside(i));
+     end;
+end;
+
+
+export function wait_for_drivers(cars, cas);
+var i, vsichni_ready, k, pockat;
+begin
+     k:=0;
+     pockat:=tick+cas;
+     while not vsichni_ready and tick<pockat do begin
+           vsichni_ready:=true;
+           k:=k+1;
+           for i in cars do
+               if not IsDrivenBy(i) then
+                  vsichni_ready:=false;
+
+           wait(0$1.0);
+     end;
+end;
+export function rev(list);
+var i;
+begin
+     for i:=list+0 to 1 do
+       result:=result ^ [list[i]];
+end;

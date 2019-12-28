@@ -1,0 +1,36 @@
+var vehicle_list;
+
+
+export function add_new_vehicles;
+var vehicle,un;
+begin
+  // chassis, engine, control, weapon
+  vehicle_list:=[ [ru_medium_wheeled,engine_combustion,control_manual,ru_cargo_bay],
+                  [ru_medium_wheeled,engine_combustion,control_manual,ru_gun],
+                  [us_medium_tracked,engine_siberite,control_manual,us_cargo_bay],
+                  [ru_medium_tracked,engine_siberite,control_manual,ru_gatling_gun],
+                  [ru_medium_tracked,engine_combustion,control_manual,ru_rocket_launcher],
+                  [ru_heavy_wheeled,engine_siberite,control_manual,ru_rocket_launcher],
+                  [us_heavy_tracked,engine_siberite,control_manual,us_bulldozer],
+                  [ru_heavy_tracked,engine_combustion,control_manual,ru_heavy_gun],
+                ];
+
+  uc_side:=you;
+
+  for vehicle in vehicle_list do
+    begin
+      if vehicle[1] in [ru_medium_wheeled,ru_medium_tracked,ru_heavy_wheeled,ru_heavy_tracked] then
+        uc_nation:=nation_russian
+      else
+        uc_nation:=nation_american;
+      uc_direction:=Rand(0,5);
+      vc_chassis:=vehicle[1];
+//      vc_engine:=vehicle[2];
+      vc_engine:=[engine_combustion,engine_siberite] [Rand(1,2)];
+      vc_control:=vehicle[3];
+      vc_weapon:=vehicle[4];
+      un:=CreateVehicle;
+      PlaceUnitArea(un,base,false);
+    end;
+
+end;

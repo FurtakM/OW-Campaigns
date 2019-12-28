@@ -1,0 +1,1700 @@
+---------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+$CONSTANTS
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+----- common constants for unit
+  unit_human 1
+  unit_vehicle 2
+  unit_building 3
+  unit_crate 4
+
+  nation_nature 0
+  nation_american 1
+  nation_arabian 2
+  nation_russian 3
+
+  hranice_umirani 250
+  hranice_zraneni 500
+  hranice_zdravi 1000
+
+----- constants for people
+
+  sex_male 1
+  sex_female 2
+
+  attr_stamina 1
+  attr_speed 2
+
+  skill_combat 1
+  skill_engineering 2
+  skill_mechanical 3
+  skill_scientistic 4
+
+  class_soldier 1
+  class_engineer 2
+  class_mechanic 3
+  class_scientistic 4
+  class_sniper 5
+  class_mortar 8
+  class_bazooker 9
+  class_desert_warior 11
+  class_apeman 12
+  class_baggie 13
+  class_tiger 14
+  class_apeman_soldier 15
+  class_apeman_engineer 16
+  class_apeman_kamikaze 17
+  class_phororhacos 18
+  class_frog 19
+  class_fish 20
+
+  classtype_soldier 1
+  classtype_engineer 2
+  classtype_mechanic 3
+  classtype_scientist 4
+  classtype_noble 5
+  classtype_apeman 6
+  classtype_critter 7
+  classtype_tiger 8
+
+----- constants for buildings
+
+  b_depot 0
+  b_warehouse 1
+  b_workshop 2
+  b_factory 3
+  b_armoury 4
+  b_barracks 5
+  b_lab 6
+  b_lab_half 7  
+  b_lab_full 8
+
+  b_lab_basic 9
+  b_lab_weapon 10
+  b_lab_siberium 11
+  b_lab_computer 12
+  b_lab_biological 13
+  b_lab_spacetime 14
+  b_lab_opto 15
+
+  b_ext_track 16
+  b_ext_gun 17
+  b_ext_rocket 18
+  b_ext_noncombat 19
+  b_ext_radar 20
+  b_ext_siberium 21
+  b_ext_radio 22
+  b_ext_stitch 23
+  b_ext_computer 24
+  b_ext_laser 25
+
+  b_oil_power 26
+  b_solar_power 27
+  b_siberite_power 28
+  b_oil_mine 29
+  b_siberite_mine 30
+
+  b_breastwork 31
+  b_bunker 32
+  b_turret 33
+  b_teleport 34
+  b_fort 35
+  b_control_tower 36
+  b_eon 38
+
+----- constants for vehicles
+
+  engine_combustion 1
+  engine_solar 2
+  engine_siberite 3
+
+  control_manual 1
+  control_remote 2
+  control_computer 3
+  control_rider 4
+  control_apeman 5
+
+  us_light_wheeled 1
+  us_medium_wheeled 2
+  us_medium_tracked 3
+  us_heavy_tracked 4
+  us_morphling 5
+
+  us_machine_gun 2
+  us_light_gun 3
+  us_gatling_gun 4
+  us_double_gun 5
+  us_heavy_gun 6
+  us_rocket_launcher 7
+  us_siberium_rocket 8
+  us_siberium_rocket_remainder 15
+  us_laser 9
+  us_double_laser 10
+  us_radar 11
+  us_cargo_bay 12
+  us_crane 13
+  us_bulldozer 14
+
+  ar_hovercraft 11
+  ar_light_trike 12
+  ar_medium_trike 13
+  ar_half_tracked 14
+
+  ar_multimissile_ballista  22
+  ar_light_gun 23
+  ar_double_machine_gun 24
+  ar_gatling_gun 25
+  ar_flame_thrower 26
+  ar_gun 27
+  ar_rocket_launcher 28
+  ar_selfpropelled_bomb 29
+  ar_radar 30
+  ar_control_tower 31
+  ar_cargo_bay 32
+
+  ru_medium_wheeled 21
+  ru_medium_tracked 22
+  ru_heavy_wheeled 23
+  ru_heavy_tracked 24
+
+  ru_heavy_machine_gun 42
+  ru_gatling_gun 43
+  ru_gun 44
+  ru_rocket_launcher 45
+  ru_heavy_gun 46
+  ru_rocket 47
+  ru_siberium_rocket 48
+  ru_siberium_rocket_remainder 55
+  ru_time_lapser 49
+  ru_cargo_bay 51
+  ru_crane 52
+  ru_bulldozer 53
+
+----- attitudes
+
+  att_neutral 0
+  att_friend 1
+  att_enemy 2
+
+----- materials
+
+  mat_cans 1
+  mat_oil 2
+  mat_siberit 3
+  mat_none 0
+  mat_artefact 4
+  mat_artifact 4
+  mat_multi 5
+
+----- sources
+
+  source_oil 1
+  source_siberium 2
+
+----- cargo&resources
+  cargo_unit 10
+
+----- technologies
+
+  tech_SolPow 35
+  tech_SolEng 45
+  tech_OilPow 46
+  tech_OilEng 47
+
+  tech_ApeLang 1
+  tech_ApePsych 2
+  tech_ApeAgres 11
+  tech_ApeNeural 3
+  tech_ApeBrain 4
+  tech_StimDrugs 5
+
+  tech_Radar 6
+  tech_MatDet 7
+  tech_BioDet 8
+  tech_MatPred 9
+  tech_LasSight 12
+  tech_Soporific 13
+  tech_Laser 10
+  tech_LasDouble 14
+  tech_RemCont 15
+  tech_RemCharge 18
+  tech_PartInvis 16
+  tech_HidCam 17
+
+  tech_SibDet 20
+  tech_SibLoc 19
+  tech_SibPow 21
+  tech_SibEng 22
+  tech_Behemoth 23
+  tech_Artifact 24
+  tech_SibFiss 25
+  tech_SibContam 26
+  tech_TauRad 28
+  tech_SpacAnom 29
+  tech_TauField 30
+  tech_Lapser 31
+  tech_LimTeleport 37
+  tech_TargTeleport 38
+
+  tech_AI 32
+  tech_AdvAI 27
+  tech_Virus 33
+  tech_AdvChassis 36
+  tech_Flame 70
+  tech_Gatling 69
+  tech_Gun 39
+  tech_AdvMet 34
+  tech_Rocket 40
+  tech_AdvRocket 71
+  tech_Mortar 41
+  tech_Explos 42
+  tech_SelfDest 43
+  tech_Bazooka 44
+
+  tech_Tech1 48
+  tech_Tech2 49
+  tech_Tech3 50
+  tech_Weap1 51
+  tech_Weap2 52
+  tech_Weap3 53
+  tech_Sib1 54
+  tech_Sib2 55
+  tech_Sib3 56
+  tech_Comp1 57
+  tech_Comp2 58
+  tech_Comp3 59
+  tech_Opto1 60
+  tech_Opto2 61
+  tech_Opto3 62
+  tech_ST1 63
+  tech_ST2 64
+  tech_ST3 65
+  tech_Bio1 66
+  tech_Bio2 67
+  tech_Bio3 68
+
+  state_disabled 0
+  state_enabled 1
+  state_researched 2
+
+----- filter keywords
+
+  f_and 1
+  f_or 2
+  f_not 3
+
+  f_type 21
+  f_side 22
+  f_nation 23
+  f_lives 24
+  f_class 25
+  f_sex 26
+
+  f_minskill 28
+  f_maxskill 29
+  f_btype 30
+  f_chassis 31
+  f_engine 32
+  f_control 33
+  f_weapon 34
+
+  f_ok 50
+  f_alive 51
+  f_placed 52
+  f_ready 53
+  f_inside 54
+  f_driving 55
+  f_outside 56
+  f_constructed 57
+  f_empty 58
+  f_occupied 59
+  f_hastask 60
+  f_linked 61
+
+  f_enemy 81
+  f_ally 82
+  f_neutral 83
+
+  f_dist 91
+  f_distxy 92
+
+  f_see 101
+
+----- battle flag options
+
+  bfo_defend_bonus_human 1
+  bfo_defend_bonus_vehicle 2
+  bfo_defend_bonus_building 3
+  bfo_range 10
+  bfo_height 20
+
+----- character selection keywords
+
+  sel_hired -1
+  sel_not_hired -2
+  sel_changeable -3
+  sel_not_changeable -4
+  sel_change_class -5
+  sel_dont_change_class -6
+  sel_ignore_class_nation -7
+  sel_dont_ignore_class_nation -8
+
+----- macros
+
+  mc_move_wait 1
+  mc_move_through 2
+  mc_move_waitwp 3
+  mc_move_dontshoot 4
+  mc_move_dontcapture 5
+  mc_move_agressive 6
+  mc_base_cont 1
+
+  mc_reg_refresh_time 1
+  mc_reg_area_to_guard 2
+  mc_reg_area_to_protect 3
+  mc_reg_units_to_protect 4
+  mc_reg_expire_stops_to_attack 5
+  mc_reg_expire_leaves_area 6
+  mc_reg_ignore_fog 7
+  mc_reg_only_important 8
+  mc_reg_buildings 9
+
+  mc_def_advantage 1
+  mc_area_dont_leave 2
+  mc_def_change_to_soldiers 3
+  mc_def_change_to_mechanics 4
+  mc_retreat_lives_people 5
+  mc_retreat_lives_vehicles 6
+  mc_retreat_area_people 7
+  mc_retreat_area_vehicles 8
+
+  mc_out_of_fuel 9
+  mc_no_stop 10
+  mc_pat_aggresive 11
+
+  mc_done_killed_by_reg -2
+  mc_done_killed -1
+  mc_done_normal 0
+  mc_done_no_people 1
+
+--- building status
+
+  bs_error 0
+  bs_build 1
+  bs_idle 2
+  bs_working 3
+  bs_pause 4
+  bs_suspend 5
+  bs_need_people 6
+  bs_need_power 7
+  bs_need_extension 8
+  bs_need_ape 10
+  bs_waiting 9
+
+--- artifact icon state
+
+  art_no 0
+  art_gray 1
+  art_instant 2
+  art_place 3
+  art_unit 4
+  art_human 5
+  art_vehicle 6
+  art_building 7
+  art_friend_unit 8
+  art_friend_human 9
+  art_friend_vehicle 10
+  art_friend_building 11
+  art_enemy_unit 12
+  art_enemy_human 13
+  art_enemy_vehicle 14
+  art_enemy_building 15
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+$VARIABLES
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+tick
+your_side
+all_units RO
+
+----- multiplayer informations
+multiplayer RO
+multi_players RO
+
+mp_player_side RO
+mp_player_team RO
+
+mp_people RO
+//obsolete
+mp_names RO
+//obsolete
+mp_nations RO
+//obsolete
+
+mp_teams RO
+//dvourozmerny seznam rozdeleni stran do teamu
+
+mp_selectmsg
+
+mp_sides_teams RO
+//osmiprvkovy seznam, je zde pro kazdou stranu cislo tymu nebo 0
+mp_sides_nations RO
+//osmiprvkovy seznam, je zde pro kazdou stranu narodnost nebo 0
+mp_sides_positions RO
+//osmiprvkovy seznam, je zde pro kazdou stranu cislo pozice (viz multidesc.wri v _multiplayer\@pavlicek_test) nebo 0
+mp_sides_players_counts RO
+//osmiprvkovy seznam, je zde pro kazdou stranu pocet hracu
+
+----- unit creating
+uc_side
+uc_nation
+uc_x
+uc_y
+uc_direction
+uc_placed
+
+hc_name
+hc_sex
+hc_class
+hc_attr
+hc_basic_skills
+hc_skills
+hc_importance
+hc_gallery
+// if hc_gallery is set then hc_face_number matters
+hc_face_number
+hc_agressivity
+// apemen only
+hc_last_mission
+// sail adds experience for missions between this mission and current mission, if booth are non-zero
+// set this before each CreateHuman, because CreateHuman resetss this value
+
+vc_chassis
+vc_control
+vc_engine
+vc_weapon
+vc_fuel_battery
+
+bc_type
+bc_level
+bc_kind1
+bc_kind2
+bc_tread
+
+display_strings
+----- debug
+debug_strings
+
+----- sail switchs 
+---(obsolete)
+com_queue
+-----
+disable_prediction
+enable_human_prediction
+
+----- game switchs
+ingame_video
+stop_action
+stop_talking
+end_the_mission_allowed
+stored_tick
+dialogue_skipped
+
+----- mission results
+mission_result
+// in format [ident,number]
+gained_medals
+missing_medals
+// both in format [[ident,number],...]
+end_of_mission
+
+----- engine parameters
+max_undisplayed_ticks
+game_speed
+SAIL_randseed
+
+----- mission informations
+difficulty
+mission_name RO
+campaign_id RO
+mission_number RO
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+$FUNCTIONS
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+Replace li- list, index, item
+// replaces item of list with specified index with another, returns result
+// if index>n (n=length of list), then positions n+1 to index-1 are filled by undef value
+Insert li- list, index, item
+// inserts item to list at specified position (1 - before first, n - before n-th), returns result
+// if index>n+1 (n=length of list), then positions n+2 to index-1 are filled by undef value
+Delete li list, index
+// deletes item from list, returns result
+// if index is out of list, then happens nothing
+
+ExclusiveOn 0
+// stops all other threads of SAIL until ExclusiveOff is executed or this thread ends
+ExclusiveOff 0
+// cancels effect of ExclusiveOn
+DialogueOn 0
+// function, which: store tick, switch stop_action to true, set ExclusiveOn
+DialogueOff 0
+// function, which: restore tick, switch stop_action to false, set ExclusiveOff
+InGameOn 0
+// function, which: store tick, switch ingame_video to true, set ExclusiveOn
+InGameOff 0
+// function, which: restore tick, switch ingame_video to false, set ExclusiveOff
+
+Randomize 0
+// randomize SAIL random numbers
+RandomizeAll 0
+// randomize all random numbers in game
+Rand ii min, max
+// random number in selected range
+Prob i per
+// returns true on per percent (Rand(1,100)<=per)
+MultiRand iii min, max, n
+// random number in selected range, made by n Rand
+
+RandHex b border
+// returns coordinate of random hex anywhere on map in format [x,y]
+// if border is true, then bordering hexes can be included
+RandHexArea ib area, border
+// returns coordinate of random hex in specified area in format [x,y] (or 0 if fails)
+// if border is true, then bordering hexes can be included
+RandHexXYR iiib x, y, r, border
+// returns coordinate of random not invalid hex near to xy (max. dist is R) in format [x,y] (or 0 if fails)
+// if border is true, then bordering hexes can be included
+
+InitUc 0
+// Initializes unit create structure to default values
+InitHc 0
+// Initializes human create structure to default values
+InitVc 0
+// Initializes vehicle create structure to default values
+InitBc 0
+// Initializes building create structure to default values
+
+SaveForQuickRestart 0
+// use it after ingame videos and character selection - quick restart will start from this point
+
+OpenCampaignFile s fname
+// opens campaign file fname.txt in mission directory and loads data (use only for debuging)
+SaveCampaignFile s fname
+// saves actualised campaign file to fname.txt in mission directory (use only for debuging)
+
+NewCharacter s ident
+// Loads and create a new global character (which was never saved before), returns its handle
+PrepareNewCharacter s ident
+// Prepares hc_ and uc_ structures for a new global character (which was never saved before)
+
+TestVariable s ident
+// Returns true if there is a variable with specified ident in the save
+TestCharacters s ident
+// Returns true if there is a character or group of characters with specified ident in the save
+CheckCharacterSet s ident
+// Returns number of characters in character set from the save
+// (if there is an empty set in the save, CheckCharacterSet returns 0, but TestCharacter returns true)
+LoadVariable s- ident, default
+// Loads a variable with specified ident from the save (or default if ident is not found)
+CreateCharacterSet s ident
+// Loads a set of characters with specified ident from the save
+// Creates people from it (except dead characters) using some uc_side and returns set of its handles
+CreateOneCharacterFromSet si ident, index
+// Same as CreateCharacterSet, but only one unit is created (the one with specified index in the set)
+CreateOneCharacterFromSetWithClass sii ident, index, cl
+// Same as CreatePeopleFromCharacterSet, but character gets specified class
+CreateCharacter s ident
+// Shortcut for CreateOneCharacterFromSet(ident,1)
+CreateCharacterWithClass si ident, cl
+// Shortcut for CreateOneCharacterFromSetWithClass(ident,1,cl)
+PrepareOneCharacterFromSet si ident, index
+// Same as CreateOneCharacter, but character is only prepared (not created yet), returns true if succeeds
+PrepareCharacter s ident
+// Shortcut for PrepareOneCharacterFromSet(ident,1)
+
+SaveCharacters ls humlist, ident
+// Saves set of human characters to the output save and gives it specified ident
+// For special characters use:
+// SaveCharacters(handle,name) in one mission and handle:=CreateCharacter(name) in the next mission
+// For survived people from previous mission use
+// SaveCharacters(set,name) in one mission and set:=CreateCharacterSet(name) in the next mission
+SaveVariable -s v, ident
+// Saves variable to the save with specified ident
+
+DeleteCharacters s ident
+// Deletes character set from the save
+DeleteVariable s ident
+// Deletes a character from the save
+
+CharacterSelection siill ident, min, max, units, classes
+// Displays Character selection menu and returns list of characters selected by player
+// - ident is identifier of caption from Texts.txt
+// - min and max are minimum and maximum number of hired character to close dialog
+// - units is list of units, which can contain special commands which affects all following units:
+//      sel_hired - following character are hired at start (default)
+//      sel_not_hired - following character are not hired at start
+//      sel_changeable - player can fire/hire following characters
+//      sel_not_changeable - player cannot fire/hire following characters (default)
+//      sel_change_class - player can change class of following characters
+//      sel_dont_change_class - player cannot change class of following characters (default)
+//      sel_ignore_class_nation - following characters can be changed to class indepedning its nation
+//      sel_dont_ignore_class_nation - following characters can be changed only to classes of its nation (default)
+// - classes is list of posibly classes to which can be units changed. Every items may be in two formats:
+//      class_number - this class can be used without limitations
+//      [class_number,min] - you must select at least min characters with this class
+//      [class_number,min,max] - you must select min to max characters with this class
+//
+// Example1 (select up to five mechanic and soldiers from gamma2 and gamma3):
+// CharacterSelection('S1',1,6,
+//                     [JMM, sel_not_hired, sel_changeable] ^ gamma2 ^ gamma3,
+//                     [class_soldier, class_mechanic]);
+// Example2 (select up to five men from gamma2 to help John and Tim build a base)
+// CharacterSelection('S2',3,7,
+//                     [sel_changeable, JMM, sel_not_changeable, Tim, sel_not_hired, sel_changeable] ^ gamma2,
+//                     [class_soldier, class_mechanic, [class_engineer,1], class_scientistic]);
+//
+
+RewardPeople l humans
+// gives mission reward to list of human characters (use before save)
+
+
+CreateHuman 0
+// Creates human using uc_ and hc_ parameters
+CreateVehicle 0
+// Creates vehicle using uc_ and vc_ parameters
+CreateBuilding 0
+// Creates a building using uc_ and bc_ parameters
+CreateAndPlaceBuildingXYD iii x, y, direction
+// Creates a building using uc_ and bc_ parameters
+
+PlaceUnitXY iiib un, x, y, materialisation
+// Places unit at specified coordinates, returns true if succeedes
+// If materialisation is true, unit is materialised
+PlaceUnitArea iib un, area, materialisation
+// Places unit into specified area, returns true if succeedes
+// If materialisation is true, unit is materialised
+PlaceUnitXYR iiiib un, x, y, r, materialisation
+// Places unit near specified coordinates (max. dist is r), returns true if succeedes
+// If materialisation is true, unit is materialised
+PlaceUnitAnywhere ib un, materialisation
+// Places unit anywhere on map, returns true if succeedes
+// If materialisation is true, unit is materialised
+
+PlaceHumanInUnit ii hum, un
+// Places unplaced human into a placed or unplaced unit
+LinkVehicleToHuman ii veh, hum
+// Links vehicle to a human in Control tower
+
+CreateCratesXY iiib amount, x, y, materialisation
+CreateCratesArea iib amount, area, materialisation
+CreateCratesXYR iiiib amount, x, y, r, materialisation
+CreateCratesAnywhere ib amount, materialisation
+
+CreateResourcesXY iiiib typ, amount, x, y, materialisation
+CreateResourcesArea iiib typ, amount, area, materialisation
+CreateResourcesXYR iiiiib typ, amount, x, y, r, materialisation
+CreateResourcesAnywhere iib typ, amount, materialisation
+
+CreateDepositXY iii x, y, typ
+// creates deposit of mat_siberite or mat_oil type on specified coordinates
+RemoveDepositXY ii x, y
+// removes deposit of any type on specified coordinates
+
+RemoveUnit i un
+// Removes specified unit from map
+DestroyUnit i un
+// Destroys specified unit (include removing, if placed)
+KillUnit i un
+// Kills specified unit by setting its lives to zero
+
+Wait i ticks
+// waits for specified number of ticks, ignores asynchronous mode
+DWait i ticks
+// waits for specified number of ticks,
+
+FilterAllUnits l filter
+// filters list of all units using filter
+FilterUnitsInArea il area, filter
+// filters list of units in specified area using filter
+FilterUnitsExceptArea il area, filter
+// filters list of units not in specified area using filter
+UnitFilter ll units, filter
+// filters list of unit using filter
+
+NearestUnitToXY lii units, x, y
+// Returns nearest unit from list units to position (x,y), or zero if units is empty
+NearestUnitToUnit li units, un
+// Returns nearest unit from list units to unit un (ignoring un itself), or zero
+AllNearestUnitToUnit li units, un
+// Returns all nearest unit from list units to unit un (ignoring un itself), or zero
+
+SortListByListAsc -- items, values
+// Returns list items ascending sorted by asociated integer list values
+// If lists aren't the same size, only smaller length of list is used
+SortListByListDesc -- items, values
+// Returns list items descending sorted by asociated integer list values.
+// If lists aren't the same size, only smaller length of list is used
+WorstFromListByList -- items, values
+// Returns SortListByListAsc(items,values)[1], or zero iv values is empty. Faster than SortListByListDesc
+BestFromListByList -- items, values
+// Returns SortListByListDesc(items,values)[1], or zero iv values is empty. Faster than SortListByListAsc
+
+SetAttitude iiib fromside, toside, att, sym
+// sets attitude to att (if sym then sets the symetric relation too)
+GetAttitude ii fromside, toside
+// returns attitude
+
+CenterOnXY ii x, y
+// centers screen on specified coordinates with scrolling
+CenterOnUnits l units
+// centers screen to specified group of units with scrolling
+CenterNowOnXY ii x, y
+// centers immediatelly screen on specified coordinates
+CenterNowOnUnits l units
+// centers immediatelly screen to specified group of units
+
+Say is un, ident
+// Specified unit says sentence identified by ident
+SayNoFace is un, ident
+// Specified unit says sentence identified by ident, it's face not appears
+SayNoName is un, ident
+// Specified unit says sentence identified by ident, it's name doesn't appear - use for enemies
+ForceSay is un, ident
+// Specified unit says sentence identified by ident even if it is dying (but not dead)
+ForceSayNoName is un, ident
+// Specified unit says sentence identified by ident even if it is dying, it's name doesn't appear
+ForceSayNoFace is un, ident
+// Specified unit says sentence identified by ident even if it is dying, it's face doesn't appear
+SayRadio is un, ident
+// Specified unit says over radio sentence identified by ident, use for off map units
+SayRadioNoName is un, ident
+// Specified unit says over radio sentence identified by ident, it's name doesn't appear
+
+Query s ident
+// Displays query dialog defined in texts, returns number of answer (1..n)
+SelectiveQuery sl ident, list
+// Displays query dialog defined in texts, returns number of answer (1..n)
+// List contains numbers of items which will be shown
+BuildQuery sl q, al
+// Displays query dialog with question q and list of answers al
+Msg s m
+// Shortcut to BuildQuery(m,['OK']);
+
+AddMedal si ident, number
+// if number>0 then adds [ident,number] item to gained_medals
+// if number<0 then adds [ident,-number] item to missing_medals
+GiveMedals s ident
+// xxx
+YouWin 0
+// xxx
+YouLost s ident
+// xxx
+YouDidSomethingExtraordinary 0
+// xxx
+YouWinInMultiplayer 0
+// xxx
+YouLostInMultiplayer 0
+// xxx
+MultiplayerSideAlive i side
+// returns true, if there is at least one player playing this side
+
+
+SetTag ii index, value
+// sets tag[index] to value
+GetTag i index
+// gets value of tag[index]
+
+ComMoveXY lii units, x, y
+// set of units receives move command to specified coordinates
+ComMoveUnit li units, un
+// set of units receives move command to specified unit
+ComMoveToArea li units, area
+// set of units receives move command to specified area
+ComAgressiveMove lii units, x, y
+// set of units receives agressive move command to specified coordinates
+ComAttackUnit li units, un
+// set of units receives attack command to specified unit
+ComCollect lii units, x, y
+// set of units receives collect command to specified coordinates
+ComTurnXY lii units, x, y
+// set of units receives turn command to specified coordinates
+ComTurnUnit li units, un
+// set of units receives turn command to specified unit
+
+ComEnterUnit li units, un
+// set of units receives enter specified unit command
+ComExitVehicle l units
+// set of units receives exit vehicle command
+ComExitBuilding l units
+// set of units receives exit building command
+ComChangeProfession li units, new_prof
+// set of units receives change profession to new_prof command
+
+ComResearch li units, techn
+// set of labs receives research technology techn command
+ComConstruct liiii units, chassis, engine, control, weapon
+// set of factories receives construct vehicle with specified components command
+ComPause l units
+// set of buildings receives pause research or construction command
+ComCancel l units
+// set of buildings receives cancel research or construction command
+
+ComHeal li units, un
+// set of units receives heal specified unit command
+ComRepairVehicle li units, un
+// set of units receives repair specified vehicle command
+ComRepairBuilding li units, un
+// set of units receives repair specified building command
+ComTameXY lii units, x, y
+// set of units receives tame command
+
+ComPlaceDelayedCharge liii units, x, y, un
+// set of units receives command for place explosives to [x,y] or near unit un
+ComPlaceRemoteCharge liii units, x, y, un
+// set of units receives command for place explosives to [x,y] or near unit un
+ComFireExplosives l units
+// set of units receives fire remote controlled explosives command
+ComLinkTo li units, hum
+// set of vehicles receives link to specified human command
+ComUnlink l units
+// set of vehicles receives unlink command
+
+ComCrawl l units
+// set of units receives crawl command
+ComWalk l units
+// set of units receives walk command
+ComFree l units
+// set of units receives free command
+ComHold l units
+// set of units receives hold command
+ComStop l units
+// set of units receives stop command
+ComWait li units, time
+// set of units receives wait command
+
+ComRemember l units
+// set of units receives remember command
+ComReturn l units
+// set of units receives return command
+
+ComBuild liiii units, bud, x, y, dir
+// set of units receives build command
+ComUpgrade l units
+// list of units receives command upgrade
+ComUpgradeLab li units, labtype
+// list of units receives command upgrade to specified laboratory
+ComPlaceWeapon li units, weap
+// list of turrets and bunkers receives place specified weapon command
+
+ComAnim li units, atype
+// list of units receives do specified animation command
+ComRefuel li units, un
+// list of units receives refuel command
+ComTransport lii units, un, mattype
+// list of units receives transport command
+
+ComInvisible l units
+// list of units receives invisible command
+ComSpaceShift lii units, x, y
+// list of units receives command to use spaceshifting grenade
+ComTimeShift lii units, x, y
+// list of units receives command to use timeshifting grenade
+ComHack li units, un
+// list of units receives hack command
+ComTeleportExit liii units, x, y, un
+// list of units receives command for place exit of teleport un to [x,y]
+ComHiddenCamera lii units, x, y
+// list of units receives place hidden camera
+ComContaminate lii units, x, y
+// list of units receives contaminate siberite deposit
+
+ComUnload l units
+// list of units receives cargo unload command
+ComGet lii units, x, y
+// list of units receives simple get cargo command
+ComGive li units, un
+// list of units receives simple give cargo command
+ComCarabine l units
+// list of sheiks receives CarabineOn command
+ComSabre l units
+// list of sheiks receives SabreOn command
+ComSailEvent li units, num
+// unit raises generic event SailEvent(num)
+ComStand l units
+// set of units receives stand command
+ComAttackSoporific li units, un
+// attack unit un with soporific amunition
+
+AddComMoveXY lii units, x, y
+// set of units receives move command to specified coordinates
+AddComMoveUnit li units, un
+// set of units receives move command to specified unit
+AddComMoveToArea li units, area
+// set of units receives move command to specified area
+AddComAgressiveMove lii units, x, y
+// set of units receives agressive move command to specified coordinates
+AddComAttackUnit li units, un
+// set of units receives attack command to specified unit
+AddComCollect lii units, x, y
+// set of units receives collect command to specified coordinates
+AddComTurnXY lii units, x, y
+// set of units receives turn command to specified coordinates
+AddComTurnUnit li units, un
+// set of units receives turn command to specified unit
+
+AddComEnterUnit li units, un
+// set of units receives enter specified unit command
+AddComExitVehicle l units
+// set of units receives exit vehicle command
+AddComExitBuilding l units
+// set of units receives exit building command
+AddComChangeProfession li units, new_prof
+// set of units receives change profession to new_prof command
+
+AddComResearch li units, techn
+// set of labs receives research technology techn command
+AddComConstruct liiii units, chassis, engine, control, weapon
+// set of factories receives construct vehicle with specified components command
+AddComPause l units
+// set of buildings receives pause research or construction command
+AddComCancel l units
+// set of buildings receives cancel research or construction command
+
+AddComHeal li units, un
+// set of units receives heal specified unit command
+AddComRepairVehicle li units, un
+// set of units receives repair specified vehicle command
+AddComRepairBuilding li units, un
+// set of units receives repair specified building command
+AddComTameXY lii units, x, y
+// set of units receives tame command
+
+AddComPlaceDelayedCharge liii units, x, y, un
+// set of units receives command for place explosives to [x,y] or near unit un
+AddComPlaceRemoteCharge liii units, x, y, un
+// set of units receives command for place explosives to [x,y] or near unit un
+AddComFireExplosives l units
+// set of units receives fire remote controlled explosives command
+AddComLinkTo li units, hum
+// set of vehicles receives link to specified human command
+AddComUnlink l units
+// set of vehicles receives unlink command
+
+AddComCrawl l units
+// set of units receives crawl command
+AddComWalk l units
+// set of units receives walk command
+AddComFree l units
+// set of units receives free command
+AddComHold l units
+// set of units receives hold command
+AddComStop l units
+// set of units receives stop command
+AddComWait li units, time
+// set of units receives wait command
+
+AddComRemember l units
+// set of units receives remember command
+AddComReturn l units
+// set of units receives return command
+
+AddComBuild liiii units, bud, x, y, dir
+// set of units receives build command
+AddComUpgrade l units
+// list of units receives command upgrade
+AddComUpgradeLab li units, labtype
+// list of units receives command upgrade to specified laboratory
+AddComPlaceWeapon li units, weap
+// list of turrets and bunkers receives place specified weapon command
+
+AddComAnim li units, atype
+// list of units receives do specified animation command
+AddComRefuel li units, un
+// list of units receives refuel command
+AddComTransport lii units, un, mattype
+// list of units receives transport command
+
+AddComInvisible l units
+// list of units receives invisible command
+AddComSpaceShift lii units, x, y
+// list of units receives command to use spaceshifting grenade
+AddComTimeShift lii units, x, y
+// list of units receives command to use timeshifting grenade
+AddComHack li units, un
+// list of units receives hack command
+AddComTeleportExit liii units, x, y, un
+// list of units receives command for place exit of teleport un to [x,y]
+AddComHiddenCamera lii units, x, y
+// list of units receives place hidden camera
+AddComContaminate lii units, x, y
+// list of units receives contaminate siberite deposit
+
+AddComUnload l units
+// list of units receives cargo unload command
+AddComGet lii units, x, y
+// list of units receives simple get cargo command
+AddComGive li units, un
+// list of units receives simple give cargo command
+AddComCarabine l units
+// list of sheiks receives CarabineOn command
+AddComSabre l units
+// list of sheiks receives SabreOn command
+AddComSailEvent li units, num
+// unit raises generic event SailEvent(num)
+AddComStand l units
+// set of units receives stand command
+AddComAttackSoporific li units, un
+// attack unit un with soporific amunition
+
+SetRememberedX ii un, value
+// sets ComReturn x coordinate of a unit
+SetRememberedY ii un, value
+// sets ComReturn y coordinate of a unit
+SetDir ii un, dir
+// sets direction to an unplaced unit
+SetLives li units, value
+// set lives of specified units to value
+SetSide li units, value
+// set side of specified units to value
+SetSideBase ii base, value
+//set side of complete base
+SetSkill lii units, sk, value
+// set skill sk of specified human units to value
+GiveSkillBonus lii units, sk, value
+// increases basic skill sk of units by value
+SetAttr lii units, attr, value
+// set attribute attr of specified human units to value
+SetFuel li units, percent
+// sets fuel of specified combustion or solar vehicles list
+SetBLevel li units, blevel
+// sets basic level of building(s)
+
+TeleportExit iii un, x, y
+// creates exit on [x,y] for teleport un
+HiddenCamera iii x, y, side
+// creates hidden camera
+
+SetLastMission li humans, number
+// changes last mission in which characters humans was present (nepouzivat)
+GiveMissionExperience li humans, number
+// gives default experience for mission number to characters humans (nepouzivat)
+
+GetType i un
+// returns type of unit (unit_human, unit_vehicle, unit_building)
+GetNation i un
+//returns nation of unit
+GetIdent i un
+// returns ident of specified unit (for debuging listings etc.)
+GetX i un
+// returns x coordinate of a unit
+GetY i un
+// returns y coordinate of a unit
+GetRememberedX i un
+// returns ComReturn x coordinate of a unit
+GetRememberedY i un
+// returns ComReturn y coordinate of a unit
+GetDir i un
+// returns direction of a unit
+GetSide i un
+// returns side of a unit
+GetLives l units
+// returns average lives of specified units
+GetClass i un
+// returns class of specified human unit
+GetSex i un
+// returns sex of specified human unit
+GetSkill li units, sk
+// returns average skill sk of specified human units
+GetAttr li units, attr
+// returns average attribute attr of specified human units
+GetFuel l units
+// returns average fuel of specified combustion or solar vehicles list
+GetEngine i un
+//returns type of vehicle engine
+GetControl i un
+//returns type of vehicle control
+GetWeapon i un
+//returns type of vehicle weapon
+GetChassis i un
+//returns type of vehicle chassis
+GetBType i un
+//returns type of building, if un is not a building, returns -1
+GetBLevel i un
+//returns level of building, if un is not a building, returns -1
+GetLabKind ii un, which
+//return kind of laboratory, which is 1 or 2
+GetBWeapon i un
+//returns type of weapon (in case of turret or bunker, zero otherwise)
+GetExtPositions i un
+//returns list of factory extensions positions [[x,y],[x,y],[x,y],[x,y],[x,y]]
+
+ShiftX iii x, dir, dist
+// returns x coordinate shifted by dist hexes in direction dir
+ShiftY iii y, dir, dist
+// returns x coordinate shifted by dist hexes in direction dir
+
+GetBase i un
+// returns base of specified building (or zero, if it is not building)
+GetResourceType ii base, mattype
+// returns amount of material of specified type in specified base
+AddResourceType iii base, mattype, amount
+// adds resource of specified type to the specified base
+SetResourceType iii base, mattype, amount
+// sets resource of specified type to the specified base
+GetEnergy i base
+// returns list of power values: [need,needmax,prod,prodmax]
+GetResources i base
+// returns list of base resources: [cans,oil,sib]
+
+CanCarry i un
+// returns true if unit is engineer or cargo holder
+Carry i un
+// returns true if unit carries something
+CanCarryNext i un
+// returns true if unit is not full
+
+GetResourceTypeXY ii x, y
+// returns resource type on specified hex or zero
+GetResourceAmountXY ii x, y
+// returns amount of resources on specified hex
+ChangeResourceAmountXY iii x, y, n
+// changes amount of existing resources on specified hex
+EraseResourceArea ii ar, typ
+// erases all resources in of specified type in specified area
+GetResourceArea ii ar, typ
+// returns all resources in of specified type in specified area
+
+GetCargoType l units
+// returns type of cargo (mat_none, mat_cans, mat_oil, mat_siberite, mat_multi)
+GetCargo li units, mattype
+// returns (total) amount of mattype
+SetCargo lii units, mattype, amount
+// sets amount of mattype (each unit in list); returns true if (all) succeed
+AddCargo lii units, mattype, amount
+// adds amount of mattype (each unit in list); returns true if (all) succeed
+
+See ii side, un
+// returns true if side sees specified unit
+SeeXY iii side, x, y
+// returns how good side sees specified hex
+SeeArea ii side, area
+// returns how much hexes of specified area side sees
+GetFreeMode i un
+// returns true if unit is in free mode
+
+GetDistUnits ii un1, un2
+// returns distance of two units, 99999 if one or both of them aren't on the map
+GetDistUnitXY iii un1, x, y
+// returns distance of a unit and a hex, 99999 if unit isn't on the map
+GetDistXY iiii x1, y1, x2, y2
+// returns distance of two hexes
+GetDistUnitArea ii un, area
+// returns distance of a unit and the closest hex in the area (0 if it is in area)
+
+IsLive i un
+// returns true if unit is on map and not dead
+IsDead i un
+// returns true if unit is dead (lives on zero or totally destroyed)
+IsOK i un
+// returns true if unit is on map and not dying
+IsDying i un
+// returns true if unit is on map and dying
+IsConstructed i build
+// returns nonzero number, if build is building under construction or if it is upgraded
+IsPlaced i un
+//returns true if unit un is placed
+IsSelected l units
+//returns true if selected
+
+IsAt iii un, x, y
+// returns true if unit is at specified coordinates
+IsInArea ii un, area
+// returns true if unit is in specified area (it can be driving or inside)
+InArea iii x, y, area
+// returns true if [X,Y] is in specified area
+
+IsInUnit i hum
+// returns number of unit in which a unit is or zero
+IsDrivenBy i veh
+// returns number of driver of a human controlled vehicle, zero otherwise
+IsControledBy i veh
+// returns number of driver of a remote controlled vehicle, zero otherwise
+UnitsInside i un
+// returns list of units inside building (or vehicle) un
+
+HasTask i un
+// returns true if unit has a tasks from player or SAIL
+IsBusy i un
+// returns true if unit has a tasks (even its own)
+IsIdle i un
+// returns true if unit does nothing
+IsTamedBy i un
+// returns number of tamer of this animal, zero otherwise
+Crawls l units
+// returns number of crawling units in list (0=false)
+
+WantsToAttack i un
+// returns number of unit which is target of attack command of unit un, or zero
+Attacks i un
+// returns number of unit which is curently attacked by unit un (aiming counts as attack), or zero
+
+GetTech ii tech, side
+// returns state of technology for side
+SetTech iii tech, side, state
+// sets state of technology for side
+GetRestrict ii btype, side
+// returns restriction btype for side
+SetRestrict iib btype, side, state
+// sets restriction btype for side
+Researched ii side, tech
+// returns true if tech is researched (obsolete)
+GetTechProgress ii tech, side
+// returns progress of technology research for side
+SetTechProgress iii tech, side, percentage
+// sets progress of technology research for side
+
+RevealFogArea ii side, area
+// reveals fog for specified side in specified area
+HideArea ii side, area
+// sets specified area invisible for specified side
+ShowArea ii side, area
+// reveal an area hiden by HideArea
+SetClass li units, value
+// sets immediatelly class of units to value
+
+ChangeMissionObjectives s ident
+// change mission objectives, s is ident in Texts.txt
+Hint s ident
+// adds hint
+ChangeMap ss ident, fname
+// changes map, ident identifies text while loading, fname is name of the map in the same directory (without path)
+ExitGame
+// exits game (debug)
+
+GetSideFog i side
+// returns number of fog of specified side
+ChangeSideFog ii side, fognumber
+// set fog of specified side to specified fognumber
+FogOff i sw
+// if sw is true, fog is off
+BuildingsInProgress i side
+// returns true if construction of any buildings of specified side isn't finish
+
+ReplaceEnvironment iiii x, y, envset, num
+// replaces environment on x, y by element num from set
+RemoveEnvironment ii x, y
+// removes environment on x, y
+PlaceEnvironment iiii x, y, envset, num
+// creates environment num from set envset on x, y
+PlaceRandEnvironment iii x, y, envset
+// creates random environment from set envset on x, y
+IsEnvironment ii x, y
+// returns true if there is an environment on x, y
+PlaceTreesToArea iliii area, sets, count, trials, dist
+// creates count trees in area, set selects randomly from list of sets
+// for each tree makes some amount of trials and selects the one with less other trees within dist
+// note than tree in distance 1 is twice worse than tree in distance 2 etc.
+ListEnvironmentArea i area
+//returns list of environments in area; [[x,y,envset,num],...]
+PlaceEnvironmentList l list
+//creates environments; [[x,y,envset,num],[x,y,envset]...]; num may not be defined
+
+SiberiteRocket iii- x, y, n, list
+// emulates n-th phase of siberite rocket explosion on list of units
+PrepareSiberiteRocket 0
+// prepares siberite rocket explosion
+SiberiteExplosion ii x, y
+// create siberite explosion
+
+DebugLog - text
+// debug log (prcek)
+DebugLogAll 0
+// log CRC etc. (rumun)
+MultiplayerCRC 0
+// sends a multiplayer control message (vlada)
+
+GetGraphicsGamma 0
+// returns gamma correction from setting
+SetGraphicsGamma i gamma
+// sets gamma correction of display
+GetGraphicsBrightness 0
+// returns gamma correction from setting
+SetGraphicsBrightness i brightness
+// sets brightness of display
+
+PlaySoundXY iis x, y, ident
+// plays sound with ident from coordinates x, y
+
+StopMusic 0
+// stops music
+PlayMusic s ident
+// stops current music and play new
+PlayMusicNoLoop s ident
+// stops current music and play new, no other is played after this new ends
+AddMusic s ident
+// after current music track stops the new is played
+InsertMusic s ident
+// stops current music and play new, then starts current again
+MusicIsPlaying 0
+// returns true if music is playing
+
+
+PrepareAttr i sex
+// prepares random attributes for specified sex (or common, if zero)
+PrepareClassSkills ii cl, level
+// prepares skills for human with class cl (this skill is near specified level)
+// negative level means that this human is specialist
+PrepareSoldierSkills i level
+// prepares skills for soldier, main skill is near specified level (uses PrepareClass)
+PrepareEngineerSkills i level
+// prepares skills for engineer, main skill is near specified level (uses PrepareClass)
+PrepareMechanicSkills i level
+// prepares skills for mechanic, main skill is near specified level (uses PrepareClass)
+PrepareScientistSkills i level
+// prepares skills for scientist, main skill is near specified level (uses PrepareClass)
+PrepareCustomSkills l list
+// prepares randomly skills for human creating, give list of four levels as a parameter:
+// if one of parameters is negative, then this skill counts as basic
+
+PrepareHuman iii sex, cl, lev
+// prepares parameters for a human with specified sex, class and level (0=random for sex or class)
+// negative level means that this human is specialist
+PrepareSoldier ii sex, lev
+// prepares parameters for a soldier with specified sex and level (0=random for sex)
+PrepareEngineer ii sex, lev
+// prepares parameters for a engineer with specified sex and level (0=random for sex)
+PrepareMechanic ii sex, lev
+// prepares parameters for a mechanic with specified sex and level (0=random for sex)
+PrepareScientist ii sex, lev
+// prepares parameters for a scientist with specified sex and level (0=random for sex)
+
+WaitForMc i mcid
+// waits for finishing of macro mcid
+ExistMc i mcid
+// if macro mcid exists, returns true, otherwise false
+KillMc i mcid
+// if macro mcid exists, closes macro and returns true; otherwise returns false
+GetUnitMc i un
+// returns mcid of macro which uses unit un; returns zero if not used
+GetMcUnits i mcid
+// returns list of units of the macro mcid
+AddMcUnits il mcid, units
+// changes list of units of the macro mcid; returns true if succesfull
+RemoveMcUnits il mcid, units
+// changes list of units of the macro mcid; returns true if succesfull
+ClearMcUnits i mcid
+// clears list of units of the macro mcid; returns true if succesfull
+
+McBase illlll prior, units, build, research, construct, options
+// runs macro and returns mcid
+// build must be BuildList, researchs - list of techs, construct - not implemented
+
+McMove illl prior, units, waypoints, options
+// runs macro and returns mcid
+// informace u Pedra
+
+McRegistry il side, options
+// Runs macro for automatic registration of enemies of side in specified intervals and returns mcid.
+// Every registration gives count and strength of all registered units as its result. If registration
+// returns different result than a previous (or nonzero in first registration), it raises event:
+//
+// McRegistrationResultChanges(mcid,count,strength).
+//
+// Value of strength has no real meaning, use it only for comparation with another result of
+// macro or for comparation with zero.
+//
+// Posible options (note that defarea can be given in two formats, as 'areanumber' or as '[x,y,r]'):
+//
+//   [mc_reg_refresh_time, ticks]            ... interval between two registrations (default 0$1)
+//   [mc_reg_area_to_guard, defarea]         ... registries enemies in defined area (default none)
+//   [mc_reg_area_to_protect, defarea]       ... registries enemies attacking units in specified area (default none)
+//   [mc_reg_units_to_protect, listofunits]  ... registries enemies attackign specified units (default none)
+//   [mc_reg_expire_stops_to_attack, ticks]  ... how long after enemy stops to attack the registration expires (default 0$3)
+//   [mc_reg_expire_leaves_area, ticks]      ... how long after enemy leaves area the registration expires (default 0$2)
+//   (-)mc_reg_ignore_fog                    ... ignores fog so you can see all enemies in area (default false)
+//   (-)mc_reg_only_important                ... doesn't raise event if result changes from nonzero value to another nonzero value (default false)
+//
+McRegistryChangeOptions il mcid, options
+// changes options of McRegistry with ident mcid
+
+McDefend iill prior, regid, units, options
+// runs McDefend macro and returns mcid
+// There must be running McRegistry macro to start McDefend - enemies are registred by this McRegistry. McDefend
+// starts after each registration of this McRegistry. Parameters:
+//
+//   [mc_def_advantage, percent]       ... how great advantage over enemy is enough (default 200, twice)
+//   [mc_area_dont_leave, defarea] ... area where must all defenders be (default none)
+//   (-)mc_change_to_soldiers          ... set here if McDefend can switch people to soldiers
+//   (-)mc_change_to_mechanics         ... set here if McDefend can switch people to mechanics
+
+McAttack iill prior, regid, units, options
+// runs McAttack macro and returns mcid
+// There must be running McRegistry macro to start McAttack - enemies are registred by this McRegistry. McAttack
+// starts after each registration of this McRegistry.
+
+McPatrol iill prior, regid, units, options
+// runs McPatrol macro and returns mcid
+// There must be running McRegistry macro to start McPatrol - enemies are registred by this McRegistry. McPatrol
+// starts after each registration of this McRegistry.
+
+GetBuildList - base_or_list
+// creates BuildList from whole base or list of units (buildings)
+
+SetBattleFlag iiil side, x, y, options
+// sets battle flag for specified side to specified coordinates and returns flagid
+// effect of flag depends on its options, default options:
+// [[bfo_defend_bonus_human,80],[bfo_defend_bonus_vehicle,40],[bfo_defend_bonus_building,0],[bfo_range,17],[bfo_height,100]]
+// distance: 0..range: full effect; range+1..range*2: decreasing effect
+KillBattleFlag i flagid
+// removes battle flag flagid (returns true if succesfull)
+FindBattleFlag ii x, y
+// returns flagid of battle flag on [x,y], or -1
+GetBattleFlagSide i flagid
+//returns side of existing battleflag
+ChangeBattleFlagSide ii flagid, side
+//changes side of existing battleflag
+ChangeBattleFlagOptions il flagid, options
+//changes options of existing battleflag
+
+SetAreaMapShow ii area, id
+// shows area on map and/or minimap
+GetMultiplayerSetting i index
+// returns value of multiplayer setting with specified index
+
+RaiseSailEvent i num
+// raises immediately generic event SailEvent(num)
+HexInfo ii x, y
+//returns number of unit on hex, 0 for free and -1 for environment
+
+SendSiberiteRocket ii x, y
+// siberite rocket will explode at hex x,y
+
+CanBeResearched ii labor, tech
+// returns if tech can be researched in lab (if tech is already researched, returns false)
+PlaceWeaponTurret ii un bc_weapon
+// place bc_weapon on turet or bunker un
+UnitsLinked i un
+// returns number of linked vehicles on unit
+FindMaxSkill li units skill
+// returns unit with max skill from units
+GetListOfCratesInArea i area
+// returns list of crates positions in area
+GetUnitActivity i un
+// returns units activity (constants in UDatStr.pas - cin...)
+GetTaskList i un
+// returns list of lists [task,x,y,obj,par1,par2,patrol]; siiiiib (UDatStr - ukol...)
+
+GetUnitNumber ii x y
+// returns number of unit at pos x, y
+FindNearestPoint lii list_of_points, x, y
+// returns nearest point to x y from list_of_points
+
+GetResourceVisibility iii x, y, side
+// returns true, if deposit at pos x, y is visible for side
+SetResourceVisibility iii x, y, side
+// sets deposit at pos x, y visible for side
+GetListOfResourcesInArea i area
+// returns list of deposits positions according to the type, [x,y,typ,...]
+FindMinSkill li units skill
+// returns unit with min skill from units
+CopyTasks ii un_dest, un_source
+// copy tasks from unit un_source to unit_dest
+
+CanBeConstructed iiiii factory, chassis, engine, control, weapon
+// returns if vehicle can be constructed in factory
+CostOfVehicle iiii chassis, engine, control, weapon
+// returns cost in list [cans,oil,sib]
+CostOfBuilding ii kind, nation
+// returns cost in list [cans,oil,sib]
+CostOfWeapon i weapon
+// returns cost in list [cans,oil,sib]
+
+SeeGreyArea ii side, area
+// returns how much hexes of specified area side sees + gray hexes
+
+MineExplosion iii x, y, wound
+// explosion of mine at x, y
+PlaceMine iiii x, y, side, typ
+// place mine at pos x, y. typ=0 - remote mine (result number of mine), typ>0 (timed mine - time in tick (1..100))
+LaunchMine i number
+// explosion of remote mine, that was placed by PlaceMine  //Rumun: DO NOT USE number, it changes
+LaunchMineAtPos iii x, y, side
+// launch mine at pos x, y, that was placed by PlaceMine
+ViewMineAtPos iii x, y, side
+// reveal mine at pos x, y for side_fog[side]
+MineAtPos ii x, y
+// returns true, if it is mine at pos x, y; otherwise false
+MineOfUnit i un
+// returns [x,y], if unit has placed remote charge; otherwise returns false
+
+BuildingStatus i un
+// returns building status (bs_???)
+ContactTime l sides           
+// time from last contact (parameter: side, or [side1,side2])
+InBattle l sides
+// battle detection (parameter: side, or [side1,side2])
+
+GetProperties i un
+// return list of unit properties [speed, defend, sight, range, eff1, eff2, eff3]
+ImagineProperties iii vehb, human, cl
+// return list of unit properties for vehb with human inside (cl 0 means actual class)
+
+CanCarryHowMuch i un
+// returns how much material can unit still carry
+
+SetArtifactRes ib side, state
+// allows researching of artifact technology
+SetArtifactUse ii side, state
+// allows use of artifact in labs (constants art_???)
+FindArtifact 0
+//finds artifact and returns its position [x,y], or false (not implemented)
+
+PriorityAttack ii side, un
+//prioritni utok strany side na jednotku un
+DoNotAttack ii side, un
+//neutoceni pro stranu side na jednotku un
+NormalAttack ii side, un
+//zruseni speciality pro stranu side na jednotku un
+
+EnableExclamations
+// exclamations enabled
+DisableExclamations
+// exclamations disabled
+
+AvailableChassisList i un
+// returns list of available components (chassis) - factory, workshop
+AvailableEngineList i un
+// returns list of available components (engines) - factory, workshop
+AvailableControlList i un
+// returns list of available components (controls) - factory, workshop
+AvailableWeaponList i un
+// returns list of available components (weapons) - factory, workshop, turret
+
+GetBuildingTechReq ii kind, nation
+//returns technology required to building of kind, nation (0 - free; -1 - not available to nation)
+GetTechTechsReq i tech
+//returns list of technologies required to research tech
+GetTechLab i tech
+//returns kind of lab required to research tech
+TechNationAvailable ii tech, nation
+//returns true if tech is available to nation
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+$EVENTS
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+UnitGoesToRed i un
+// when unit's un lives goes to red (humans fall, vehicles and building are burning)
+UnitDestroyed i un
+// when unit un has to be completly destroyed (you cannot prevent it now, it is too late)
+UnitKamikazed i un
+// when kamikaze-apeman or self-propelled-bomb attacks
+UnitGoesToSleep i un
+// when unit's un slept because of soporific ammunition (humans fall)
+
+VehicleConstructed ii veh, fact
+// when vehicle veh is constructed in factory fact
+VehicleConstructionStarted iiiii fact, chass, eng, cntrl, weap
+//when construction of vehicle is started in factory fact
+WeaponPlaced ii build, fact
+// when weapon is constructed in factory fact and placed to building build
+BuildingComplete i build
+// when building build construction is finished
+UpgradeComplete i build
+// when building build upgrade is finished
+ResearchComplete ii tech, lab
+// when technology tech research is finished in lab
+SibDepositContaminated iii un, x, y
+// when unit un finished contaminate siberite
+SiberiteRocketExploded iii un, x, y
+// when explode siberite rocket from unit un
+
+VehicleCaptured iiii vehnew, vehold, origside, hum
+// when vehicle vehold of side origside was captured by hum and was renumbered
+BuildingCaptured iii build, origside, eng
+// when building build of side origside was captured by engineer eng
+
+UnitTeleported ii tel, un
+//unit un was teleported by teleport tel
+DestinationUnreachable i in
+//unit un cannot reach destination
+
+ApemanTamed ii ape, sci
+// when Apeman ape is tamed by scientist sci
+MastodonTamed ii mast, noble
+// when mastodon mast is tamed by sheik noble
+TigerTamed ii tig, noble
+// when tiger tig is tamed by sheik noble
+
+SiberiteDepositDestroyed ii x, y
+// when siberite deposit is destroyed
+EndTheMissionRaised 0
+// when player click on button 'End the Mission' (variable end_the_mission_allowed must be true)
+DialogueSkipped i ignored
+// when player hits skip dialogue
+SailEvent i num
+// generic event raised by SAIL, unit or Console
+
+McDone ii mcid, state
+// macro mcid closes with state state
+Deinvisibled i un
+// unit un deinvisibled
+
+HumanDestroyed iiiiiiii  un,side,nation,x,y,direction,sex,class
+// when human un has to be completly destroyed (you cannot prevent it now, it is too late)
+VehicleDestroyed iiiiiiiiii un,side,nation,x,y,direction,chass,control,engine,weap
+// when vehicle un has to be completly destroyed (you cannot prevent it now, it is too late)
+
+EnterBuilding ii building, un
+// when unit un enter building
+LeaveBuilding ii building, un
+// when unit un leave building
+
+Contact ii side1, side2
+// detects contact (first attack, or after more then 1000 ticks); always side1<side2
+ActiveUnitChanged i un
+// unit un is active unit
+
+McRegistryResultChanges iii mcid, count, strength
+// McRegistration tick returns different result than previous tick
+McDefendTakesUnit ii mcid, unit
+// McDefend start to use an unit to do defend tasks
+McDefendReturnsUnit ii mcid, unit
+// McDefend stops to use an unit
+
+McAttackOutOfFuel ii mcid, un
+// A vehicle un in McAttack macro mcid is running out of fuel
+McAttackDone ii mcid, surv
+// McAttack finished with surv survivers
+
+McPatrolOutOfFuel ii mcid, un
+// A vehicle un in McPatrol macro mcid is running out of fuel
+McPatrolSeesEnemy ii mcid, un
+// McPatrol mcid sees an enemy unit un
+
+BuildingStarted ii build, hum
+// when building build construction is started by hum
+ArtifactResearchComplete i lab
+// when artifact research is finished in lab
+ArtifactUsed ii p1, p2
+// when artifact used to unit p1 or place [p1,p2] or instant
+ArtifactLoaded i un
+// when artifact loaded to unit un
+ArtifactUnloaded i un
+// when artifact unloaded from unit un (if 0, unit destroyed)
+
+BehemothConstructed i un
+// when behemoth constructed
+SpontaneousTeleported i un
+//when unit un goes to red and is spontaneous teleported

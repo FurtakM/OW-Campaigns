@@ -1,0 +1,77 @@
+
+on UnitDestroyed(un) do
+begin
+  if GetSide(un)=americans then
+    begin
+      us_patrol_1:=us_patrol_1 diff un;
+      us_patrol_2:=us_patrol_2 diff un;
+      us_sci:=us_sci diff un;
+      us_sol:=us_sol diff un;
+      if (not us_sci) and lab_destroyed and (not technology_taken) then
+        Mission_Failed(5);
+    end;
+
+  if un=Burlak then
+    Mission_Failed(1);                                           // Burlak zachcipal
+
+  if un=MacMillan then
+    Mission_Failed(2);                                           // MacMillan zachcipal
+
+  if (un=us_lab) then                                            // laborator znicena
+    begin
+      lab_destroyed:=true;
+      if not (us_sci or technology_taken) then
+        Mission_Failed(5);
+      if not query_started then
+        query_kill;
+    end;
+
+  if (GetSide(un)=you) and (GetType(un)=unit_vehicle) and
+     (GetWeapon(un) in [us_cargo_bay, ru_cargo_bay]) then        // cargo bay znicen, neni cim odvezt artefakt
+    Mission_Failed(6);
+end;
+
+
+on UnitGoesToRed(un) do
+begin
+  if un in [Burlak,MacMillan] and not FilterAllUnits([ [f_side,you], [f_type,unit_building], [f_btype,b_lab] ]) then
+    begin
+      if un=Burlak then
+        Mission_Failed(1);                                           // Burlak zachcipal
+
+      if un=MacMillan then
+        Mission_Failed(2);                                           // MacMillan zachcipal
+    end;
+
+  if (un=us_lab) and (not query_started) then
+    query_kill;
+end;
+
+
+on BuildingCaptured(building,orig_side,engeneer) do
+begin
+  if (building=us_depot) and (not query_started) and (not time_out) then
+    query_kill;
+
+  if (building=us_lab) then
+    begin
+      technology_taken:=true;
+      konecny_rozhovor;
+    end;
+end;
+
+
+on ArtifactLoaded(un,size) do
+begin
+  if not art_picked then
+    begin
+      art_picked:=true;
+      Artefact_Picked;
+    end;
+  art_cargo:=un;
+end;
+
+on ArtifactUnloaded(un,size) do
+begin
+  art_cargo:=false;
+end;

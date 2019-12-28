@@ -1,0 +1,103 @@
+
+//healeri mimo repairbay
+var healeri_mimo;
+function healeri_mimo_rb;
+begin
+  healeri_mimo=healeri diff filterunitsinarea(repairbay,[[f_type,unit_human],[f_ok]]);
+  result=healeri_mimo;
+end;
+
+every 0$0.9 trigger healeri_mimo_rb marked 17 do
+begin
+  if retreat>=0 then exit;
+  commovexy(healeri_mimo,84,90);
+  enable;
+end;
+
+//poskozeni rusaci sa vraceji a opravuji se
+var poskoz_;
+var kn_;
+every 0$0.7 do
+begin
+  if retreat>=0 then exit;
+  poskoz_=unitfilter(rusove0,[[f_type,unit_vehicle]]);
+  for kn_ in poskoz_ do begin
+    if getlives(kn_)<=hr_auta then begin
+      rusove0=rusove0 diff kn_;
+      poskoz=poskoz^[kn_];
+     end;
+  end;
+  poskoz_=unitfilter(rusove0,[[f_type,unit_human]]);
+  for kn_ in poskoz_ do begin
+    if getlives(kn_)<=hr_lidi then begin
+      rusove0=rusove0 diff kn_;
+      poskoz=poskoz^[kn_];
+    end;
+  end;
+  commovexy(poskoz,86,92);
+  enable;
+end;
+
+var pom_rupo;
+var driver;
+var kn__;
+every 0$1.5 do
+var poskpom,p95;
+begin
+  if retreat>=0 then exit;
+  poskpom=poskoz;
+  poskoz=[];
+  for p95 in poskpom do
+    if islive(p95) then poskoz=poskoz^[p95];
+
+  pom_rupo=filterunitsinarea(repairbay,[[f_side,rus],[f_type,unit_vehicle]]) isect poskoz;
+  for kn__ in pom_rupo do begin
+    driver=isdrivenby(kn__);
+    if driver then begin
+      comhold(driver);
+      setfuel(kn__,100);
+      comexitvehicle(kn__);
+      wait(0$0.5);
+      addcomrepairvehicle([driver],kn__);
+      addcommoveunit([driver],kn__);
+      //addcommovexy(driver,35,33);
+      addcomfree(driver);
+      poskoz=poskoz diff [kn__];
+      //repaired=repaired^[kn__];
+      rusove0=rusove0^[kn__];
+    end
+    else if unitfilter([kn__],[[f_control,control_computer]]) then
+      begin
+        poskoz=poskoz diff [kn__];
+        pacienti=pacienti^[kn__];
+      end;
+  end;
+  pom_rupo=filterunitsinarea(repairbay,[[f_side,rus],[f_type,unit_human]]) isect poskoz;
+  for kn__ in pom_rupo do begin
+    poskoz=poskoz diff [kn__];
+    pacienti=pacienti^[kn__];
+  end;
+  for kn__ in pacienti do begin
+    if getlives(kn__)>=950 then begin
+      pacienti=pacienti diff [kn__];
+      rusove0=rusove0^[kn__];
+    end;
+  end;
+  if pacienti>=1 then comheal(healeri,pacienti[1]);
+  enable;
+end;
+
+//bacha na vozitka co jsou prebarvena
+on vehiclecaptured(newid,oldid,origside,cptrdby) do
+if origside=rus then begin
+  rusove0=rusove0 diff [oldid];
+  poskoz=poskoz diff [oldid];
+end;
+
+
+
+
+
+
+
+

@@ -1,0 +1,372 @@
+export ready_forces,           // seznam (pro kazdou stranu) vyrobenych a opravenych jednotek pripravenych na utok
+       attack_forces,          // seznam (pro kazdou stranu) jednotek, ktere se prave ucastni valecneho tazeni
+       retreat_forces,         // seznam poskozenych jednotek snazicich se dostat z pole
+       defend_forces,          // seznam vozidel vyhrazenych pro obranu zakladny
+       jammed_forces;          // seznam vozidel ktera uz v zakladne nemaji co pohledavat
+
+var us_ru,                     // cesta z americke zakladny na ruskou
+    us_ar,                     // cesty z americke zakladny na arabskou
+    ru_us,                     // cesta z ruske zakladny na americkou
+    ru_ar;                     // cesty z ruske zakladny na arabskou
+
+var last_ar_attack,
+    attack_timing,
+    attack_limit;
+
+var al_eliminate;              // cesta na zakladnu aliance v pripade, ze by se utaborila uz na tom prvnim vrsku
+
+var pocet_odebrani;
+
+//----------------------------------------------------//
+//-----  Inicializace pomennych pro utoceni CPU  -----//
+export function init_attack;
+var side;
+begin
+  ready_forces   = [];
+  attack_forces  = [];
+  retreat_forces = [];
+  defend_forces  = [];
+  for side=1 to 8 do
+    begin
+      ready_forces   = ready_forces   ^ [[]];
+      attack_forces  = attack_forces  ^ [[]];
+      retreat_forces = retreat_forces ^ [[]];
+      defend_forces  = defend_forces  ^ [[]];
+      jammed_forces  = jammed_forces  ^ [[]];
+    end;
+
+  us_ru:=[ [76,61], [121,55], [171,59], [190,90] ];
+  us_ar:=[ [[78,69], [121,116], [155,137], [190,170], [242,187]],
+           [[72,106], [111,176], [163,184], [215,191], [242,187]] ];
+  ru_us:=[ [118,63], [78,57], [30,44], [56,83] ];
+  ru_ar:=[ [[142,65], [160,140], [255,196]],
+           [[125,58], [106,93], [126,154], [121,182], [167,180], [251,187]] ];
+
+
+  al_eliminate   = [ [88,53], [49,10], [83,13] ];
+  attack_timing  = [ 50, 40, 30 ] [difficulty];
+  attack_limit   = 0;
+  last_ar_attack = TICK;
+  pocet_odebrani = 0;
+end;
+
+
+//-------------------------------------------------------//
+//-----  Hlavni ridici trigger pro planovani utoku  -----//
+every 0$15.4 do
+var active_side,       // strana, pro kterou se prave zpracovava vyvoj utoceni
+    num_forces;        // pocet jednotek nutnych k zacatku utoku
+begin
+  num_forces:=define_forces_strenght;
+
+  for active_side in cpu_list do
+    if ready_forces[active_side] >= num_forces then
+      begin
+        let_the_war_begin(active_side);
+        wait(1);
+      end;
+
+  enable;
+end;
+
+
+//------  Definovani poctu vozidel do utoku a moznosti pristiho cile
+function define_forces_strenght;
+var num;
+begin
+  num:=3;
+
+  if TICK > 7$0 then
+    num:=4;
+  if TICK > 14$0 then
+    num:=6;
+
+  result:=num;
+end;
+
+//------
+function define_target_priority;
+var target;
+begin
+  target:=Rand(0,attack_timing);
+  if target>attack_limit then target:=false            // attack CPU
+                         else target:=true;            // attack player
+
+  result:=target;
+end;
+
+every 1$0 trigger attack_timing>attack_limit do
+begin
+  attack_timing:=attack_timing-1;
+  attack_limit:=attack_limit+1;
+  enable;
+end;
+
+//------  Selecting areas where player have building and where is minimum defense
+function Select_Weakest_Base(areas);
+var selected,un,list;
+begin
+  selected:=false;
+  for un in areas do
+    begin
+      list:=FilterUnitsInArea(un,[ [f_side,you],
+                                   [f_type,unit_building],
+                                   [f_or, [f_btype,b_turret],
+                                          [f_btype,b_bunker]] ]);
+      if (not selected) or
+         (selected[1]<list) then
+        selected:=[list+0,un];
+      wait(1);
+    end;
+
+  if selected then
+    selected:=selected[2];
+
+  result:=selected;
+end;
+
+//------  Nalezeni hracovy pozice
+function Find_Player_Base;
+var list,un,goal,areas,defend_tought;
+begin
+  goal:=false;
+  areas:=[];
+  list:=FilterAllUnits([ [f_side,you], [f_type,unit_building], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+
+  for un in list do                                   // found all areas where player has depot
+    begin
+      if IsInArea(un,ar_base) then
+        areas:=areas ^ ar_base
+      else
+        if IsInArea(un,us_base) then
+          areas:=areas ^ us_base
+        else
+          if IsInArea(un,ru_base) then
+            areas:=areas ^ ru_base;
+      wait(1);
+    end;
+
+  if (not areas) or (areas>1) then                    // select one area to attack players depot
+    goal:=Select_Weakest_Base(areas)
+  else
+    goal:=areas[1];
+
+  result:=goal;
+end;
+
+//------  Finding the area in where unit is
+function GetUnitArea(un);
+var area;
+begin
+    case un of
+  1: area:=us_base;
+  2: area:=ar_base;
+  3: area:=ru_base;
+    end;
+  result:=area;
+end;
+
+//------  Hledani vhodne CPU obeti
+function Find_CPU_Target(side);
+var un,goal,bases,list;
+begin
+  bases:=[];
+  list:=FilterAllUnits([ [f_type,unit_building],
+                         [f_or, [f_btype,b_depot],
+                                [f_btype,b_warehouse]] ]);
+  for un in list do
+    if GetSide(un)<>side then
+      bases:=bases ^ GetSide(un);
+
+  bases:=bases diff you;
+
+  if bases then
+    begin
+      if (bases diff ar) and Rand(0,2) then
+        goal:=GetUnitArea((bases diff ar)[1])
+      else
+        goal:=GetUnitArea(bases[Rand(1,bases)]);
+    end
+  else
+    goal:=Find_Player_Base;
+
+  result:=goal;
+end;
+
+//------  Checking if player set up base on the hill in the beginning
+function Wrong_Base;
+var un,vysledek;
+begin
+  un:=FilterUnitsInArea(top_area,[ [f_side,you], [f_type,unit_building] ]);
+  if un then
+    vysledek:=true
+  else
+    vysledek:=false;
+  result:=vysledek;
+end;
+
+//------  Checking if all vehicles has tracked chassis
+function All_Tracked(list);
+var un,vysledek;
+begin
+  vysledek:=true;
+  for un in list do
+    if GetChassis(un) in [us_light_wheeled, us_medium_wheeled, ru_medium_wheeled] then
+      begin
+        vysledek:=false;
+        break;
+      end;
+  result:=vysledek;
+end;
+
+//------ US war ways
+function Send_US_Forces(target,side);
+begin
+  if target=ar_base then
+    begin
+      if All_tracked(attack_forces[side]) then
+        McMove(15,attack_forces[side],us_ar[1],[ mc_move_waitwp, mc_move_dontcapture, mc_move_agressive, mc_move_ownstuck])
+      else
+        McMove(15,attack_forces[side],us_ar[2],[ mc_move_waitwp, mc_move_dontcapture, mc_move_agressive, mc_move_ownstuck]);
+    end
+  else
+    McMove(15,attack_forces[side],us_ru,[ mc_move_waitwp, mc_move_dontcapture, mc_move_agressive, mc_move_ownstuck]);
+end;
+
+//------ RU war ways
+function Send_RU_Forces(target,side);
+begin
+  if target=ar_base then
+    begin
+      if All_tracked(attack_forces[side]) then
+        McMove(15,attack_forces[side],ru_ar[1],[ mc_move_waitwp, mc_move_dontcapture, mc_move_agressive, mc_move_ownstuck])
+      else
+        McMove(15,attack_forces[side],ru_ar[2],[ mc_move_waitwp, mc_move_dontcapture, mc_move_agressive, mc_move_ownstuck]);
+    end
+  else
+    McMove(15,attack_forces[side],ru_us,[ mc_move_waitwp, mc_move_dontcapture, mc_move_agressive, mc_move_ownstuck]);
+end;
+
+//------  Posilani utoku na zvolene misto
+function let_the_war_begin(side);
+var target;
+begin
+  target:=false;
+  if define_target_priority then
+    target:=Find_Player_Base;                         // return area where is supposed players base
+  if not target then
+    target:=Find_CPU_Target(side);                    // return area where is supposed CPU base
+
+  if not target then
+    exit;
+
+  attack_forces := Replace(attack_forces,side,ready_forces[side]);
+  ready_forces  := Replace(ready_forces,side,[]);
+  jammed_forces := Insert(jammed_forces,side,jammed_forces[side] ^ attack_forces[side]);
+
+    case side of
+  1: Enable(222);
+  3: Enable(223);
+    end;
+
+  if Wrong_Base then
+    McMove(15,attack_forces[side],al_eliminate,[ mc_move_dontcapture])
+  else
+      case side of
+    1: Send_US_Forces(target,side);
+    3: Send_RU_Forces(target,side);
+      end;
+end;
+
+
+
+//-----  Overovani ze se zakladna zase nezasekla (hrooomada malych auticek vsude kolem)
+every 88 Marked 222 do
+var list,late,un,i;
+begin
+  wait(1$20);
+
+  list:=FilterUnitsInArea(us_tinny,[ [f_side,us], [f_type,unit_vehicle], [f_ok] ]);
+  late:=jammed_forces[us] isect list;
+
+  if not late then
+    begin
+      jammed_forces:=Replace(jammed_forces,us,[]);
+      exit;
+    end;
+
+  if FilterUnitsInArea(us_base, [ [f_side,you] ]) then
+    begin
+      enable;
+      exit;
+    end;
+
+  for un in late do
+    if GetUnitMc(un) then
+      KillMc(GetUnitMc(un));
+
+  while GetTag(83) do                           // while Art1 (alien vision) is active
+    wait(0$1);
+
+  i:=1;
+  for un in jammed_forces[us] do
+    begin
+      if (i mod 2) and not See(you,un) then
+        begin
+          jammed_forces:=Replace(jammed_forces,us,jammed_forces[us] diff un);
+          KillUnit(un);
+          pocet_odebrani:=pocet_odebrani+1;
+        end;
+      i:=i+1;
+    end;
+  wait(0$10);
+  
+  ready_forces:=Replace(ready_forces,us,ready_forces[us] union jammed_forces[us]);
+  let_the_war_begin(us);
+end;
+
+every 91 Marked 223 do
+var list,late,un,i;
+begin
+  wait(1$20);
+
+  list:=FilterUnitsInArea(ru_tinny,[ [f_side,ru], [f_type,unit_vehicle], [f_ok] ]);
+  late:=jammed_forces[ru] isect list;
+
+  if not late then
+    begin
+      jammed_forces:=Replace(jammed_forces,ru,[]);
+      exit;
+    end;
+
+  if FilterUnitsInArea(ru_base, [ [f_side,you] ]) then
+    begin
+      enable;
+      exit;
+    end;
+
+  for un in late do
+    if GetUnitMc(un) then
+      KillMc(GetUnitMc(un));
+
+  while GetTag(83) do                           // while Art1 (alien vision) is active
+    wait(0$1);
+
+  i:=1;
+  for un in jammed_forces[ru] do
+    begin
+      if (i mod 2) and not See(you,un) then
+        begin
+          jammed_forces:=Replace(jammed_forces,ru,jammed_forces[ru] diff un);
+          KillUnit(un);
+          pocet_odebrani:=pocet_odebrani+1;
+        end;
+      i:=i+1;
+    end;
+  wait(0$10);
+
+  ready_forces:=Replace(ready_forces,ru,ready_forces[ru] union jammed_forces[ru]);
+  let_the_war_begin(ru);
+end;
+
+

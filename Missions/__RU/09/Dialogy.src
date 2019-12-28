@@ -1,0 +1,300 @@
+// lock na kecani
+VAR kecy;
+                                            
+// uvodni nastaveni promennych
+EVERY 0$0.1 DO
+VAR i;
+begin
+  for i in [1,2,3,4] do disable(i);
+end;
+
+EXPORT function vyber_misto_pro_zakladnu;
+VAR pom;
+begin
+  pom=Query('QStarting');
+  case pom of
+   1:Ru_base=base1;
+   2:Ru_base=base2;
+   3:Ru_base=base3;
+  end;
+  result=pom;
+end;
+
+// mission objectives 1
+EXPORT function chmo1;
+begin
+  ChangeMissionObjectives('MStart');
+end;
+
+// prvni utok rusu na epsilon
+on Contact(s1,s2) DO
+begin
+  if s1=Amici and s2=You then
+    begin
+      while kecy do wait(0$1);
+      kecy=true;
+      DialogueOn;
+      Say(Joan,'DJoan-Joan-1');
+      Say(bur,'DJoan-Bur-1');
+      Say(Joan,'DJoan-Joan-2');
+      Say(bur,'DJoan-Bur-2');
+      SayRadio(JMM,'DJoan-JMM-2');
+      Say(bur,'DJoan-Bur-3');
+      SayRadio(JMM,'DJoan-JMM-3');
+      DialogueOff;
+      if maccepted<>1 then enable(1)
+                      else if mhandedover=1 then enable(2)
+                                            else enable(3);
+      enable(4);
+      kecy=false;
+      Am_utoky=1;
+      disable;
+    end
+    else enable;
+end;
+
+// kecy arabu kdyz macepted=false
+EVERY 0$1 marked 1 DO
+begin
+  wait(0$5);
+  while kecy do wait(0$1);
+  kecy=true;
+  DialogueOn;
+  Say(diet,'DArNeutral-Diet-1');
+  DialogueOff;
+  kecy=false;
+  Arabi_vztah=2;               // neutral odchazeji na north
+  ar_leave_north;
+end;
+
+// kecy arabu kdyz macepted=true mhandedover=true
+EVERY 0$1 marked 2 DO
+VAR pom;
+begin
+  wait(0$5);
+  while kecy do wait(0$1);
+  kecy=true;
+  DialogueOn;
+  SayRadio(diet,'DArHelp-Diet-1');
+  pom=Query('QArHelp');
+  case pom of
+   1:begin
+       SayRadio(bur,'DQrArHelp#1-Bur-1');
+       SayRadio(diet,'DQrArHelp#1-Diet-1');
+       SayRadio(bur,'DQrArHelp#1-Bur-2');
+       SayRadio(diet,'DQrArHelp#1-Diet-2');
+     end;
+   2:begin
+       SayRadio(bur,'DQrArHelp#2-Bur-1');
+       SayRadio(diet,'DQrArHelp#2-Diet-1');
+     end;
+  end;
+  DialogueOff;
+  kecy=false;
+  case pom of
+   1:begin
+       Arabi_vztah=20;                    // pratele - budou jako spojenci
+       arabi_spojenci;
+     end;
+   2:begin
+       Arabi_vztah=3;                     // odchazeni ja N okamzite ... neutral
+       arabi_north_okamzite;
+     end;
+  end;
+end;
+
+// dialog pokud maccepted=true a mhandedover=false
+EVERY 0$1 marked 3 DO
+begin
+  wait(0$5);
+  while kecy do wait(0$1);
+  kecy=true;
+  DialogueOn;
+  SayRadio(diet,'DArHostile-Dtr-1');
+  Arabi_vztah=0;                          // arabi jsou nepratele !!
+  arabi_ally_amici;
+  DialogueOff;
+  kecy=false;
+end;
+
+// dialog po prvnim utoku na epsilon
+EVERY 0$15 marked 4 DO
+begin
+  wait(0$20);
+  while kecy do wait(0$1);
+  kecy=true;
+  DialogueOn;
+  SayRadio(pop,'DCapture-Pop-1');
+  ChangeMissionObjectives('MCapture');
+  DialogueOff;
+  kecy=false;
+end;
+
+// chcipani Joan
+on UnitGoesToRed(un) do
+begin
+  if un=Joan then
+    begin
+      DialogueOn;
+      ForceSay(Joan,'DJoanDies-Jon-1');
+      SayRadio(JMM,'DJoanDies-JMM-1');
+      wait(0$1);
+      SetLives(Joan,0);
+      KillUnit(Joan);
+      DialogueOff;
+    end;
+  enable;
+end;
+
+// dialog, kdyz je znicena Masha
+EXPORT function dialog_masha_kaput;
+begin
+  while kecy do wait(0$1);
+  kecy=true;
+  DialogueOn;
+  Say(bur,'DMashaDies-Bur-1');
+  DialogueOff;
+  kecy=false;
+end;
+
+// spusteni dialogu masha
+on VehicleCaptured(new,masha,You,hum) DO
+begin
+  dialog_masha_kaput;
+end;
+
+// postaveni space time laboratory u rusaku
+EVERY 0$3 TRIGGER FilterAllUnits([[f_side,You],[f_btype,b_lab_spacetime]]) DO
+VAR pom;
+begin
+  while kecy do wait(0$5);
+  kecy=true;
+  DialogueOn;
+  Say(bur,'DResearch-Bur-1');
+  if IsOK(kapisto) then Say(kapisto,'DResearch-Kap-1')
+                   else
+  if IsOK(petro) then Say(petro,'DResearch-Pty-1')
+                 else
+  if IsOK(dol) then Say(dol,'DResearch-Dol-1')
+               else begin
+                      pom=GetPeople(sex_male,class_scientistic,[bur]);
+                      if pom<>0 then Say(pom[1],'DResearch-RSol1-1');
+                    end;
+  DialogueOff;
+  kecy=false;
+end;
+
+// ziskavani lidi podle povolani
+function GetPeople(sex,povolani,diffseznam);
+VAR pom,pom1,pom2,pom3,pom4;
+begin
+  pom1=FilterAllUnits([[f_side,You],[f_class,class_scientistic],[f_sex,sex]]);
+  pom2=FilterAllUnits([[f_side,You],[f_class,class_mechanic],[f_sex,sex]]);
+  pom3=FilterAllUnits([[f_side,You],[f_class,class_engineer],[f_sex,sex]]);
+  pom4=FilterAllUnits([[f_side,You],[f_class,class_soldier],[f_sex,sex]]);
+
+  case povolani of
+   class_scientistic:pom=pom1;
+   class_mechanic:pom=pom2;
+   class_engineer:pom=pom3;
+   class_soldier:pom=pom4;
+  end;
+
+  if povolani<>class_scientistic then pom=pom^pom1;
+  if povolani<>class_mechanic then pom=pom^pom2;
+  if povolani<>class_engineer then pom=pom^pom3;
+  if povolani<>class_soldier then pom=pom^pom4;
+
+  result:= pom diff diffseznam;
+end;
+
+// masha rozbita
+ON VehicleDestroyed(un,side,nation,x,y,dir,chas,contr,eng,weap) DO
+begin
+  if un=masha and side=You then dialog_masha_kaput;
+end;
+
+// prvi dialog o specialnich bazukach
+EVERY 0$1 TRIGGER GetTech(tech_TauRad,You)=state_researched or GetTech(tech_SpacAnom,You)=state_researched DO
+VAR pom;
+begin
+  DialogueOn;
+  if IsOK(kapisto)
+    then
+      begin
+        Say(kapisto,'DSpecBaz-Kap-1');
+        if GetTech(tech_TauRad,You)=state_researched then Say(kapisto,'DSpecBaz-Kap-1b')
+                                                     else Say(kapisto,'DSpecBaz-Kap-1c');
+      end
+    else
+  if IsOK(petro)
+    then
+      begin
+        Say(petro,'DSpecBaz-Pty-1');
+        if GetTech(tech_TauRad,You)=state_researched then Say(petro,'DSpecBaz-Pty-1b')
+                                                     else Say(petro,'DSpecBaz-Pty-1c');
+      end
+    else
+  if IsOK(dol)
+    then
+      begin
+        Say(dol,'DSpecBaz-Dol-1');
+        if GetTech(tech_TauRad,You)=state_researched then Say(dol,'DSpecBaz-Dol-1b')
+                                                     else Say(dol,'DSpecBaz-Dol-1c');
+      end
+    else
+      begin
+        pom=GetPeople(sex_male,class_scientistic,[bur,petro,kapisto,dol]);
+        if pom>0 then begin
+                        Say(pom[1],'DSpecBaz-RSci1-1');
+                        if GetTech(tech_TauRad,You)=state_researched
+                          then Say(pom[1],'DSpecBaz-RSci1-1b')
+                          else Say(pom[1],'DSpecBaz-RSci1-1c');
+                      end;
+      end;
+  Say(bur,'DSpecBaz-Bur-1');
+  Hint('SpecBaz');
+  DialogueOff;
+end;
+
+// druhy dialog o specialnich bazukach
+EVERY 0$1 TRIGGER GetTech(tech_TauRad,You)=state_researched and GetTech(tech_SpacAnom,You)=state_researched DO
+VAR pom;
+begin
+  DialogueOn;
+  if IsOK(kapisto)
+    then
+      begin
+        Say(kapisto,'DSpecBaz-Kap-1a');
+        if GetTech(tech_TauRad,You)=state_researched then Say(kapisto,'DSpecBaz-Kap-1b')
+                                                     else Say(kapisto,'DSpecBaz-Kap-1c');
+      end
+    else
+  if IsOK(petro)
+    then
+      begin
+        Say(petro,'DSpecBaz-Pet-1a');
+        if GetTech(tech_TauRad,You)=state_researched then Say(petro,'DSpecBaz-Pet-1b')
+                                                     else Say(petro,'DSpecBaz-Pet-1c');
+      end
+    else
+  if IsOK(dol)
+    then
+      begin
+        Say(dol,'DSpecBaz-Dol-1a');
+        if GetTech(tech_TauRad,You)=state_researched then Say(dol,'DSpecBaz-Dol-1b')
+                                                     else Say(dol,'DSpecBaz-Dol-1c');
+      end
+    else
+      begin
+        pom=GetPeople(sex_male,class_scientistic,[bur,petro,kapisto,dol]);
+        if pom>0 then begin
+                        Say(pom[1],'DSpecBaz-Som-1a');
+                        if GetTech(tech_TauRad,You)=state_researched
+                          then Say(pom[1],'DSpecBaz-Som-1b')
+                          else Say(pom[1],'DSpecBaz-Som-1c');
+                      end;
+      end;
+  Say(bur,'DSpecBaz-Bur-1a');
+  DialogueOff;
+end;

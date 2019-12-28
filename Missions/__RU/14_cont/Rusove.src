@@ -1,0 +1,282 @@
+// Rusáci.
+
+
+Export RusMaSiberit, RusMaOtraveno;
+Export ArabiZniceni, LegieMamZnicit, LegieZnicena;
+Export BehemothBuilt, MenLost;
+
+
+Export Function init_rusove;
+Begin
+  Disable (21);
+  // Promìnné.
+  RusMaSiberit = false; RusMaOtraveno = 0;
+  ArabiZniceni = false;
+  LegieMamZnicit = false; LegieZnicena = false;
+  BehemothBuilt = false; MenLost = 0;
+End;
+
+
+Export Function uvod;
+Var I, Auto;
+Begin
+  InGameOn;
+  // Postavy na mapu.
+  If Masha then
+  Begin
+    PlaceHumanInUnit (Burlak, Masha);
+    PlaceUnitArea (Masha, Start, false);
+  End else Begin
+    Auto = vytvor_tank (RU_GUN);
+    PlaceHumanInUnit (Burlak, Auto);
+    PlaceUnitArea (Auto, Start, false);
+  End;
+  PlaceUnitArea (vytvor_nakladak (MAT_OIL, 100), Start, false);
+  PlaceUnitArea (vytvor_nakladak (MAT_CANS, 100), Start, false);
+  PlaceUnitArea (vytvor_nakladak (MAT_CANS, 100), Start, false);
+  If Rusove then
+  Begin
+    Auto = 0;
+    For I in Rusove do
+    Begin
+      If Auto then PlaceUnitArea (I, Start, false)
+      else Begin
+        Auto = vytvor_tank (RU_GATLING_GUN);
+        PlaceHumanInUnit (I, Auto);
+        PlaceUnitArea (Auto, Start, false);
+      End;
+    End;
+  End;
+  // Kecání.
+  I = IsInUnit (Burlak);
+  If I then CenterNowOnUnits (I)
+  else CenterNowOnUnits (Burlak);
+  dialog_Start;
+  ChangeMissionObjectives ('MStart');
+  SaveForQuickRestart;
+  InGameOff;
+End;
+
+
+Function vytvor_nakladak (Material, Amount);
+Begin
+  UC_Side = side_Ru; UC_Nation = NATION_RUSSIAN;
+  VC_Chassis = RU_MEDIUM_WHEELED; VC_Control = CONTROL_COMPUTER;
+  VC_Engine = ENGINE_SIBERITE; VC_Weapon = RU_CARGO_BAY;
+  Result = CreateVehicle;
+  If Amount > 0 then SetCargo (Result, Material, Amount);
+End;
+
+
+Function vytvor_tank (Zbran);
+Begin
+  UC_Side = side_Ru; UC_Nation = NATION_RUSSIAN;
+  VC_Chassis = RU_MEDIUM_WHEELED; VC_Control = CONTROL_MANUAL;
+  VC_Engine = ENGINE_COMBUSTION; VC_Weapon = Zbran;
+  VC_Fuel_Battery = Rand (70, 90);
+  Result = CreateVehicle;
+End;
+
+
+// Arabská základna je mrtvá.
+Function arabska_zakladna_kaput;
+Begin
+  Wait (0$3.5);
+  SetAttitude (side_Ru, side_Ar, ATT_NEUTRAL, true);
+  Disable (31);         // Útoky.
+  // Kecání.
+  DialogueOn;
+  dialog_SurrenderArabians;
+  DialogueOff;
+  ChangeMissionObjectives ('MAttOut');
+  // Byla pøijata nìjaká nabídka Arabù?
+  If LegionOffer_Accepted or LegionFugit_Accepted then
+  Begin
+    // Pokud už byla znièena Legie, tak jsem skonèil.
+    If LegieZnicena then
+    Begin
+      vyhral;
+      Exit;
+    End;
+    // Zjistíme, zda jsou živí nìjací uprchlíci. Pokud ano, odstartujeme
+    // odchod. Pokud ne, jdeme rovnou na dialog o krádeži.
+    LegieMamZnicit = true;
+    If UnitFilter (Uprchlici, [[F_ALIVE]]) then
+    Begin
+      DialogueOn;
+      dialog_LegionLeave;
+      DialogueOff;
+      SetSide (Uprchlici, side_Upr);
+      uprchlici_zacnete_odchazet;
+    End;
+    // Èekání na dialog Spy.
+    Enable (21);
+  End else Begin
+    // Nic od Legie nepøijal, tak tím konèí mise.
+    vyhral;
+  End;
+End;
+
+
+// Základna Legie byla znièena.
+Function legie_zakladna_kaput;
+Begin
+  SetAttitude (side_Le, side_Ru, ATT_NEUTRAL, true);
+  SetAttitude (side_Upr, side_Ru, ATT_NEUTRAL, true);
+  ChangeMissionObjectives ('MLegOut');
+  // Pokud už jsou znièení i Arabové, tak konèí mise.
+  If ArabiZniceni then vyhral;
+End;
+
+
+// Kontrola, zda je znièena arabská základna.
+Function kontrola_arabska_zakladna;
+Var Domy, Lidi;
+Begin
+  // Už je po funuse?
+  If ArabiZniceni then Exit;
+  // Zbyly mu nìjaký budovy?
+  Domy = FilterAllUnits ([[F_SIDE, side_Ar], [F_PLACED], [F_OK], [F_TYPE, UNIT_BUILDING]]);
+  Lidi = FilterAllUnits ([[F_SIDE, side_Ar], [F_PLACED], [F_OK], [F_TYPE, UNIT_HUMAN]]);
+  If not obsahuje_dulezitou_budovu (Domy) and (Lidi < dif_ArabiLidiVzdajSe [Difficulty]) then
+  Begin
+    ArabiZniceni = true;
+    arabska_zakladna_kaput;
+  End;
+End;
+
+
+// Kontrola, zda je znièena arabská základna.
+Function kontrola_legie_zakladna;
+Var Domy, Lidi;
+Begin
+  // Už je po funuse?
+  If LegieZnicena then Exit;
+  // Zbyly mu nìjaký budovy?
+  Domy = FilterAllUnits ([[F_SIDE, side_Le], [F_OK], [F_PLACED], [F_TYPE, UNIT_BUILDING]]) union
+         FilterAllUnits ([[F_SIDE, side_Upr], [F_OK], [F_PLACED], [F_TYPE, UNIT_BUILDING]]);
+  Lidi = FilterAllUnits ([[F_SIDE, side_Le], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN]]) union
+         FilterAllUnits ([[F_SIDE, side_Upr], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN]]);
+  If not obsahuje_dulezitou_budovu (Domy) and not Lidi then
+  Begin
+    LegieZnicena = true;
+    legie_zakladna_kaput;
+  End;
+End;
+
+
+// Znièení jednotky.
+Export Function rusove_UnitDestroyed (Un);
+Begin
+  // Burlak?
+  If Un = Burlak then Begin YouLost ('Burlak'); Exit; End;
+  If Un in Rusove then MenLost = MenLost + 1;
+  // Když zabijou spojence z legie, neberu to jako ztrátu èlovìka.
+//  If Un in Rusove2 then MenLost = MenLost + 1;
+  // Znièena arabská základna?
+  kontrola_arabska_zakladna;
+  kontrola_legie_zakladna;
+End;
+
+
+// Zabrání jednotky.
+Export Function rusove_BuildingCaptured (Build, OrigSide, Eng);
+Begin
+  If OrigSide = side_Ar then kontrola_arabska_zakladna;
+  If OrigSide = side_Le then kontrola_legie_zakladna;
+End;
+
+
+// Zabrání vozidla.
+Export Function rusove_VehicleCaptured (VehNew, VehOld, OrigSide, Hum);
+Begin
+  If OrigSide = side_Ru then kontrola_arabska_zakladna;
+  If Masha = VehOld then Masha = VehNew;
+End;
+
+
+// Èekání na dialog Spy.
+Every 0$10 Marked 21 do
+Begin
+  Wait (Rand (0$15, 0$35));
+  DialogueOn;
+  dialog_LegionSpy;
+  If LegionOffer_Heike then dialog_LegionChallengeHeike
+  else dialog_LegionChallengeFarmer;
+  ChangeMissionObjectives ('MLeg');
+  SetAttitude (side_Ru, side_Le, ATT_ENEMY, true);
+  SetAttitude (side_Ru, side_Upr, ATT_ENEMY, true);
+  DialogueOff;
+End;
+
+
+// Dialog, že posily nepøijdou.
+Every 4$30 do
+Begin
+  Wait (Rand (0$1, 2$0));
+  DialogueOn;
+  dialog_AmAttack;
+  ChangeMissionObjectives ('MAttack');
+  DialogueOff;
+End;
+
+
+// Dialog o Behemotovi.
+Every 9$0 do
+Begin
+  Wait (Rand (0$1, 4$0));
+  // Pokud jsem ještì nepostavil Behemota, øeknu nìjaký vìci.
+  If not BehemothBuilt then
+  Begin
+    DialogueOn;
+    If BehemothSeen then dialog_BehemothTechno1
+    else dialog_BehemothTechno2;
+    ChangeMissionObjectives ('MBeh');
+    DialogueOff;
+  End;
+End;
+
+
+// Dostavìní budovy.
+Export Function rusove_BuildingComplete (Build);
+Begin
+  If GetSide (Build) = side_Ru then
+  Begin
+    // Je to dùl na siberit?
+    If GetBType (Build) = B_SIBERITE_MINE then RusMaSiberit = true;
+  End;
+End;
+
+
+// Dostavìní Behemota.
+Export Function rusove_BehemothConstructed (Un);
+Begin
+  If (GetSide (Un)= side_Ru) and not BehemothBuilt then
+  Begin
+    BehemothBuilt = true;
+    DialogueOn;
+    dialog_BehemothComplete;
+    ChangeMissionObjectives ('MBehOut');
+    DialogueOff;
+  End;
+End;
+
+
+// Otrávení
+Export Function rusove_SibDepositContaminated (Un, X, Y);
+Begin
+  // Zvýšit poèet zatím otrávených dolù.
+  RusMaOtraveno = RusMaOtraveno + 1;
+  // Zjistit, zda mám nìco øíct.
+  If RusMaOtraveno = 1 then
+  Begin
+    // Poèkat chvíli.
+    Wait (Rand (0$1, 0$10));
+    // Øíci dialog.
+    DialogueOn;
+    dialog_Contam;
+    DialogueOff;
+  End;
+End;
+
+

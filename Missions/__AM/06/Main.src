@@ -1,0 +1,321 @@
+// SIDES
+export you;
+// jednotlivci
+export JMM;
+export Gladstone;
+export Harisson;
+export Denis, Lisa, Frank;
+export Donaldson, Brown;
+export Bobby, Cyrus;
+//short
+export Den, Har, Don, Glad;
+var opicaci, d;
+
+export all, used, other;
+export lab, Sci;
+
+//------------------------------------------------------------------------------------------------------
+//-------- Main Starting Block -------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+function shortcuts;
+begin
+   Den:=Denis;
+   Har:=Harisson;
+   Don:=Donaldson;
+   Glad:=Gladstone;
+end;
+
+starting
+begin
+    you:=1;
+    RevealFogArea(you, all_map);
+    load_units;
+    base;
+
+    shortcuts;
+    Dialog1;
+
+    Save;
+    ChangeMap('%_cont','%_cont');
+end;
+
+function Dialog1;
+var i;
+begin
+     if opicaci >3 then begin
+       for i:=1 to 3 do
+           ComEnterUnit(opicaci[i], d);
+       for i:=3 to opicaci do
+           ComMoveUnit(opicaci[i], FilterAllUnits([f_type,unit_human])[1]);
+       ComMoveXY(FilterAllUnits([f_type,unit_human])[1], 19,27);
+     end
+     else
+       ComEnterUnit(opicaci, d);
+
+     InGameOn;
+     CenterNowOnUnits(JMM);
+     Wait(0$1.0); //pauza
+     //zavede ho do laboratore
+     if lab then begin
+        ComEnterUnit([JMM, Sci], lab);
+        while not UnitsInside(lab) do
+              wait(0$1);
+     end;
+     Say(JMM, 'D1-JMM-1');
+     Say(Sci, 'D1-Sci-1');
+     Say(JMM, 'D1-JMM-2');
+     Say(Sci, 'D1-Sci-2');
+     Say(JMM, 'D1-JMM-3');
+     if Denis then
+       Say(Sci, 'D1-Sci-3')
+     else
+       Say(Sci, 'D1-Sci-3a');
+     Say(JMM, 'D1-JMM-4');
+
+     if lab then
+        ComEnterUnit(FilterAllUnits([f_class,class_scientistic]), lab);
+
+     Say(Sci, 'D1-Sci-4');
+     Say(JMM, 'D1-JMM-5');
+     Say(Sci, 'D1-Sci-5');
+     Say(JMM, 'D1-JMM-6');
+     Wait(0$1.5); //odejde vedle do barracks //nikam nepujde
+     SayRadio(Har, 'D1-Har-6');
+     Say(JMM, 'D1-JMM-7');
+     if Denis then begin
+        SayRadio(Har, 'D1-Har-7');
+        Say(JMM, 'D1-JMM-8');
+     end;
+     if lab then
+        ComExitBuilding(FilterAllUnits([f_class,class_scientistic]));
+     AddComMoveUnit(FilterAllUnits([f_class,class_scientistic]), d);
+     Say(JMM, 'D1-JMM-8a');
+     SayRadio(Har, 'D1-Har-8');
+     Say(JMM, 'D1-JMM-9');
+     SayRadio(Har, 'D1-Har-9');
+     Say(JMM, 'D1-JMM-10');
+     if Denis then
+        Say(JMM, 'D1-JMM-10a');
+
+     used:=[JMM] union CharacterSelection('1', 4, 4,
+               [sel_change_class,JMM,sel_not_hired]^[Sci,Denis]^[sel_changeable]^(all diff [Sci,JMM,Denis]),
+               [class_soldier, class_mechanic, [class_engineer,1], [class_scientistic,1,2]]);
+
+     ComMoveXY(used, 66,75);
+     ComMoveXY(UnitFilter(UnitsInside(d), [f_nation,nation_nature]), 66,75);
+     CenterOnUnits(used);
+     wait(0$4);
+     CenterOnUnits(used);
+     wait(0$4);
+     InGameOff;
+end;
+
+function load_units;
+var i;
+begin
+    InitUc;
+    InitHc;
+    InitVc;
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    JMM:=CreateCharacter('JMM');
+    Harisson:=NewCharacter('Harisson');
+
+    If TestCharacters('opicaci') then
+      opicaci:=CreateCharacterSet('opicaci')
+    else
+      opicaci:=[];
+
+    If TestCharacters('otherDelta') then
+      other:=CreateCharacterSet('otherDelta')
+    else
+      other:=[];
+
+    if CheckCharacterSet('Gladstone') then
+      If LoadVariable('GladstoneLoc', 0)=3 then
+         Gladstone:=CreateCharacter('Gladstone');
+
+    if CheckCharacterSet('Denis') then
+      If LoadVariable('DenisLoc', 0)=3 then
+         Denis:=CreateCharacter('Denis');
+
+    if CheckCharacterSet('Lisa') then
+      If LoadVariable('LisaLoc', 0)=3 then
+         Lisa:=CreateCharacter('Lisa');
+
+    if CheckCharacterSet('Cyrus') then
+      If LoadVariable('CyrusLoc', 0)=3 then
+         Cyrus:=CreateCharacter('Cyrus');
+
+    if CheckCharacterSet('Bobby') then
+      If LoadVariable('BobbyLoc', 0)=3 then
+         Bobby:=CreateCharacter('Bobby');
+
+
+    if CheckCharacterSet('Frank') then
+      If LoadVariable('FrankLoc', 0)=3 then
+         Frank:=CreateCharacter('Frank');
+
+    if CheckCharacterSet('Donaldson') then
+      If LoadVariable('DonaldsonLoc', 0)=3 then
+         Donaldson:=CreateCharacter('Donaldson');
+
+    if CheckCharacterSet('Brown') then
+      If LoadVariable('BrownLoc', 0)=3 then
+         Brown:=CreateCharacter('Brown');
+
+    all:=([JMM,Gladstone,Lisa,Cyrus,Bobby,Frank,Donaldson,Brown,Denis] diff [0])^other;
+
+    InitUc;
+    InitHc;
+    InitVc;
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    for i:=all+1 to 14 do begin
+        PrepareHuman(0,0,4);
+        all:=all^CreateHuman;
+    end;
+
+    PrepareScientist(sex_male,4);
+    all:=all^CreateHuman;
+
+    //nejakej vedec z gammy3(delta)
+    Sci:=WhoSayAny(all diff [JMM,Gladstone,Lisa,Cyrus,Denis,Bobby,Frank,Donaldson,Brown,0], you, sex_male, class_scientistic, 0);
+end;
+
+export function Save;
+begin
+    if Lisa in used then begin
+          SaveVariable(8, 'LisaLoc');
+          SaveCharacters(Lisa,'Lisa');
+    end;
+
+    if Frank in used then begin
+          SaveVariable(8, 'FrankLoc');
+          SaveCharacters(Frank,'Frank');
+    end;
+
+    if Donaldson in used then begin
+          SaveVariable(8, 'DonaldsonLoc');
+          SaveCharacters(Donaldson,'Donaldson');
+    end;
+
+    if Brown in used then begin
+          SaveVariable(8, 'BrownLoc');
+          SaveCharacters(Brown,'Brown');
+    end;
+
+    if Glad in used then begin
+          SaveVariable(8, 'GladstoneLoc');
+          SaveCharacters(Glad, 'Gladstone');
+    end;
+
+    if Denis in used then begin
+          SaveVariable(8, 'DenisLoc');
+          SaveCharacters(Denis,'Denis');
+    end;
+
+    if Bobby in used then begin
+          SaveVariable(8, 'BobbyLoc');
+          SaveCharacters(Bobby,'Bobby');
+    end;
+
+    if Cyrus in used then begin
+          SaveVariable(8, 'CyrusLoc');
+          SaveCharacters(Cyrus,'Cyrus');
+    end;
+    SaveCharacters(JMM,'JMM');
+
+    SaveCharacters(used diff [JMM,Lisa,Frank,Donaldson,Brown,Gladstone,Denis,Bobby,Cyrus], 'other_from5to6');
+    SaveCharacters(other diff (used diff [JMM,Lisa,Frank,Donaldson,Brown,Gladstone,Denis,Bobby,Cyrus]), 'otherDelta');
+    SaveCharacters(Sci, 'radiosci_from5to6');
+end;
+
+//vynecha apemany
+//vybere prvniho z skupiny lidi se zadanym pohlavim sex (0=obe)
+//a zadanym Hclass (0=jakykoliv)
+export function SayAny(lidi, ident, side, sex, Hclass, index);
+var kdo;
+begin
+     kdo:=WhoSayAny(lidi, side, sex, Hclass, index);
+     if kdo then
+        result:=Say(kdo, ident)
+     else
+        result:=false;
+end;
+export function WhoSayAny(lidi, side, sex, Hclass, index);
+begin
+     lidi:=UnitFilter(lidi, [[f_type,unit_human],[f_side,side],f_not,[f_nation,nation_nature]]);
+     if sex<>0 then
+        lidi:=UnitFilter(lidi, [f_sex,sex]);
+
+     if Hclass<>0 then
+        lidi:=UnitFilter(lidi, [f_class,Hclass]);
+
+     if index<=0 then index:=1;
+
+     if lidi>=index then
+        result:=lidi[index]
+     else
+        result:=0;
+end;
+
+
+function base;
+var i, tmp, btype, Delta;
+begin
+    InitUc;
+    InitHc;
+    InitBc;
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+  //seznam budov
+  //[x,y,direction,building_type,level]
+    Delta:=LoadVariable('Delta',[]);
+    if not Delta then msg('bad save');
+    for i in Delta do
+        btype:=btype^ i[4];
+    SortListByListAsc(Delta, btype);
+    for i in Delta do begin
+        bc_type:=i[4];
+        bc_level:=i[5];
+        case bc_type of
+             b_lab,b_lab_half,b_lab_full: begin
+                                             bc_kind1:=i[6];
+                                             bc_kind2:=i[7];
+                                          end;
+        end;
+        tmp:=CreateAndPlaceBuildingXYD(i[1], i[2], i[3]);
+        if bc_type in [b_bunker,b_turret] then
+          if i=6 then
+            PlaceWeaponTurret(tmp, i[6])
+          else
+            PlaceWeaponTurret(tmp, us_machine_gun);
+    end;
+    d:=FilterAllUnits([f_or,[f_btype,b_depot],[f_btype,b_warehouse]]);
+    if d then begin
+      d:=d[1];
+      SetBname(d, 'delta');
+    end;
+
+
+    lab:=FilterAllUnits([f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]);
+    if lab then begin
+       lab:=lab[1];
+       PlaceUnitXYR(JMM, GetX(lab),GetY(lab),6,false);
+       PlaceUnitXYR(Sci, GetX(JMM),GetY(JMM),2,false);
+       for i in all diff [JMM,Sci] do 
+          PlaceUnitXYR(i, GetX(d),GetY(d),10,false);
+    end
+    else begin
+       for i in all do 
+          PlaceUnitXYR(i, GetX(d),GetY(d),10,false);
+    end;
+    for i in opicaci do
+       PlaceUnitXYR(i, GetX(d),GetY(d),5,false);
+
+end;
+

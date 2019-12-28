@@ -1,0 +1,30 @@
+
+every 0$0.3 trigger FilterUnitsInArea(bigtrap,[[f_see,russians],[f_side,you]]) do
+  var target;
+  begin
+    disable(33);
+    ComWalk(trappers);
+    target:=FilterUnitsInArea(bigtrap,[[f_see,russians],[f_side,you]])[1];
+    AddComAgressiveMove(trappers^[rveh4,rveh5],GetX(target),GetY(target));
+    wait(0$1);
+    Say(JMM,'D4b-JMM-1');
+    SetAreaMapShow(Shw2,0);
+    ChangeMissionObjectives('M3c');
+  end;                    
+
+every 0$2 trigger IsInArea(Bobby,TrapEnd)or IsInArea(Cyrus,TrapEnd)or IsInArea(JMM,TrapEnd) marked 33 do
+  begin
+    Say(JMM,'D4b-JMM-1');
+    SetAreaMapShow(Shw2,0);
+    ChangeMissionObjectives('M3c');
+  end;
+  
+
+every 0$5 trigger GetY(JMM)<50 do
+  begin
+    disable(2);
+  end;
+
+
+
+

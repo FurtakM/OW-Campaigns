@@ -1,0 +1,697 @@
+export vyjednavalo_se;
+export burlak,belkov,gnyevko,kiril,kovalyuk,scholtze,kuzmov,karam,petrov,gleb,petros,lipshchin,titov,dolgov,xavier,oblukov,kozlov,kapitsova,gossud;
+export vip;
+var vedci,zbytekze12,vedciost,jahoda,jahodatyp,plidi;
+
+export function prepare_russians;
+var old_al,old_al2,tmp,tmp1;
+begin
+//load jednotek
+  old_al=1;  //pridal se k alianci
+  old_al2=2; //pridal se k alianci vedec
+  uc_side=al;
+  burlak=0;
+  if checkcharacterset('Burlak') then burlak=createcharacterwithclass('Burlak',class_engineer)
+  else buildquery('neny Burlak',['OK']);
+  placeunitxyr(burlak,61,77,3,false);//51,6
+  vedci=[];
+  jahoda=0;
+  jahodatyp=0;
+  belkov=0;
+  if testcharacters('Belkov') then
+    if checkcharacterset('Belkov') then begin
+      if testvariable('belkov_side') then tmp=loadvariable('belkov_side',-1)
+      else buildquery('neny belkov_side',['OK']);
+      case tmp of
+        old_al:begin
+          belkov=createcharacter('Belkov');
+          if getclass(belkov)=class_bazooker then setclass(belkov,class_soldier);
+          placeunitxyr(belkov,61,77,3,false);
+        end;
+        old_al2:begin
+          belkov=createcharacter('Belkov');
+          if getclass(belkov)=class_bazooker then setclass(belkov,class_soldier);
+          vedci=vedci^[belkov];
+        end;
+        else begin
+          jahoda=createcharacter('Belkov');
+          if getclass(jahoda)=class_bazooker then setclass(jahoda,class_soldier);
+          jahodatyp=1;
+        end;
+      end;
+    end
+    else
+  else msg('neny Belkov');
+  gnyevko=0;
+  if testcharacters('Gnyevko') then
+    if checkcharacterset('Gnyevko') then begin
+      if testvariable('gnyevko_side') then tmp=loadvariable('gnyevko_side',-1)
+      else buildquery('neny gnyevko_side',['OK']);
+      case tmp of
+        old_al:begin                                
+          gnyevko=createcharacter('Gnyevko');
+          if getclass(gnyevko)=class_bazooker then setclass(gnyevko,class_soldier);
+          placeunitxyr(gnyevko,61,77,3,false);
+        end;
+       old_al2:begin
+         gnyevko=createcharacter('Gnyevko');
+         if getclass(gnyevko)=class_bazooker then setclass(gnyevko,class_soldier);
+         vedci=vedci^[gnyevko];
+       end;
+       else
+         if not jahoda then begin
+           jahoda=createcharacter('Gnyevko');
+           if getclass(jahoda)=class_bazooker then setclass(jahoda,class_soldier);
+           jahodatyp=2;
+         end;
+      end;
+    end
+    else
+  else msg('neny Gnyevko');
+  kiril=0;
+  if testcharacters('Kirilenkova') then
+    if checkcharacterset('Kirilenkova') then begin
+      if testvariable('kiril_side') then tmp=loadvariable('kiril_side',-1)
+      else buildquery('neny kiril_side',['OK']);
+      case tmp of
+        old_al:begin
+          kiril=createcharacter('Kirilenkova');
+          if getclass(kiril)=class_bazooker then setclass(kiril,class_soldier);
+          placeunitxyr(kiril,61,77,3,false);
+        end;
+        old_al2:begin
+          kiril=createcharacter('Kirilenkova');
+          if getclass(kiril)=class_bazooker then setclass(kiril,class_soldier);
+          vedci=vedci^[kiril];
+        end;            
+      end;
+    end
+    else
+  else msg('neny Kirilenkova');
+  kovalyuk=0;
+  if testcharacters('Kovalyuk') then
+    if checkcharacterset('Kovalyuk') then begin
+      if testvariable('kovalyuk_side') then tmp=loadvariable('kovalyuk_side',-1)
+      else buildquery('neny kovalyuk_side',['OK']);
+      case tmp of
+        old_al:begin
+          kovalyuk=createcharacter('Kovalyuk');
+          if getclass(kovalyuk)=class_bazooker then setclass(kovalyuk,class_soldier);
+          placeunitxyr(kovalyuk,61,77,3,false);
+        end;
+        old_al2:begin
+          kovalyuk=createcharacter('Kovalyuk');
+          if getclass(kovalyuk)=class_bazooker then setclass(kovalyuk,class_soldier);
+          vedci=vedci^[kovalyuk];
+        end;
+      end;
+    end
+    else
+  else msg('neny Kovalyuk');
+  scholtze=0;
+  if testcharacters('Scholtze') then
+    if checkcharacterset('Scholtze') then begin
+      if testvariable('scholtze_side') then tmp=loadvariable('scholtze_side',-1)
+      else buildquery('neny scholtze_side',['OK']);
+      case tmp of
+        old_al:begin
+          scholtze=createcharacter('Scholtze');
+          if getclass(scholtze)=class_bazooker then setclass(scholtze,class_soldier);
+          placeunitxyr(scholtze,61,77,3,false);
+        end;
+        old_al2:begin
+          scholtze=createcharacter('Scholtze');
+          if getclass(scholtze)=class_bazooker then setclass(scholtze,class_soldier);
+          vedci=vedci^[scholtze];
+        end;
+      end;
+    end
+    else
+  else msg('neny Scholtze');
+  kuzmov=0;
+  if testcharacters('Kuzmov') then
+    if checkcharacterset('Kuzmov') then begin
+      if testvariable('kuzmov_side') then tmp=loadvariable('kuzmov_side',-1)
+      else buildquery('neny kuzmov_side',['OK']);
+      case tmp of
+        old_al:begin
+          kuzmov=createcharacter('Kuzmov');
+          if getclass(kuzmov)=class_bazooker then setclass(kuzmov,class_soldier);
+          placeunitxyr(kuzmov,61,77,3,false);
+        end;
+        old_al2:begin
+          kuzmov=createcharacter('Kuzmov');
+          if getclass(kuzmov)=class_bazooker then setclass(kuzmov,class_soldier);
+          vedci=vedci^[kuzmov];                                      
+        end;
+      end;
+    end
+    else
+  else msg('neny Kuzmov');
+  karam=0;
+  if testcharacters('Karamazov') then
+    if checkcharacterset('Karamazov') then begin
+      if testvariable('karam_side') then tmp=loadvariable('karam_side',-1)
+      else buildquery('neny karam_side',['OK']);
+      case tmp of
+        old_al:begin
+          karam=createcharacter('Karamazov');
+          if getclass(karam)=class_bazooker then setclass(karam,class_soldier);
+          placeunitxyr(karam,61,77,3,false);
+        end;
+        old_al2:begin
+          karam=createcharacter('Karamazov');
+          if getclass(karam)=class_bazooker then setclass(karam,class_soldier);
+          vedci=vedci^[karam];
+        end;
+      end;
+    end
+    else
+  else msg('neny Karamazov');
+  petrov=0;
+  if testcharacters('Petrovova') then
+    if checkcharacterset('Petrovova') then begin
+      if testvariable('petrov_side') then tmp=loadvariable('petrov_side',-1)
+      else buildquery('neny petrov_side',['OK']);
+      case tmp of
+        old_al:begin
+          petrov=createcharacter('Petrovova');
+          if getclass(petrov)=class_bazooker then setclass(petrov,class_soldier);
+          placeunitxyr(petrov,61,77,3,false);
+        end;
+        old_al2:begin
+          petrov=createcharacter('Petrovova');
+          if getclass(petrov)=class_bazooker then setclass(petrov,class_soldier);
+          vedci=vedci^[petrov];
+        end;
+      end;
+    end
+    else
+  else msg('neny Petrovova');
+  gleb=0;
+  if testcharacters('Gleb') then
+    if checkcharacterset('Gleb') then begin
+      if testvariable('gleb_side') then tmp=loadvariable('gleb_side',-1)
+      else buildquery('neny gleb_side',['OK']);
+      case tmp of
+        old_al:begin
+          gleb=createcharacter('Gleb');
+          if getclass(gleb)=class_bazooker then setclass(gleb,class_soldier);
+          placeunitxyr(gleb,61,77,3,false);
+        end;
+        old_al2:begin
+          gleb=createcharacter('Gleb');
+          if getclass(gleb)=class_bazooker then setclass(gleb,class_soldier);
+          vedci=vedci^[gleb];
+        end;
+      end;
+    end
+    else
+  else msg('neny Gleb');
+  petros=0;
+  if testcharacters('Petrosyan') then
+    if checkcharacterset('Petrosyan') then begin
+      if testvariable('petros_side') then tmp=loadvariable('petros_side',-1)
+      else buildquery('neny petros_side',['OK']);
+      case tmp of
+        old_al:begin
+          petros=createcharacter('Petrosyan');
+          if getclass(petros)=class_bazooker then setclass(petros,class_soldier);
+          placeunitxyr(petros,61,77,3,false);
+        end;
+        old_al2:begin
+          petros=createcharacter('Petrosyan');
+          if getclass(petros)=class_bazooker then setclass(petros,class_soldier);
+          vedci=vedci^[petros];
+        end;
+      end;
+    end
+    else
+  else msg('neny Petrosyan');
+  lipshchin=0;
+  if testcharacters('Lipshchin') then
+    if checkcharacterset('Lipshchin') then begin
+      if testvariable('lipshchin_side') then tmp=loadvariable('lipshchin_side',-1)
+      else buildquery('neny lipshchin_side',['OK']);
+      case tmp of
+        old_al:begin
+          lipshchin=createcharacter('Lipshchin');
+          if getclass(lipshchin)=class_bazooker then setclass(lipshchin,class_soldier);
+          placeunitxyr(lipshchin,61,77,3,false);
+        end;
+        old_al2:begin
+          lipshchin=createcharacter('Lipshchin');
+          if getclass(lipshchin)=class_bazooker then setclass(lipshchin,class_soldier);
+          vedci=vedci^[lipshchin];
+        end;
+      end;
+    end
+    else
+  else msg('neny Lipshchin');
+  titov=0;
+  if testcharacters('Titov') then
+    if checkcharacterset('Titov') then begin
+      if testvariable('titov_side') then tmp=loadvariable('titov_side',-1)
+      else buildquery('neny titov_side',['OK']);
+      case tmp of
+        old_al:begin
+          titov=createcharacter('Titov');
+          if getclass(titov)=class_bazooker then setclass(titov,class_soldier);
+          placeunitxyr(titov,61,77,3,false);
+        end;
+        old_al2:begin
+          titov=createcharacter('Titov');
+          if getclass(titov)=class_bazooker then setclass(titov,class_soldier);
+          vedci=vedci^[titov];                               
+        end;
+      end;
+    end
+    else
+  else msg('neny Titov');
+  dolgov=0;
+  if testcharacters('Dolgov') then
+    if checkcharacterset('Dolgov') then begin
+      if testvariable('dolgov_side') then tmp=loadvariable('dolgov_side',-1)
+      else buildquery('neny dolgov_side',['OK']);
+      case tmp of
+        old_al:begin
+          dolgov=createcharacter('Dolgov');
+          if getclass(dolgov)=class_bazooker then setclass(dolgov,class_soldier);
+          placeunitxyr(dolgov,61,77,3,false);
+        end;
+        old_al2:begin
+          dolgov=createcharacter('Dolgov');
+          if getclass(dolgov)=class_bazooker then setclass(dolgov,class_soldier);
+          vedci=vedci^[dolgov];
+        end;
+      end;
+    end
+    else
+  else msg('neny Dolgov');
+  xavier=0;
+  if testcharacters('Xavier') then
+    if checkcharacterset('Xavier') then begin
+      if testvariable('xavier_side') then tmp=loadvariable('xavier_side',-1)
+      else buildquery('neny xavier_side',['OK']);
+      case tmp of
+        old_al:begin
+          xavier=createcharacter('Xavier');
+          if getclass(xavier)=class_bazooker then setclass(xavier,class_soldier);
+          placeunitxyr(xavier,61,77,3,false);
+        end;
+        old_al2:begin
+          xavier=createcharacter('Xavier');
+          if getclass(xavier)=class_bazooker then setclass(xavier,class_soldier);
+          vedci=vedci^[xavier];
+        end;
+      end;
+    end
+    else
+  else msg('neny Xavier');
+  oblukov=0;
+  if testcharacters('Oblukov') then
+    if checkcharacterset('Oblukov') then begin
+      if testvariable('oblukov_side') then tmp=loadvariable('oblukov_side',-1)
+      else buildquery('neny oblukov_side',['OK']);
+      case tmp of
+        old_al:begin
+          oblukov=createcharacter('Oblukov');
+          if getclass(oblukov)=class_bazooker then setclass(oblukov,class_soldier);
+          placeunitxyr(oblukov,61,77,3,false);
+        end;
+        old_al2:begin
+          oblukov=createcharacter('Oblukov');
+          if getclass(oblukov)=class_bazooker then setclass(oblukov,class_soldier);
+          vedci=vedci^[oblukov];
+        end;
+      end;
+    end
+    else
+  else msg('neny Oblukov');
+  kozlov=0;
+  if testcharacters('Kozlov') then
+    if checkcharacterset('Kozlov') then begin
+      if testvariable('kozlov_side') then tmp=loadvariable('kozlov_side',-1)
+      else buildquery('neny kozlov_side',['OK']);
+      case tmp of
+        old_al:begin
+          kozlov=createcharacter('Kozlov');
+          if getclass(kozlov)=class_bazooker then setclass(kozlov,class_soldier);
+          placeunitxyr(kozlov,61,77,3,false);
+        end;
+        old_al2:begin
+          kozlov=createcharacter('Kozlov');
+          if getclass(kozlov)=class_bazooker then setclass(kozlov,class_soldier);
+          vedci=vedci^[kozlov];
+        end;
+      end;
+    end
+    else
+  else msg('neny Kozlov');
+  kapitsova=0;
+  if testcharacters('Kapitsova') then
+    if checkcharacterset('Kapitsova') then begin
+      if testvariable('kapitsova_side') then tmp=loadvariable('kapitsova_side',-1)
+      else buildquery('neny kapitsova_side',['OK']);
+      case tmp of
+        old_al:begin
+          kapitsova=createcharacter('Kapitsova');
+          if getclass(kapitsova)=class_bazooker then setclass(kapitsova,class_soldier);
+          placeunitxyr(kapitsova,61,77,3,false);
+        end;
+        old_al2:begin
+          kapitsova=createcharacter('Kapitsova');
+          if getclass(kapitsova)=class_bazooker then setclass(kapitsova,class_soldier);
+          vedci=vedci^[kapitsova];
+        end;
+      end;
+    end
+    else
+  else msg('neny Kapitsova');
+  gossud=0;          
+  if testcharacters('Gossudarov') then
+    if checkcharacterset('Gossudarov') then begin
+//      if testvariable('gossud_side') then tmp=loadvariable('gossud_side',-1)
+//      else buildquery('neny gossud_side',['OK']);
+      tmp=old_al2;
+      case tmp of
+        old_al:begin
+          gossud=createcharacter('Gossudarov');
+          if getclass(gossud)=class_bazooker then setclass(gossud,class_soldier);
+          placeunitxyr(gossud,61,77,3,false);
+        end;
+        old_al2:begin
+          gossud=createcharacter('Gossudarov');
+          if getclass(gossud)=class_bazooker then setclass(gossud,class_soldier);
+          vedci=vedci^[gossud];
+        end;
+      end;
+    end
+    else
+  else msg('neny Gossudarov');
+
+  if testcharacters('survivors5') then
+    if checkcharacterset('survivors5') then zbytekze12=createcharacterset('survivors5')
+    else zbytekze12=[]
+  else buildquery('neny survivors5',['OK']);
+  vedciost=[];
+  if testcharacters('Scientists') then
+    if checkcharacterset('Scientists') then vedciost=createcharacterset('Scientists')
+    else vedciost=[]
+  else buildquery('neny Scientists',['OK']);
+
+  zbytekze12=zbytekze12 diff vedciost;
+
+  for tmp in zbytekze12 do placeunitxyr(tmp,61,77,3,false);
+
+  vip=[burlak,belkov,gnyevko,kiril,kovalyuk,scholtze,kuzmov,karam,petrov,gleb,petros,lipshchin,titov,dolgov,xavier,oblukov,kozlov,kapitsova,gossud] diff [0];
+  ingameon;
+  centernowonunits(burlak);
+  commovexy(zbytekze12^vip,61,49);
+  plidi=0+(zbytekze12^vip);
+
+  while getdistunitxy(burlak,61,49)>5 do begin wait(1);centeronunits(burlak);end;
+  ingameoff;
+
+  dialogueon;
+  tmp=unitfilter(vip diff ([burlak]^vedci),[[f_sex,sex_male]]);
+  tmp1=unitfilter(zbytekze12,[[f_sex,sex_male]]);
+  if tmp or tmp1 or belkov or gnyevko then say(burlak,'DStart-Bur-1');
+  if belkov then begin say(belkov,'DStart-Bel-1');tmp=tmp diff [belkov];end
+  else if gnyevko then begin say(gnyevko,'DStart-Gny-1');tmp=tmp diff [gnyevko];end;
+  if tmp1 then say(tmp1[1],'DStart-Rsol1-1')
+  else if tmp then say(tmp[1],'DStart-Rsol1-1');
+  if tmp or tmp1 or belkov or gnyevko then say(burlak,'DStart-Bur-2');
+  dialogueoff;
+  saveforquickrestart;
+  wait(0$0.5);
+  changemissionobjectives('MBuild');
+end;
+
+export glad,jmm,roth,bobby,brown,connie,cornel,cyrus,denis,lucy,frank,gary,lisa,simms,yamoko;
+export arusove,amervyb;
+
+every 1$30 do  //prichod vedcu a aliancnich americanu
+var tmp,tmp1,tmp2,tmpvedci,amer;
+begin
+  tmp2=vedci^vedciost;
+  arusove=tmp2;
+  tmp=0+tmp2;
+
+  setside(tmp2,rus2);
+  for tmp1=1 to tmp do
+    placeunitxyr(tmp2[tmp1],70,96,3,false);
+
+  commovexy(tmp2,64,54);
+
+
+  uc_side=oth;
+  uc_nation=nation_american;
+
+  if testcharacters('Gladstone') then
+    if checkcharacterset('Gladstone') then glad=createcharacter('Gladstone')
+    else glad=0
+  else msg('neny Gladstone');
+  jmm=newcharacter('Macmillan');
+  if not jmm then msg('neny Macmillan');
+  roth=newcharacter('Roth');
+  if not roth then msg('neny Roth');
+  denis=newcharacter('Peterson');
+  if not denis then msg('neny Peterson');
+  bobby=newcharacter('Bobby');
+  if not bobby then msg('neny Bobby');
+  brown=newcharacter('Brown');
+  if not brown then msg('neny Brown');
+  connie=newcharacter('Connie');
+  if not connie then msg('neny Connie');
+  cornel=newcharacter('Cornell');
+  if not cornel then msg('neny Cornell');
+  cyrus=newcharacter('Cyrus');
+  if not cyrus then msg('neny Cyrus');
+  lucy=newcharacter('Donaldson');
+  if not lucy then msg('neny Donaldson');
+  frank=newcharacter('Frank');
+  if not frank then msg('neny Frank');
+  gary=newcharacter('Gary');
+  if not gary then msg('neny Gary');
+  lisa=newcharacter('Lisa');
+  if not lisa then msg('neny Lisa');
+  simms=newcharacter('Simms');
+  if not simms then msg('neny Simms');
+  yamoko=0;
+
+  amer=[simms,glad,bobby,brown,connie,cornel,cyrus,lucy,frank,gary,lisa,yamoko] diff [0];
+  amervyb=[jmm,roth,denis] diff [0];
+  for tmp1=1 to 0+amervyb do
+    placeunitxyr(amervyb[tmp1],50,5,3,false);
+
+  tmp=tmp+0+amervyb;
+  for tmp1=1 to maxlidi-plidi-tmp do begin
+    placeunitxyr(amer[tmp1],50,5,3,false);
+    amervyb=amervyb^[amer[tmp1]];
+  end;
+
+  commovexy(amervyb,62,47);
+
+
+  SetAttitude(rus2,oth,att_friend,true);  //Don't attack each other guys
+end;
+
+
+var r_seen;
+function side_sees_side(sidea,sideb);
+var tmp,tmp2;
+begin
+  tmp2=filterallunits([[f_side,sideb]]);
+  result=0;
+  for tmp in tmp2 do
+    if see(sidea,tmp) then begin r_seen=tmp;result=tmp;break;end;
+//  debug_strings=[result];
+end;
+
+every 0$1+1$30 trigger side_sees_side(al,oth) do
+begin
+  setside(filterallunits([[f_side,rus2]]),al);
+  dialogueon;
+  say(burlak,'DSci-Bur-1');
+  say(gossud,'DSci-Gos-1');
+  say(burlak,'DSci-Bur-2');
+  say(gossud,'DSci-Gos-2');
+  revealfogarea(al,arab_base_reveal);
+  centernowonxy(126,27);
+  say(burlak,'DSci-Bur-3');
+  say(gossud,'DSci-Gos-3');
+  say(burlak,'DSci-Bur-4');
+  say(gossud,'DSci-Gos-4');
+  say(burlak,'DSci-Bur-5');
+  dialogueoff;
+  centeronunits([burlak,jmm]);
+  wait(0$1);
+  dialogueon;
+  say(gossud,'DAmer-Gos-1');
+  say(burlak,'DAmer-Bur-1');
+  say(jmm,'DAmer-JMM-1');
+  dialogueoff;
+  ingameon;
+  comattackunit(burlak,jmm);
+  comattackunit(jmm,burlak);
+  while not attacks(jmm) do wait(0$0.3);
+  ingameoff;
+  wait(0$1.7);
+  dialogueon;
+  say(gossud,'DAmer-Gos-2');
+  say(roth,'DAmer-Roth-2');
+  dialogueoff;
+  comstop([burlak,jmm]);
+  setside([jmm],al);
+  dialogueon;
+  say(gossud,'DAmer-Gos-3');
+  say(burlak,'DAmer-Bur-3');
+  say(jmm,'DAmer-JMM-3');
+  say(burlak,'DAmer-Bur-4');
+  say(jmm,'DAmer-JMM-4');
+  say(burlak,'DAmer-Bur-5');
+  say(jmm,'DAmer-JMM-5');
+  say(burlak,'DAmer-Bur-6');
+  dialogueoff;
+  setside(amervyb,al);
+  changemissionobjectives('MMacmillan');
+  hint('CombinedForces');
+end;
+
+
+on buildingcomplete(b) do
+  if (getbtype(b)=b_lab)and(getnation(b)<>nation_american)and not lb1 then begin lb1=true;enable(01);end
+  else if (getbtype(b)=b_lab)and(getnation(b)=nation_american) then begin disable;enable(02);lab_build=true;end;
+
+every 0$1+1$45 marked 01 do
+var tmp;
+begin
+   dialogueon;
+  if isok(denis) then say(denis,'DLab-Pet-1')
+  else begin
+    tmp=filterallunits([[f_side,al],[f_nation,nation_american],[f_type,unit_human],[f_sex,sex_male],[f_ok]]);
+    if tmp then say(tmp[1],'DLab-Pet-1')
+  end;
+  dialogueoff;
+end;
+
+every 0$1+2$0 marked 02 do
+var tmp;
+begin
+  tmp=filterallunits([[f_side,al],[f_nation,nation_american],[f_type,unit_human],[f_sex,sex_male],[f_ok]]);
+  dialogueon;
+  if isok(denis) then say(denis,'DResearch-Pet-1')
+  else if tmp then say(tmp[1],'DResearch-Pet-1');
+  dialogueoff;
+end;
+
+
+every 0$1+2$30 trigger see(al,ruv0) do  //ten zatraceny rusky pruzkum
+var tmp;
+begin
+  tmp=unitfilter(arusove,[[f_ok],[f_sex,sex_male]]);
+  if 0=tmp then exit;
+  tmp=tmp diff [gossud];
+  dialogueon;
+  if tmp then say(tmp[1],'DRussianAttack-RSci1-1')
+  else say(gossud,'DRussianAttack-RSci1-1');
+  if isok(gossud) then begin
+    say(gossud,'DRussianAttack-Gos-1');
+    say(burlak,'DRussianAttack-Bur-1');
+  end;
+  dialogueoff;
+end;
+
+
+every 4$10 do //dorazil jahoda
+begin
+  setside(jahoda,rus2);
+  placeunitxyr(jahoda,113,97,2,false);
+//  comhold(jahoda);
+  commovexy(jahoda,79,65);
+end;
+
+every 0$2+4$28 trigger isinarea(jahoda,stred) do
+var tmp;
+begin
+  tmp=unitfilter(arusove,[[f_ok]]);
+  dialogueon;
+  case jahodatyp of
+    1:begin
+      sayradio(jahoda,'DBelkov-Bel-1');
+      say(burlak,'DBelkov-Bur-1');
+    end;
+    2:begin
+      sayradio(jahoda,'DBelkov-Gny-1');
+      say(burlak,'DBelkov-Bur-1a');
+    end;
+  end;
+  dialogueoff;
+end;
+
+every 0$1+4$33 trigger filterallunits([[f_side,al],[f_dist,jahoda,6]]) do
+begin
+//  msg('jahoda v dostrelu');
+  setside(jahoda,al);
+end;
+
+
+every 0$1+10$15{1$45} {trigger lab_builb} do
+var tmp,tmp2,tmp3;
+begin
+  tmp=filterallunits([[f_side,al],[f_nation,nation_russian],[f_ok]]);
+  tmp3=filterallunits([[f_side,al],[f_nation,nation_american],[f_ok]]);
+  tmp2=unitfilter(tmp,[[f_class,class_scientistic],[f_ok]]);
+  dialogueon;
+  if isok(gossud) then say(gossud,'DArtef-Gos-1')
+  else if tmp2 then say(tmp2[1],'DArtef-RSci1-1')
+  else if tmp then say(tmp[1],'DArtef-RSci1-1');
+  if isok(roth) then say(roth,'DArtef-Roth-1')
+  else say(tmp3[1],'DArtef-Roth-1');
+  say(burlak,'DArtef-Bur-1');
+  if roth then say(roth,'DArtef-Roth-2')
+  else say(tmp3[1],'DArtef-Roth-2');
+  say(burlak,'DArtef-Bur-2');
+  say(jmm,'DArtef-JMM-2');
+  dialogueoff;
+
+  case query('QBase') of
+    1:begin
+      dialogueon;
+      say(burlak,'DQrBase#1-Bur-1');
+      if isok(gossud) then say(gossud,'DQrBase#1-Gos-1')
+      else if isok(roth) then say(roth,'DQrBase#1-Roth-1')
+      else if tmp^tmp3 then say((tmp^tmp3)[1],'DQrBase#1-Roth-1');
+      say(burlak,'DQrBase#1-Bur-2');
+      dialogueoff;
+      case query('QBaseAgain') of
+        1:pokec1;
+        2:pokec2;
+      end;
+    end;
+    2:pokec1;
+    3:pokec2;
+  end;
+  changemissionobjectives('MAttack');
+  update_display(1);
+end;
+
+function pokec1;
+begin
+  dialogueon;
+  say(burlak,'DQrBase#2-Bur-1');
+  sayradio(abdul,'DQrBase#2-Abd-1');
+  say(burlak,'DQrBase#2-Bur-2');
+  sayradio(abdul,'DQrBase#2-Abd-2');
+  dialogueoff;
+  vyjednavalo_se=true;
+  enable(07);
+end;
+
+function pokec2;
+begin
+  dialogueon;
+  say(burlak,'DQrBase#3-Bur-1');
+  dialogueoff;
+end;

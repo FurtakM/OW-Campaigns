@@ -1,0 +1,47 @@
+var can;
+
+every 0$30 do
+begin
+  can:=Delete(can,1);
+  enable;
+end;
+
+on DestinationUnreachable(un) do
+var ms;
+begin
+  can:=can ^ un;
+  ukaz_kdo;
+end;
+
+
+
+function ukaz_kdo;
+var un,list,ms,sez;
+begin
+  list:=[];
+  sez:=can union can;
+  for un in sez do
+    begin
+        case GetType(un) of
+      1: begin
+             case GetClass(un) of
+           1: ms:='Soldier '&un;
+           2: ms:='Engineer '&un;
+           3: ms:='Mechanic '&un;
+           4: ms:='Scientistic '&un;
+             end;
+           ms:=ms&' cannot reach goal.';
+         end;
+      2: begin
+              case GetWeapon(un) of
+           51: ms:='Cargo Bay '&un;
+          else ms:='Vehicle '&un;
+              end;
+           ms:=ms&' cannot reach goal.';
+         end;
+        end;
+      list:=list ^ ms;
+    end;
+  list:=list ^ ('Crate list = '&crate_list);
+  display_strings:=list;
+end;

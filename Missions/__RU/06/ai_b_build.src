@@ -1,0 +1,415 @@
+export builds1, builds2, builds3, builds4, builds5;
+export aici1,  aici2,  aici3,  aici4,  aici5;
+export a1eng;
+export can_rebuild;
+export can_repair;
+
+
+export aici;
+export stavi;
+
+var upgradeable;
+var trough_upgrade;
+
+function UpgradeableTo(b,up);
+var i;
+begin
+     result:=0;
+     for i:=1 to upgradeable do
+       if b=upgradeable[i] and up=trough_upgrade[i] then begin
+           result:=up;
+           break;
+       end;
+end;
+function IsUpgraded(b);
+begin
+     result:=0;
+     case b of
+          trough_upgrade[1] : result:=upgradeable[1];
+          trough_upgrade[2] : result:=upgradeable[2];
+          trough_upgrade[3] : result:=upgradeable[3];
+          trough_upgrade[4] : result:=upgradeable[4];
+          trough_upgrade[5] : result:=upgradeable[5];
+     end;
+end;
+function BasicFrom(b);
+begin
+     result:=b;
+     case b of
+          trough_upgrade[1] : result:=upgradeable[1];
+          trough_upgrade[2] : result:=upgradeable[2];
+          trough_upgrade[3] : result:=upgradeable[3];
+          trough_upgrade[4] : result:=upgradeable[4];
+          trough_upgrade[6] : result:=upgradeable[6];
+     end;
+end;
+export function place_b;
+var i;
+begin
+//konstanty
+     upgradeable:=   [b_depot,     b_workshop, b_armoury,  b_lab,      b_lab_half, b_lab     ];
+     trough_upgrade:=[b_warehouse, b_factory,  b_barracks, b_lab_half, b_lab_full, b_lab_full];
+//stred na kopci
+                  //num,class,level
+     aici1:=[ [[0,class_engineer,1],
+                [1,class_scientistic,3],
+                [2,class_soldier,2],
+                [0,class_mechanic,0]],
+
+               [[1,class_engineer,1],
+                [1,class_scientistic,3],
+                [2,class_soldier,3],
+                [0,class_mechanic,0]],
+
+               [[1,class_engineer,4],
+                [1,class_scientistic,3],
+                [3,class_soldier,5],
+                [0,class_mechanic,0]]    ][difficulty];
+//nahore vpravo
+     aici2:=[ [[1,class_engineer,6],
+                [0,class_scientistic,4],
+                [2,class_soldier,3],
+                [0,class_mechanic,3]],
+
+               [[1,class_engineer,6],
+                [0,class_scientistic,5],
+                [2,class_soldier,3],
+                [0,class_mechanic,3]],
+
+               [[1,class_engineer,7],
+                [0,class_scientistic,5],
+                [2,class_soldier,3],
+                [0,class_mechanic,3]]    ][difficulty];
+//nahore vlevo
+     aici3:=[ [[2,class_engineer,5],
+                [3,class_scientistic,3],
+                [6,class_soldier,4],
+                [5,class_mechanic,5]],
+
+               [[2,class_engineer,6],
+                [3,class_scientistic,4],
+                [6,class_soldier,5],
+                [5,class_mechanic,6]],
+
+               [[2,class_engineer,6],
+                [3,class_scientistic,4],
+                [6,class_soldier,6],
+                [5,class_mechanic,7]]    ][difficulty];
+//nize vlevo
+     aici4:=[ [[0,class_engineer,5],
+                [0,class_scientistic,3],
+                [8,class_soldier,3],
+                [3,class_mechanic,3]],
+
+               [[0,class_engineer,6],
+                [0,class_scientistic,4],
+                [8,class_soldier,4],
+                [3,class_mechanic,4]],
+
+               [[0,class_engineer,6],
+                [0,class_scientistic,5],
+                [8,class_soldier,5],
+                [3,class_mechanic,5]]    ][difficulty];
+//u cesty
+     aici5:=[ [[2,class_soldier,5]],
+
+               [[2,class_soldier,6]],
+
+               [[2,class_soldier,7]]    ][difficulty];
+
+// type, x, y, d, [weapon]/[[lab],[lab2]], place, rebuild, repair, in_def_macro
+//stred na kopci
+builds1:=[
+[[b_depot,          85,  86, 2, [],1,1,1,0,0],
+[b_breastwork,    100, 104, 0, [],0,0,0,0,1],
+[b_breastwork,     85,  91, 1, [],0,0,0,0,1],
+[b_bunker,         91, 101, 0, [us_double_gun],1,1,1,1,1],
+[b_armoury,        91,  86, 3, [],1,0,0,0,1],
+[b_siberite_mine, 101,  93, 3, [],0,0,0,0,0],
+[b_oil_mine,       87,  84, 0, [],1,1,1,0,0],
+[b_oil_power,     101,  96, 3, [],1,1,1,0,0]],
+
+[[b_depot,          85,  86, 2, [],1,1,1,0,0],
+[b_breastwork,    100, 104, 0, [],1,1,1,1,1],
+[b_breastwork,     85,  91, 1, [],0,0,0,0,1],
+[b_bunker,         91, 101, 0, [us_light_gun],1,1,1,1,1],
+[b_armoury,        91,  86, 3, [],1,1,0,0,1],
+[b_siberite_mine, 101,  93, 3, [],1,1,1,1,0],
+[b_oil_mine,       87,  84, 0, [],1,1,1,0,0],
+[b_oil_power,     101,  96, 3, [],1,1,1,0,0]],
+
+[[b_depot,          85,  86, 2, [],1,1,1,0,0],
+[b_breastwork,    100, 104, 0, [],1,1,1,1,1],
+[b_breastwork,     85,  91, 1, [],1,1,1,1,1],
+[b_bunker,         91, 101, 0, [us_gatling_gun],1,1,1,1,1],
+[b_armoury,        91,  86, 3, [],1,1,1,1,1],
+[b_siberite_mine, 101,  93, 3, [],1,1,1,0,0],
+[b_oil_mine,       87,  84, 0, [],1,1,1,0,0],
+[b_oil_power,     101,  96, 3, [],1,1,1,0,0]] ][difficulty];
+
+//nahore vpravo
+builds2:=[
+[b_workshop,   60,  9, 4, [],1,0,0,0,0],
+[b_oil_mine,   53, 13, 2, [],1,0,0,0,0],
+[b_oil_power,  50,  3, 4, [],1,0,0,0,0],
+[b_depot,      46,  5, 2, [],1,0,0,0,0],
+[b_armoury,    59,  9, 4, [],1,0,0,1,1],
+[b_breastwork, 50, 14, 0, [],1,0,0,1,1]];
+
+//nahore vlevo
+if difficulty=1 then
+builds3:=[
+[b_breastwork,     41, 23, 5, [],1,0,0,1,1],
+[b_bunker,         18,  8, 4, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,         25, 13, 4, [us_double_gun],1,1,1,1,0],
+[b_bunker,         17, 18, 4, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,         31, 49, 5, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,         35, 44, 5, [us_double_gun],1,1,1,1,0],
+[b_bunker,         34, 26, 0, [us_radar],1,1,1,1,0],
+[b_siberite_mine,  29, 30, 2, [],1,1,1,0,0],
+[b_oil_mine,       39, 37, 1, [],1,1,1,0,0],
+[b_siberite_power, 24, 44, 2, [],1,1,1,0,0],
+[b_siberite_power, 27, 26, 2, [],1,1,1,0,0],
+[b_warehouse,      32, 35, 4, [],1,1,1,0,0],
+[b_lab_full,       21, 35, 1, [b_lab_opto, b_lab_weapon],1,1,1,0,0],
+[b_factory,        18, 25, 2, [],1,1,1,0,0],
+[b_control_tower,  22, 40, 2, [],1,1,1,0,0],
+[b_ext_track,      14, 21, 2, [],1,1,1,0,0],
+[b_ext_gun,        15, 25, 1, [],1,1,1,0,0],
+[b_ext_radar,      18, 29, 0, [],1,1,1,0,0]]
+else
+builds3:=[
+[b_breastwork,     41, 23, 5, [],1,1,1,1,1],
+[b_bunker,         18,  8, 4, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,         25, 13, 4, [us_double_gun],1,1,1,1,0],
+[b_bunker,         17, 18, 4, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,         31, 49, 5, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,         35, 44, 5, [us_double_gun],1,1,1,1,0],
+[b_bunker,         34, 26, 0, [us_radar],1,1,1,1,0],
+[b_siberite_mine,  29, 30, 2, [],1,1,1,0,0],
+[b_oil_mine,       39, 37, 1, [],1,1,1,0,0],
+[b_siberite_power, 24, 44, 2, [],1,1,1,0,0],
+[b_siberite_power, 27, 26, 2, [],1,1,1,0,0],
+[b_warehouse,      32, 35, 4, [],1,1,1,0,0],
+[b_lab_full,       21, 35, 1, [b_lab_opto, b_lab_weapon],1,1,1,0,0],
+[b_factory,        18, 25, 2, [],1,1,1,0,0],
+[b_control_tower,  22, 40, 2, [],1,1,1,0,0],
+[b_ext_track,      14, 21, 2, [],1,1,1,0,0],
+[b_ext_gun,        15, 25, 1, [],1,1,1,0,0],
+[b_ext_radar,      18, 29, 0, [],1,1,1,0,0]];
+
+//nize vlevo
+builds4:=[
+[b_factory,       45, 57, 3, [],1,1,1,0,0],
+[b_ext_track,     42, 54, 2, [],1,1,1,0,0],
+[b_ext_gun,       45, 53, 3, [],1,1,1,0,0],
+[b_ext_noncombat, 48, 57, 4, [],1,1,1,0,0],
+[b_ext_radar,     49, 61, 5, [],1,1,1,0,0],
+[b_oil_power,     39, 50, 2, [],1,1,1,0,0],
+[b_barracks,      53, 67, 5, [],1,1,1,1,0],
+[b_bunker,        57, 65, 5, [us_radar],1,1,1,1,0],
+[b_bunker,        57, 68, 5, [us_double_gun],1,1,1,1,0],
+[b_bunker,        52, 47, 3, [us_gatling_gun],1,1,1,1,0],
+[b_bunker,        60, 59, 4, [us_gatling_gun],1,1,1,1,0]];
+
+//u cesty
+builds5:=[
+[b_breastwork, 67, 34, 5, [],1,0,0,1,1],
+[b_breastwork, 83, 38, 1, [],1,0,0,1,0]];
+
+    can_repair:=[];
+    can_rebuild:=[];
+    fort:=[];
+
+    SetResourceVisibility(101,  93, ai);
+    b1:=place_base(builds1,kolik_je_v_depotu,11,0,b1_levels);
+    b2:=place_base(builds2,250,94,kolik_je_sib_v_hornim,b2_levels);
+    b3:=place_base(builds3,4180,6400,500,b3_levels);
+    b4:=place_base(builds4,0,0,0,b4_levels);
+    b5:=place_base(builds5,0,0,0,b5_levels);
+
+    if fast_braketrough then
+      SetLives(UnitFilter(b1, [f_btype, b_armoury]), zivoty_armoury)
+    else
+      SetLives(UnitFilter(b1, [f_btype, b_armoury]), zivoty_armoury2);
+
+    a1:=place_amici(aici1,abase1);
+    for i in a1 do
+        SetTag(i, 1);
+    a2:=place_amici(aici2,abase2);
+    for i in a2 do
+        SetTag(i, 2);
+    a3:=place_amici(aici3,abase3);
+    for i in a3 do
+        SetTag(i, 3);
+    a4:=place_amici(aici4,abase4);
+    for i in a4 do
+        SetTag(i, 4);
+    a5:=place_amici(aici5,abase5);
+    for i in a5 do
+        SetTag(i, 5);
+
+    a1eng:=UnitFilter(a1, [[f_class,class_engineer]]);
+    if a1eng then
+      a1eng:=a1eng[1];
+
+    InitUc;
+    InitHc;
+    uc_side:=ai;
+    uc_nation:=americans;
+    PrepareSoldier(sex_male, 10);
+end;
+
+
+function place_base(builds, cans, oil, sib, levels);
+var i, base, b, tb, bb;
+begin
+    InitUc;
+    InitBc;
+    uc_side:=americans;
+    uc_nation:=nation_american;
+
+    b:=[];
+    for i in builds do begin
+        tb:=get_build(i[2], i[3], 0);
+        if tb and not i[6] then
+          RemoveUnit(tb);
+        if not tb and i[6] then begin
+          bc_type:=i[1];
+          if bc_type=b_lab or bc_type=b_lab_half or bc_type=b_lab_full then begin
+             bc_kind1:=i[5][1];
+             bc_kind2:=i[5][2];
+          end;
+          tb:=CreateAndPlaceBuildingXYD(i[2],i[3],i[4]);
+          if bc_type=b_bunker or bc_type=b_turret then
+             PlaceWeaponTurret(tb, i[5][1]);
+        end;
+        if i[6] then b:=b ^ [tb];
+        if i[7] then can_rebuild:=can_rebuild ^ [tb];
+        if i[8] then can_repair:=can_rebuild ^ [tb];
+        if i[9] then fort:=fort ^ [tb];
+        if i[10] then SetBLevel(tb, levels[1])
+                 else SetBLevel(tb, levels[2]);
+    end;
+    bb:=UnitFilter(b, [f_or,[f_btype,b_depot],[f_btype,b_warehouse]]);
+    if bb then begin
+      base:=GetBase(bb[1]);
+      SetResourceType(base, mat_cans, cans);
+      SetResourceType(base, mat_oil, oil);
+      SetResourceType(base, mat_siberit, sib);
+    end;
+    result:=b;
+end;
+
+function place_amici(amici,area);
+var i,j, a;
+begin
+    InitUc;
+    InitHc;
+    uc_side:=americans;
+    uc_nation:=nation_american;
+
+    a:=[];
+    for i in amici do begin
+      PrepareHuman(0, i[2], i[3]);
+      for j:=1 to i[1] do begin
+         a:=a ^ [CreateHuman];
+      end;
+    end;
+    for i in a do
+      PlaceUnitArea(i, area, false);
+    result:=a;
+end;
+
+//rebuild base
+every 0$4 + 0$3.5 do //add weapons
+var i, j, weap, builds;
+begin
+    for i in UnitFilter(can_rebuild, [[f_side,ai],[f_or,[f_btype,b_turret],[f_btype,b_bunker]]]) do
+        if not GetBWeapon(i) then begin
+           weap:=0;
+           for j in builds do
+              if GetX(i)=j[2] and GetY(i)=j[3] and GetBType(i)=j[1] then begin
+                 weap:=j[5][1];
+                 break;
+              end;
+           if weap then
+              ComPlaceWeapon(j, weap);
+        end;                           
+    enable;
+end;
+every 0$4 + 0$0.5 do
+var i, j, to_up, to_b, builds, weap, co_tam_stoji;
+begin
+    for i in builds3 do begin
+       if i[7] then begin
+         co_tam_stoji:=GetBType(get_build(i[2],i[3],0));
+         if GetSide(co_tam_stoji)=ai then
+           if co_tam_stoji=-1 then begin
+              to_b:=[BasicFrom(i[1]), i[2], i[3], i[4], i[5]];
+           end
+           else if UpgradeableTo(co_tam_stoji,i[1]) then begin
+              to_up:=i;
+           end;
+       end;
+    end;
+    if to_b then
+       ComBuild(NearestUnitToXY(eng, to_b[2], to_b[3]), to_b[1], to_b[2] ,to_b[3], to_b[4])
+    else if to_up then
+       ComUpgrade(get_build(i[2],i[3],0));
+
+    enable;
+end;
+every 0$4 + 0$1.5 do
+var i, j, to_up, to_b, builds, weap, co_tam_stoji;
+begin
+    for i in builds4 do begin
+       if i[7] then begin
+         co_tam_stoji:=GetBType(get_build(i[2],i[3],0));
+         if GetSide(co_tam_stoji)=ai then
+           if co_tam_stoji=-1 then begin
+              to_b:=[BasicFrom(i[1]), i[2], i[3], i[4], i[5]];
+           end
+           else if UpgradeableTo(co_tam_stoji,i[1]) then begin
+              to_up:=i;
+           end;
+       end;
+    end;
+    if to_b then
+       ComBuild(NearestUnitToXY(eng, to_b[2], to_b[3]), to_b[1], to_b[2] ,to_b[3], to_b[4])
+    else if to_up then
+       ComUpgrade(get_build(i[2],i[3],0));
+
+    enable;
+end;
+every 0$4 + 0$2.5 trigger (not OvsyenkoTaken)or(OvsyenkoCaptured) do
+var i, j, to_up, to_b, builds, weap, co_tam_stoji;
+begin
+    for i in builds1 do begin
+       if i[7] then begin
+         co_tam_stoji:=GetBType(get_build(i[2],i[3],0));
+         if GetSide(co_tam_stoji)=ai then
+           if co_tam_stoji=-1 then begin
+              to_b:=[BasicFrom(i[1]), i[2], i[3], i[4], i[5]];
+           end
+           else if UpgradeableTo(co_tam_stoji,i[1]) then begin
+              to_up:=i;
+           end;
+       end;
+    end;
+    if to_b then
+       ComBuild(NearestUnitToXY(eng, to_b[2], to_b[3]), to_b[1], to_b[2] ,to_b[3], to_b[4])
+    else if to_up then
+       ComUpgrade(get_build(i[2],i[3],0));
+    enable;
+end;
+
+function get_build(x,y,btype);
+begin
+    result:=HexInfo(x,y);
+    if result<1 then result:=0;
+    if btype then
+       if btype<>GetBType(result) then result:=0
+    else
+       if unit_building<>GetType(result) then result:=0;
+end;

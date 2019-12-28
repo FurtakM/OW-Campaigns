@@ -1,0 +1,81 @@
+var load_global,                  // pocitadlo pro loadovani krabic po cele mape
+    load_local_cpu,               // pocitadlo pro loadovani krabic do zakladen pocitace
+    load_local_you;               // pocitadlo pro loadovani krabic do zakladny hrace
+
+var global_delay,                 // prodlevy mezi loadovani globalnich krabic
+    cpu_delay,                    // prodlevy mezi loadovanim krabic do cpu zakladen
+    you_delay;                    // prodlevy mezi loadovanim krabic do hracovy zakladny
+
+var crates_loading_area;
+
+
+//--------------------------------------------//
+//-----  INICIALIZACE LOADOVANI ZASILEK  -----//
+export function init_crates_loading;
+begin
+  global_delay:=10$0;
+  cpu_delay:=0$90;
+  you_delay:=3$30;
+
+  load_global:=TICK+Rand(global_delay - 0$40,global_delay + 0$60);
+  load_local_cpu:=TICK+Rand(cpu_delay - 0$20,cpu_delay + 0$20);
+  load_local_you:=TICK+Rand(you_delay - 0$20,you_delay + 0$20);
+
+  crates_loading_area:=[us_crates,ar_crates,ru_crates];
+end;
+
+
+//--------------------------------------//
+//-----  LOADOVANI KRABIC NA MAPU  -----//
+
+every 0$5.1 trigger TICK>load_global do
+var c,sur,i;
+begin
+  c:=RandHex(false);
+  sur:=[];
+  for i=1 to 4 do
+    sur:=sur ^ [ RandHexXYR(c[1],c[2],1,false)];
+  for i in sur do
+    CreateCratesXY(5,i[1],i[2],true);
+  load_global:=TICK+Rand(global_delay - 0$40,global_delay + 0$60);
+
+  enable;
+end;
+
+every 0$5.4 trigger TICK>load_local_cpu do
+var un;
+begin
+  if GetResourceArea(us_crates,mat_cans)<250 then
+    CreateCratesArea(Rand(3,5),us_crates,true);
+  if GetResourceArea(ru_crates,mat_cans)<250 then
+    CreateCratesArea(Rand(3,5),ru_crates,true);
+  load_local_cpu:=TICK+Rand(cpu_delay - 0$20,cpu_delay + 0$20);
+  enable;
+end;
+
+every 0$5.3 trigger TICK>load_local_you do
+begin
+  if GetResourceArea(ar_crates,mat_cans)<250 then
+    CreateCratesArea(Rand(1,5),ar_crates,true);
+  load_local_you:=TICK+Rand(you_delay - 0$20,you_delay + 0$20);
+  enable;
+end;
+
+//-------------------------------------------------------------//
+//-----  MALE CHEATOVANI KRABIC POCITACI PRIMO DO DEPOTU  -----//
+every 0$30.1 do
+var list,side,un,base;
+begin
+  for side in cpu_list do
+    begin
+      list:=FilterAllUnits([ [f_side,side], [f_type,unit_building], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+      for un in list do
+        begin
+          base:=GetBase(un);
+          if GetResourceType(base,mat_cans)<300 then
+            SetResourceType(base,mat_cans,GetResourceType(base,mat_cans)+(difficulty*30));
+        end;
+    end;
+  enable;
+end;
+

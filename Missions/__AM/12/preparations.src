@@ -1,0 +1,651 @@
+var timelap0;
+export guard0,guard1,guard2,guard3;
+export def0,def1,def2,defa,defb;
+export ru_scies;
+export ruso0,ruso1,ruso2,runo0,runo1,runo2;
+
+export john,powell,lucy,kurt,kurt_veh,kurtloc;
+export amv0,amv1,amv2,amv3,amscie0;
+export am_grupa;
+
+export function prepare_russians;
+var tmp;
+begin
+  uc_nation=nation_russian;
+  uc_side=rus;
+//bazukeri
+  preparehuman(sex_male,class_bazooker,baz0_sk);
+  baz0=createhuman;
+  placeunitxy(baz0,70,54,false);
+  comhold(baz0);
+  preparehuman(sex_male,class_bazooker,baz1_sk);
+  baz1=createhuman;
+  placeunitxy(baz1,69,54,false);
+  comhold(baz1);
+  preparehuman(sex_male,class_bazooker,baz2_sk);
+  baz2=createhuman;
+  placeunitxy(baz2,70,53,false);
+  comhold(baz2);
+  preparehuman(sex_male,class_bazooker,baz3_sk);
+  baz3=createhuman;
+  placeunitxy(baz3,68,52,false);
+  comhold(baz3);
+  preparehuman(sex_male,class_bazooker,baz4_sk);
+  baz4=createhuman;
+  placeunitxy(baz4,69,52,false);
+  comhold(baz4);
+  preparehuman(sex_male,class_bazooker,baz5_sk);
+  baz5=createhuman;
+  placeunitxy(baz5,68,53,false);
+  comhold(baz5);
+  preparescientist(sex_female,scie0_sk);
+  scie0=createhuman;
+  placeunitxy(scie0,69,53,false);
+  comfree(scie0);
+  comremember([scie0,baz0,baz1,baz2,baz3,baz4,baz5]);
+//timelapser
+  vc_control=control_computer;
+  vc_engine=engine_siberite;
+  vc_chassis=ru_heavy_tracked;
+  vc_weapon=ru_time_lapser;
+  timelap0=createvehicle;
+  setdir(timelap0,5);
+  placeunitxy(timelap0,90,38,false);
+  comhold(timelap0);
+//defenders of the bridge
+  vc_control=control_manual;
+  vc_chassis=guard0_chassis;
+  vc_weapon=guard0_weapon;
+  guard0=createvehicle;
+  setdir(guard0,3);
+  placeunitxy(guard0,58,77,false);
+  preparemechanic(sex_male,guard0_dr);
+  placehumaninunit(createhuman,guard0);
+  vc_chassis=guard1_chassis;
+  vc_weapon=guard1_weapon;
+  guard1=createvehicle;
+  setdir(guard1,3);
+  placeunitxy(guard1,54,76,false);
+  preparemechanic(sex_male,guard1_dr);
+  placehumaninunit(createhuman,guard1);
+  vc_chassis=guard2_chassis;
+  vc_weapon=guard2_weapon;
+  guard2=createvehicle;
+  setdir(guard2,3);
+  placeunitxy(guard2,50,74,false);
+  preparemechanic(sex_male,guard2_dr);
+  placehumaninunit(createhuman,guard2);
+  vc_chassis=guard3_chassis;
+  vc_weapon=guard3_weapon;
+  if difficulty>1 then guard3=createvehicle
+  else guard3=0;
+  setdir(guard3,2);
+  placeunitxy(guard3,45,73,false);
+  preparemechanic(sex_male,guard3_dr);
+  placehumaninunit(createhuman,guard3);
+  comremember([guard0,guard1,guard2,guard3]);
+//teleport exit
+  teleportexit(ruteleprt,113,116);
+//base B defence south
+  vc_control=control_manual;
+  vc_chassis=def0_chassis;
+  vc_weapon=def0_weapon;
+  def0=createvehicle;
+  setdir(def0,2);
+  placeunitxy(def0,23,17,false);
+  preparemechanic(sex_male,def0_dr);
+  placehumaninunit(createhuman,def0);
+  vc_chassis=def1_chassis;
+  vc_weapon=def1_weapon;
+  def1=createvehicle;
+  setdir(def1,3);
+  placeunitxy(def1,35,19,false);
+  preparemechanic(sex_male,def1_dr);
+  placehumaninunit(createhuman,def1);
+  vc_chassis=def2_chassis;
+  vc_weapon=def2_weapon;
+  def2=createvehicle;
+  setdir(def2,2);
+  placeunitxy(def2,29,13,false);
+  preparemechanic(sex_male,def2_dr);
+  placehumaninunit(createhuman,def2);
+  comremember([def0,def1,def2]);
+//base B defence east
+  vc_control=control_manual;
+  vc_chassis=defa_chassis;
+  vc_weapon=defa_weapon;
+  defa=createvehicle;
+  setdir(defa,2);
+  placeunitxy(defa,37,14,false);
+  preparemechanic(sex_male,defa_driver);
+  placehumaninunit(createhuman,defa);
+  vc_chassis=defb_chassis;
+  vc_weapon=defb_weapon;
+  defb=createvehicle;
+  setdir(defb,2);
+  placeunitxy(defb,36,9,false);
+  preparemechanic(sex_male,defb_driver);
+  placehumaninunit(createhuman,defb);
+  preparesoldier(sex_male,rubunw0_cr);
+  tmp=createhuman;
+  placeunitxy(tmp,33,18,false);
+  comenterunit(tmp,rubunw0);
+  preparesoldier(sex_male,rubunw1_cr);
+  tmp=createhuman;
+  placeunitxy(tmp,37,20,false);
+  comenterunit(tmp,rubunw1);
+  preparesoldier(sex_male,rubunw2_cr);
+  tmp=createhuman;
+  placeunitxy(tmp,44,16,false);
+  comenterunit(tmp,rubunw2);
+//mechanici v tovarne
+  preparemechanic(sex_male,fact_mech0);
+  tmp=createhuman;
+  placeunitxyr(tmp,19,16,3,false);
+  comenterunit(tmp,ru_fact);
+  preparemechanic(sex_female,fact_mech1);
+  tmp=createhuman;
+  placeunitxyr(tmp,19,16,3,false);
+  comenterunit(tmp,ru_fact);
+//vedci v labolatori
+  ru_scies=[];
+  ru_scies_=0;
+  ru_scies__=5;
+  preparescientist(sex_male,scie1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,55,4,2,false);
+  comenterunit(tmp,ru_lab);
+  ru_scies=ru_scies^tmp;
+  preparescientist(sex_female,scie2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,55,4,2,false);
+  comenterunit(tmp,ru_lab);
+  ru_scies=ru_scies^tmp;
+  preparescientist(sex_female,scie3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,55,4,2,false);
+  comenterunit(tmp,ru_lab);
+  ru_scies=ru_scies^tmp;
+  preparescientist(sex_male,scie4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,55,4,2,false);
+  comenterunit(tmp,ru_lab);
+  ru_scies=ru_scies^tmp;
+  preparescientist(sex_female,scie5_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,55,4,2,false);
+  comenterunit(tmp,ru_lab);
+  ru_scies=ru_scies^tmp;
+//obrana vyzkumne ruske zakladny (sever)
+  preparesoldier(sex_male,rubune0_cr);
+  tmp=createhuman;
+  placeunitxy(tmp,75,16,false);
+  comenterunit(tmp,rubune0);
+  preparesoldier(sex_male,rubune1_cr);
+  tmp=createhuman;
+  placeunitxy(tmp,78,14,false);
+  comenterunit(tmp,rubune1);
+  vc_control=control_manual;
+  vc_chassis=runo0_chassis;
+  vc_weapon=runo0_weapon;
+  runo0=createvehicle;
+  setdir(runo0,3);        
+  placeunitxy(runo0,72,19,false);
+  preparemechanic(sex_male,runo0_driver);
+  placehumaninunit(createhuman,runo0);
+  //comhold(tmp);
+  vc_chassis=runo1_chassis;
+  vc_weapon=runo1_weapon;
+  runo1=createvehicle;
+  setdir(runo1,1);
+  placeunitxy(runo1,71,3,false);
+  preparemechanic(sex_male,runo1_driver);
+  placehumaninunit(createhuman,runo1);
+  vc_chassis=runo2_chassis;
+  vc_weapon=runo2_weapon;
+  runo2=createvehicle;
+  setdir(runo2,1);
+  placeunitxy(runo2,75,9,false);
+  preparemechanic(sex_male,runo2_driver);
+  placehumaninunit(createhuman,runo2);
+//obrana vyzkumne ruske zakladny (jih)
+  vc_control=control_manual;
+  vc_chassis=ruso0_chassis;
+  vc_weapon=ruso0_weapon;
+  ruso0=createvehicle;
+  setdir(ruso0,5);
+  placeunitxy(ruso0,93,38,false);
+  preparemechanic(sex_male,ruso0_driver);
+  placehumaninunit(createhuman,ruso0);
+  //comhold(tmp);
+  vc_control=control_manual;
+  vc_chassis=ruso1_chassis;
+  vc_weapon=ruso1_weapon;
+  ruso1=createvehicle;
+  setdir(ruso1,4);
+  placeunitxy(ruso1,92,43,false);
+  preparemechanic(sex_male,ruso1_driver);
+  placehumaninunit(createhuman,ruso1);
+  vc_control=control_manual;
+  vc_chassis=ruso2_chassis;
+  vc_weapon=ruso2_weapon;
+  ruso2=createvehicle;
+  setdir(ruso2,1);
+  placeunitxy(ruso2,98,42,false);
+  preparemechanic(sex_male,ruso2_driver);
+  placehumaninunit(createhuman,ruso2);
+
+  prepare_bazookers; // by vlada
+end;
+
+export otherwithjmm,othernotjmm,withjmmvip,notjmmvip,withjmmvip_,notjmmvip_;
+export bobby,cyrus,lisa,cornel,frank,brown,glad,denis,yamoko,gary;
+export bobbyloc,cyrusloc,lisaloc,cornelloc,frankloc,brownloc,gladloc,denisloc,yamokoloc,garyloc;
+export eng0,mech0,mech1,mech2,sold0,sold1,sold2;
+export nepouzitvip,nepouzitoth;
+
+export function prepare_americans;
+var tmp,tmp2,kurtl2,tmpvip,tmpother,tmpvsici,case_;
+begin
+  uc_nation=nation_american;
+  uc_side=am;
+  if testcharacters('JMM') and checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+//  if testcharacters('Powell') and checkcharacterset('Powell') then powell=createcharacter('Powell')
+//  else buildquery('neny Powell',['OK']);
+  powell=newcharacter('Powell');
+  if not powell then buildquery('neny Powell',['OK']);
+
+  if not testcharacters('Donaldson') then buildquery('neny Donaldson',['OK'])
+  else
+    if checkcharacterset('Donaldson') then lucy=createcharacterwithclass('Donaldson',class_soldier)
+    else begin
+      preparesoldier(sex_female,-7);
+      lucy=createhuman;
+    end;
+
+  if testcharacters('Kurt') then
+    if checkcharacterset('Kurt') then begin
+      kurt=createcharacterwithclass('Kurt',class_soldier);
+      if testvariable('KurtLeaves') then kurtloc=loadvariable('KurtLeaves',-1)
+      else buildquery('neny KurtLeaves',['OK']);
+      if testvariable('KurtEscapes') then kurtl2=loadvariable('KurtEscapes',-1)
+      else buildquery('neny KurtEscapes',['OK']);
+      kurtloc=kurtloc and not kurtl2;   //kurt je vdecny
+    end
+    else begin
+      preparesoldier(sex_male,7);
+      kurt=createhuman;
+      kurtloc=0;
+    end
+  else buildquery('neny Kurt',['OK']);
+
+  setdir(john,5);
+  placeunitxy(john,143,96,false);
+  setdir(lucy,5);
+  placeunitxy(lucy,143,98,false);
+
+  withjmmvip=[];
+  notjmmvip=[];
+  withjmmvip_=[];
+  notjmmvip_=[];
+
+  if not testcharacters('Bobby') then msg('neny Bobby')
+  else
+    if not checkcharacterset('Bobby') then bobby=0
+    else begin
+      bobby=createcharacterwithclass('Bobby',class_mechanic);
+      bobbyloc=loadvariable('BobbyLoc',-1);
+      case bobbyloc of
+        6:withjmmvip=withjmmvip^[bobby];
+        7:notjmmvip=notjmmvip^[bobby];
+        -1:buildquery('neny BobbyLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Cyrus') then msg('neny Cyrus')
+  else
+    if not checkcharacterset('Cyrus') then cyrus=0
+    else begin
+      cyrus=createcharacterwithclass('Cyrus',class_soldier);
+      cyrusloc=loadvariable('CyrusLoc',-1);
+      case cyrusloc of
+        6:withjmmvip=withjmmvip^[cyrus];
+        7:notjmmvip=notjmmvip^[cyrus];
+        -1:buildquery('neny CyrusLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Lisa') then msg('neny Lisa')
+  else
+    if not checkcharacterset('Lisa') then lisa=0
+    else begin
+      lisa=createcharacterwithclass('Lisa',class_soldier);
+      lisaloc=loadvariable('LisaLoc',-1);
+      case lisaloc of
+        6:withjmmvip=withjmmvip^[lisa];
+        7:notjmmvip=notjmmvip^[lisa];
+        -1:buildquery('neny LisaLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Cornell') then msg('neny Cornell')
+  else
+    if not checkcharacterset('Cornell') then cornel=0
+    else begin
+      cornel=createcharacterwithclass('Cornell',class_soldier);
+      cornelloc=loadvariable('CornellLoc',-1);
+      case cornelloc of
+        6:withjmmvip=withjmmvip^[cornel];
+        7:notjmmvip=notjmmvip^[cornel];
+        -1:buildquery('neny CornellLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Frank') then msg('neny Frank')
+  else
+    if  not checkcharacterset('Frank') then frank=0
+    else begin
+      frank=createcharacterwithclass('Frank',class_soldier);
+      frankloc=loadvariable('FrankLoc',-1);
+      case frankloc of
+        6:withjmmvip=withjmmvip^[frank];
+        7:notjmmvip=notjmmvip^[frank];
+        -1:buildquery('neny FrankLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Brown') then msg('neny Brown')
+  else
+    if not checkcharacterset('Brown') then brown=0
+    else begin
+      brown=createcharacterwithclass('Brown',class_soldier);
+      brownloc=loadvariable('BrownLoc',-1);
+      case brownloc of
+        6:withjmmvip=withjmmvip^[brown];
+        7:notjmmvip=notjmmvip^[brown];
+        -1:buildquery('neny BrownLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Gladstone') then msg('neny Gladstone')
+  else
+    if not checkcharacterset('Gladstone') then glad=0
+    else begin
+      glad=createcharacterwithclass('Gladstone',class_scientistic);
+      gladloc=loadvariable('GladstoneLoc',-1);
+      case gladloc of
+        6:withjmmvip_=withjmmvip_^[glad];
+        7:notjmmvip_=notjmmvip_^[glad];
+        -1:buildquery('neny GladstoneLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Denis') then msg('neny Denis')
+  else
+    if not checkcharacterset('Denis') then denis=0
+    else begin
+      denis=createcharacterwithclass('Denis',class_scientistic);
+      denisloc=loadvariable('DenisLoc',-1);
+      case denisloc of
+        6:withjmmvip_=withjmmvip_^[denis];
+        7:notjmmvip_=notjmmvip_^[denis];
+        -1:buildquery('neny DenisLoc',['OK']);
+      end;
+    end;
+  yamoko=0;
+  if not frank then
+    if not testcharacters('Yamoko') then msg('neny Yamoko')
+    else
+      if not checkcharacterset('Yamoko') then yamoko=0
+      else begin
+        yamoko=createcharacterwithclass('Yamoko',class_soldier);
+        yamokoloc=loadvariable('YamokoLoc',-1);
+        case yamokoloc of
+          6:withjmmvip=withjmmvip^[yamoko];
+          7:notjmmvip=notjmmvip^[yamoko];
+          -1:buildquery('neny YamokoLoc',['OK']);
+        end;
+      end;
+  if not testcharacters('Gary') then msg('neny Gary')
+  else
+    if not checkcharacterset('Gary') then gary=0
+    else begin
+      gary=createcharacterwithclass('Gary',class_soldier);
+      garyloc=loadvariable('GaryLoc',-1);
+      case garyloc of
+        6:withjmmvip=withjmmvip^[gary];
+        7:notjmmvip=notjmmvip^[gary];
+        -1:buildquery('neny GaryLoc',['OK']);
+      end;
+    end;
+
+  if not testcharacters('otherwithJMM') or not checkcharacterset('otherwithJMM') then msg('neny otherwithJMM')
+  else otherwithjmm=createcharacterset('otherwithJMM');
+  if not testcharacters('othernotJMM') or not checkcharacterset('othernotJMM') then msg('neny othernotJMM')
+  else othernotjmm=createcharacterset('othernotJMM');
+
+  for tmp in otherwithjmm do if getclass(tmp) in [class_mortar,class_engineer] then setclass(tmp,class_soldier);
+  for tmp in othernotjmm do if getclass(tmp) in [class_mortar,class_engineer] then setclass(tmp,class_soldier);
+
+//2x sold, 1x scie, 2x mech now and 3x mech, 1x engi, 3x sold later
+  if 0+withjmmvip_+notjmmvip_ then amscie0=(withjmmvip_^notjmmvip_)[1]
+  else 
+    if 0+otherwithjmm+othernotjmm then begin
+      amscie0=findmaxskill2(otherwithjmm^othernotjmm,skill_scientistic);
+      setclass(amscie0,class_scientistic);
+      otherwithjmm=otherwithjmm diff amscie0;
+      othernotjmm=othernotjmm diff amscie0;
+    end
+    else begin
+      preparescientist(sex_female,amscie0_lvl);
+      amscie0=createhuman;
+    end;
+    
+  case_=0;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  tmpvip=withjmmvip^notjmmvip;
+  tmpother=otherwithjmm^othernotjmm;
+  if (0+tmpvip)>=7 then begin
+    am_grupa=[tmpvip[1]];
+    tmpvip=delete(tmpvip,1);
+    am_grupa=am_grupa^[tmpvip[1]];
+    tmpvip=delete(tmpvip,1);
+    placeunitxyr(am_grupa[1],144,97,3,false);
+    placeunitxyr(am_grupa[2],144,97,3,false);
+    placeunitxyr(amscie0,144,97,3,false);
+
+    vc_chassis=amv0_ch;
+    vc_weapon=amv0_wp;
+    amv0=createvehicle;
+    setdir(amv0,5);
+    placeunitxyr(amv0,146,97,3,false);
+    placehumaninunit(tmpvip[1],amv0);
+    tmpvip=delete(tmpvip,1);
+    vc_chassis=amv1_ch;
+    vc_weapon=amv1_wp;
+    amv1=createvehicle;
+    setdir(amv1,5);
+    placeunitxyr(amv1,146,99,3,false);
+    placehumaninunit(tmpvip[1],amv1);
+    tmpvip=delete(tmpvip,1);
+    vc_control=control_computer;
+    vc_chassis=amv2_ch;
+    vc_weapon=amv2_wp;
+    amv2=createvehicle;
+    setdir(amv2,5);
+    placeunitxyr(amv2,150,103,3,false);
+    vc_control=control_computer;
+    vc_chassis=amv3_ch;
+    vc_weapon=amv3_wp;
+    amv3=createvehicle;
+    setdir(amv3,5);
+    placeunitxyr(amv3,145,94,3,false);
+
+    eng0=findmaxskill2(tmpvip,skill_engineering);
+    setclass(eng0,class_engineer);
+    tmpvip=tmpvip diff eng0;
+
+    sold0=findmaxskill2(tmpvip,skill_combat);
+    tmpvip=tmpvip diff sold0;
+    sold1=findmaxskill2(tmpvip,skill_combat);
+    tmpvip=tmpvip diff sold1;
+
+    if (0+tmpother)>=4 then begin
+      case_=1;
+      sold2=findmaxskill2(tmpother,skill_combat);
+      tmpother=tmpother diff sold2;
+      mech0=findmaxskill2(tmpother,skill_mechanical);
+      setclass(mech0,class_mechanic);
+      tmpother=tmpother diff mech0;
+      mech1=findmaxskill2(tmpother,skill_mechanical);
+      setclass(mech1,class_mechanic);
+      tmpother=tmpother diff mech1;
+      mech2=findmaxskill2(tmpother,skill_mechanical);
+      setclass(mech2,class_mechanic);
+      tmpother=tmpother diff mech2;
+    end
+    else begin
+      case_=2;
+      tmp2=0+tmpother;                   
+      for tmp=(tmp2+1) to 4 do begin
+        preparehuman(rand(1,2),class_soldier,default_skill);  //sex,cl,lev
+        tmpother=tmpother^[createhuman];
+      end;
+      sold2=findmaxskill2(tmpother,skill_combat);
+      tmpother=tmpother diff sold2;
+      mech0=findmaxskill2(tmpother,skill_mechanical);
+      setclass(mech0,class_mechanic);
+      tmpother=tmpother diff mech0;
+      mech1=findmaxskill2(tmpother,skill_mechanical);
+      setclass(mech1,class_mechanic);
+      tmpother=tmpother diff mech1;
+      mech2=findmaxskill2(tmpother,skill_mechanical);
+      setclass(mech2,class_mechanic);
+      tmpother=tmpother diff mech2;
+    end;
+  end
+  else begin
+    tmpvsici=tmpvip^tmpother;
+    if 0+tmpvsici>=11 then case_=3
+    else begin
+      case_=4;
+      tmp2=0+tmpvsici;
+      for tmp=(tmp2+1) to 11 do begin
+        preparehuman(rand(1,2),class_soldier,default_skill);  //sex,cl,lev
+        tmpvsici=tmpvsici^[createhuman];
+      end;
+    end;
+
+    am_grupa=[tmpvsici[1]];
+    tmpvsici=delete(tmpvsici,1);
+    am_grupa=am_grupa^[tmpvsici[1]];
+    tmpvsici=delete(tmpvsici,1);
+    placeunitxyr(am_grupa[1],144,97,3,false);
+    placeunitxyr(am_grupa[2],144,97,3,false);
+    placeunitxyr(amscie0,144,97,3,false);
+
+    vc_chassis=amv0_ch;
+    vc_weapon=amv0_wp;
+    amv0=createvehicle;
+    setdir(amv0,5);
+    placeunitxyr(amv0,146,97,3,false);
+    setclass([tmpvsici[1]],class_mechanic);
+    placehumaninunit(tmpvsici[1],amv0);
+    tmpvsici=delete(tmpvsici,1);
+    vc_chassis=amv1_ch;
+    vc_weapon=amv1_wp;
+    amv1=createvehicle;
+    setdir(amv1,5);
+    placeunitxyr(amv1,146,99,3,false);
+    setclass([tmpvsici[1]],class_mechanic);
+    placehumaninunit(tmpvsici[1],amv1);
+    tmpvsici=delete(tmpvsici,1);
+    vc_control=control_computer;
+    vc_chassis=amv2_ch;
+    vc_weapon=amv2_wp;
+    amv2=createvehicle;
+    setdir(amv2,5);
+    placeunitxyr(amv2,150,103,3,false);
+    vc_control=control_computer;
+    vc_chassis=amv3_ch;
+    vc_weapon=amv3_wp;
+    amv3=createvehicle;
+    setdir(amv3,5);
+    placeunitxyr(amv3,145,94,3,false);
+
+    eng0=findmaxskill2(tmpvsici,skill_engineering);
+    setclass(eng0,class_engineer);
+    tmpvsici=tmpvsici diff eng0;
+
+    sold0=findmaxskill2(tmpvsici,skill_combat);
+    tmpvsici=tmpvsici diff sold0;
+    sold1=findmaxskill2(tmpvsici,skill_combat);
+    tmpvsici=tmpvsici diff sold1;
+
+    sold2=findmaxskill2(tmpvsici,skill_combat);
+    tmpvsici=tmpvsici diff sold2;
+    mech0=findmaxskill2(tmpvsici,skill_mechanical);
+    setclass(mech0,class_mechanic);
+    tmpvsici=tmpvsici diff mech0;
+    mech1=findmaxskill2(tmpvsici,skill_mechanical);
+    setclass(mech0,class_mechanic);
+    tmpvsici=tmpvsici diff mech1;
+    mech2=findmaxskill2(tmpvsici,skill_mechanical);
+    setclass(mech0,class_mechanic);
+    tmpvsici=tmpvsici diff mech2;
+  end;
+
+  case case_ of
+    1:begin
+      nepouzitvip=tmpvip;
+      nepouzitoth=tmpother;
+    end;
+    2:begin
+      nepouzitvip=tmpvip;
+      nepouzitoth=tmpother isect (otherwithjmm^othernotjmm);
+    end;
+    3,4:begin
+      nepouzitvip=tmpvsici isect tmpvip;
+      nepouzitoth=tmpvsici isect tmpother;
+    end;
+  end;
+
+{  preparesoldier(sex_male,amsold0_lvl);
+  am_grupa=[createhuman];
+  placeunitxyr(am_grupa[1],144,97,3,false);
+  preparesoldier(sex_male,amsold1_lvl);
+  am_grupa=[createhuman]^am_grupa;
+  placeunitxyr(am_grupa[1],144,97,3,false);
+
+  preparescientist(sex_female,amscie0_lvl);
+  amscie0=createhuman;
+  placeunitxyr(amscie0,144,97,3,false);
+
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=amv0_ch;
+  vc_weapon=amv0_wp;
+  amv0=createvehicle;
+  setdir(amv0,5);
+  placeunitxyr(amv0,146,97,3,false);
+  preparemechanic(sex_male,amv0_dr);
+  placehumaninunit(createhuman,amv0);
+  vc_chassis=amv1_ch;
+  vc_weapon=amv1_wp;
+  amv1=createvehicle;
+  setdir(amv1,5);
+  placeunitxyr(amv1,146,99,3,false);
+  preparemechanic(sex_male,amv1_dr);
+  placehumaninunit(createhuman,amv1);
+  vc_control=control_computer;
+  vc_chassis=amv2_ch;
+  vc_weapon=amv2_wp;
+  amv2=createvehicle;
+  setdir(amv2,5);
+  placeunitxyr(amv2,150,103,3,false);
+  vc_control=control_computer;
+  vc_chassis=amv3_ch;
+  vc_weapon=amv3_wp;
+  amv3=createvehicle;
+  setdir(amv3,5);
+  placeunitxyr(amv3,145,94,3,false);
+}
+  am_grupa=am_grupa^[john,lucy,amv0,amv1,amv2,amv3,amscie0];
+
+end;
+

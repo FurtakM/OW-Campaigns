@@ -1,0 +1,76 @@
+// Suroviny.
+
+
+Var CekaniRus, PoctyRus, PoctyExtra, PoctyStart;
+
+
+Export Function init_suroviny;
+Var I;
+Begin
+  // Poèty.
+  CekaniRus = dif_CekaniBednyRus [Difficulty];
+  PoctyRus = dif_PoctyBednyRus [Difficulty];
+  PoctyExtra = dif_PoctyBednyExtra [Difficulty];
+  PoctyStart = dif_PoctyBednyStart [Difficulty];
+End;
+
+
+// Trigger pro ruské bedny.
+Every 3$0 do
+Begin
+  Wait (Rand (CekaniRus [1], CekaniRus [2]));
+  CreateCratesArea (Rand (PoctyRus [1], PoctyRus [2]), BednyRusove, true);
+  Enable;
+End;
+
+
+// Trigger pro ruské bedny na zaèátku mise.
+Every 2$10 do
+Begin
+  If PoctyStart <= 0 then Exit;
+  Wait (Rand (CekaniRus [1], CekaniRus [2]));
+  CreateCratesArea (Rand (1, 3), BednyStart, false);
+  PoctyStart = PoctyStart - 1;
+  If PoctyStart > 0 then Enable;
+End;
+
+
+// Trigger pro bedny extra.
+Every 3$12+1$49 do
+Begin
+  If PoctyExtra <= 0 then Exit;
+  If Prob (40) then Begin Enable; Exit; End;
+  Wait (Rand (CekaniRus [1], CekaniRus [2]));
+  CreateCratesArea (Rand (3, 5), BednyExtra, true);
+  PoctyExtra = PoctyExtra - 1;
+  If PoctyExtra > 0 then Enable;
+End;
+
+
+// Trigger pro bedny všude.
+Every 3$13.7+2$9 do
+Var Pocet;
+Begin
+  Wait (Rand (0$1, 1$0));
+  Pocet = Rand (0, 5);
+  If Pocet > 0 then CreateCratesAnywhere (Pocet, true);
+  Enable;
+End;
+
+
+// Trigger pro bedny Arabù.
+Every 0$57 do
+Var Area, Pocet;
+Begin
+  If ArabiZniceni then Wait (Rand (2$0, 3$30))
+  else Wait (Rand (0$1, Difficulty * 1$0));
+  // Zjistit areu a poèet beden.
+  If ArabiZniceni then Begin Area = Arabove; Pocet = [0, 5]; End
+  else Begin Area = BednyArabove; Pocet = [3, 5]; End;
+  Pocet = Rand (Pocet [1], Pocet [2]);
+  // Vytvoøit bedny.
+  If Pocet > 0 then CreateCratesArea (Pocet, Area, true);
+  Enable;
+End;
+
+

@@ -1,0 +1,447 @@
+EXPORT diet;
+EXPORT A2;
+EXPORT A3;
+EXPORT A4;
+
+VAR Arabi_enter;
+VAR Arabi_opoce;
+EXPORT Arabi_vztah;
+
+// uvodni nastaveni hodnot
+EVERY 0$0.1 DO
+VAR i;
+begin
+  // vojaci na zacatku
+  Arabi_enter=[A1,A2,A3,A4,diet];
+  Arabi_opoce=[Op1,Op2,Op3];
+
+
+  Arabi_vztah=1;
+  for i in [101,102] do disable(i);
+end;
+
+// arabi okamzite odchazeji na north
+EXPORT function arabi_north_okamzite;
+var i;
+begin
+  wait(0$5);
+  for i in Arabi_enter do if IsInUnit(i) then ComExitBuilding(i);
+  AddComMoveXY(Arabi_enter,59,1);
+  enable(101);
+  for i in Arabi_opoce do if IsInUnit(i) then ComExitBuilding(i);
+  AddComMoveXY(Arabi_opoce,59,1);
+  wait(0$10);
+  while Arabi_enter<>0 do
+    begin
+      ComMoveXY(Arabi_enter,62,2);
+      ComMoveXY(Arabi_opoce,62,2);
+      wait(0$2);
+    end;
+  disable(101);
+end;
+
+// odebirani arabu pri uteku
+EVERY 0$1 marked 101 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Exarabi,[[f_side,Arabi]]);
+  if pom<>0 then
+    for i in pom do
+      begin
+        RemoveUnit(i);
+        Arabi_enter=Arabi_enter diff i;
+      end;
+  enable;
+end;
+
+// odchod arabaku, kdyz odejdou pomalu a sporadane
+EXPORT function ar_leave_north;
+VAR i;
+begin
+  SetAttitude(Arabi,You,att_neutral,true);
+  wait(0$30);
+  for i in Arabi_enter do if IsInUnit(i) then ComExitBuilding(i);
+  AddComMoveXY(Arabi_enter,59,1);
+  for i in Arabi_opoce do if IsInUnit(i) then ComExitBuilding(i);
+  AddComMoveXY(Arabi_opoce,59,1);
+  enable(101);
+  wait(0$10);
+  while Arabi_enter<>0 do
+    begin
+      ComMoveXY(Arabi_enter,62,2);
+      ComMoveXY(Arabi_opoce,62,2);
+      wait(0$2);
+    end;
+  disable(101);
+end;
+
+// arabi bojujou s hracem
+EXPORT function arabi_spojenci;
+begin
+  SetAttitude(Arabi,You,att_friend,true);
+end;
+
+// arabi spojenci amiku
+EXPORT function arabi_ally_amici;
+begin
+  SetAttitude(Arabi,You,att_enemy,false);
+end;
+
+// uklid arabu na zacatku do budov
+EVERY 0$1 DO
+begin
+  ComEnterUnit(Arabi_enter[1],Ar_lab);
+  ComPlaceRemoteCharge(diet,78,47,0);
+  AddComEnterUnit(diet,Ar_bar);
+  ComPlaceRemoteCharge(Arabi_enter[2],78,43,0);
+  AddComEnterUnit(Arabi_enter[2],Ar_bu1);
+  ComHiddenCamera(Arabi_enter[3],64,38);
+  AddComHiddenCamera(Arabi_enter[3],85,52);
+  AddComHiddenCamera(Arabi_enter[3],101,51);
+  AddComEnterUnit(Arabi_enter[3],Ar_dep);
+  ComPlaceRemoteCharge(Arabi_enter[4],82,46,0);
+  AddComEnterUnit(Arabi_enter[4],Ar_bu2);
+
+  ComEnterUnit(Op1,Ar_dep);
+  ComEnterUnit(Op2,Ar_bar);
+
+  ComMoveXY(Op3,49,3);
+  AddComMoveXY(Op3,45,5);
+  AddComMoveXY(Op3,45,15);
+  AddComMoveXY(Op3,62,29);
+  HiddenCamera(40,7,Arabi);
+end;
+
+// neustale vynalezani
+EVERY 1$7 DO
+begin
+  if Researched(Arabi,tech_Sib1) then
+    begin
+      SetTech(tech_Sib1,Arabi,state_enabled);
+      ComResearch(Ar_lab,tech_Sib1);
+    end;
+  enable;
+end;
+
+// pocatek vyzkumu na zacatku !!!
+EVERY 0$19 DO
+begin
+  SetTech(tech_Sib1,Arabi,state_enabled);
+  ComResearch(Ar_lab,tech_Sib1);
+end;
+
+// priprava na utok rusaku
+EVERY 0$1 TRIGGER Arabi_vztah=0 and bojeschopnych_rusu>0 DO
+VAR pom;
+begin
+  if GetClass(A1)=class_scientistic then
+    begin
+      ComExitBuilding(A1);
+      AddComEnterUnit(A1,Ar_bar);
+      AddComChangeProfession(A1,class_mortar);
+    end;
+  if GetClass(A3)=class_engineer then
+    begin
+      ComExitBuilding(A3);
+      AddComEnterUnit(A3,Ar_bar);
+      AddComChangeProfession(A3,class_soldier);
+    end;
+  if not IsInUnit(diet)=Ar_bar
+    then
+      begin
+        ComEnterUnit(diet,Ar_bar);
+        AddComChangeProfession(diet,class_mortar);
+      end
+    else if GetClass(diet)=class_soldier then ComChangeProfession(diet,class_mortar);
+  if IsInUnit(A2)=0 or IsInUnit(A2)=Ar_bar then
+    begin
+      if IsOK(Ar_bu1) then begin
+                             ComExitBuilding(A2);
+                             AddComEnterUnit(A2,Ar_bu1);
+                           end
+                      else begin
+                             pom=FilterUnitsInArea(Ar_base,[[f_side,Arabi],[f_btype,b_breastwork]]);
+                             case pom of
+                              1:if GetX(pom[1])=78 then begin
+                                                          ComExitBuilding(A2);
+                                                          AddComEnterUnit(A2,pom[1]);
+                                                        end
+                                                   else begin
+                                                          ComEnterUnit(A2,Ar_bar);
+                                                          AddComChangeProfession(A2,class_mortar);
+                                                        end;
+                              2:if GetX(pom[1])=78 then begin
+                                                          ComExitBuilding(A2);
+                                                          AddComEnterUnit(A2,pom[1]);
+                                                        end
+                                                   else begin
+                                                          ComExitBuilding(A2);
+                                                          AddComEnterUnit(A2,pom[2]);
+                                                        end;
+                             end;
+    end;                   end;
+  if IsInUnit(A4)=0 or IsInUnit(A4)=Ar_bar then
+    begin
+      if IsOK(Ar_bu2) then begin
+                             ComExitBuilding(A4);
+                             AddComEnterUnit(A4,Ar_bu2);
+                           end
+                      else begin
+                             pom=FilterUnitsInArea(Ar_base,[[f_side,Arabi],[f_btype,b_breastwork]]);
+                             case pom of
+                              1:if GetX(pom[1])=78 then begin
+                                                          ComExitBuilding(A4);
+                                                          AddComEnterUnit(A4,pom[1]);
+                                                        end
+                                                   else begin
+                                                          ComEnterUnit(A2,Ar_bar);
+                                                          AddComChangeProfession(A2,class_mortar);
+                                                        end;
+                              2:if GetX(pom[1])=78 then begin
+                                                          ComExitBuilding(A4);
+                                                          AddComEnterUnit(A4,pom[1]);
+                                                        end
+                                                   else begin
+                                                          ComExitBuilding(A4);
+                                                          AddComEnterUnit(A4,pom[2]);
+                                                        end;
+                             end;
+    end;                   end;
+  wait(0$10);
+  enable;
+end;
+
+// uklid po utoku
+EVERY 0$10 TRIGGER Arabi_vztah=0 and bojeschopnych_rusu=0 DO
+VAR pom,i,pom1;
+begin
+  pom1=[];
+  pom=FilterUnitsInArea(Ar_base,[[f_side,Arabi],[f_type,unit_building]]);
+  for i in pom do if GetLives(i)<1000 then pom1=pom1^i;
+  if pom1>0 then begin
+                   if IsInUnit(A3)=Ar_bar then
+                     begin
+                       ComExitBuilding(A3);
+                       AddComEnterUnit(A3,Ar_dep);
+                       AddComChangeProfession(A3,class_engineer);
+                       AddComExitBuilding(A3);
+                       for i in pom1 do AddComRepairBuilding(A3,i);
+                       AddComEnterUnit(A3,Ar_dep);
+                     end;
+                 end
+            else begin
+                   ComExitBuilding(A3);
+                   AddComEnterUnit(A3,Ar_dep);
+                   AddComChangeProfession(A3,class_engineer);
+                 end;
+  if pom<7 then staveni_budov_arabi(pom);
+  if GetClass(diet)<>class_soldier then ComChangeProfession(diet,class_soldier);
+  if IsInUnit(A1)<>Ar_lab then
+    begin
+      ComExitBuilding(A1);
+      AddComEnterUnit(A1,Ar_lab);
+      AddComChangeProfession(A1,class_scientistic);
+    end;
+  enable;
+end;
+
+// staveni budov pro araby
+function staveni_budov_arabi(list_budov);
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Ar_base,[[f_side,You],[f_or,[f_btype,b_bunker],[f_btype,b_breastwork]]]);
+  if pom<>2 then
+    begin
+      if IsInUnit(A3)=Ar_dep then ComExitBuilding(A3);
+      case pom of
+       0:begin
+           AddComBuild(A3,b_breastwork,78,32,3);
+           AddComBuild(A3,b_breastwork,73,30,3);
+         end;
+       1:if GetX(pom[1])=78 then AddComBuild(A3,b_breastwork,73,30,3)
+                            else AddComBuild(A3,b_breastwork,78,32,3);
+      end;
+    end;
+end;
+
+// pocita rusy schopne bojovat x arabum
+function bojeschopnych_rusu;
+VAR pom,i,pom1;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_see,Arabi]]);
+  pom1=pom;
+  for i in pom do
+    if GetType(i)=unit_vehicle and IsDrivenBy(i)=0 then pom1=pom1 diff i;
+  debug_strings=[pom1];
+  result:=pom1+0;
+end;
+
+// odpaleni min
+EVERY 0$1 TRIGGER Arabi_vztah=0 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Armina1,[[f_side,You]]);
+  if pom>0 and MineAtPos(78,47) then ComFireExplosives(diet);
+  pom=FilterUnitsInArea(Armina2,[[f_side,You]]);
+  if pom>0 and MineAtPos(78,43) then ComFireExplosives(A2);
+  pom=FilterUnitsInArea(Armina3,[[f_side,You]]);
+  if pom>0 and MineAtPos(82,46) then ComFireExplosives(A4);
+  enable;
+end;
+
+// leceni zranenych
+EVERY 0$20 TRIGGER Arabi_vztah=0 and bojeschopnych_rusu=0 DO
+VAR i,pom,pom1;
+begin
+  pom1=[];
+  for i in Arabi_enter do
+    if GetLives(i)<1000 and i<>A1 and IsIdle(i) then ComMoveXY(i,77,20);
+  pom=FilterUnitsInArea(HealArea,[[f_side,Arabi]]);
+  for i in pom do if GetLives(i)<1000 then pom1=pom1^i;
+  if IsOK(A1) then begin
+                     if pom1>0 then
+                       begin
+                         while IsInUnit(A1)<>Ar_lab do wait(0$3);
+                         ComExitBuilding(A1);
+                         for i in pom1 do AddComHeal(A1,i);
+                         AddComEnterUnit(A1,ar_lab);
+                       end;
+                     enable;
+                   end;
+end;
+
+// pokladani min znova na misto
+EVERY 0$30 TRIGGER Arabi_vztah=0 and bojeschopnych_rusu=0 DO
+VAR pom;
+begin
+  if (not MineAtPos(78,47)) and IsOK(diet) then
+    begin
+      while HasTask(diet) do wait(0$1);
+      if not MineAtPos(78,47) then
+        begin
+          pom=IsInUnit(diet);
+          if pom=0 then ComRemember(diet)
+                   else ComExitBuilding(diet);
+          AddComPlaceRemoteCharge(diet,78,47,0);
+          if pom>0 then AddComEnterUnit(diet,pom)
+                   else AddComReturn(diet);
+        end;
+    end;
+  if (not MineAtPos(78,43)) and IsOK(A2) then
+    begin
+      while HasTask(A2) do wait(0$1);
+      if not MineAtPos(78,43) then
+        begin
+          pom=IsInUnit(A2);
+          if pom=0 then ComRemember(A2)
+                   else ComExitBuilding(A2);
+          AddComPlaceRemoteCharge(A2,78,43,0);
+          if pom>0 then AddComEnterUnit(A2,pom)
+                   else AddComReturn(A2);
+        end;
+    end;
+  if (not MineAtPos(82,46)) and IsOK(A4) then
+    begin
+      while HasTask(A4) do wait(0$1);
+      if not MineAtPos(82,46) then
+        begin
+          pom=IsInUnit(A4);
+          if pom=0 then ComRemember(A4)
+                   else ComExitBuilding(A4);
+          AddComExitBuilding(A4);
+          AddComPlaceRemoteCharge(A4,82,76,0);
+          if pom>0 then AddComEnterUnit(A4,pom)
+                   else AddComReturn(A4);
+        end;
+    end;
+  enable;
+end;
+
+// dorazka ruskych horicich aut
+EVERY 0$5 TRIGGER Arabi_vztah=0 and bojeschopnych_rusu=0 DO
+VAR i,pom;
+begin
+  pom=FIlterAllUnits([[f_side,You],[f_see,Arabi]]);
+  if pom>0 then
+    begin
+      ComChangeProfession(diet,class_mortar);
+      AddComExitBuilding(diet);
+      for i in pom do AddComAttackUnit(diet,i);
+      AddComEnterUnit(diet,Ar_bar);
+      AddComChangeProfession(diet,class_soldier);
+    end;
+  enable;
+end;
+
+// nastaveni levelu budov na zacatku
+EVERY 0$0.1 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Ar_base,[[f_side,Arabi],[f_type,unit_building]]);
+  for i in pom do SetBLevel(i,levely_budovy_arabi[difficulty]);
+end;
+
+// poskozeni amiku
+EVERY 0$5 TRIGGER Arabi_vztah=20 DO
+VAR pom;
+begin
+  wait(0$30);
+
+  // vojaci
+  ComExitBuilding(Arabi_enter);
+  AddComEnterUnit(Arabi_enter,Ar_bar);
+  AddComChangeProfession(Arabi_enter,class_mortar);
+  pom=FilterUnitsInArea(Armina1,[[f_side,You]]);
+  while pom>0 do begin
+                   wait(0$1);
+                   pom=FilterUnitsInArea(Armina1,[[f_side,You]]);
+                 end;
+  AddComFireExplosives(diet);
+  pom=FilterUnitsInArea(Armina2,[[f_side,You]]);
+  while pom>0 do begin
+                   wait(0$1);
+                   pom=FilterUnitsInArea(Armina2,[[f_side,You]]);
+                 end;
+  AddComFireExplosives(A2);
+  pom=FilterUnitsInArea(Armina3,[[f_side,You]]);
+  while pom>0 do begin
+                   wait(0$1);
+                   pom=FilterUnitsInArea(Armina3,[[f_side,You]]);
+                 end;
+  AddComFireExplosives(A4);
+  AddComPlaceRemoteCharge(diet,0,0,Am_at6);
+  AddComPlaceRemoteCharge(A2,0,0,Am_at7);
+  AddComPlaceRemoteCharge(A3,0,0,Am_bar);
+  AddComPlaceRemoteCharge(A4,0,0,Am_at4);
+  AddComMoveXY(Arabi_enter,88,9);
+
+  // opoce
+  ComExitBuilding(Arabi_opoce);
+  AddComEnterUnit(Arabi_opoce,Ar_bar);
+  AddComChangeProfession(Arabi_opoce,class_apeman_kamikaze);
+  AddComExitBuilding(Arabi_opoce);
+
+  while FilterAllUnits([[f_side,You],[f_see,Amici]])=0 do wait(0$5);
+  ComFireExplosives([diet,A2,A3,A4]);
+  AddComAttackUnit(Arabi_enter,Am_el2);
+  AddComAttackUnit(Arabi_opoce,Am_tov);
+  wait(0$5);
+  SetAttitude(Arabi,Amici,att_enemy,true);
+  SetAttitude(Amici,Arabi,att_enemy,true);
+
+  enable(102);                            // utek arabu pryc
+end;
+
+// utek arabu pryc
+EVERY 0$1 TRIGGER GetLives(Am_el2)<250 marked 102 DO
+begin
+  ComMoveXY(Arabi_enter,61,1);
+  enable(101);
+  while FilterAllUnits([[f_side,Arabi],[f_class,class_mortar]]) do
+    begin
+      ComMoveXY(Arabi_enter,61,1);
+      wait(0$1);
+    end;
+  disable(101);
+end;
+

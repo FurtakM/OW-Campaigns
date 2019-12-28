@@ -1,0 +1,432 @@
+export function D_Start; // Dialogue Start
+begin
+  DialogueOn;
+  SayRadio(Popov,'DStart-Pop-1');
+  Say(Burlak,'DStart-Bur-1');
+  Wait(0$2);
+  ChangeMissionObjectives('MStart');
+  display_strings:=['#Ru08-1',(3+AvailableBuildings),'#Ru08-2',(0+AvailableWeapons),'#Ru08-3',(0+AvailableTechno)];
+  DialogueOff;
+end;
+
+export function D_Heike; // Dialogue Heike (shortly after depot is built; when HeikeCaptured = True)
+begin
+//  DialogueOn;
+  Say(Popov,'DHeike-Pop-1');
+//  DialogueOff;
+  Wait(0$2);
+  create_heike;
+end;
+
+export function D_HeikeKilled; // Dialogue HeikeKilled (when the player kills Heike before he makes agreement with mercenaries)
+begin
+  ForceSay(Heike,'DHeikeKilled-Hke-1');
+end;
+
+export function D_MercHelp; // Dialogue MercHelp (shortly after Heike)
+begin
+  DialogueOn;
+  Say(Kurt,'DMercHelp-Kurt-1');
+  Say(Burlak,'DMercHelp-Bur-1');
+  Say(Kurt,'DMercHelp-Kurt-2');
+  Say(Burlak,'DMercHelp-Bur-2');
+  Say(Kurt,'DMercHelp-Kurt-3');
+  DialogueOff;
+end;
+
+export function D_QrMerc1; // Dialogue QrMerc#1
+begin
+  DialogueOn;
+  Say(Burlak,'DQrMerc#1-Bur-1');
+  Say(Kurt,'DQrMerc#1-Kurt-1');
+  DialogueOff;
+end;
+
+
+export function D_QrMerc2; // Dialogue QrMerc#2
+begin
+  DialogueOn;
+  Say(Burlak,'DQrMerc#2-Bur-1');
+  SayRadio(Popov,'DQrMerc#2-Pop-1');
+  Say(Burlak,'DQrMerc#2-Bur-2');
+  DialogueOff;
+end;
+
+export function D_QrMerc3; // Dialogue QrMerc#3
+begin
+  DialogueOn;
+  Say(Burlak,'DQrMerc#3-Bur-1');
+  DialogueOff;
+end;
+
+export function D_MercRefuseBuild; // Dialogue MercRefuseBuild (if merc. ordered to build anything else)
+begin
+//  DialogueOn;
+  Say(Kurt,'DMercRefuseBuild-Kurt-1');
+//  DialogueOff;
+end;
+
+export function D_MercCompleted; // Dialogue MercCompleted (arabian barracks built)
+begin
+//  DialogueOn;
+  Say(Kurt,'DMercCompleted-Kurt-1');
+//  DialogueOff;
+end;
+
+export function D_MercPopov; // Dialogue MercPopov (player selected #1 in Query Merc and MercAccepted = True)
+begin
+  DialogueOn;
+  SayRadio(Popov,'DMercPopov-Pop-1');
+  Say(Burlak,'DMercPopov-Bur-1');
+  SayRadio(Popov,'DMercPopov-Pop-2');
+  DialogueOff;
+end;
+
+export function D_MercAmbush; // Dialogue MercAmbush (player selected QrMerc#1 and then attacked Kurt)
+begin
+//  DialogueOn;
+  Say(Kurt,'DMercAmbush-Kurt-1');
+  SetAttitude(you,merc,att_enemy,true);
+  SetAreaMapShow(WaitHeikeArea,0);
+  disable(20);
+//  DialogueOff;
+end;
+
+export function D_MercAttack; // Dialogue MercAttack (after merc. attack on the player's base - some charges, mortar attacks and the like)
+begin
+//  DialogueOn;
+  Say(Kurt,'DMercAttack-Kurt-1');
+//  DialogueOff;
+end;
+
+export function D_MercDeceived; // Dialogue MercDeceived (player kills Heike instead of handling her over)
+begin
+//  DialogueOn;
+  Say(Kurt,'DMercDeceived-Kurt-1');
+//  DialogueOff;
+end;
+
+export function D_ArabianRequest; // Dialogue ArabianRequest (when mercs are building armoury)
+begin
+  DialogueOn;
+  SayRadio(Dietrich,'DArabianRequest-Diet-1');
+  Say(Burlak,'DArabianRequest-Bur-1');
+  SayRadio(Dietrich,'DArabianRequest-Diet-2');
+  case Query('QHandOver') of
+  1:begin
+      D_QrHandOver1;
+      MercWillBeHandedOver:=true;
+    end;
+  2:begin
+      MercHandedOver=False;
+      D_QrHandOver2;
+    end;
+  end;
+  DialogueOff;
+end;
+
+export function D_QrHandOver1; // Dialogue QrHandOver#1
+begin
+  DialogueOn;
+  Say(Burlak,'DQrHandOver#1-Bur-1');
+  SayRadio(Dietrich,'DQrHandOver#1-Diet-1');
+  DialogueOff;
+  hand_over;
+end;
+
+export function D_QrHandOver2; // Dialogue QrHandOver#2
+begin
+  DialogueOn;
+  Say(Burlak,'DQrHandOver#2-Bur-1');
+  SayRadio(Dietrich,'DQrHandOver#2-Diet-1');
+  Say(Burlak,'DQrHandOver#2-Bur-2');
+  DialogueOff;
+end;
+
+export function D_HandOverCome; // Dialogue HandOverCome (when Arabian trucks arrive)
+begin
+  DialogueOn;
+  Say(ASoldier1,'DHandOverCome-ASol1-1'); //- I come in the name of major Dietrich Genscher. Where are the deserters?
+  Say(Kurt,'DHandOverCome-Kurt-1'); //- Shit! The commie bastard sold us! Quickly, run like hell!
+  DialogueOff;
+end;
+
+export function D_HandOverSpoiled; // Dialogue HandOverSpoiled (player attacks arabian soldiers)
+begin
+  DialogueOn;
+  SayRadio(Dietrich,'DHandOverSpoiled-Diet-1'); //- I knew I shouldn't have trusted you, you commie bastard! I'll take back ten times the stuff you stole from me!
+  DialogueOff;
+end;
+
+export function D_LegionFormed; // Dialogue LegionFormed (some time after Heike was released)
+begin
+  DialogueOn;
+  Say(Heike,'DLegionFormed-Hke-1'); //- This is Heike Steyer, comrade commander. I realised I didn't thank you for your hospitality.
+  Say(Burlak,'DLegionFormed-Bur-1'); //- No problem. You are welcome back at any time, if you wish.
+  Say(Heike,'DLegionFormed-Hke-2'); //- Never mind. I'm now speaking in name of the Legion, an organization comprising the mercenaries formerly in Arabian pay. We are now on our own.
+  Say(Burlak,'DLegionFormed-Bur-2'); //- And what concern of mine it is?
+  Say(Heike,'DLegionFormed-Hke-3'); //- We know something you don't. There is an American attack coming. Believe me, I have the least intention to help you of all people, but my men say we should turn to you first. Pay us, and we shall hold them further North.
+  DialogueOff;
+end;
+
+export function D_QrLegion1; // Dialogue QrLegion#1
+begin
+  DialogueOn;
+  Say(Burlak,'DQrLegion#1-Bur-1'); //- Though you are mercenaries, I know you can keep your word. I'll give you the crates, but if I think you deceived me, then the whole Red Army will be out to destroy you. (Set MercPaid = True)
+  DialogueOff;
+end;
+
+export function D_QrLegion2; // Dialogue QrLegion#2
+begin
+  DialogueOn;
+  Say(Burlak,'DQrLegion#2-Bur-1'); //- Red Army never hires mercenary scum to fight for it and is not going to start now. Be glad that you are still alive and don't try your luck.
+  DialogueOff;
+end;
+
+export function D_FiringRange; // Dialogue FiringRange (sometime during mission)
+begin
+  DialogueOn;
+  if IsOK(Kuzmov) then
+    Say(Kuzmov,'DFiringRange-Kuz-1') //- [present: alt a1] Comrade commander, we must make every bullet count now. A firing range would improve our shooting skills.
+  else
+    Say(Oblukov,'DFiringRange-Obl-1'); //- [otherwise: alt a2] Comrade commander, to beat Yanks we must improve shootings skills. We could build a gallery.
+
+  Say(Burlak,'DFiringRange-Bur-1'); //- It is true, the harder the practice the easier the battle. What do you have in mind?
+
+  CenterOnXY(59,34);
+  Wait(0$0.5);
+  RevealFogArea(you,ShootArea);
+  SetAreaMapShow(ShootArea,1);
+
+  if IsOK(Kuzmov) then
+    Say(Kuzmov,'DFiringRange-Kuz-2') //- [alt a1] We can use this area (camera pans)... and barrels from the depot for targets.
+  else
+    Say(Oblukov,'DFiringRange-Obl-2'); //- [alt a2] We could use this area (camera pans)... and barrels from depot for targets. I think our other comrades will be pleased.
+  DialogueOff;
+end;
+
+export function D_QrShootingGallery1; // Dialogue QrShootingGallery#1
+begin
+//  DialogueOn;
+  Say(Burlak,'DQrShootingGallery#1-Bur-1'); //- OK. It sounds like a good idea. I'll tell you when you can go practice.
+//  DialogueOff;
+end;
+
+export function D_QrShootingGallery2; // Dialogue QrShootingGallery#2
+begin
+//  DialogueOn;
+  Say(Burlak,'DQrShootingGallery#2-Bur-1'); //- That's barmy. You have enough work to do. Forget about it.
+//  DialogueOff;
+end;
+
+export function D_Hunting; // Dialogue Hunting
+var allhunters;
+begin
+  DialogueOn;
+
+  allhunters:=[];
+  if IsOK(Belkov) then allhunters:=allhunters^Belkov;
+  if IsOK(Karamazov) then allhunters:=allhunters^Karamazov;
+  if IsOK(Kozlov) then allhunters:=allhunters^Kozlov;
+
+  Randomize;
+  RandomizeAll;
+
+//  display_strings:=[allhunters]; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  hunter:=allhunters[Rand(1,(allhunters+0))];
+
+  case hunter of
+    Belkov:    Say(Belkov,'DHunting-Bel-1'); //- [alive: alt a1] I have an idea, comrade! What if we go hunting
+    Karamazov: Say(Karamazov,'DHunting-Kar-1'); //- [alive: alt a2] I see, our work here is almost complete, comrade commander. What if we go hunting?
+    Kozlov:    Say(Kozlov,'DHunting-Koz-1'); //- [alive: alt a3] I think we built together the most magnificent base, comrade Gorky. It's pleasure working with you. Now, I have an idea. What if we go hunting?
+  end;
+
+  Say(Burlak,'DHunting-Bur-1'); //- Hunting?
+
+  case hunter of
+    Belkov:    Say(Belkov,'DHunting-Bel-2'); //- [alt a1] Sure! It's better than shooting gallery! It's fun
+    Karamazov: Say(Karamazov,'DHunting-Kar-2'); //- [alive: alt a2] Yeah, sure. There's plenty of game around here. I'd surely like to try it out.
+    Kozlov:    Say(Kozlov,'DHunting-Koz-2'); //- [alive: alt a3] Yes, really. There are woods here with wild animals. Hunting livens up our diet. What do you think about it?
+  end;
+
+  DialogueOff;
+end;
+
+export function D_QrHunting1; // Dialogue QrHunting#1
+begin
+//  DialogueOn;
+  Say(Burlak,'DQrHunting#1-Bur-1'); //- OK. I'm too busy to go with you, but you can go if you wish. But return soon.
+//  DialogueOff;
+end;
+
+export function D_QrHunting2; // Dialogue QrHunting#2
+begin
+//  DialogueOn;
+  Say(Burlak,'DQrHunting#2-Bur-1'); //- That's barmy. You have enough work to do. Forget about it.
+//  DialogueOff;
+end;
+
+export function D_FreeTime; // Dialogue FreeTime
+var pole;
+begin
+  DialogueOn;
+  Randomize;
+  RandomizeAll;
+
+  pole:=[];
+{  if IsOK(Petrovova) then pole:=pole^Petrovova;
+  if IsOK(Kirilenkova) then pole:=pole^Kirilenkova;}
+  if IsOK(Kapitsova) then pole:=pole^Kapitsova;
+
+  case pole[Rand(1,0+pole)] of
+    Petrovova:
+      begin
+        Say(Petrovova,'DFreeTime-Ptr-1');
+        FreeWoman:=Petrovova;
+      end;
+    Kirilenkova:
+      begin
+        Say(Kirilenkova,'DFreeTime-Kir-1');
+        FreeWoman:=Kirilenkova;
+      end;
+    Kapitsova:
+      begin
+        Say(Kapitsova,'DFreeTime-Kap-1');
+        FreeWoman:=Kapitsova;
+      end;
+  end;
+
+  pole:=[];
+  if IsOK(Kuzmov) then pole:=pole^Kuzmov;
+  if IsOK(Titov) then pole:=pole^Titov;
+  if IsOK(Gnyevko) then pole:=pole^Gnyevko;
+  if IsOK(Oblukov) then pole:=pole^Oblukov;
+
+  case pole[Rand(1,0+pole)] of
+    Kuzmov:
+      begin
+        Say(Kuzmov,'DFreeTime-Kuz-1');
+        FreeMan:=Kuzmov;
+      end;
+    Titov:
+      begin
+        Say(Titov,'DFreeTime-Tit-1');
+        FreeMan:=Titov;
+      end;
+    Gnyevko:
+      begin
+        Say(Gnyevko,'DFreeTime-Gny-1');
+        FreeMan:=Gnyevko;
+      end;
+    Oblukov:
+      begin
+        Say(Oblukov,'DFreeTime-Obl-1');
+        FreeMan:=Oblukov;
+      end;
+  end;
+
+  DialogueOff;
+end;
+
+export function D_QrFreeTime1; // Dialogue QrFreeTime#1
+begin
+//  DialogueOn;
+  Say(Burlak,'DQrFreeTime#1-Bur-1'); //- All right, you two doves. But return quickly!
+//  DialogueOff;
+end;
+
+export function D_QrFreeTime2; // Dialogue QrFreeTime#2
+begin
+//  DialogueOn;
+  Say(Burlak,'DQrFreeTime#2-Bur-1'); //- What do you mean by short leave? Is our work here finished? No. When it is, we can all rest, till then we all have to work.
+//  DialogueOff;
+end;
+
+export function D_Masha; // Dialogue Masha (when objective Weapon is completed)
+begin
+  DialogueOn;
+  Say(Kozlov,'DMasha-Koz-1'); //- Comrade major, we now have all kinds of weapons produced. We all think it would be nice if you select one as your personal vehicle, as a kind of flagship.  Which one it would be?
+  DialogueOff;
+end;
+
+export function D_Masha2; // Dialogue Masha2
+begin
+//  DialogueOn;
+  Say(Burlak,'DMasha2-Bur-1'); //- (moved) Thank you comrades. I hope I won't disappoint you. My tank will be called Masha and Masha will always be in the frontline!
+//  DialogueOff;
+end;
+
+export function D_AI; // Dialogue AI
+begin
+  DialogueOn;
+  if IsOK(Scholtze) then
+    Say(Scholtze,'DAI-Sch-1') //- [alive: alt a1] comrade commander, the wily yanks use some kind of computer to drive their vehicles. i've looked at it and working prototype is now ready.
+  else
+    Say(Kapitsova,'DAI-Kap-1'); //- [otherwise: alt a2] comrade commander, i've noticed that the yanks developed vehicles that can drive all by itself. they have some kind of computer to do this. i've tried to duplicate this technology and we now have a working prototype.
+
+  Say(Burlak,'DAI-Bur-1'); //- OK. How good it is?
+
+  if IsOK(Scholtze) then
+    Say(Scholtze,'DAI-Sch-2') //- [alt a1] Well, although it's much better than the Yank crap, it's not nearly as good as vehicle driven by mechanic. But I am sure we can improve it.
+  else
+    Say(Kapitsova,'DAI-Kap-2'); //- [alt a2] Not very good, I am afraid, comrade commander. However, it's not too expensive and I'm sure we could further improve it if we try to do so.
+  DialogueOff;
+end;
+
+export function D_SpontTelep; // Dialogue SpontTelep
+begin
+  DialogueOn;
+  if IsOK(Scholtze) then
+    Say(Scholtze,'DSpontTelep-Sch-1') //- [alive: alt a1] Comrade commander, we've just made a tremendous discovery. We can now force the alaskite to transport large objects to great distances
+  else
+    Say(Kapitsova,'DSpontTelep-Kap-1'); //- [otherwise: alt a2] Comrade commander, we've discovered a completely new aspect of alaskite. When properly stimulated it can transport large objects to considerable distances.
+
+  Say(Burlak,'DSpontTelep-Bur-1'); //- Can we use it to send our machines into enemy base?
+
+  if IsOK(Scholtze) then
+    Say(Scholtze,'DSpontTelep-Sch-2') //- [alt a1] Yeah, that's a great idea - but far too difficult now. But I I've noticed our drivers repairing their vehicles under fire. So we've developed a simple device that can teleport - thus we call this spontaneous transportation - a vehicle out of combat when it is damaged.
+  else
+    Say(Kapitsova,'DSpontTelep-Kap-2'); //- [alt a2] Aaah, that's far too difficult for us now. But I've noticed that our drivers often have to repair their vehicles under fire and that's really dangerous for them. So we've developed a simple device that can teleport - thus we call this spontaneous transportation - a vehicle out of combat when it is damaged.
+
+  Say(Burlak,'DSpontTelep-Bur-2'); //- That's interesting. I'd like to try it out.
+  DialogueOff;
+end;
+
+export function D_AmAttackStart; // Dialogue AmAttackStart (when all mission objectives are completed)
+begin
+  SayRadio(Popov,'DAmAttackStart-Pop-1'); //- (over radio) Your task is almost over, but there are some Yanks heading your direction. Show them!
+  enable(50); // Answer to Popov on AmAttackStart
+end;
+
+every 0$1 marked 50 do // Answer to Popov on AmAttackStart
+begin
+  Wait(0$10);
+  if MercPaid then
+  begin
+    Say(Burlak,'DAmAttackStart-Bur-1'); //- [MercPaid = True: alt a1] So here are those Americans. Seems like that Legion is not as good as it wants to look like
+    if IsOK(Gleb) then Say(Gleb,'DAmAttackStart-Glb-1'); //- [alive, reply] Of course, dealing with mercenaries only brings troubles. How shall you now explain the loss of 50 crates of material you gave them to do nothing?
+  end
+  else
+    Say(Burlak,'DAmAttackStart-Bur-2'); //- [MercPaid = False: alt a2] Here go Americans. Come on, we are waiting for you.
+end;
+
+export function D_AmAttackFin; // Dialogue AmAttackFin
+var rnd,bool;
+begin
+  DialogueOn;
+  repeat
+    rnd:=Rand(1,7);
+    case rnd of
+      1:if IsOK(Belkov) then bool:=Say(Belkov,'DAmAttackFin-Bel-1'); //- [alive: alt a1] I ope they liked L. D. Trotsky.
+      2:if IsOK(Gnyevko) then bool:=Say(Gnyevko,'DAmAttackFin-Gny-1'); //- [alive: alt a2] They learnt what L. D. Trotsky means.
+      3:if IsOK(Titov) then bool:=Say(Titov,'DAmAttackFin-Tit-1'); //- [alive: alt a3] So the base is baptised by blood.
+      4:if IsOK(Lipshchin) then bool:=Say(Lipshchin,'DAmAttackFin-Lip-1'); //- [alive: alt a4] First enemy attack on our new base is over.
+      5:if IsOK(Karamazov) then bool:=Say(Karamazov,'DAmAttackFin-Kar-1'); //- [alive: alt a5] Baptism of the base is over.
+      6:if IsOK(Oblukov) then bool:=Say(Oblukov,'DAmAttackFin-Obl-1'); //- [alive: alt a6] That was the first attack.
+      7:if IsOK(Burlak) then bool:=Say(Burlak,'DAmAttackFin-Bur-1'); //- [alive: alt a7] We fought and we won. Thank you, comrades.
+    end;
+  until bool;
+  Say(Popov,'DAmAttackFin-Pop-1'); //- Good work, comrade. (mission accomplished)
+  DialogueOff;
+end;

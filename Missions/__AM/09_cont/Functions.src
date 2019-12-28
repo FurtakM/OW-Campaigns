@@ -1,0 +1,316 @@
+
+export function see_any(strana, sez2);
+var sai, see_any_r;
+begin
+     see_any_r:=false;
+     for sai in sez2 do
+         if See(strana, sai) then begin
+            see_any_r:=true;
+            break;
+         end;
+     ;
+     result:=see_any_r;
+end;
+
+export function enter_near_vehicle(who, dist, what);
+var add, i, j;
+begin
+     for i in who do begin
+         for j in what do begin
+             if not IsDrivenBy(j) and GetDistUnits(i, j)<=dist then begin
+                ComEnterUnit(i,j);
+                break;
+             end;
+         end;
+     end;
+end;
+
+export function any_near(who, dist, what);
+var add, i, j;
+begin
+     for i in who do begin
+         add:=false;
+         for j in what do begin
+             if GetDistUnits(i, j)<=dist then begin
+                add:=true;
+             end;
+         end;
+         if add then begin
+            if result then
+               result:=result ^ i
+            else
+               result:=i;
+         end;
+     end;
+end;
+
+export function take_path(for_units, path, agressive);
+var i1;
+var a;
+begin
+     i1:=1;
+     while i1<=path do begin
+         a:=path[i1];
+         if a<0 then begin
+            while a<=-1 do begin
+               a:=a+1;
+               AddComWait(for_units,0$1);
+            end;
+
+            i1:=i1+1;
+         end
+         else begin
+            if a=0 then begin
+               a:=path[i1+1];
+               if a=0 then
+                  AddComReturn(for_units);
+               if a=1 then
+                  AddComRemember(for_units);
+            end
+            else begin
+                if agressive then
+                   AddComAgressiveMove(for_units, path[i1], path[i1+1])
+                else
+                   AddComMoveXY(for_units, path[i1], path[i1+1]);
+            end;
+            i1:=i1+2;
+         end;
+     end;
+end;
+
+{
+export function find_drivers(cars, drivers);
+var empty, free, i, konec;
+begin
+     cars:=cars union [];
+     drivers:=drivers union [];
+
+     for i in cars do
+         if not IsDrivenBy(i) then
+            empty:=add(empty,i);
+     for i in drivers do
+         if not IsInUnit(i) then
+            free:=add(free,i);
+
+     result:=cars diff empty;
+
+     if empty <= free then
+        konec:=empty
+     else
+        konec:=free;
+
+     for i:=1 to konec do begin
+         ComEnterUnit(free[i], empty[i]);
+         result:=add(result,empty[i]);
+     end;
+end;
+}
+
+export function full_forts(forts, sols);
+var empty, free, i, konec;
+begin
+
+     forts:=forts union [];
+     sols:=sols union [];
+
+     for i in forts do
+         if not UnitsInside(i) then
+            empty:=add(empty,i);
+     for i in sols do
+         if not IsInUnit(i) and not IsBusy(i) then
+            free:=add(free,i);
+
+     result:=forts diff empty;
+
+     if empty <= free then
+        konec:=empty
+     else
+        konec:=free;
+
+     for i:=1 to konec do begin
+         ComEnterUnit(free[i], empty[i]);
+         result:=add(result,empty[i]);
+     end;
+end;
+
+{
+export function depart(cars, drivers, path, argessive);
+var pojedou;
+begin
+     pojedou:=find_drivers(cars, drivers);
+     wait_for_drivers(pojedou);
+     take_path(pojedou, path, argessive);
+end;
+}
+{
+export function wait_for_drivers(cars);
+var i, vsichni_ready;
+begin
+     while not vsichni_ready do begin
+           vsichni_ready:=true;
+           for i in cars do
+               if not IsDrivenBy(i) then
+                  vsichni_ready:=false;
+
+           wait(0$1.0);
+     end;
+end;
+}
+
+export function TalkOn;
+begin
+//     stop_talking:=true;
+end;
+export function TalkOff;
+begin
+//     stop_talking:=false;
+end;
+
+export function split(list);
+var l1,l2, i;
+begin
+     l1:=[];
+     l2:=[];
+     for i:=1 to list div 2 do begin
+         l1:=l1^list[i];
+     end;
+     l2:=list diff l1;
+     result:=[l1] ^ [l2];
+end;
+export function add(list, list1);
+begin
+     if list=0 then
+        list:=[];
+     if list1=0 then
+        list1:=[];
+     result:=list ^ list1;
+end;
+
+
+//vynecha apemany
+//vybere prvniho z skupiny lidi se zadanym pohlavim sex (0=obe)
+//a zadanym Hclass (0=jakykoliv)
+export function SayAny(lidi, ident, side, sex, Hclass, index);
+var kdo;
+begin
+     kdo:=WhoSayAny(lidi, side, sex, Hclass, index);
+     if kdo then
+        result:=Say(kdo, ident)
+     else
+        result:=false;
+end;
+export function WhoSayAny(lidi, side, sex, Hclass, index);
+begin
+     lidi:=UnitFilter(lidi, [[f_type,unit_human],[f_side,side],f_not,[f_nation,nation_nature]]);
+     if sex<>0 then
+        lidi:=UnitFilter(lidi, [f_sex,sex]);
+
+     if Hclass<>0 then
+        lidi:=UnitFilter(lidi, [f_class,Hclass]);
+
+     if index<=0 then index:=1;
+
+     if lidi>=index then
+        result:=lidi[index]
+     else
+        result:=0;
+end;
+
+
+export function FilterHumansInArea(area, filter);
+var inbase, i;
+begin
+     result:=[];
+     inbase:=FilterUnitsInArea(area, []);
+     for i in inbase do begin
+         if GetType(i)=unit_building or GetType(i)=unit_vehicle then begin
+            result:=result ^ UnitsInside(i);
+         end
+         else begin
+            result:=result ^ i;
+         end;
+     end;
+     result:=UnitFilter(result, filter);
+end;
+
+export function ReverseList(list);
+var i;
+begin
+     result:=[];
+     for i:=list+0 downto 1 do begin
+         result:=result ^ [list[i]];
+     end;
+end;
+
+export using8, using1, using2, using3;
+export path8, path1, path2, path3;
+export kdo8, kdo1, kdo2, kdo3;
+export using4, using5, using6, using7;
+export path4, path5, path6, path7;
+export kdo4, kdo5, kdo6, kdo7;
+
+export function attack(kdo, path);
+var i, a;
+begin
+     for i in kdo do begin
+         SetTag(i, 1);
+     end;
+     while kdo do begin
+       for i in kdo do begin
+           a:=GetTag(i);
+           if a<=path then begin
+              if not IsDead(i) then begin
+                 if IsIdle(i) then begin
+                    if a=1 then begin
+                       ComAgressiveMove(i, path[a][1], path[a][2]);
+                    end;
+
+                    if GetDistUnitXY(i, path[a][1],path[a][2])<5 then
+                    begin
+                       a:=a+1;
+                       if a<=path then
+                         ComAgressiveMove(i, path[a][1], path[a][2]);
+                    end;
+                 end;
+              end
+              else
+                 a:=a+1;
+              if a>path then
+                 kdo:=kdo diff i;
+           end;
+           SetTag(i, a);
+       end;
+       wait(0$1);
+     end;
+end;
+
+export function AttackBase(kdo, path);
+begin
+     case false of
+          using1: begin kdo1:=kdo; path1:=path; RaiseSailEvent(1); end;
+          using2: begin kdo2:=kdo; path2:=path; RaiseSailEvent(2); end;
+          using3: begin kdo3:=kdo; path3:=path; RaiseSailEvent(3); end;
+          using4: begin kdo4:=kdo; path4:=path; RaiseSailEvent(4); end;
+          using5: begin kdo5:=kdo; path5:=path; RaiseSailEvent(5); end;
+          using6: begin kdo6:=kdo; path6:=path; RaiseSailEvent(6); end;
+          using7: begin kdo7:=kdo; path7:=path; RaiseSailEvent(7); end;
+          using8: begin kdo8:=kdo; path8:=path; RaiseSailEvent(8); end;
+     end;
+end;
+
+export hinty_co_byli;
+export function MyHint(ident);
+begin
+  if not hinty_co_byli then
+    hinty_co_byli:=[];
+  if not (ident in hinty_co_byli) then begin
+    hinty_co_byli:=hinty_co_byli ^ ident;
+    Hint(ident);
+  end;
+end;
+
+
+
+
+
+

@@ -1,0 +1,99 @@
+export us_sib_wait,                 // identifikatory, kdyz uz je mozno vyrobit sib raketu, a nejsou zdroje, tak cekam
+       ru_sib_wait;                 // a nic nevyrabim
+
+var time_to_end;
+
+export function init_sib_rocket;
+begin
+  us_sib_wait:=false;
+  ru_sib_wait:=false;
+
+  time_to_end:=[85$0,65$0,45$0][difficulty]; //[220$0,150$0,100$0][difficulty];
+end;
+
+// checkovani Amiku zda muzou vyrobit siberitovku
+every 0$1.5 trigger TICK>time_to_end Marked 4 do
+var factory,zdroje;
+begin
+  factory:=FilterAllUnits([ [f_side,us], [f_btype,b_factory] ]);
+  if factory then
+    begin
+      factory:=factory[1];
+      if us_siberium_rocket in AvailableWeaponList(factory) then
+        begin
+          zdroje:=GetResources(GetBase(factory));
+          if (zdroje[1]>=75) and
+             ((zdroje[2]>=30) or (zdroje[3]>=70)) and
+             (zdroje[3]>=60) then
+               begin
+                 if zdroje[3]>=70 then
+                   ComConstruct(factory,us_morphling,engine_siberite,control_remote,us_siberium_rocket)
+                 else
+                   ComConstruct(factory,us_morphling,engine_combustion,control_remote,us_siberium_rocket);
+                 us_sib_wait:=false;  //Doesn't matter it is set to false. In the next iteration it's set to true again meaning we only produce siberite rockets from now on...
+               end
+          else
+            us_sib_wait:=true;
+        end;
+    end;
+  enable;
+end;
+
+// checkovani Rusaku zda muzou vyrobit siberitovku
+every 0$1.5 trigger TICK>time_to_end Marked 5 do
+var factory,zdroje;
+begin
+  factory:=FilterAllUnits([ [f_side,ru], [f_btype,b_factory] ]);
+  if factory then
+    begin
+      factory:=factory[1];
+      if ru_siberium_rocket in AvailableWeaponList(factory) then
+        begin
+          zdroje:=GetResources(GetBase(factory));
+          if (zdroje[1]>=75) and
+             ((zdroje[2]>=30) or (zdroje[3]>=70)) and
+             (zdroje[3]>=60) then
+               begin
+                 if zdroje[3]>=70 then
+                   ComConstruct(factory,ru_heavy_wheeled,engine_siberite,control_computer,ru_siberium_rocket)
+                 else
+                   ComConstruct(factory,ru_heavy_wheeled,engine_combustion,control_computer,ru_siberium_rocket);
+                 ru_sib_wait:=false;
+               end
+          else
+            ru_sib_wait:=true;
+        end;
+    end;
+  enable;
+end;
+
+// Poslani ruske siberitovky na amiky
+export function send_sib_to_US(veh);
+var n_check,s_check,send;
+begin
+
+  repeat
+    n_check:=FilterUnitsInArea(north_check,[ [f_type,unit_vehicle], f_not, [f_side,ru] ]);
+    s_check:=FilterUnitsInArea(south_check,[ [f_type,unit_vehicle], f_not, [f_side,ru] ]);
+    wait(0$2);
+  until (n_check<3) and (s_check<3);
+
+  ComMoveXY(veh,144,65);
+
+  if n_check<s_check then
+    begin
+      AddComMoveXY(veh,87,35);
+      AddComMoveXY(veh,42,16);
+      AddComAttackPlace(veh,41,56);
+    end
+  else
+    begin
+      AddComMoveXY(veh,141,116);
+      AddComMoveXY(veh,109,110);
+      if GetChassis(veh)=ru_heavy_tracked then
+        AddComMoveXY(veh,86,106)
+      else
+        AddComMoveXY(veh,85,75);
+      AddComAttackPlace(veh,41,66);
+    end;
+end;

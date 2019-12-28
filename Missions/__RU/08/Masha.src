@@ -1,0 +1,165 @@
+Export firstQuery, secondQuery, dec, isShowingQuery;
+
+every 0$1 marked 401 do // Dialogue about Masha
+begin
+  MashaAsked:=True;
+  D_Masha;
+  Query('QMasha');
+  D_Masha2;
+  ChangeMissionObjectives('MMasha');
+  enable(402); // Saving Masha
+  firstQuery = 1;
+  secondQuery = 0;
+  isShowingQuery = 0;
+end;
+
+var BurlakTimeInVehicle,QMashaQueryShown,QMashaQueryRefused,BurlakWasInVehicle,BurlakNewVehicle,BurlakOldVehicle;
+
+
+// New saving Masha script
+// By Nefarem 12.04.2019
+
+every 0$3 marked 402 do
+begin
+
+     If GetType(IsInUnit(Burlak)) = unit_vehicle and isShowingQuery = 0 then
+          if GetWeapon(IsInUnit(Burlak)) = 42 or GetWeapon(IsInUnit(Burlak)) = 43 or GetWeapon(IsInUnit(Burlak)) = 44 or GetWeapon(IsInUnit(Burlak)) = 45 or GetWeapon(IsInUnit(Burlak)) = 46 then
+          begin
+               isShowingQuery = 1;
+
+             if secondQuery = 1 and firstQuery = 0 then
+               begin
+                    dec = Query('QMashaQuery2');
+
+                    if dec = 1 then
+                    begin
+                         Disable;
+                         Masha = IsInUnit(Burlak);
+                         SetMark(Masha,1);
+                         SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha');
+                         ChangeMissionObjectives('MMashaDone');
+                    end;
+
+                    if dec = 2 then begin ComExitVehicle(Burlak); isShowingQuery = 0; end;
+               end;
+
+               if firstQuery = 1 and secondQuery = 0 then
+               begin
+                    dec = Query('QMashaQuery');
+
+                    if dec = 1 then
+                    begin
+                         Disable;
+                         Masha = IsInUnit(Burlak);
+                         SetMark(Masha,1);
+                         SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha');
+                         ChangeMissionObjectives('MMashaDone');
+                    end;
+
+                    if dec = 2 then
+                    begin
+                         ComExitVehicle(Burlak);
+                         firstQuery = 0;
+                         secondQuery = 1;
+                         isShowingQuery = 0;
+                    end;
+
+               end;
+
+
+          end;
+     enable;
+END;
+
+{
+neni
+  byl
+    (vystoupil) ... ukazat query
+  nebyl
+    nic
+je
+  byl
+    zkontrolovat jak dlouho
+  nebyl
+    nastavit novou mashu
+    nastavit cas
+}
+
+{every 0$0.2 marked 402 do // Saving Masha
+begin
+  debug_strings:=['tick-BurlakTimeInVehicle '&(tick-BurlakTimeInVehicle),
+                  'QMashaQueryShown '&QMashaQueryShown,
+                  'QMashaQueryRefused '&QMashaQueryRefused,
+                  'BurlakWasInVehicle '&BurlakWasInVehicle,
+                  'BurlakNewVehicle '&BurlakNewVehicle,
+                  'BurlakOldVehicle '&BurlakOldVehicle,
+                  'Masha '&Masha];
+                  
+
+  if NOT GetType(IsInUnit(Burlak))=unit_vehicle then
+  begin
+    BurlakOldVehicle:=0;
+    if BurlakWasInVehicle AND NOT Masha=BurlakNewVehicle AND NOT QMashaQueryRefused then
+    begin
+      if QMashaQueryShown then
+        case Query('QMashaQuery2') of
+          1:
+          begin
+            if Masha<>0 then SetMark(Masha,0);
+            Masha:=BurlakNewVehicle;
+            SetMark(Masha,1);
+            ChangeMissionObjectives('MMashaDone');
+            BurlakNewVehicle:=0;
+          end;
+          2: {nic};
+        end
+      else
+      begin
+        case Query('QMashaQuery') of
+          1:
+          begin
+            if Masha<>0 then SetMark(Masha,0);
+            Masha:=BurlakNewVehicle;
+            SetMark(Masha,1);
+            ChangeMissionObjectives('MMashaDone');
+            BurlakNewVehicle:=0;
+          end;
+          2: {nic};
+        end;
+        QMashaQueryShown:=True;
+      end;
+    end;
+    QMashaQueryRefused:=False;
+    BurlakWasInVehicle:=False;
+  end
+  else
+  begin
+    BurlakNewVehicle:=IsInUnit(Burlak);
+    if NOT BurlakWasInVehicle then
+      BurlakTimeInVehicle:=tick
+    else
+    begin
+      if tick-BurlakTimeInVehicle>0$30 then
+        if BurlakNewVehicle<>BurlakOldVehicle AND NOT Masha=BurlakNewVehicle then
+        begin
+          BurlakOldVehicle:=BurlakNewVehicle;
+          case Query('QMashaQuery') of
+            1:
+            begin
+              if Masha<>0 then SetMark(Masha,0);
+              Masha:=IsInUnit(Burlak);
+              SetMark(Masha,1);
+              SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha');
+              ChangeMissionObjectives('MMashaDone');
+            end;
+            2: QMashaQueryRefused:=True;
+          end;
+          QMashaQueryShown:=True;
+        end;
+    end;
+    BurlakWasInVehicle:=True;
+  end;
+  enable;
+end; }
+
+

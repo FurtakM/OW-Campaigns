@@ -1,0 +1,55 @@
+var mc_list;                           // seznam mcid pro vsechny strany
+
+var war_buildings;                     // seznam seznamu obrannych budov jednotlivych stran
+
+
+
+//----------------------------------//
+//----- INICIALIAZACE OBRANNY  -----//
+export function init_defend;
+var side;
+begin
+  mc_list:=[];
+  for side=1 to 8 do
+    mc_list:=mc_list ^ [[]];
+end;
+
+
+//--------------------------------------------------------//
+//-----  NACTENI JEDNOTLIVYCH POCITACOVYCH ZAKLADEN  -----//
+export function init_keep_base;
+begin
+  b_list:=[];
+  mc_list:=[0,0,0,0,0,0,0,0];
+
+  for side=1 to 8 do
+    if side in cpu_list then
+      begin
+        un:=FilterAllUnits([ [f_side,side], [f_type,unit_building] ]);
+        if un then
+          b_list:=b_list ^ [GetBuildList(GetBase(un[1]))];
+      end
+    else
+      b_list:=b_list ^ [[]];
+end;
+
+
+//----------------------------------------------------//
+//-----  ZPOUSTENI MAKRA PRO UDRZOVANI ZAKLADNY  -----//
+every 0$5 trigger us in cpu_list do
+var side,list,
+    engineers;
+begin
+  list:=[];
+  for side=1 to 8 do
+    if (side in cpu_list) and not ExistMc(mc_list[side]) then
+      begin
+        engineers:=request_people(side,class_engineer,5);
+        list:=list ^ McBase(3,engineers,b_list[side],0,0,0);
+      end
+    else
+      list:=list ^ 0;
+  mc_list:=list;
+
+  enable;
+end;

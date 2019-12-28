@@ -1,0 +1,193 @@
+export Burlak,
+       Platonov,
+
+       Karamazov,
+       Petrovova,
+       Gleb,
+       Petrosyan,
+
+       Titov,
+       Dolgov,
+       Lipshchin,
+
+       Stevens,
+
+       Heike,
+       Omar;
+
+export used, ru_cars;
+
+{
+// talking in mission
+     Bur Burlak
+     Bel Belkov
+     Pla Platonov
+     Kar Karamazov
+     Ptr Petrovova
+     Glb Gleb
+     Pet Petrosyan
+
+     APet Peterson
+     ASol ASoldier1
+     Sol1 Soldier1
+     Sci1 Scientist1
+     Som Someone
+     Heike Heike
+}
+
+export function load_chars;
+var i;
+begin
+     InitUc;
+     InitHc;
+     uc_side:=you;
+     uc_nation:=nation_russian;
+// pouze radio
+     Platonov:=MyCreateCharacter('Platonov', class_soldier, true);
+
+// nas hrdina
+     Burlak:=MyCreateCharacter('Burlak', class_mechanic, false);
+// novi v misi
+     Titov:=MyCreateCharacter('Titov', class_soldier, true);
+     Dolgov:=MyCreateCharacter('Dolgov', class_scientistic, true);
+     Lipshchin:=MyCreateCharacter('Lipshchin', class_soldier, true);
+     Karamazov:=MyCreateCharacter('Karamazov', class_engineer, true);
+     Petrovova:=MyCreateCharacter('Petrovova', class_soldier, true);
+     Gleb:=MyCreateCharacter('Gleb', class_soldier, true);
+     Petrosyan:=MyCreateCharacter('Petrosyan', class_scientistic, true);
+
+     used:=[Burlak,Lipshchin,Titov,Dolgov,Karamazov,Petrovova,Gleb,Petrosyan] diff 0;
+
+     uc_side:=americans;
+     uc_nation:=nation_american;
+     Stevens:=MyCreateCharacter('Stevens', class_scientistic, true);
+
+     uc_side:=arabians;
+     uc_nation:=nation_arabian;
+     Heike:=MyCreateCharacter('Heike', class_soldier, true);
+     Omar:=MyCreateCharacter('Omar', class_desert_warior, true);
+end;
+export function place_in_ru_cars;
+var cars, car, i;
+begin
+
+     cars:=[[ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun],
+            [ru_medium_tracked,ru_heavy_machine_gun]];
+
+     InitUc;
+     InitVc;
+     vc_control:=control_manual;
+     vc_engine:=engine_combustion;
+     uc_side:=you;
+     uc_nation:=nation_russian;
+
+     ru_cars:=[];
+     for i:=1 to 8 do begin
+         vc_chassis:=cars[i][1];
+         vc_weapon:=cars[i][2];
+         uc_direction:=Rand(3,4);
+         vc_fuel_battery:=Rand(25,40);
+         car:=CreateVehicle;
+         ru_cars:=ru_cars ^ car;
+         PlaceHumanInUnit(used[i], car);
+         SetLives(car, Rand(251,800));
+         SetLives(used[i], Rand(900,1000));
+     end;
+end;
+
+export function place_apes;
+var o1,o2,o3,o4;
+begin
+   InitHc;
+   InitUc;
+   uc_side:=0;
+   uc_nation:=nation_nature;
+   hc_class:=class_apeman;
+   hc_agressivity:=Rand(ape_agress[1],ape_agress[2]);
+   o1:=CreateHuman;
+   hc_agressivity:=Rand(ape_agress[1],ape_agress[2]);
+   o2:=CreateHuman;
+   hc_agressivity:=-5;
+   o3:=CreateHuman;
+   hc_agressivity:=Rand(ape_agress[1],ape_agress[2]);
+   o4:=CreateHuman;
+   PlaceUnitXY(o1, 10, 14, false);
+   PlaceUnitXY(o2, 17, 22, false);
+   PlaceUnitXY(o3, 16, 11, false);
+   PlaceUnitXY(o4, 84,  7, false);
+   apemans:=[o1,o2,o3,o4];
+end;
+
+export function place_ru_cars(area);
+var i;
+begin
+     for i in ru_cars do
+         PlaceUnitArea(i, area, false);
+end;
+
+function MyCreateCharacter(name, unclass, new);
+begin
+///////////////// load verze /////////////////////////
+    if new or TestCharacters(name) then begin
+      if new then
+         result:=NewCharacter(name)
+      else begin
+         if CheckCharacterSet(name) then
+            result:=CreateCharacter(name)
+         else
+            result:=0;
+      end;
+
+      if unclass then SetClass(result,unclass);
+    end
+////////////// generate verze /////////////////////////
+    else begin
+       Msg('Chybi '& name &'!');
+       hc_name:=name;
+       PrepareHuman(sex_male,0,3);
+       if unclass then hc_class:=unclass;
+       result:=CreateHuman;
+    end;
+end;
+
+export function Save;
+var cars, i, cargotype;
+begin
+     if not IsDead(Omar) then
+          SaveCharacters(Omar, 'Omar');
+// nas hrdina
+     SaveCharacters(Burlak, 'Burlak');
+// novi v misi
+     if not IsInUnit(Titov) then SetLives(Titov, 0);
+     if not IsInUnit(Dolgov) then SetLives(Dolgov, 0);
+     if not IsInUnit(Lipshchin) then SetLives(Lipshchin, 0);
+     if not IsInUnit(Karamazov) then SetLives(Karamazov, 0);
+     if not IsInUnit(Petrovova) then SetLives(Petrovova, 0);
+     if not IsInUnit(Gleb) then SetLives(Gleb, 0);
+     if not IsInUnit(Petrosyan) then SetLives(Petrosyan, 0);
+
+     if Titov then SaveCharacters(Titov, 'Titov');
+     if Dolgov then SaveCharacters(Dolgov, 'Dolgov');
+     if Lipshchin then SaveCharacters(Lipshchin, 'Lipshchin');
+     if Karamazov then SaveCharacters(Karamazov, 'Karamazov');
+     if Petrovova then SaveCharacters(Petrovova, 'Petrovova');
+     if Gleb then SaveCharacters(Gleb, 'Gleb');
+     if Petrosyan then SaveCharacters(Petrosyan, 'Petrosyan');
+
+     SaveVariable(Stevens_killed, 'StevensKilled');
+     SaveVariable(action_was_fast, 'OvesyenkoTime');
+     SaveVariable(IsDead(Omar),'OmarKilled');
+
+     cars:=[];  
+     for i in FilterUnitsInArea(exit_rus, [[f_side,you],[f_type,unit_vehicle]]) do begin
+         cargotype:=GetCargoType(i);
+         cars:=cars ^ [[GetChassis(i),GetWeapon(i),GetNation(i),cargotype,GetCargo(i,cargotype)]];
+     end;
+     SaveVariable(cars, 'cars_ru_6');
+end;                  

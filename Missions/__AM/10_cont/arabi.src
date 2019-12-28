@@ -1,0 +1,235 @@
+VAR pom;
+VAR i;
+EXPORT Dietrich;
+EXPORT LS;
+EXPORT tapkal;
+EXPORT Arabi_Utoci;
+VAR polozil;
+VAR Autok;
+VAR auta;
+EXPORT UTEKLI_ARABI;
+EXPORT arabsti_zradci_LIST;  //puvodni arabi v bazi, kteri zradili
+
+// disablovani trigeru na zacatku
+EVERY 0$0.5 DO
+begin
+  for i:=1 to 22 do disable(i);
+  Arabi_utoci=false;
+  arabsti_zradci_LIST=[];
+end;
+
+EVERY 0$1 DO
+begin
+  ComEnterUnit(LS,Ar_lab);
+  AddComChangeProfession(LS,class_scientistic);
+  ComEnterUnit(tapkal,Ar_bar);
+  ComEnterUnit(Dietrich,Ar_bar);
+  AddComChangeProfession(Dietrich,class_soldier);
+  pom=FilterAllUnits([[f_side,Arabi],[f_type,unit_human]]) diff [LS,Dietrich];
+  if pom>0 then begin
+                  ComEnterUnit(pom[1],Ar_lab);
+                  AddComChangeProfession(pom[1],class_scientistic);
+                  pom=pom diff pom[1];
+                end;
+  if pom>0 then begin
+                  ComEnterUnit(pom[1],Ar_bar);
+                  AddComChangeProfession(pom[1],class_soldier);
+                  pom=pom diff pom[1];
+                end;
+  if pom>0 then begin
+                  ComEnterUnit(pom,Ar_dep);
+                  AddComChangeProfession(pom,class_engineer);
+                end;
+
+  // nejake suroviny do aut
+  AddCargo(auto1,mat_siberit,20);
+  AddCargo(auto1,mat_oil,30);
+  AddCargo(auto2,mat_cans,40);
+  AddCargo(auto2,mat_oil,40);
+end;
+
+// zrada arabu a jejich utok
+EVERY 0$1 TRIGGER Arabi_utoci=true DO
+VAR arabi_v_zakladne;
+VAR pp;
+VAR un;
+begin
+  Dial=5;
+  arabi_v_zakladne=FilterAllUnits([[f_side,Arabi],[f_type,unit_human]]);
+  arabsti_zradci_LIST=arabi_v_zakladne;
+  ComExitBuilding(arabi_v_zakladne);
+  AddComEnterUnit(arabi_v_zakladne,Ar_bar);
+  AddComChangeProfession(arabi_v_zakladne diff LS,class_mortar);
+  AddComExitBuilding(arabi_v_zakladne);
+  AddComMoveXY(arabi_v_zakladne,76,20);
+  wait(0$3);
+  prebarvi_araby(arabi_v_zakladne);
+  AddComMoveXY(arabi_v_zakladne,86,12);
+  wait(cekani_zradnych_arabu_pred_utokem);
+  enable(20);
+
+  // druzi arabi zprava
+  wait(cas_druzi_arabaci);
+  create_ar_zradu;
+  Autok=FilterAllUnits([[f_side,Arabi2]]);
+  ComAgressiveMove(Autok,104,25);
+  AddComAgressiveMove(Autok,99,36);
+  pp=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+  if pp>0 then AddComAgressiveMove(Autok,GetX(pp[1]),GetY(pp[1]));
+
+  // tapkal
+  pp=FilterAllUnits([[f_side,You],[f_type,unit_building]]);
+  if pp>0 then
+    begin
+      un=NearestUnitToUnit(tapkal,pp);
+      ComExitBuilding(tapkal);
+      AddComPlaceRemoteCharge(tapkal,0,0,un);
+      AddComPlaceDelayedCharge(tapkal,GetX(un)+1,GetY(un)+1,0);
+      AddComMoveXY(tapkal,78,10);
+      AddComFireExplosives(tapkal);
+      AddComAgressiveMove(tapkal,128,19);
+    end;
+end;
+
+//utok a utek
+EVERY 0$4 marked 20 DO
+VAR pomarabi;
+begin
+  if FilterUnitsInArea(Mortari,[[f_side,Arabi3]])>0 then
+    begin
+      
+      wait(0$25);
+      enable(21);
+      pomarabi=FilterAllUnits([[f_side,Arabi3]]);
+      AddComMoveXY(pomarabi,129,20);
+    end
+   else enable;
+end;
+
+// oidebirani
+EVERY 0$1 marked 21 DO
+begin
+  pom=FilterUnitsInArea(REUTEK,[[f_side,Arabi3]]);
+  if pom>0 then begin
+                  RemoveUnit(pom[1]);
+                  UTEKLI_ARABI:=UTEKLI_ARABI+1;
+                end;
+  enable;
+end;
+
+// vyzkum - arabi pro toceni elektraren
+EVERY 0$20 DO
+begin
+  if GetSide(Ar_lab) <> Arabi then
+       exit;
+
+  pom=UnitsInside(Ar_lab);
+  if pom>0 then ComResearch(Ar_lab,tech_Sib1)
+           else enable;
+end;
+
+// vyzkum 2
+EVERY 0$45 TRIGGER GetTech(tech_Sib1,Arabi)=state_researched DO
+begin
+  wait(1$0);
+
+  if GetSide(Ar_lab) <> Arabi then
+       exit;
+
+  ComResearch(Ar_lab,tech_Sib2);
+end;
+
+// vyzkum 3
+EVERY 0$43 TRIGGER GetTech(tech_Sib2,Arabi)=state_researched DO
+begin
+  wait(1$0);
+
+  if GetSide(Ar_lab) <> Arabi then
+       exit;
+
+  SetTech(tech_Sib3,Arabi,state_enabled);
+  ComResearch(Ar_lab,tech_Sib3);
+end;
+
+// utok arabu pokud je to moc rychle !!!
+// ******************************************
+EVERY 0$13 TRIGGER GetTech(tech_Sib1,You)=state_researched DO
+begin
+  arabi_utoci=true;
+end;
+
+EVERY 0$1 DO
+begin
+  wait(arabsky_utok_prichod[difficulty]);
+  Arabi_utoci=true;
+end;
+
+// prebarvovani arabu
+function prebarvi_Araby(people);
+VAR i;
+VAR poc;
+begin
+  poc=0;
+  while FilterUnitsExceptArea(APU,[[f_side,Arabi],[f_type,unit_human]])>0 and poc<8 do
+    begin
+      wait(0$1);
+      poc=poc+1;
+    end;
+  for i in people do
+    begin
+      while not (GetClass(i)=class_mortar or i=LS or i=tapkal) do
+        begin
+          ComEnterUnit(i,Ar_bar);
+          AddComChangeProfession(i,class_mortar);
+          wait(0$1);
+        end;
+      while IsInUnit(i) do begin
+                             wait(0$1);
+                             ComExitBuilding(i);
+                           end;
+      SetSide(i,Arabi3);
+    end;
+end;
+
+// kdyz jim nekdo zabere auto!
+on VehicleCaptured(vnew,vold,origside,hum) DO
+begin
+  if origside=Arabi and Getside(hum)=You then END_ATTACK=true;
+  enable;
+end;
+
+// pohyb arabu
+// tapkalovy vylety
+EVERY 4$0 TRIGGER not Arabi_utoci DO
+begin
+  ComExitBuilding(tapkal);
+  AddComMoveXY(tapkal,84,20);
+  AddComMoveXY(tapkal,108,40);
+  AddComMoveXY(tapkal,82,36);
+  AddComMoveXY(tapkal,77,22);
+  AddComEnterUnit(tapkal,Ar_bar);
+  enable;
+end;
+
+// prochazky LS
+EVERY 3$50 TRIGGER not Arabi_utoci DO //3$50
+begin
+  ComExitBuilding(LS);
+  AddComMoveXY(LS,72,23);
+  AddComWait(LS,0$3);
+  AddComEnterUnit(LS,Ar_dep);
+  AddComChangeProfession(LS,class_engineer);
+  if Arabi_utoci then exit;
+  Wait(0$15);
+  if Arabi_utoci then exit;
+  ComExitBuilding(LS);
+  AddComEnterUnit(LS,Ar_bar);
+  AddComChangeProfession(LS,class_soldier);
+  if Arabi_utoci then exit;
+  Wait(0$20);
+  if Arabi_utoci then exit;
+  ComExitBuilding(LS);
+  AddComEnterUnit(LS,Ar_lab);
+  AddComChangeProfession(LS,class_scientistic);
+end;
+

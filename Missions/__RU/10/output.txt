@@ -1,0 +1,2726 @@
+// export you ; export Burlak , Gnyevko , Belkov , Kirilenkova , Kovalyuk , Popov , Scholtze , Kuzmov , Karamazov , Petrovova , Gleb , Petrosyan , Lipshchin , Titov , Dolgov , Vsevolod , Xavier , Yashin , Oblukov , Kozlov , Kapitsova , Stolypin ; export LabCaptured , Trotskij , depot ; export people , map_env , survivor ; var animals ; function RemoveAnimals ; var un ; begin
+   0: LD_INT 0
+   2: PPUSH
+   3: PPUSH
+// for un in all_units do
+   4: LD_ADDR_VAR 0 2
+   8: PUSH
+   9: LD_OWVAR 3
+  13: PUSH
+  14: FOR_IN
+  15: IFFALSE 72
+// begin animals := animals ^ [ [ un , GetX ( un ) , GetY ( un ) ] ] ;
+  17: LD_ADDR_LOC 1
+  21: PUSH
+  22: LD_LOC 1
+  26: PUSH
+  27: LD_VAR 0 2
+  31: PUSH
+  32: LD_VAR 0 2
+  36: PPUSH
+  37: CALL_OW 250
+  41: PUSH
+  42: LD_VAR 0 2
+  46: PPUSH
+  47: CALL_OW 251
+  51: PUSH
+  52: EMPTY
+  53: LIST
+  54: LIST
+  55: LIST
+  56: PUSH
+  57: EMPTY
+  58: LIST
+  59: ADD
+  60: ST_TO_ADDR
+// RemoveUnit ( un ) ;
+  61: LD_VAR 0 2
+  65: PPUSH
+  66: CALL_OW 64
+// end ;
+  70: GO 14
+  72: POP
+  73: POP
+// end ;
+  74: LD_VAR 0 1
+  78: RET
+// function RestoreAnimals ; var un ; begin
+  79: LD_INT 0
+  81: PPUSH
+  82: PPUSH
+// for un in animals do
+  83: LD_ADDR_VAR 0 2
+  87: PUSH
+  88: LD_LOC 1
+  92: PUSH
+  93: FOR_IN
+  94: IFFALSE 135
+// PlaceUnitXYR ( un [ 1 ] , un [ 2 ] , un [ 3 ] , 10 , false ) ;
+  96: LD_VAR 0 2
+ 100: PUSH
+ 101: LD_INT 1
+ 103: ARRAY
+ 104: PPUSH
+ 105: LD_VAR 0 2
+ 109: PUSH
+ 110: LD_INT 2
+ 112: ARRAY
+ 113: PPUSH
+ 114: LD_VAR 0 2
+ 118: PUSH
+ 119: LD_INT 3
+ 121: ARRAY
+ 122: PPUSH
+ 123: LD_INT 10
+ 125: PPUSH
+ 126: LD_INT 0
+ 128: PPUSH
+ 129: CALL_OW 50
+ 133: GO 93
+ 135: POP
+ 136: POP
+// end ;
+ 137: LD_VAR 0 1
+ 141: RET
+// function prepare_map ; var un ; begin
+ 142: LD_INT 0
+ 144: PPUSH
+ 145: PPUSH
+// map_env := LoadVariable ( Environment , [ ] ) ;
+ 146: LD_ADDR_EXP 28
+ 150: PUSH
+ 151: LD_STRING Environment
+ 153: PPUSH
+ 154: EMPTY
+ 155: PPUSH
+ 156: CALL_OW 30
+ 160: ST_TO_ADDR
+// PlaceEnvironmentList ( map_env ) ;
+ 161: LD_EXP 28
+ 165: PPUSH
+ 166: CALL_OW 354
+// end ;
+ 170: LD_VAR 0 1
+ 174: RET
+// function prepare_base ; var building , un , weap , x , y , dir ; begin
+ 175: LD_INT 0
+ 177: PPUSH
+ 178: PPUSH
+ 179: PPUSH
+ 180: PPUSH
+ 181: PPUSH
+ 182: PPUSH
+ 183: PPUSH
+// depot := false ;
+ 184: LD_ADDR_EXP 26
+ 188: PUSH
+ 189: LD_INT 0
+ 191: ST_TO_ADDR
+// uc_side := you ;
+ 192: LD_ADDR_OWVAR 20
+ 196: PUSH
+ 197: LD_EXP 1
+ 201: ST_TO_ADDR
+// Trotskij := LoadVariable ( Trotskij , [ ] ) ;
+ 202: LD_ADDR_EXP 25
+ 206: PUSH
+ 207: LD_STRING Trotskij
+ 209: PPUSH
+ 210: EMPTY
+ 211: PPUSH
+ 212: CALL_OW 30
+ 216: ST_TO_ADDR
+// for building in Trotskij do
+ 217: LD_ADDR_VAR 0 2
+ 221: PUSH
+ 222: LD_EXP 25
+ 226: PUSH
+ 227: FOR_IN
+ 228: IFFALSE 600
+// begin bc_type := building [ 1 ] ;
+ 230: LD_ADDR_OWVAR 42
+ 234: PUSH
+ 235: LD_VAR 0 2
+ 239: PUSH
+ 240: LD_INT 1
+ 242: ARRAY
+ 243: ST_TO_ADDR
+// x := building [ 2 ] ;
+ 244: LD_ADDR_VAR 0 5
+ 248: PUSH
+ 249: LD_VAR 0 2
+ 253: PUSH
+ 254: LD_INT 2
+ 256: ARRAY
+ 257: ST_TO_ADDR
+// y := building [ 3 ] ;
+ 258: LD_ADDR_VAR 0 6
+ 262: PUSH
+ 263: LD_VAR 0 2
+ 267: PUSH
+ 268: LD_INT 3
+ 270: ARRAY
+ 271: ST_TO_ADDR
+// dir := building [ 4 ] ;
+ 272: LD_ADDR_VAR 0 7
+ 276: PUSH
+ 277: LD_VAR 0 2
+ 281: PUSH
+ 282: LD_INT 4
+ 284: ARRAY
+ 285: ST_TO_ADDR
+// bc_level := building [ 5 ] + 1 ;
+ 286: LD_ADDR_OWVAR 43
+ 290: PUSH
+ 291: LD_VAR 0 2
+ 295: PUSH
+ 296: LD_INT 5
+ 298: ARRAY
+ 299: PUSH
+ 300: LD_INT 1
+ 302: PLUS
+ 303: ST_TO_ADDR
+// uc_nation := building [ 6 ] ;
+ 304: LD_ADDR_OWVAR 21
+ 308: PUSH
+ 309: LD_VAR 0 2
+ 313: PUSH
+ 314: LD_INT 6
+ 316: ARRAY
+ 317: ST_TO_ADDR
+// if building > 7 then
+ 318: LD_VAR 0 2
+ 322: PUSH
+ 323: LD_INT 7
+ 325: GREATER
+ 326: IFFALSE 356
+// begin bc_kind1 := building [ 7 ] ;
+ 328: LD_ADDR_OWVAR 44
+ 332: PUSH
+ 333: LD_VAR 0 2
+ 337: PUSH
+ 338: LD_INT 7
+ 340: ARRAY
+ 341: ST_TO_ADDR
+// bc_kind2 := building [ 8 ] ;
+ 342: LD_ADDR_OWVAR 45
+ 346: PUSH
+ 347: LD_VAR 0 2
+ 351: PUSH
+ 352: LD_INT 8
+ 354: ARRAY
+ 355: ST_TO_ADDR
+// end ; if bc_type in [ b_oil_mine , b_siberite_mine ] then
+ 356: LD_OWVAR 42
+ 360: PUSH
+ 361: LD_INT 29
+ 363: PUSH
+ 364: LD_INT 30
+ 366: PUSH
+ 367: EMPTY
+ 368: LIST
+ 369: LIST
+ 370: IN
+ 371: IFFALSE 392
+// SetResourceVisibility ( x , y , you ) ;
+ 373: LD_VAR 0 5
+ 377: PPUSH
+ 378: LD_VAR 0 6
+ 382: PPUSH
+ 383: LD_EXP 1
+ 387: PPUSH
+ 388: CALL_OW 441
+// if bc_type = b_breastwork then
+ 392: LD_OWVAR 42
+ 396: PUSH
+ 397: LD_INT 31
+ 399: EQUAL
+ 400: IFFALSE 433
+// bc_type := [ b_bunker , b_turret , b_turret ] [ Rand ( 1 , 3 ) ] ;
+ 402: LD_ADDR_OWVAR 42
+ 406: PUSH
+ 407: LD_INT 32
+ 409: PUSH
+ 410: LD_INT 33
+ 412: PUSH
+ 413: LD_INT 33
+ 415: PUSH
+ 416: EMPTY
+ 417: LIST
+ 418: LIST
+ 419: LIST
+ 420: PUSH
+ 421: LD_INT 1
+ 423: PPUSH
+ 424: LD_INT 3
+ 426: PPUSH
+ 427: CALL_OW 12
+ 431: ARRAY
+ 432: ST_TO_ADDR
+// un := CreateAndPlaceBuildingXYD ( x , y , dir ) ;
+ 433: LD_ADDR_VAR 0 3
+ 437: PUSH
+ 438: LD_VAR 0 5
+ 442: PPUSH
+ 443: LD_VAR 0 6
+ 447: PPUSH
+ 448: LD_VAR 0 7
+ 452: PPUSH
+ 453: CALL_OW 47
+ 457: ST_TO_ADDR
+// if bc_type in [ b_bunker , b_turret ] then
+ 458: LD_OWVAR 42
+ 462: PUSH
+ 463: LD_INT 32
+ 465: PUSH
+ 466: LD_INT 33
+ 468: PUSH
+ 469: EMPTY
+ 470: LIST
+ 471: LIST
+ 472: IN
+ 473: IFFALSE 598
+// begin weap := [ ru_gun , ru_rocket_launcher , ru_heavy_gun ] ;
+ 475: LD_ADDR_VAR 0 4
+ 479: PUSH
+ 480: LD_INT 44
+ 482: PUSH
+ 483: LD_INT 45
+ 485: PUSH
+ 486: LD_INT 46
+ 488: PUSH
+ 489: EMPTY
+ 490: LIST
+ 491: LIST
+ 492: LIST
+ 493: ST_TO_ADDR
+// if ( building > 6 ) then
+ 494: LD_VAR 0 2
+ 498: PUSH
+ 499: LD_INT 6
+ 501: GREATER
+ 502: IFFALSE 570
+// begin if ( building [ 7 ] in weap ) then
+ 504: LD_VAR 0 2
+ 508: PUSH
+ 509: LD_INT 7
+ 511: ARRAY
+ 512: PUSH
+ 513: LD_VAR 0 4
+ 517: IN
+ 518: IFFALSE 540
+// PlaceWeaponTurret ( un , building [ 7 ] ) else
+ 520: LD_VAR 0 3
+ 524: PPUSH
+ 525: LD_VAR 0 2
+ 529: PUSH
+ 530: LD_INT 7
+ 532: ARRAY
+ 533: PPUSH
+ 534: CALL_OW 431
+ 538: GO 568
+// PlaceWeaponTurret ( un , weap [ Rand ( 1 , weap ) ] ) ;
+ 540: LD_VAR 0 3
+ 544: PPUSH
+ 545: LD_VAR 0 4
+ 549: PUSH
+ 550: LD_INT 1
+ 552: PPUSH
+ 553: LD_VAR 0 4
+ 557: PPUSH
+ 558: CALL_OW 12
+ 562: ARRAY
+ 563: PPUSH
+ 564: CALL_OW 431
+// end else
+ 568: GO 598
+// PlaceWeaponTurret ( un , weap [ Rand ( 1 , weap ) ] ) ;
+ 570: LD_VAR 0 3
+ 574: PPUSH
+ 575: LD_VAR 0 4
+ 579: PUSH
+ 580: LD_INT 1
+ 582: PPUSH
+ 583: LD_VAR 0 4
+ 587: PPUSH
+ 588: CALL_OW 12
+ 592: ARRAY
+ 593: PPUSH
+ 594: CALL_OW 431
+// end ; end ;
+ 598: GO 227
+ 600: POP
+ 601: POP
+// building := FilterAllUnits ( [ [ f_side , you ] , [ f_or , [ f_btype , b_depot ] , [ f_btype , b_warehouse ] ] ] ) ;
+ 602: LD_ADDR_VAR 0 2
+ 606: PUSH
+ 607: LD_INT 22
+ 609: PUSH
+ 610: LD_EXP 1
+ 614: PUSH
+ 615: EMPTY
+ 616: LIST
+ 617: LIST
+ 618: PUSH
+ 619: LD_INT 2
+ 621: PUSH
+ 622: LD_INT 30
+ 624: PUSH
+ 625: LD_INT 0
+ 627: PUSH
+ 628: EMPTY
+ 629: LIST
+ 630: LIST
+ 631: PUSH
+ 632: LD_INT 30
+ 634: PUSH
+ 635: LD_INT 1
+ 637: PUSH
+ 638: EMPTY
+ 639: LIST
+ 640: LIST
+ 641: PUSH
+ 642: EMPTY
+ 643: LIST
+ 644: LIST
+ 645: LIST
+ 646: PUSH
+ 647: EMPTY
+ 648: LIST
+ 649: LIST
+ 650: PPUSH
+ 651: CALL_OW 69
+ 655: ST_TO_ADDR
+// for un in building do
+ 656: LD_ADDR_VAR 0 3
+ 660: PUSH
+ 661: LD_VAR 0 2
+ 665: PUSH
+ 666: FOR_IN
+ 667: IFFALSE 748
+// begin if not depot then
+ 669: LD_EXP 26
+ 673: NOT
+ 674: IFFALSE 686
+// depot := un ;
+ 676: LD_ADDR_EXP 26
+ 680: PUSH
+ 681: LD_VAR 0 3
+ 685: ST_TO_ADDR
+// SetResourceType ( GetBase ( un ) , mat_cans , 125 ) ;
+ 686: LD_VAR 0 3
+ 690: PPUSH
+ 691: CALL_OW 274
+ 695: PPUSH
+ 696: LD_INT 1
+ 698: PPUSH
+ 699: LD_INT 125
+ 701: PPUSH
+ 702: CALL_OW 277
+// SetResourceType ( GetBase ( un ) , mat_oil , 38 ) ;
+ 706: LD_VAR 0 3
+ 710: PPUSH
+ 711: CALL_OW 274
+ 715: PPUSH
+ 716: LD_INT 2
+ 718: PPUSH
+ 719: LD_INT 38
+ 721: PPUSH
+ 722: CALL_OW 277
+// SetResourceType ( GetBase ( un ) , mat_siberit , 12 ) ;
+ 726: LD_VAR 0 3
+ 730: PPUSH
+ 731: CALL_OW 274
+ 735: PPUSH
+ 736: LD_INT 3
+ 738: PPUSH
+ 739: LD_INT 12
+ 741: PPUSH
+ 742: CALL_OW 277
+// end ;
+ 746: GO 666
+ 748: POP
+ 749: POP
+// end ;
+ 750: LD_VAR 0 1
+ 754: RET
+// function prepare_units ; var un , x , y , placed , num , veh , important , depot_list , depot , factory_list , mechanics , lab_list , scientists ; begin
+ 755: LD_INT 0
+ 757: PPUSH
+ 758: PPUSH
+ 759: PPUSH
+ 760: PPUSH
+ 761: PPUSH
+ 762: PPUSH
+ 763: PPUSH
+ 764: PPUSH
+ 765: PPUSH
+ 766: PPUSH
+ 767: PPUSH
+ 768: PPUSH
+ 769: PPUSH
+ 770: PPUSH
+// uc_side = 3 ;
+ 771: LD_ADDR_OWVAR 20
+ 775: PUSH
+ 776: LD_INT 3
+ 778: ST_TO_ADDR
+// uc_nation = nation_russian ;
+ 779: LD_ADDR_OWVAR 21
+ 783: PUSH
+ 784: LD_INT 3
+ 786: ST_TO_ADDR
+// mechanics := [ ] ;
+ 787: LD_ADDR_VAR 0 12
+ 791: PUSH
+ 792: EMPTY
+ 793: ST_TO_ADDR
+// scientists := [ ] ;
+ 794: LD_ADDR_VAR 0 14
+ 798: PUSH
+ 799: EMPTY
+ 800: ST_TO_ADDR
+// LabCaptured := LoadVariable ( LabCaptured , false ) ;
+ 801: LD_ADDR_EXP 24
+ 805: PUSH
+ 806: LD_STRING LabCaptured
+ 808: PPUSH
+ 809: LD_INT 0
+ 811: PPUSH
+ 812: CALL_OW 30
+ 816: ST_TO_ADDR
+// Burlak := CreateCharacter ( Burlak ) ;
+ 817: LD_ADDR_EXP 2
+ 821: PUSH
+ 822: LD_STRING Burlak
+ 824: PPUSH
+ 825: CALL_OW 34
+ 829: ST_TO_ADDR
+// Yashin := NewCharacter ( Yashin ) ;
+ 830: LD_ADDR_EXP 19
+ 834: PUSH
+ 835: LD_STRING Yashin
+ 837: PPUSH
+ 838: CALL_OW 25
+ 842: ST_TO_ADDR
+// Popov := NewCharacter ( Popov ) ;
+ 843: LD_ADDR_EXP 7
+ 847: PUSH
+ 848: LD_STRING Popov
+ 850: PPUSH
+ 851: CALL_OW 25
+ 855: ST_TO_ADDR
+// SetClass ( Burlak , class_mechanic ) ;
+ 856: LD_EXP 2
+ 860: PPUSH
+ 861: LD_INT 3
+ 863: PPUSH
+ 864: CALL_OW 336
+// if TestCharacters ( Vsevolod ) and CheckCharacterSet ( Vsevolod ) then
+ 868: LD_STRING Vsevolod
+ 870: PPUSH
+ 871: CALL_OW 28
+ 875: PUSH
+ 876: LD_STRING Vsevolod
+ 878: PPUSH
+ 879: CALL_OW 29
+ 883: AND
+ 884: IFFALSE 911
+// begin Vsevolod := CreateCharacter ( Vsevolod ) ;
+ 886: LD_ADDR_EXP 17
+ 890: PUSH
+ 891: LD_STRING Vsevolod
+ 893: PPUSH
+ 894: CALL_OW 34
+ 898: ST_TO_ADDR
+// survivor := vsevolod ;
+ 899: LD_ADDR_EXP 29
+ 903: PUSH
+ 904: LD_EXP 17
+ 908: ST_TO_ADDR
+// end else
+ 909: GO 934
+// begin Stolypin := NewCharacter ( Stolypin ) ;
+ 911: LD_ADDR_EXP 23
+ 915: PUSH
+ 916: LD_STRING Stolypin
+ 918: PPUSH
+ 919: CALL_OW 25
+ 923: ST_TO_ADDR
+// survivor := Stolypin ;
+ 924: LD_ADDR_EXP 29
+ 928: PUSH
+ 929: LD_EXP 23
+ 933: ST_TO_ADDR
+// end ; uc_direction := 3 ;
+ 934: LD_ADDR_OWVAR 24
+ 938: PUSH
+ 939: LD_INT 3
+ 941: ST_TO_ADDR
+// vc_chassis := ru_medium_tracked ;
+ 942: LD_ADDR_OWVAR 37
+ 946: PUSH
+ 947: LD_INT 22
+ 949: ST_TO_ADDR
+// vc_engine := engine_combustion ;
+ 950: LD_ADDR_OWVAR 39
+ 954: PUSH
+ 955: LD_INT 1
+ 957: ST_TO_ADDR
+// vc_control := control_manual ;
+ 958: LD_ADDR_OWVAR 38
+ 962: PUSH
+ 963: LD_INT 1
+ 965: ST_TO_ADDR
+// vc_weapon := ru_gun ;
+ 966: LD_ADDR_OWVAR 40
+ 970: PUSH
+ 971: LD_INT 44
+ 973: ST_TO_ADDR
+// veh := CreateVehicle ;
+ 974: LD_ADDR_VAR 0 7
+ 978: PUSH
+ 979: CALL_OW 45
+ 983: ST_TO_ADDR
+// people := LoadAllMen ;
+ 984: LD_ADDR_EXP 27
+ 988: PUSH
+ 989: CALL 2820 0 0
+ 993: ST_TO_ADDR
+// if people < 10 then
+ 994: LD_EXP 27
+ 998: PUSH
+ 999: LD_INT 10
+1001: LESS
+1002: IFFALSE 1059
+// for un := 1 to ( 10 - people ) do
+1004: LD_ADDR_VAR 0 2
+1008: PUSH
+1009: DOUBLE
+1010: LD_INT 1
+1012: DEC
+1013: ST_TO_ADDR
+1014: LD_INT 10
+1016: PUSH
+1017: LD_EXP 27
+1021: MINUS
+1022: PUSH
+1023: FOR_TO
+1024: IFFALSE 1057
+// begin PrepareHuman ( 0 , 0 , 6 ) ;
+1026: LD_INT 0
+1028: PPUSH
+1029: LD_INT 0
+1031: PPUSH
+1032: LD_INT 6
+1034: PPUSH
+1035: CALL_OW 380
+// people := people ^ CreateHuman ;
+1039: LD_ADDR_EXP 27
+1043: PUSH
+1044: LD_EXP 27
+1048: PUSH
+1049: CALL_OW 44
+1053: ADD
+1054: ST_TO_ADDR
+// end ;
+1055: GO 1023
+1057: POP
+1058: POP
+// factory_list := FilterAllUnits ( [ [ f_side , you ] , [ f_or , [ f_btype , b_workshop ] , [ f_btype , b_factory ] ] ] ) ;
+1059: LD_ADDR_VAR 0 11
+1063: PUSH
+1064: LD_INT 22
+1066: PUSH
+1067: LD_EXP 1
+1071: PUSH
+1072: EMPTY
+1073: LIST
+1074: LIST
+1075: PUSH
+1076: LD_INT 2
+1078: PUSH
+1079: LD_INT 30
+1081: PUSH
+1082: LD_INT 2
+1084: PUSH
+1085: EMPTY
+1086: LIST
+1087: LIST
+1088: PUSH
+1089: LD_INT 30
+1091: PUSH
+1092: LD_INT 3
+1094: PUSH
+1095: EMPTY
+1096: LIST
+1097: LIST
+1098: PUSH
+1099: EMPTY
+1100: LIST
+1101: LIST
+1102: LIST
+1103: PUSH
+1104: EMPTY
+1105: LIST
+1106: LIST
+1107: PPUSH
+1108: CALL_OW 69
+1112: ST_TO_ADDR
+// lab_list := FilterAllUnits ( [ [ f_side , you ] , [ f_or , [ f_btype , b_lab ] , [ f_btype , b_lab_full ] , [ f_btype , b_lab_half ] ] ] ) ;
+1113: LD_ADDR_VAR 0 13
+1117: PUSH
+1118: LD_INT 22
+1120: PUSH
+1121: LD_EXP 1
+1125: PUSH
+1126: EMPTY
+1127: LIST
+1128: LIST
+1129: PUSH
+1130: LD_INT 2
+1132: PUSH
+1133: LD_INT 30
+1135: PUSH
+1136: LD_INT 6
+1138: PUSH
+1139: EMPTY
+1140: LIST
+1141: LIST
+1142: PUSH
+1143: LD_INT 30
+1145: PUSH
+1146: LD_INT 8
+1148: PUSH
+1149: EMPTY
+1150: LIST
+1151: LIST
+1152: PUSH
+1153: LD_INT 30
+1155: PUSH
+1156: LD_INT 7
+1158: PUSH
+1159: EMPTY
+1160: LIST
+1161: LIST
+1162: PUSH
+1163: EMPTY
+1164: LIST
+1165: LIST
+1166: LIST
+1167: LIST
+1168: PUSH
+1169: EMPTY
+1170: LIST
+1171: LIST
+1172: PPUSH
+1173: CALL_OW 69
+1177: ST_TO_ADDR
+// if people > 12 then
+1178: LD_EXP 27
+1182: PUSH
+1183: LD_INT 12
+1185: GREATER
+1186: IFFALSE 1198
+// num := 6 else
+1188: LD_ADDR_VAR 0 6
+1192: PUSH
+1193: LD_INT 6
+1195: ST_TO_ADDR
+1196: GO 1206
+// num := 4 ;
+1198: LD_ADDR_VAR 0 6
+1202: PUSH
+1203: LD_INT 4
+1205: ST_TO_ADDR
+// for un = 1 to num do
+1206: LD_ADDR_VAR 0 2
+1210: PUSH
+1211: DOUBLE
+1212: LD_INT 1
+1214: DEC
+1215: ST_TO_ADDR
+1216: LD_VAR 0 6
+1220: PUSH
+1221: FOR_TO
+1222: IFFALSE 1256
+// mechanics := mechanics ^ FindMaxSkill2 ( people diff mechanics , skill_mechanical ) ;
+1224: LD_ADDR_VAR 0 12
+1228: PUSH
+1229: LD_VAR 0 12
+1233: PUSH
+1234: LD_EXP 27
+1238: PUSH
+1239: LD_VAR 0 12
+1243: DIFF
+1244: PPUSH
+1245: LD_INT 3
+1247: PPUSH
+1248: CALL_OW 434
+1252: ADD
+1253: ST_TO_ADDR
+1254: GO 1221
+1256: POP
+1257: POP
+// for un = 1 to num do
+1258: LD_ADDR_VAR 0 2
+1262: PUSH
+1263: DOUBLE
+1264: LD_INT 1
+1266: DEC
+1267: ST_TO_ADDR
+1268: LD_VAR 0 6
+1272: PUSH
+1273: FOR_TO
+1274: IFFALSE 1314
+// scientists := scientists ^ FindMaxSkill2 ( people diff ( mechanics ^ scientists ) , skill_scientistic ) ;
+1276: LD_ADDR_VAR 0 14
+1280: PUSH
+1281: LD_VAR 0 14
+1285: PUSH
+1286: LD_EXP 27
+1290: PUSH
+1291: LD_VAR 0 12
+1295: PUSH
+1296: LD_VAR 0 14
+1300: ADD
+1301: DIFF
+1302: PPUSH
+1303: LD_INT 4
+1305: PPUSH
+1306: CALL_OW 434
+1310: ADD
+1311: ST_TO_ADDR
+1312: GO 1273
+1314: POP
+1315: POP
+// depot_list := FilterAllUnits ( [ [ f_side , you ] , [ f_or , [ f_btype , b_depot ] , [ f_btype , b_warehouse ] ] ] ) ;
+1316: LD_ADDR_VAR 0 9
+1320: PUSH
+1321: LD_INT 22
+1323: PUSH
+1324: LD_EXP 1
+1328: PUSH
+1329: EMPTY
+1330: LIST
+1331: LIST
+1332: PUSH
+1333: LD_INT 2
+1335: PUSH
+1336: LD_INT 30
+1338: PUSH
+1339: LD_INT 0
+1341: PUSH
+1342: EMPTY
+1343: LIST
+1344: LIST
+1345: PUSH
+1346: LD_INT 30
+1348: PUSH
+1349: LD_INT 1
+1351: PUSH
+1352: EMPTY
+1353: LIST
+1354: LIST
+1355: PUSH
+1356: EMPTY
+1357: LIST
+1358: LIST
+1359: LIST
+1360: PUSH
+1361: EMPTY
+1362: LIST
+1363: LIST
+1364: PPUSH
+1365: CALL_OW 69
+1369: ST_TO_ADDR
+// for un in depot_list do
+1370: LD_ADDR_VAR 0 2
+1374: PUSH
+1375: LD_VAR 0 9
+1379: PUSH
+1380: FOR_IN
+1381: IFFALSE 1427
+// begin depot := un ;
+1383: LD_ADDR_VAR 0 10
+1387: PUSH
+1388: LD_VAR 0 2
+1392: ST_TO_ADDR
+// x := GetX ( un ) ;
+1393: LD_ADDR_VAR 0 3
+1397: PUSH
+1398: LD_VAR 0 2
+1402: PPUSH
+1403: CALL_OW 250
+1407: ST_TO_ADDR
+// y := GetY ( un ) ;
+1408: LD_ADDR_VAR 0 4
+1412: PUSH
+1413: LD_VAR 0 2
+1417: PPUSH
+1418: CALL_OW 251
+1422: ST_TO_ADDR
+// break ;
+1423: GO 1427
+// end ;
+1425: GO 1380
+1427: POP
+1428: POP
+// PlaceUnitXYR ( Burlak , x , y , 10 , false ) ;
+1429: LD_EXP 2
+1433: PPUSH
+1434: LD_VAR 0 3
+1438: PPUSH
+1439: LD_VAR 0 4
+1443: PPUSH
+1444: LD_INT 10
+1446: PPUSH
+1447: LD_INT 0
+1449: PPUSH
+1450: CALL_OW 50
+// PlaceUnitXYR ( Yashin , x , y , 10 , false ) ;
+1454: LD_EXP 19
+1458: PPUSH
+1459: LD_VAR 0 3
+1463: PPUSH
+1464: LD_VAR 0 4
+1468: PPUSH
+1469: LD_INT 10
+1471: PPUSH
+1472: LD_INT 0
+1474: PPUSH
+1475: CALL_OW 50
+// PlaceUnitArea ( veh , survivor_place , false ) ;
+1479: LD_VAR 0 7
+1483: PPUSH
+1484: LD_INT 3
+1486: PPUSH
+1487: LD_INT 0
+1489: PPUSH
+1490: CALL_OW 49
+// PlaceHumanInUnit ( survivor , veh ) ;
+1494: LD_EXP 29
+1498: PPUSH
+1499: LD_VAR 0 7
+1503: PPUSH
+1504: CALL_OW 52
+// wait ( 10 ) ;
+1508: LD_INT 10
+1510: PPUSH
+1511: CALL_OW 67
+// if not IsOK ( survivor ) then
+1515: LD_EXP 29
+1519: PPUSH
+1520: CALL_OW 302
+1524: NOT
+1525: IFFALSE 1542
+// PlaceUnitArea ( survivor , survivor_place , false ) ;
+1527: LD_EXP 29
+1531: PPUSH
+1532: LD_INT 3
+1534: PPUSH
+1535: LD_INT 0
+1537: PPUSH
+1538: CALL_OW 49
+// wait ( 10 ) ;
+1542: LD_INT 10
+1544: PPUSH
+1545: CALL_OW 67
+// if not IsOK ( survivor ) then
+1549: LD_EXP 29
+1553: PPUSH
+1554: CALL_OW 302
+1558: NOT
+1559: IFFALSE 1575
+// PlaceHumanInUnit ( survivor , depot ) ;
+1561: LD_EXP 29
+1565: PPUSH
+1566: LD_VAR 0 10
+1570: PPUSH
+1571: CALL_OW 52
+// for un in people do
+1575: LD_ADDR_VAR 0 2
+1579: PUSH
+1580: LD_EXP 27
+1584: PUSH
+1585: FOR_IN
+1586: IFFALSE 1846
+// begin placed := false ;
+1588: LD_ADDR_VAR 0 5
+1592: PUSH
+1593: LD_INT 0
+1595: ST_TO_ADDR
+// if ( un in mechanics ) and factory_list then
+1596: LD_VAR 0 2
+1600: PUSH
+1601: LD_VAR 0 12
+1605: IN
+1606: PUSH
+1607: LD_VAR 0 11
+1611: AND
+1612: IFFALSE 1652
+// begin SetClass ( un , class_mechanic ) ;
+1614: LD_VAR 0 2
+1618: PPUSH
+1619: LD_INT 3
+1621: PPUSH
+1622: CALL_OW 336
+// PlaceHumanInUnit ( un , factory_list [ 1 ] ) ;
+1626: LD_VAR 0 2
+1630: PPUSH
+1631: LD_VAR 0 11
+1635: PUSH
+1636: LD_INT 1
+1638: ARRAY
+1639: PPUSH
+1640: CALL_OW 52
+// placed := true ;
+1644: LD_ADDR_VAR 0 5
+1648: PUSH
+1649: LD_INT 1
+1651: ST_TO_ADDR
+// end ; if ( un in scientists ) and lab_list then
+1652: LD_VAR 0 2
+1656: PUSH
+1657: LD_VAR 0 14
+1661: IN
+1662: PUSH
+1663: LD_VAR 0 13
+1667: AND
+1668: IFFALSE 1708
+// begin SetClass ( un , class_scientistic ) ;
+1670: LD_VAR 0 2
+1674: PPUSH
+1675: LD_INT 4
+1677: PPUSH
+1678: CALL_OW 336
+// PlaceHumanInUnit ( un , lab_list [ 1 ] ) ;
+1682: LD_VAR 0 2
+1686: PPUSH
+1687: LD_VAR 0 13
+1691: PUSH
+1692: LD_INT 1
+1694: ARRAY
+1695: PPUSH
+1696: CALL_OW 52
+// placed := true ;
+1700: LD_ADDR_VAR 0 5
+1704: PUSH
+1705: LD_INT 1
+1707: ST_TO_ADDR
+// end ; if not placed then
+1708: LD_VAR 0 5
+1712: NOT
+1713: IFFALSE 1844
+// begin case Rand ( 0 , 1 ) of 0 :
+1715: LD_INT 0
+1717: PPUSH
+1718: LD_INT 1
+1720: PPUSH
+1721: CALL_OW 12
+1725: PUSH
+1726: LD_INT 0
+1728: DOUBLE
+1729: EQUAL
+1730: IFTRUE 1734
+1732: GO 1749
+1734: POP
+// SetClass ( un , class_soldier ) ; 1 :
+1735: LD_VAR 0 2
+1739: PPUSH
+1740: LD_INT 1
+1742: PPUSH
+1743: CALL_OW 336
+1747: GO 1773
+1749: LD_INT 1
+1751: DOUBLE
+1752: EQUAL
+1753: IFTRUE 1757
+1755: GO 1772
+1757: POP
+// SetClass ( un , class_engineer ) ; end ;
+1758: LD_VAR 0 2
+1762: PPUSH
+1763: LD_INT 2
+1765: PPUSH
+1766: CALL_OW 336
+1770: GO 1773
+1772: POP
+// if ( GetClass ( un ) = class_engineer ) and ( UnitsInside ( depot ) < 6 ) then
+1773: LD_VAR 0 2
+1777: PPUSH
+1778: CALL_OW 257
+1782: PUSH
+1783: LD_INT 2
+1785: EQUAL
+1786: PUSH
+1787: LD_VAR 0 10
+1791: PPUSH
+1792: CALL_OW 313
+1796: PUSH
+1797: LD_INT 6
+1799: LESS
+1800: AND
+1801: IFFALSE 1819
+// PlaceHumanInUnit ( un , depot ) else
+1803: LD_VAR 0 2
+1807: PPUSH
+1808: LD_VAR 0 10
+1812: PPUSH
+1813: CALL_OW 52
+1817: GO 1844
+// PlaceUnitXYR ( un , x , y , 10 , false ) ;
+1819: LD_VAR 0 2
+1823: PPUSH
+1824: LD_VAR 0 3
+1828: PPUSH
+1829: LD_VAR 0 4
+1833: PPUSH
+1834: LD_INT 10
+1836: PPUSH
+1837: LD_INT 0
+1839: PPUSH
+1840: CALL_OW 50
+// end ; end ;
+1844: GO 1585
+1846: POP
+1847: POP
+// end ;
+1848: LD_VAR 0 1
+1852: RET
+// function prepare_sides ; begin
+1853: LD_INT 0
+1855: PPUSH
+// you := 3 ;
+1856: LD_ADDR_EXP 1
+1860: PUSH
+1861: LD_INT 3
+1863: ST_TO_ADDR
+// end ;
+1864: LD_VAR 0 1
+1868: RET
+// starting begin RandomizeAll ;
+1869: CALL_OW 11
+// InGameOn ;
+1873: CALL_OW 8
+// prepare_sides ;
+1877: CALL 1853 0 0
+// RemoveAnimals ;
+1881: CALL 0 0 0
+// prepare_map ;
+1885: CALL 142 0 0
+// prepare_base ;
+1889: CALL 175 0 0
+// prepare_units ;
+1893: CALL 755 0 0
+// RestoreAnimals ;
+1897: CALL 79 0 0
+// starting_scene ;
+1901: CALL 1906 0 0
+// end ; end_of_file
+1905: END
+// export function starting_scene ; var selected , old_pos , counter ; begin
+1906: LD_INT 0
+1908: PPUSH
+1909: PPUSH
+1910: PPUSH
+1911: PPUSH
+// interface_hidden := true ;
+1912: LD_ADDR_OWVAR 54
+1916: PUSH
+1917: LD_INT 1
+1919: ST_TO_ADDR
+// RevealFogArea ( you , all_map ) ;
+1920: LD_EXP 1
+1924: PPUSH
+1925: LD_INT 2
+1927: PPUSH
+1928: CALL_OW 332
+// CenterNowOnUnits ( Burlak ) ;
+1932: LD_EXP 2
+1936: PPUSH
+1937: CALL_OW 87
+// ComMoveUnit ( Burlak , Yashin ) ;
+1941: LD_EXP 2
+1945: PPUSH
+1946: LD_EXP 19
+1950: PPUSH
+1951: CALL_OW 112
+// ComMoveUnit ( Yashin , Burlak ) ;
+1955: LD_EXP 19
+1959: PPUSH
+1960: LD_EXP 2
+1964: PPUSH
+1965: CALL_OW 112
+// while ( GetDistUnits ( Burlak , Yashin ) > 4 ) do
+1969: LD_EXP 2
+1973: PPUSH
+1974: LD_EXP 19
+1978: PPUSH
+1979: CALL_OW 296
+1983: PUSH
+1984: LD_INT 4
+1986: GREATER
+1987: IFFALSE 1998
+// wait ( 0 0$1 ) ;
+1989: LD_INT 35
+1991: PPUSH
+1992: CALL_OW 67
+1996: GO 1969
+// CenterOnUnits ( [ Burlak , Yashin ] ) ;
+1998: LD_EXP 2
+2002: PUSH
+2003: LD_EXP 19
+2007: PUSH
+2008: EMPTY
+2009: LIST
+2010: LIST
+2011: PPUSH
+2012: CALL_OW 85
+// ComTurnUnit ( Burlak , Yashin ) ;
+2016: LD_EXP 2
+2020: PPUSH
+2021: LD_EXP 19
+2025: PPUSH
+2026: CALL_OW 119
+// ComTurnUnit ( Yashin , Burlak ) ;
+2030: LD_EXP 19
+2034: PPUSH
+2035: LD_EXP 2
+2039: PPUSH
+2040: CALL_OW 119
+// wait ( 5 ) ;
+2044: LD_INT 5
+2046: PPUSH
+2047: CALL_OW 67
+// ComHold ( [ Yashin , Burlak ] ) ;
+2051: LD_EXP 19
+2055: PUSH
+2056: LD_EXP 2
+2060: PUSH
+2061: EMPTY
+2062: LIST
+2063: LIST
+2064: PPUSH
+2065: CALL_OW 140
+// if LabCaptured then
+2069: LD_EXP 24
+2073: IFFALSE 2089
+// Say ( Yashin , DStart1-Yas-1 ) else
+2075: LD_EXP 19
+2079: PPUSH
+2080: LD_STRING DStart1-Yas-1
+2082: PPUSH
+2083: CALL_OW 88
+2087: GO 2125
+// begin Say ( Yashin , DStart2-Yas-1 ) ;
+2089: LD_EXP 19
+2093: PPUSH
+2094: LD_STRING DStart2-Yas-1
+2096: PPUSH
+2097: CALL_OW 88
+// Say ( Burlak , DStart2-Bur-1 ) ;
+2101: LD_EXP 2
+2105: PPUSH
+2106: LD_STRING DStart2-Bur-1
+2108: PPUSH
+2109: CALL_OW 88
+// Say ( Yashin , DStart2-Yas-2 ) ;
+2113: LD_EXP 19
+2117: PPUSH
+2118: LD_STRING DStart2-Yas-2
+2120: PPUSH
+2121: CALL_OW 88
+// end ; ComMoveUnit ( survivor , Yashin ) ;
+2125: LD_EXP 29
+2129: PPUSH
+2130: LD_EXP 19
+2134: PPUSH
+2135: CALL_OW 112
+// counter := 0 ;
+2139: LD_ADDR_VAR 0 4
+2143: PUSH
+2144: LD_INT 0
+2146: ST_TO_ADDR
+// repeat old_pos := [ GetX ( survivor ) , GetY ( survivor ) ] ;
+2147: LD_ADDR_VAR 0 3
+2151: PUSH
+2152: LD_EXP 29
+2156: PPUSH
+2157: CALL_OW 250
+2161: PUSH
+2162: LD_EXP 29
+2166: PPUSH
+2167: CALL_OW 251
+2171: PUSH
+2172: EMPTY
+2173: LIST
+2174: LIST
+2175: ST_TO_ADDR
+// wait ( 0 0$2 ) ;
+2176: LD_INT 70
+2178: PPUSH
+2179: CALL_OW 67
+// counter := counter + 2 ;
+2183: LD_ADDR_VAR 0 4
+2187: PUSH
+2188: LD_VAR 0 4
+2192: PUSH
+2193: LD_INT 2
+2195: PLUS
+2196: ST_TO_ADDR
+// CenterOnUnits ( IsInUnit ( survivor ) ) ;
+2197: LD_EXP 29
+2201: PPUSH
+2202: CALL_OW 310
+2206: PPUSH
+2207: CALL_OW 85
+// if ( old_pos [ 1 ] = GetX ( survivor ) ) and ( old_pos [ 2 ] = GetY ( survivor ) ) then
+2211: LD_VAR 0 3
+2215: PUSH
+2216: LD_INT 1
+2218: ARRAY
+2219: PUSH
+2220: LD_EXP 29
+2224: PPUSH
+2225: CALL_OW 250
+2229: EQUAL
+2230: PUSH
+2231: LD_VAR 0 3
+2235: PUSH
+2236: LD_INT 2
+2238: ARRAY
+2239: PUSH
+2240: LD_EXP 29
+2244: PPUSH
+2245: CALL_OW 251
+2249: EQUAL
+2250: AND
+2251: IFFALSE 2255
+// break ;
+2253: GO 2292
+// if counter >= 30 then
+2255: LD_VAR 0 4
+2259: PUSH
+2260: LD_INT 30
+2262: GREATEREQUAL
+2263: IFFALSE 2267
+// break ;
+2265: GO 2292
+// until GetDistUnits ( IsInUnit ( survivor ) , Yashin ) < 7 ;
+2267: LD_EXP 29
+2271: PPUSH
+2272: CALL_OW 310
+2276: PPUSH
+2277: LD_EXP 19
+2281: PPUSH
+2282: CALL_OW 296
+2286: PUSH
+2287: LD_INT 7
+2289: LESS
+2290: IFFALSE 2147
+// ComExitVehicle ( survivor ) ;
+2292: LD_EXP 29
+2296: PPUSH
+2297: CALL_OW 121
+// while IsInUnit ( survivor ) do
+2301: LD_EXP 29
+2305: PPUSH
+2306: CALL_OW 310
+2310: IFFALSE 2321
+// wait ( 5 ) ;
+2312: LD_INT 5
+2314: PPUSH
+2315: CALL_OW 67
+2319: GO 2301
+// AddComMoveUnit ( survivor , Yashin ) ;
+2321: LD_EXP 29
+2325: PPUSH
+2326: LD_EXP 19
+2330: PPUSH
+2331: CALL_OW 172
+// counter := 0 ;
+2335: LD_ADDR_VAR 0 4
+2339: PUSH
+2340: LD_INT 0
+2342: ST_TO_ADDR
+// repeat old_pos := [ GetX ( survivor ) , GetY ( survivor ) ] ;
+2343: LD_ADDR_VAR 0 3
+2347: PUSH
+2348: LD_EXP 29
+2352: PPUSH
+2353: CALL_OW 250
+2357: PUSH
+2358: LD_EXP 29
+2362: PPUSH
+2363: CALL_OW 251
+2367: PUSH
+2368: EMPTY
+2369: LIST
+2370: LIST
+2371: ST_TO_ADDR
+// wait ( 0 0$2 ) ;
+2372: LD_INT 70
+2374: PPUSH
+2375: CALL_OW 67
+// counter := counter + 2 ;
+2379: LD_ADDR_VAR 0 4
+2383: PUSH
+2384: LD_VAR 0 4
+2388: PUSH
+2389: LD_INT 2
+2391: PLUS
+2392: ST_TO_ADDR
+// CenterOnUnits ( IsInUnit ( survivor ) ) ;
+2393: LD_EXP 29
+2397: PPUSH
+2398: CALL_OW 310
+2402: PPUSH
+2403: CALL_OW 85
+// if ( old_pos [ 1 ] = GetX ( survivor ) ) and ( old_pos [ 2 ] = GetY ( survivor ) ) then
+2407: LD_VAR 0 3
+2411: PUSH
+2412: LD_INT 1
+2414: ARRAY
+2415: PUSH
+2416: LD_EXP 29
+2420: PPUSH
+2421: CALL_OW 250
+2425: EQUAL
+2426: PUSH
+2427: LD_VAR 0 3
+2431: PUSH
+2432: LD_INT 2
+2434: ARRAY
+2435: PUSH
+2436: LD_EXP 29
+2440: PPUSH
+2441: CALL_OW 251
+2445: EQUAL
+2446: AND
+2447: IFFALSE 2451
+// break ;
+2449: GO 2483
+// if counter >= 30 then
+2451: LD_VAR 0 4
+2455: PUSH
+2456: LD_INT 30
+2458: GREATEREQUAL
+2459: IFFALSE 2463
+// break ;
+2461: GO 2483
+// until GetDistUnits ( survivor , Yashin ) < 4 ;
+2463: LD_EXP 29
+2467: PPUSH
+2468: LD_EXP 19
+2472: PPUSH
+2473: CALL_OW 296
+2477: PUSH
+2478: LD_INT 4
+2480: LESS
+2481: IFFALSE 2343
+// CenterOnUnits ( [ Burlak , Yashin , survivor ] ) ;
+2483: LD_EXP 2
+2487: PUSH
+2488: LD_EXP 19
+2492: PUSH
+2493: LD_EXP 29
+2497: PUSH
+2498: EMPTY
+2499: LIST
+2500: LIST
+2501: LIST
+2502: PPUSH
+2503: CALL_OW 85
+// ComTurnUnit ( survivor , Yashin ) ;
+2507: LD_EXP 29
+2511: PPUSH
+2512: LD_EXP 19
+2516: PPUSH
+2517: CALL_OW 119
+// ComTurnUnit ( [ Yashin , Burlak ] , survivor ) ;
+2521: LD_EXP 19
+2525: PUSH
+2526: LD_EXP 2
+2530: PUSH
+2531: EMPTY
+2532: LIST
+2533: LIST
+2534: PPUSH
+2535: LD_EXP 29
+2539: PPUSH
+2540: CALL_OW 119
+// AddComHold ( [ Yashin , Burlak , survivor ] ) ;
+2544: LD_EXP 19
+2548: PUSH
+2549: LD_EXP 2
+2553: PUSH
+2554: LD_EXP 29
+2558: PUSH
+2559: EMPTY
+2560: LIST
+2561: LIST
+2562: LIST
+2563: PPUSH
+2564: CALL_OW 200
+// Say ( survivor , DStartCont-Vse-1 ) ;
+2568: LD_EXP 29
+2572: PPUSH
+2573: LD_STRING DStartCont-Vse-1
+2575: PPUSH
+2576: CALL_OW 88
+// Say ( Yashin , DStartCont-Yas-1 ) ;
+2580: LD_EXP 19
+2584: PPUSH
+2585: LD_STRING DStartCont-Yas-1
+2587: PPUSH
+2588: CALL_OW 88
+// SayRadio ( Popov , DStartCont-Pop-1 ) ;
+2592: LD_EXP 7
+2596: PPUSH
+2597: LD_STRING DStartCont-Pop-1
+2599: PPUSH
+2600: CALL_OW 94
+// Say ( Yashin , DStartCont-Yas-2 ) ;
+2604: LD_EXP 19
+2608: PPUSH
+2609: LD_STRING DStartCont-Yas-2
+2611: PPUSH
+2612: CALL_OW 88
+// SayRadio ( Popov , DStartCont-Pop-2 ) ;
+2616: LD_EXP 7
+2620: PPUSH
+2621: LD_STRING DStartCont-Pop-2
+2623: PPUSH
+2624: CALL_OW 94
+// Say ( Yashin , DStartCont-Yas-3 ) ;
+2628: LD_EXP 19
+2632: PPUSH
+2633: LD_STRING DStartCont-Yas-3
+2635: PPUSH
+2636: CALL_OW 88
+// Say ( Yashin , DStartCont-Yas-3a ) ;
+2640: LD_EXP 19
+2644: PPUSH
+2645: LD_STRING DStartCont-Yas-3a
+2647: PPUSH
+2648: CALL_OW 88
+// Say ( Burlak , DStartCont-Bur-3 ) ;
+2652: LD_EXP 2
+2656: PPUSH
+2657: LD_STRING DStartCont-Bur-3
+2659: PPUSH
+2660: CALL_OW 88
+// Say ( Yashin , DStartCont-Yas-4 ) ;
+2664: LD_EXP 19
+2668: PPUSH
+2669: LD_STRING DStartCont-Yas-4
+2671: PPUSH
+2672: CALL_OW 88
+// Say ( Burlak , DStartCont-Bur-4 ) ;
+2676: LD_EXP 2
+2680: PPUSH
+2681: LD_STRING DStartCont-Bur-4
+2683: PPUSH
+2684: CALL_OW 88
+// Say ( survivor , DStartCont-Vse-4 ) ;
+2688: LD_EXP 29
+2692: PPUSH
+2693: LD_STRING DStartCont-Vse-4
+2695: PPUSH
+2696: CALL_OW 88
+// wait ( 5 ) ;
+2700: LD_INT 5
+2702: PPUSH
+2703: CALL_OW 67
+// ChangeMissionObjectives ( MStart ) ;
+2707: LD_STRING MStart
+2709: PPUSH
+2710: CALL_OW 337
+// Query ( QInfo ) ;
+2714: LD_STRING QInfo
+2716: PPUSH
+2717: CALL_OW 97
+// selected := CharacterSelection (  , 6 , 6 , [ Burlak , sel_not_hired , Yashin , survivor , sel_changeable , sel_change_class ] ^ people ^ survivors3 , [ class_soldier , class_bazooker , class_scientistic , class_mechanic ] ) ;
+2721: LD_ADDR_VAR 0 2
+2725: PUSH
+2726: LD_STRING 
+2728: PPUSH
+2729: LD_INT 6
+2731: PPUSH
+2732: LD_INT 6
+2734: PPUSH
+2735: LD_EXP 2
+2739: PUSH
+2740: LD_INT -2
+2742: PUSH
+2743: LD_EXP 19
+2747: PUSH
+2748: LD_EXP 29
+2752: PUSH
+2753: LD_INT -3
+2755: PUSH
+2756: LD_INT -5
+2758: PUSH
+2759: EMPTY
+2760: LIST
+2761: LIST
+2762: LIST
+2763: LIST
+2764: LIST
+2765: LIST
+2766: PUSH
+2767: LD_EXP 27
+2771: ADD
+2772: PUSH
+2773: LD_EXP 30
+2777: ADD
+2778: PPUSH
+2779: LD_INT 1
+2781: PUSH
+2782: LD_INT 9
+2784: PUSH
+2785: LD_INT 4
+2787: PUSH
+2788: LD_INT 3
+2790: PUSH
+2791: EMPTY
+2792: LIST
+2793: LIST
+2794: LIST
+2795: LIST
+2796: PPUSH
+2797: CALL_OW 42
+2801: ST_TO_ADDR
+// save_for_mission ( selected ) ;
+2802: LD_VAR 0 2
+2806: PPUSH
+2807: CALL 3719 0 1
+// InGameOff ;
+2811: CALL_OW 9
+// end ; end_of_file
+2815: LD_VAR 0 1
+2819: RET
+// export survivors3 , old_chars ; export function LoadAllMen ; var list ; begin
+2820: LD_INT 0
+2822: PPUSH
+2823: PPUSH
+// uc_side = 3 ;
+2824: LD_ADDR_OWVAR 20
+2828: PUSH
+2829: LD_INT 3
+2831: ST_TO_ADDR
+// uc_nation = nation_russian ;
+2832: LD_ADDR_OWVAR 21
+2836: PUSH
+2837: LD_INT 3
+2839: ST_TO_ADDR
+// list := [ ] ;
+2840: LD_ADDR_VAR 0 2
+2844: PUSH
+2845: EMPTY
+2846: ST_TO_ADDR
+// old_chars := [ ] ;
+2847: LD_ADDR_EXP 31
+2851: PUSH
+2852: EMPTY
+2853: ST_TO_ADDR
+// survivors3 := [ ] ;
+2854: LD_ADDR_EXP 30
+2858: PUSH
+2859: EMPTY
+2860: ST_TO_ADDR
+// if TestCharacters ( survivors3 ) then
+2861: LD_STRING survivors3
+2863: PPUSH
+2864: CALL_OW 28
+2868: IFFALSE 2883
+// survivors3 := CreateCharacterSet ( survivors3 ) ;
+2870: LD_ADDR_EXP 30
+2874: PUSH
+2875: LD_STRING survivors3
+2877: PPUSH
+2878: CALL_OW 31
+2882: ST_TO_ADDR
+// if TestCharacters ( Belkov ) and CheckCharacterSet ( Belkov ) then
+2883: LD_STRING Belkov
+2885: PPUSH
+2886: CALL_OW 28
+2890: PUSH
+2891: LD_STRING Belkov
+2893: PPUSH
+2894: CALL_OW 29
+2898: AND
+2899: IFFALSE 2930
+// begin Belkov := CreateCharacter ( Belkov ) ;
+2901: LD_ADDR_EXP 4
+2905: PUSH
+2906: LD_STRING Belkov
+2908: PPUSH
+2909: CALL_OW 34
+2913: ST_TO_ADDR
+// list := list ^ Belkov ;
+2914: LD_ADDR_VAR 0 2
+2918: PUSH
+2919: LD_VAR 0 2
+2923: PUSH
+2924: LD_EXP 4
+2928: ADD
+2929: ST_TO_ADDR
+// end ; if TestCharacters ( Gnyevko ) and CheckCharacterSet ( Gnyevko ) then
+2930: LD_STRING Gnyevko
+2932: PPUSH
+2933: CALL_OW 28
+2937: PUSH
+2938: LD_STRING Gnyevko
+2940: PPUSH
+2941: CALL_OW 29
+2945: AND
+2946: IFFALSE 2977
+// begin Gnyevko := CreateCharacter ( Gnyevko ) ;
+2948: LD_ADDR_EXP 3
+2952: PUSH
+2953: LD_STRING Gnyevko
+2955: PPUSH
+2956: CALL_OW 34
+2960: ST_TO_ADDR
+// list := list ^ Gnyevko ;
+2961: LD_ADDR_VAR 0 2
+2965: PUSH
+2966: LD_VAR 0 2
+2970: PUSH
+2971: LD_EXP 3
+2975: ADD
+2976: ST_TO_ADDR
+// end ; if TestCharacters ( Kirilenkova ) and CheckCharacterSet ( Kirilenkova ) then
+2977: LD_STRING Kirilenkova
+2979: PPUSH
+2980: CALL_OW 28
+2984: PUSH
+2985: LD_STRING Kirilenkova
+2987: PPUSH
+2988: CALL_OW 29
+2992: AND
+2993: IFFALSE 3024
+// begin Kirilenkova := CreateCharacter ( Kirilenkova ) ;
+2995: LD_ADDR_EXP 5
+2999: PUSH
+3000: LD_STRING Kirilenkova
+3002: PPUSH
+3003: CALL_OW 34
+3007: ST_TO_ADDR
+// list := list ^ Kirilenkova ;
+3008: LD_ADDR_VAR 0 2
+3012: PUSH
+3013: LD_VAR 0 2
+3017: PUSH
+3018: LD_EXP 5
+3022: ADD
+3023: ST_TO_ADDR
+// end ; if TestCharacters ( Kovalyuk ) and CheckCharacterSet ( Kovalyuk ) then
+3024: LD_STRING Kovalyuk
+3026: PPUSH
+3027: CALL_OW 28
+3031: PUSH
+3032: LD_STRING Kovalyuk
+3034: PPUSH
+3035: CALL_OW 29
+3039: AND
+3040: IFFALSE 3071
+// begin Kovalyuk := CreateCharacter ( Kovalyuk ) ;
+3042: LD_ADDR_EXP 6
+3046: PUSH
+3047: LD_STRING Kovalyuk
+3049: PPUSH
+3050: CALL_OW 34
+3054: ST_TO_ADDR
+// list := list ^ Kovalyuk ;
+3055: LD_ADDR_VAR 0 2
+3059: PUSH
+3060: LD_VAR 0 2
+3064: PUSH
+3065: LD_EXP 6
+3069: ADD
+3070: ST_TO_ADDR
+// end ; if TestCharacters ( Scholtze ) and CheckCharacterSet ( Scholtze ) then
+3071: LD_STRING Scholtze
+3073: PPUSH
+3074: CALL_OW 28
+3078: PUSH
+3079: LD_STRING Scholtze
+3081: PPUSH
+3082: CALL_OW 29
+3086: AND
+3087: IFFALSE 3118
+// begin Scholtze := CreateCharacter ( Scholtze ) ;
+3089: LD_ADDR_EXP 8
+3093: PUSH
+3094: LD_STRING Scholtze
+3096: PPUSH
+3097: CALL_OW 34
+3101: ST_TO_ADDR
+// list := list ^ Scholtze ;
+3102: LD_ADDR_VAR 0 2
+3106: PUSH
+3107: LD_VAR 0 2
+3111: PUSH
+3112: LD_EXP 8
+3116: ADD
+3117: ST_TO_ADDR
+// end ; if TestCharacters ( Kuzmov ) and CheckCharacterSet ( Kuzmov ) then
+3118: LD_STRING Kuzmov
+3120: PPUSH
+3121: CALL_OW 28
+3125: PUSH
+3126: LD_STRING Kuzmov
+3128: PPUSH
+3129: CALL_OW 29
+3133: AND
+3134: IFFALSE 3165
+// begin Kuzmov := CreateCharacter ( Kuzmov ) ;
+3136: LD_ADDR_EXP 9
+3140: PUSH
+3141: LD_STRING Kuzmov
+3143: PPUSH
+3144: CALL_OW 34
+3148: ST_TO_ADDR
+// list := list ^ Kuzmov ;
+3149: LD_ADDR_VAR 0 2
+3153: PUSH
+3154: LD_VAR 0 2
+3158: PUSH
+3159: LD_EXP 9
+3163: ADD
+3164: ST_TO_ADDR
+// end ; if TestCharacters ( Karamazov ) and CheckCharacterSet ( Karamazov ) then
+3165: LD_STRING Karamazov
+3167: PPUSH
+3168: CALL_OW 28
+3172: PUSH
+3173: LD_STRING Karamazov
+3175: PPUSH
+3176: CALL_OW 29
+3180: AND
+3181: IFFALSE 3212
+// begin Karamazov := CreateCharacter ( Karamazov ) ;
+3183: LD_ADDR_EXP 10
+3187: PUSH
+3188: LD_STRING Karamazov
+3190: PPUSH
+3191: CALL_OW 34
+3195: ST_TO_ADDR
+// list := list ^ Karamazov ;
+3196: LD_ADDR_VAR 0 2
+3200: PUSH
+3201: LD_VAR 0 2
+3205: PUSH
+3206: LD_EXP 10
+3210: ADD
+3211: ST_TO_ADDR
+// end ; if TestCharacters ( Petrovova ) and CheckCharacterSet ( Petrovova ) then
+3212: LD_STRING Petrovova
+3214: PPUSH
+3215: CALL_OW 28
+3219: PUSH
+3220: LD_STRING Petrovova
+3222: PPUSH
+3223: CALL_OW 29
+3227: AND
+3228: IFFALSE 3259
+// begin Petrovova := CreateCharacter ( Petrovova ) ;
+3230: LD_ADDR_EXP 11
+3234: PUSH
+3235: LD_STRING Petrovova
+3237: PPUSH
+3238: CALL_OW 34
+3242: ST_TO_ADDR
+// list := list ^ Petrovova ;
+3243: LD_ADDR_VAR 0 2
+3247: PUSH
+3248: LD_VAR 0 2
+3252: PUSH
+3253: LD_EXP 11
+3257: ADD
+3258: ST_TO_ADDR
+// end ; if TestCharacters ( Gleb ) and CheckCharacterSet ( Gleb ) then
+3259: LD_STRING Gleb
+3261: PPUSH
+3262: CALL_OW 28
+3266: PUSH
+3267: LD_STRING Gleb
+3269: PPUSH
+3270: CALL_OW 29
+3274: AND
+3275: IFFALSE 3306
+// begin Gleb := CreateCharacter ( Gleb ) ;
+3277: LD_ADDR_EXP 12
+3281: PUSH
+3282: LD_STRING Gleb
+3284: PPUSH
+3285: CALL_OW 34
+3289: ST_TO_ADDR
+// list := list ^ Gleb ;
+3290: LD_ADDR_VAR 0 2
+3294: PUSH
+3295: LD_VAR 0 2
+3299: PUSH
+3300: LD_EXP 12
+3304: ADD
+3305: ST_TO_ADDR
+// end ; if TestCharacters ( Petrosyan ) and CheckCharacterSet ( Petrosyan ) then
+3306: LD_STRING Petrosyan
+3308: PPUSH
+3309: CALL_OW 28
+3313: PUSH
+3314: LD_STRING Petrosyan
+3316: PPUSH
+3317: CALL_OW 29
+3321: AND
+3322: IFFALSE 3353
+// begin Petrosyan := CreateCharacter ( Petrosyan ) ;
+3324: LD_ADDR_EXP 13
+3328: PUSH
+3329: LD_STRING Petrosyan
+3331: PPUSH
+3332: CALL_OW 34
+3336: ST_TO_ADDR
+// list := list ^ Petrosyan ;
+3337: LD_ADDR_VAR 0 2
+3341: PUSH
+3342: LD_VAR 0 2
+3346: PUSH
+3347: LD_EXP 13
+3351: ADD
+3352: ST_TO_ADDR
+// end ; if TestCharacters ( Lipshchin ) and CheckCharacterSet ( Lipshchin ) then
+3353: LD_STRING Lipshchin
+3355: PPUSH
+3356: CALL_OW 28
+3360: PUSH
+3361: LD_STRING Lipshchin
+3363: PPUSH
+3364: CALL_OW 29
+3368: AND
+3369: IFFALSE 3400
+// begin Lipshchin := CreateCharacter ( Lipshchin ) ;
+3371: LD_ADDR_EXP 14
+3375: PUSH
+3376: LD_STRING Lipshchin
+3378: PPUSH
+3379: CALL_OW 34
+3383: ST_TO_ADDR
+// list := list ^ Lipshchin ;
+3384: LD_ADDR_VAR 0 2
+3388: PUSH
+3389: LD_VAR 0 2
+3393: PUSH
+3394: LD_EXP 14
+3398: ADD
+3399: ST_TO_ADDR
+// end ; if TestCharacters ( Titov ) and CheckCharacterSet ( Titov ) then
+3400: LD_STRING Titov
+3402: PPUSH
+3403: CALL_OW 28
+3407: PUSH
+3408: LD_STRING Titov
+3410: PPUSH
+3411: CALL_OW 29
+3415: AND
+3416: IFFALSE 3447
+// begin Titov := CreateCharacter ( Titov ) ;
+3418: LD_ADDR_EXP 15
+3422: PUSH
+3423: LD_STRING Titov
+3425: PPUSH
+3426: CALL_OW 34
+3430: ST_TO_ADDR
+// list := list ^ Titov ;
+3431: LD_ADDR_VAR 0 2
+3435: PUSH
+3436: LD_VAR 0 2
+3440: PUSH
+3441: LD_EXP 15
+3445: ADD
+3446: ST_TO_ADDR
+// end ; if TestCharacters ( Dolgov ) and CheckCharacterSet ( Dolgov ) then
+3447: LD_STRING Dolgov
+3449: PPUSH
+3450: CALL_OW 28
+3454: PUSH
+3455: LD_STRING Dolgov
+3457: PPUSH
+3458: CALL_OW 29
+3462: AND
+3463: IFFALSE 3494
+// begin Dolgov := CreateCharacter ( Dolgov ) ;
+3465: LD_ADDR_EXP 16
+3469: PUSH
+3470: LD_STRING Dolgov
+3472: PPUSH
+3473: CALL_OW 34
+3477: ST_TO_ADDR
+// list := list ^ Dolgov ;
+3478: LD_ADDR_VAR 0 2
+3482: PUSH
+3483: LD_VAR 0 2
+3487: PUSH
+3488: LD_EXP 16
+3492: ADD
+3493: ST_TO_ADDR
+// end ; if TestCharacters ( Xavier ) and CheckCharacterSet ( Xavier ) then
+3494: LD_STRING Xavier
+3496: PPUSH
+3497: CALL_OW 28
+3501: PUSH
+3502: LD_STRING Xavier
+3504: PPUSH
+3505: CALL_OW 29
+3509: AND
+3510: IFFALSE 3541
+// begin Xavier := CreateCharacter ( Xavier ) ;
+3512: LD_ADDR_EXP 18
+3516: PUSH
+3517: LD_STRING Xavier
+3519: PPUSH
+3520: CALL_OW 34
+3524: ST_TO_ADDR
+// list := list ^ Xavier ;
+3525: LD_ADDR_VAR 0 2
+3529: PUSH
+3530: LD_VAR 0 2
+3534: PUSH
+3535: LD_EXP 18
+3539: ADD
+3540: ST_TO_ADDR
+// end ; if TestCharacters ( Oblukov ) and CheckCharacterSet ( Oblukov ) then
+3541: LD_STRING Oblukov
+3543: PPUSH
+3544: CALL_OW 28
+3548: PUSH
+3549: LD_STRING Oblukov
+3551: PPUSH
+3552: CALL_OW 29
+3556: AND
+3557: IFFALSE 3588
+// begin Oblukov := CreateCharacter ( Oblukov ) ;
+3559: LD_ADDR_EXP 20
+3563: PUSH
+3564: LD_STRING Oblukov
+3566: PPUSH
+3567: CALL_OW 34
+3571: ST_TO_ADDR
+// list := list ^ Oblukov ;
+3572: LD_ADDR_VAR 0 2
+3576: PUSH
+3577: LD_VAR 0 2
+3581: PUSH
+3582: LD_EXP 20
+3586: ADD
+3587: ST_TO_ADDR
+// end ; if TestCharacters ( Kozlov ) and CheckCharacterSet ( Kozlov ) then
+3588: LD_STRING Kozlov
+3590: PPUSH
+3591: CALL_OW 28
+3595: PUSH
+3596: LD_STRING Kozlov
+3598: PPUSH
+3599: CALL_OW 29
+3603: AND
+3604: IFFALSE 3635
+// begin Kozlov := CreateCharacter ( Kozlov ) ;
+3606: LD_ADDR_EXP 21
+3610: PUSH
+3611: LD_STRING Kozlov
+3613: PPUSH
+3614: CALL_OW 34
+3618: ST_TO_ADDR
+// list := list ^ Kozlov ;
+3619: LD_ADDR_VAR 0 2
+3623: PUSH
+3624: LD_VAR 0 2
+3628: PUSH
+3629: LD_EXP 21
+3633: ADD
+3634: ST_TO_ADDR
+// end ; if TestCharacters ( Kapitsova ) and CheckCharacterSet ( Kapitsova ) then
+3635: LD_STRING Kapitsova
+3637: PPUSH
+3638: CALL_OW 28
+3642: PUSH
+3643: LD_STRING Kapitsova
+3645: PPUSH
+3646: CALL_OW 29
+3650: AND
+3651: IFFALSE 3682
+// begin Kapitsova := CreateCharacter ( Kapitsova ) ;
+3653: LD_ADDR_EXP 22
+3657: PUSH
+3658: LD_STRING Kapitsova
+3660: PPUSH
+3661: CALL_OW 34
+3665: ST_TO_ADDR
+// list := list ^ Kapitsova ;
+3666: LD_ADDR_VAR 0 2
+3670: PUSH
+3671: LD_VAR 0 2
+3675: PUSH
+3676: LD_EXP 22
+3680: ADD
+3681: ST_TO_ADDR
+// end ; old_chars := list ;
+3682: LD_ADDR_EXP 31
+3686: PUSH
+3687: LD_VAR 0 2
+3691: ST_TO_ADDR
+// result := old_chars ^ ( survivors3 diff list ) ;
+3692: LD_ADDR_VAR 0 1
+3696: PUSH
+3697: LD_EXP 31
+3701: PUSH
+3702: LD_EXP 30
+3706: PUSH
+3707: LD_VAR 0 2
+3711: DIFF
+3712: ADD
+3713: ST_TO_ADDR
+// end ; end_of_file
+3714: LD_VAR 0 1
+3718: RET
+// export function save_for_mission ( list ) ; begin
+3719: LD_INT 0
+3721: PPUSH
+// if Belkov in list then
+3722: LD_EXP 4
+3726: PUSH
+3727: LD_VAR 0 1
+3731: IN
+3732: IFFALSE 3756
+// begin SaveCharacters ( Belkov , Belkov ) ;
+3734: LD_EXP 4
+3738: PPUSH
+3739: LD_STRING Belkov
+3741: PPUSH
+3742: CALL_OW 38
+// SaveVariable ( 1 , BelkovRu10 ) ;
+3746: LD_INT 1
+3748: PPUSH
+3749: LD_STRING BelkovRu10
+3751: PPUSH
+3752: CALL_OW 39
+// end ; if Gnyevko in list then
+3756: LD_EXP 3
+3760: PUSH
+3761: LD_VAR 0 1
+3765: IN
+3766: IFFALSE 3790
+// begin SaveCharacters ( Gnyevko , Gnyevko ) ;
+3768: LD_EXP 3
+3772: PPUSH
+3773: LD_STRING Gnyevko
+3775: PPUSH
+3776: CALL_OW 38
+// SaveVariable ( 1 , GnyevkoRu10 ) ;
+3780: LD_INT 1
+3782: PPUSH
+3783: LD_STRING GnyevkoRu10
+3785: PPUSH
+3786: CALL_OW 39
+// end ; if Kirilenkova in list then
+3790: LD_EXP 5
+3794: PUSH
+3795: LD_VAR 0 1
+3799: IN
+3800: IFFALSE 3824
+// begin SaveCharacters ( Kirilenkova , Kirilenkova ) ;
+3802: LD_EXP 5
+3806: PPUSH
+3807: LD_STRING Kirilenkova
+3809: PPUSH
+3810: CALL_OW 38
+// SaveVariable ( 1 , KirilenkovaRu10 ) ;
+3814: LD_INT 1
+3816: PPUSH
+3817: LD_STRING KirilenkovaRu10
+3819: PPUSH
+3820: CALL_OW 39
+// end ; if Kovalyuk in list then
+3824: LD_EXP 6
+3828: PUSH
+3829: LD_VAR 0 1
+3833: IN
+3834: IFFALSE 3858
+// begin SaveCharacters ( Kovalyuk , Kovalyuk ) ;
+3836: LD_EXP 6
+3840: PPUSH
+3841: LD_STRING Kovalyuk
+3843: PPUSH
+3844: CALL_OW 38
+// SaveVariable ( 1 , KovalyukRu10 ) ;
+3848: LD_INT 1
+3850: PPUSH
+3851: LD_STRING KovalyukRu10
+3853: PPUSH
+3854: CALL_OW 39
+// end ; if Scholtze in list then
+3858: LD_EXP 8
+3862: PUSH
+3863: LD_VAR 0 1
+3867: IN
+3868: IFFALSE 3892
+// begin SaveCharacters ( Scholtze , Scholtze ) ;
+3870: LD_EXP 8
+3874: PPUSH
+3875: LD_STRING Scholtze
+3877: PPUSH
+3878: CALL_OW 38
+// SaveVariable ( 1 , ScholtzeRu10 ) ;
+3882: LD_INT 1
+3884: PPUSH
+3885: LD_STRING ScholtzeRu10
+3887: PPUSH
+3888: CALL_OW 39
+// end ; if Kuzmov in list then
+3892: LD_EXP 9
+3896: PUSH
+3897: LD_VAR 0 1
+3901: IN
+3902: IFFALSE 3926
+// begin SaveCharacters ( Kuzmov , Kuzmov ) ;
+3904: LD_EXP 9
+3908: PPUSH
+3909: LD_STRING Kuzmov
+3911: PPUSH
+3912: CALL_OW 38
+// SaveVariable ( 1 , KuzmovRu10 ) ;
+3916: LD_INT 1
+3918: PPUSH
+3919: LD_STRING KuzmovRu10
+3921: PPUSH
+3922: CALL_OW 39
+// end ; if Karamazov in list then
+3926: LD_EXP 10
+3930: PUSH
+3931: LD_VAR 0 1
+3935: IN
+3936: IFFALSE 3960
+// begin SaveCharacters ( Karamazov , Karamazov ) ;
+3938: LD_EXP 10
+3942: PPUSH
+3943: LD_STRING Karamazov
+3945: PPUSH
+3946: CALL_OW 38
+// SaveVariable ( 1 , KaramazovRu10 ) ;
+3950: LD_INT 1
+3952: PPUSH
+3953: LD_STRING KaramazovRu10
+3955: PPUSH
+3956: CALL_OW 39
+// end ; if Petrovova in list then
+3960: LD_EXP 11
+3964: PUSH
+3965: LD_VAR 0 1
+3969: IN
+3970: IFFALSE 3994
+// begin SaveCharacters ( Petrovova , Petrovova ) ;
+3972: LD_EXP 11
+3976: PPUSH
+3977: LD_STRING Petrovova
+3979: PPUSH
+3980: CALL_OW 38
+// SaveVariable ( 1 , PetrovovaRu10 ) ;
+3984: LD_INT 1
+3986: PPUSH
+3987: LD_STRING PetrovovaRu10
+3989: PPUSH
+3990: CALL_OW 39
+// end ; if Gleb in list then
+3994: LD_EXP 12
+3998: PUSH
+3999: LD_VAR 0 1
+4003: IN
+4004: IFFALSE 4028
+// begin SaveCharacters ( Gleb , Gleb ) ;
+4006: LD_EXP 12
+4010: PPUSH
+4011: LD_STRING Gleb
+4013: PPUSH
+4014: CALL_OW 38
+// SaveVariable ( 1 , GlebRu10 ) ;
+4018: LD_INT 1
+4020: PPUSH
+4021: LD_STRING GlebRu10
+4023: PPUSH
+4024: CALL_OW 39
+// end ; if Petrosyan in list then
+4028: LD_EXP 13
+4032: PUSH
+4033: LD_VAR 0 1
+4037: IN
+4038: IFFALSE 4062
+// begin SaveCharacters ( Petrosyan , Petrosyan ) ;
+4040: LD_EXP 13
+4044: PPUSH
+4045: LD_STRING Petrosyan
+4047: PPUSH
+4048: CALL_OW 38
+// SaveVariable ( 1 , PetrosyanRu10 ) ;
+4052: LD_INT 1
+4054: PPUSH
+4055: LD_STRING PetrosyanRu10
+4057: PPUSH
+4058: CALL_OW 39
+// end ; if Lipshchin in list then
+4062: LD_EXP 14
+4066: PUSH
+4067: LD_VAR 0 1
+4071: IN
+4072: IFFALSE 4096
+// begin SaveCharacters ( Lipshchin , Lipshchin ) ;
+4074: LD_EXP 14
+4078: PPUSH
+4079: LD_STRING Lipshchin
+4081: PPUSH
+4082: CALL_OW 38
+// SaveVariable ( 1 , LipshchinRu10 ) ;
+4086: LD_INT 1
+4088: PPUSH
+4089: LD_STRING LipshchinRu10
+4091: PPUSH
+4092: CALL_OW 39
+// end ; if Titov in list then
+4096: LD_EXP 15
+4100: PUSH
+4101: LD_VAR 0 1
+4105: IN
+4106: IFFALSE 4130
+// begin SaveCharacters ( Titov , Titov ) ;
+4108: LD_EXP 15
+4112: PPUSH
+4113: LD_STRING Titov
+4115: PPUSH
+4116: CALL_OW 38
+// SaveVariable ( 1 , TitovRu10 ) ;
+4120: LD_INT 1
+4122: PPUSH
+4123: LD_STRING TitovRu10
+4125: PPUSH
+4126: CALL_OW 39
+// end ; if Dolgov in list then
+4130: LD_EXP 16
+4134: PUSH
+4135: LD_VAR 0 1
+4139: IN
+4140: IFFALSE 4164
+// begin SaveCharacters ( Dolgov , Dolgov ) ;
+4142: LD_EXP 16
+4146: PPUSH
+4147: LD_STRING Dolgov
+4149: PPUSH
+4150: CALL_OW 38
+// SaveVariable ( 1 , DolgovRu10 ) ;
+4154: LD_INT 1
+4156: PPUSH
+4157: LD_STRING DolgovRu10
+4159: PPUSH
+4160: CALL_OW 39
+// end ; if Oblukov in list then
+4164: LD_EXP 20
+4168: PUSH
+4169: LD_VAR 0 1
+4173: IN
+4174: IFFALSE 4198
+// begin SaveCharacters ( Oblukov , Oblukov ) ;
+4176: LD_EXP 20
+4180: PPUSH
+4181: LD_STRING Oblukov
+4183: PPUSH
+4184: CALL_OW 38
+// SaveVariable ( 1 , OblukovRu10 ) ;
+4188: LD_INT 1
+4190: PPUSH
+4191: LD_STRING OblukovRu10
+4193: PPUSH
+4194: CALL_OW 39
+// end ; if Xavier in list then
+4198: LD_EXP 18
+4202: PUSH
+4203: LD_VAR 0 1
+4207: IN
+4208: IFFALSE 4232
+// begin SaveCharacters ( Xavier , Xavier ) ;
+4210: LD_EXP 18
+4214: PPUSH
+4215: LD_STRING Xavier
+4217: PPUSH
+4218: CALL_OW 38
+// SaveVariable ( 1 , XavierRu10 ) ;
+4222: LD_INT 1
+4224: PPUSH
+4225: LD_STRING XavierRu10
+4227: PPUSH
+4228: CALL_OW 39
+// end ; if Kozlov in list then
+4232: LD_EXP 21
+4236: PUSH
+4237: LD_VAR 0 1
+4241: IN
+4242: IFFALSE 4266
+// begin SaveCharacters ( Kozlov , Kozlov ) ;
+4244: LD_EXP 21
+4248: PPUSH
+4249: LD_STRING Kozlov
+4251: PPUSH
+4252: CALL_OW 38
+// SaveVariable ( 1 , KozlovRu10 ) ;
+4256: LD_INT 1
+4258: PPUSH
+4259: LD_STRING KozlovRu10
+4261: PPUSH
+4262: CALL_OW 39
+// end ; if Kapitsova in list then
+4266: LD_EXP 22
+4270: PUSH
+4271: LD_VAR 0 1
+4275: IN
+4276: IFFALSE 4300
+// begin SaveCharacters ( Kapitsova , Kapitsova ) ;
+4278: LD_EXP 22
+4282: PPUSH
+4283: LD_STRING Kapitsova
+4285: PPUSH
+4286: CALL_OW 38
+// SaveVariable ( 1 , KapitsovaRu10 ) ;
+4290: LD_INT 1
+4292: PPUSH
+4293: LD_STRING KapitsovaRu10
+4295: PPUSH
+4296: CALL_OW 39
+// end ; list := list diff old_chars ;
+4300: LD_ADDR_VAR 0 1
+4304: PUSH
+4305: LD_VAR 0 1
+4309: PUSH
+4310: LD_EXP 31
+4314: DIFF
+4315: ST_TO_ADDR
+// SaveCharacters ( list , Ru10trans ) ;
+4316: LD_VAR 0 1
+4320: PPUSH
+4321: LD_STRING Ru10trans
+4323: PPUSH
+4324: CALL_OW 38
+// SaveBaseTrotskij ;
+4328: CALL 4347 0 0
+// ChangeMap ( %_cont , %_cont ) ;
+4332: LD_STRING %_cont
+4334: PPUSH
+4335: LD_STRING %_cont
+4337: PPUSH
+4338: CALL_OW 340
+// end ;
+4342: LD_VAR 0 2
+4346: RET
+// function SaveBaseTrotskij ; var Trotskij , filter , un ; begin
+4347: LD_INT 0
+4349: PPUSH
+4350: PPUSH
+4351: PPUSH
+4352: PPUSH
+// Trotskij := [ ] ;
+4353: LD_ADDR_VAR 0 2
+4357: PUSH
+4358: EMPTY
+4359: ST_TO_ADDR
+// filter := FilterAllUnits ( [ [ f_btype , b_factory ] ] ) ^ FilterAllUnits ( [ [ f_type , unit_building ] , [ f_not , [ f_btype , b_factory ] ] ] ) ;
+4360: LD_ADDR_VAR 0 3
+4364: PUSH
+4365: LD_INT 30
+4367: PUSH
+4368: LD_INT 3
+4370: PUSH
+4371: EMPTY
+4372: LIST
+4373: LIST
+4374: PUSH
+4375: EMPTY
+4376: LIST
+4377: PPUSH
+4378: CALL_OW 69
+4382: PUSH
+4383: LD_INT 21
+4385: PUSH
+4386: LD_INT 3
+4388: PUSH
+4389: EMPTY
+4390: LIST
+4391: LIST
+4392: PUSH
+4393: LD_INT 3
+4395: PUSH
+4396: LD_INT 30
+4398: PUSH
+4399: LD_INT 3
+4401: PUSH
+4402: EMPTY
+4403: LIST
+4404: LIST
+4405: PUSH
+4406: EMPTY
+4407: LIST
+4408: LIST
+4409: PUSH
+4410: EMPTY
+4411: LIST
+4412: LIST
+4413: PPUSH
+4414: CALL_OW 69
+4418: ADD
+4419: ST_TO_ADDR
+// for un in filter do
+4420: LD_ADDR_VAR 0 4
+4424: PUSH
+4425: LD_VAR 0 3
+4429: PUSH
+4430: FOR_IN
+4431: IFFALSE 4772
+// begin if GetBType ( un ) in [ b_lab , b_lab_half , b_lab_full ] then
+4433: LD_VAR 0 4
+4437: PPUSH
+4438: CALL_OW 266
+4442: PUSH
+4443: LD_INT 6
+4445: PUSH
+4446: LD_INT 7
+4448: PUSH
+4449: LD_INT 8
+4451: PUSH
+4452: EMPTY
+4453: LIST
+4454: LIST
+4455: LIST
+4456: IN
+4457: IFFALSE 4571
+// trotskij := trotskij ^ [ [ GetBType ( un ) , GetX ( un ) , GetY ( un ) , GetDir ( un ) , GetBLevel ( un ) , GetNation ( un ) , GetLabKind ( un , 1 ) , GetLabKind ( un , 2 ) ] ] else
+4459: LD_ADDR_VAR 0 2
+4463: PUSH
+4464: LD_VAR 0 2
+4468: PUSH
+4469: LD_VAR 0 4
+4473: PPUSH
+4474: CALL_OW 266
+4478: PUSH
+4479: LD_VAR 0 4
+4483: PPUSH
+4484: CALL_OW 250
+4488: PUSH
+4489: LD_VAR 0 4
+4493: PPUSH
+4494: CALL_OW 251
+4498: PUSH
+4499: LD_VAR 0 4
+4503: PPUSH
+4504: CALL_OW 254
+4508: PUSH
+4509: LD_VAR 0 4
+4513: PPUSH
+4514: CALL_OW 267
+4518: PUSH
+4519: LD_VAR 0 4
+4523: PPUSH
+4524: CALL_OW 248
+4528: PUSH
+4529: LD_VAR 0 4
+4533: PPUSH
+4534: LD_INT 1
+4536: PPUSH
+4537: CALL_OW 268
+4541: PUSH
+4542: LD_VAR 0 4
+4546: PPUSH
+4547: LD_INT 2
+4549: PPUSH
+4550: CALL_OW 268
+4554: PUSH
+4555: EMPTY
+4556: LIST
+4557: LIST
+4558: LIST
+4559: LIST
+4560: LIST
+4561: LIST
+4562: LIST
+4563: LIST
+4564: PUSH
+4565: EMPTY
+4566: LIST
+4567: ADD
+4568: ST_TO_ADDR
+4569: GO 4770
+// if GetBType ( un ) in [ b_bunker , b_turret ] then
+4571: LD_VAR 0 4
+4575: PPUSH
+4576: CALL_OW 266
+4580: PUSH
+4581: LD_INT 32
+4583: PUSH
+4584: LD_INT 33
+4586: PUSH
+4587: EMPTY
+4588: LIST
+4589: LIST
+4590: IN
+4591: IFFALSE 4688
+// trotskij := trotskij ^ [ [ GetBType ( un ) , GetX ( un ) , GetY ( un ) , GetDir ( un ) , GetBLevel ( un ) , GetNation ( un ) , GetBWeapon ( un ) ] ] else
+4593: LD_ADDR_VAR 0 2
+4597: PUSH
+4598: LD_VAR 0 2
+4602: PUSH
+4603: LD_VAR 0 4
+4607: PPUSH
+4608: CALL_OW 266
+4612: PUSH
+4613: LD_VAR 0 4
+4617: PPUSH
+4618: CALL_OW 250
+4622: PUSH
+4623: LD_VAR 0 4
+4627: PPUSH
+4628: CALL_OW 251
+4632: PUSH
+4633: LD_VAR 0 4
+4637: PPUSH
+4638: CALL_OW 254
+4642: PUSH
+4643: LD_VAR 0 4
+4647: PPUSH
+4648: CALL_OW 267
+4652: PUSH
+4653: LD_VAR 0 4
+4657: PPUSH
+4658: CALL_OW 248
+4662: PUSH
+4663: LD_VAR 0 4
+4667: PPUSH
+4668: CALL_OW 269
+4672: PUSH
+4673: EMPTY
+4674: LIST
+4675: LIST
+4676: LIST
+4677: LIST
+4678: LIST
+4679: LIST
+4680: LIST
+4681: PUSH
+4682: EMPTY
+4683: LIST
+4684: ADD
+4685: ST_TO_ADDR
+4686: GO 4770
+// trotskij := trotskij ^ [ [ GetBType ( un ) , GetX ( un ) , GetY ( un ) , GetDir ( un ) , GetBLevel ( un ) , GetNation ( un ) ] ] ;
+4688: LD_ADDR_VAR 0 2
+4692: PUSH
+4693: LD_VAR 0 2
+4697: PUSH
+4698: LD_VAR 0 4
+4702: PPUSH
+4703: CALL_OW 266
+4707: PUSH
+4708: LD_VAR 0 4
+4712: PPUSH
+4713: CALL_OW 250
+4717: PUSH
+4718: LD_VAR 0 4
+4722: PPUSH
+4723: CALL_OW 251
+4727: PUSH
+4728: LD_VAR 0 4
+4732: PPUSH
+4733: CALL_OW 254
+4737: PUSH
+4738: LD_VAR 0 4
+4742: PPUSH
+4743: CALL_OW 267
+4747: PUSH
+4748: LD_VAR 0 4
+4752: PPUSH
+4753: CALL_OW 248
+4757: PUSH
+4758: EMPTY
+4759: LIST
+4760: LIST
+4761: LIST
+4762: LIST
+4763: LIST
+4764: LIST
+4765: PUSH
+4766: EMPTY
+4767: LIST
+4768: ADD
+4769: ST_TO_ADDR
+// end ;
+4770: GO 4430
+4772: POP
+4773: POP
+// SaveVariable ( trotskij , Trotskij ) ;
+4774: LD_VAR 0 2
+4778: PPUSH
+4779: LD_STRING Trotskij
+4781: PPUSH
+4782: CALL_OW 39
+// end ; end_of_file
+4786: LD_VAR 0 1
+4790: RET
+// export function DisplayNames ; var i ; begin
+4791: LD_INT 0
+4793: PPUSH
+4794: PPUSH
+// for i in FilterAllUnits ( [ f_or , [ f_btype , b_depot ] , [ f_btype , b_warehouse ] ] ) do
+4795: LD_ADDR_VAR 0 2
+4799: PUSH
+4800: LD_INT 2
+4802: PUSH
+4803: LD_INT 30
+4805: PUSH
+4806: LD_INT 0
+4808: PUSH
+4809: EMPTY
+4810: LIST
+4811: LIST
+4812: PUSH
+4813: LD_INT 30
+4815: PUSH
+4816: LD_INT 1
+4818: PUSH
+4819: EMPTY
+4820: LIST
+4821: LIST
+4822: PUSH
+4823: EMPTY
+4824: LIST
+4825: LIST
+4826: LIST
+4827: PPUSH
+4828: CALL_OW 69
+4832: PUSH
+4833: FOR_IN
+4834: IFFALSE 4850
+// SetBName ( i , trockij ) ;
+4836: LD_VAR 0 2
+4840: PPUSH
+4841: LD_STRING trockij
+4843: PPUSH
+4844: CALL_OW 500
+4848: GO 4833
+4850: POP
+4851: POP
+// end ;
+4852: LD_VAR 0 1
+4856: RET
+// every 0 0$2 do
+4857: GO 4859
+4859: DISABLE
+// begin DisplayNames ;
+4860: CALL 4791 0 0
+// end ;
+4864: END

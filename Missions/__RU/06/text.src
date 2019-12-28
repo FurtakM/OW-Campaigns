@@ -1,0 +1,255 @@
+6. Step by Step
+Briefing
+Having finally made their way across the river, Burlak and his men reached the position of V. A. Ovsyenko base. Too late. Now they have to fight for what was theirs.
+Co-ordinates
+West by South from former S. M. Kirov base, South from former V. A. Ovsyenko base, June 7, NR 2
+Dialogue
+>Bur Burlak
+>Bel Belkov
+>Pla Platonov
+>Kar Karamazov
+>Ptr Petrovova
+>Glb Gleb
+>Pet Petrosyan
+>Lis Lipshchin
+>Tit Titov
+>Sev Vsevolod
+>Dol Dolgov
+>APet Stevens
+>ASol ASoldier
+>Sol1 Soldier1
+>Sci1 Scientist1
+>Som Someone
+>Som1 Someone1
+>Heike Heike
+Character selection 1
+# These are your characters for this mission.
+The player cannot select characters for this mission. He will have all remaining characters from previous mission.
+Designer's notes
+The map is the same as in the US mission #9. Its narrow and portrait oriented. On the lower edge are ruins of Russian depot (not present in US campaign) and above it, in the lower third of map, used to be a Russian base, which is now occupied by Americans. If the player completed previous mission quickly, there will be less new American buildings, if he was slow, there will be more of them, but less manpower.
+
+North of it, in the upper third of map is a ring of American fortifications and another base. At the very top of the map is a small American encampment with couple of breastworks, this will be captured by Burlak's brother in the course of mission.
+
+When the player arrives, his vehicles run out of fuel. He planned to refuel them in the now defunct auxiliary base, so he has to leave them there and storm the lower base by foot. When he establishes himself there, he receives his main orders – to mine Alaskite and develop Alaskite technologies. His scientists also notify him that they would be able to develop materialisation prediction. If he develops it, they will inform him that the probability of shipments arrival in this area is very low.
+
+All this time the player is constantly harassed by the Americans. Suddenly he receives a call for help from Northern base that was – more or less accidentally – captured by Russian forces, led by Burlak's brother. If the player decides to stick to his objectives, his brother dies. If he decides to help, Americans will capture his base and destroy depot and lab – the player would be unable to repair it. But if he stays in the North base, after a short while an American truck will appear heading for their base. If the player manages to capture or destroy this truck, he will have enough material to build required buildings. If the player decides to rescue his brother and then return to lower base, his task will be most difficult. He will have to wait for a little material that is going to appear and then try to capture some of it from Americans – he can capture American vehicles and either scavenge them or use them for attack on main American base.
+Dialogue Start
+Karamazov: = [present] So where the hell’s the oil depot?
+Lipshchin: = [otherwise] This must be the place, comrade commander.
+Burlak: = Shit. Too late. (into radio) Comrade Platonov, the auxiliary base is destroyed. We are out of fuel.
+Platonov: = This is your incompetence comrade Gorky! Now you have no choice. Leave the vehicles and proceed on foot. V. A. Ovsyenko must be recovered at any cost!
+Burlak: = Yes, comrade colonel.
+Petrovova: = [present] This is no problem. I could take the base with one hand!
+Objective change Start (+Capture)
+Add main Capture
+# Recapture base V. A. Ovsyenko from the American forces.
+End
+Dialogue OvsyenkoTaken (When Russians capture Ovsyenko)
+Burlak: = Comrade colonel Platonov, we have taken V. A. Ovsyenko base.
+Platonov: = Good work, comrade. You begin to pay for your mistakes. Now restore the Alaskite mining equipment.
+Karamazov: = [present] It’s just a stinking pit.
+Titov: = [otherwise] I don’t see why we risked our necks for this dump.
+Lipshchin: = It is an Alaskite mine! Back in the future we would be billionaires!
+Gleb: = [present] The capitalists are getting to you Comrade Lipshchin. All Alaskite belongs to the Union of Soviet Socialist Republics. Remember that!
+Objective change Mine  (-Capture, +Mine)
+Out Capture
+Add main Mine
+# Mine at least XXX Alaskite.
+End
+Designer's notes
+All the time during research (see following dialogues) the base must be under constant pressure from Americans so that only few men can actually perform the research.
+Dialogue MatPrediction (When lab is rebuilt)
+Petrosyan: = [present: alt a1] Comrade commander, did you notice at the river all the shipments appeared in one area.
+Dolgov: = [otherwise: alt a2] Comrade commander, do you recall how shipments near the river all arrived in one area?
+Burlak: = I’ve thought about this, it was hardly random.
+Petrosyan: = [alt a1] Precisely. Given time and equipment our scientists may be able to find a pattern to the arrivals.
+Dolgov: = [alt a2] I think it may be true. Given data from previous observations and the tools we can find out what it is.
+Burlak: = What do you need?
+Petrosyan: = [alt a1] A lab equipped for computer research.
+Dolgov: = [alt a2] Tools for computer research.
+Dialogue NoMaterial (When Materialization Detecion is researched)
+Petrosyan: = [present: alt a1] Comrade commander, Soviet scientists made an important discovery. We can now predict the arrival of shipments.
+Dolgov: = [otherwise: alt a2] Comrade commander, we made an important discovery. We are now able to predict landings of crates.
+Burlak: = Congratulations, comrade. This is great news. What can you tell us?
+Petrosyan: = [alt a1] That is not so good. There will be no arrivals in next five minutes and long-term outlook is pretty bleak. We see no landings of supplies in foreseeable future.
+Dolgov: = [alt a2] It is not good, comrade commander. We don’t expect shipments in foreseeable future.
+Burlak: = Thank you comrade. It is better to be informed than to live in false hope.
+Hint x Prediction
+Dialogue SibResearch (When lab is repaired and some alaskite stored in depot)
+Petrosyan: = [present] So much Alaskite! Soviet scientists could advance knowledge incredibly. Back in future, we had to beg for smallest crystals.
+Dolgov: = [otherwise] Comrade commander, with so much Alaskite surely we can use some for research. Back in the future Americans were learning all but we had not enough to spare.
+Burlak: = (into radio) Comrade Platonov, this is lieutenant Gorky, we have restored the mine and are storing the Alaskite in our depot. Is it possible our scientist could research special properties of Alaskite?
+Platonov: = (over radio) This is perfect comrade Gorky. Begin at once and report your findings.
+Objective change Research (+Research)(Available al. tech. are: Spotting, Power, Local Tau fiels (stasis))
+Add main Research
+# Research possible Alaskite applications. You will require Alaskite and a space-time lab).
+End
+Designer's notes
+Not all Alaskite technologies are available in this mission. Only spotting, prediction, power and local tau-field.
+Dialogue Vsevolod (when alaskite spotting research is initiated)
+Dolgov: = Comrade Gorky! We have some strange broadcast on American frequency! Listen!
+Vsevolod: = (over radio) This is Swallow 7, Swallow 7 calling Eagle via captured radio. Eagle can you hear me?
+Burlak: = (stunned) That voice… I…
+Gleb: = We hear you, Swallow 7. What is your position?
+Vsevolod: = Position unknown. Contact with US force has been successful. We now hold American installation.
+Burlak: = Vsevolod! Is it you?
+Vsevolod: = (startled) Burlak!?
+Burlak: = How did you get here? What’s going on?
+Vsevolod: = There are three of us, but even between us we had no radio. Now I found this piece of American crap. What about you?
+Burlak: = I am now commander, of—
+Gleb: = [present] Comrades! What’s going on here?
+Burlak: = [reply] I am sorry, comrade commissar...
+RSoldier1: = [otherwise] Comrade Gorky, what the hell is going on here?
+Burlak: = This is my elder brother…
+Dolgov: = We managed to triangulate him, comrade commander. We can show you his position. (reveals fog)
+Burlak: = Thank you, comrade. Now listen, Vsevolod. I am commander of V. A. Ovsyenko, just south of your present position. Can you get here?
+Vsevolod: = We already tried that way. Too many enemy. We took them by surprise here, but I know they will be back soon. Then they will slaughter us.
+Dialogue Help1 (after Vsevolod; Burlak's men are discussing whether to help or not; BelkovFreed = True)
+Gleb: = [alive: alt a1] Comrade Gorky, I must remind you that your task is to develop Alaskite technologies.
+Dolgov: = [alive: alt a2] I've heard how you rescued Belkov, comrade Gorky. But you are needed here. Scientists cannot work unprotected.
+RSoldier1: = [otherwise: alt a3] It is your brother’s life comrade Gorky, but how many more can be saved using fruits of Alaskite research?
+Titov: = [alive] Holy Ivan, it is his brother!
+Gleb: = [alt a1] Soviet soldier must be committed to the needs of all, not to himself.
+Dialogue Help2 (after Vsevolod; Burlak's men are discussing whether to help or not; BelkovFreed =False)
+Titov: = [alive: alt a1] I know about Belkov, Burlak. If you just follow orders, you sometimes fail to do what you should.
+RSoldier1: = [otherwise] You left comrade Belkov to his fate, comrade commander. Can you do it to your brother?
+Gleb: = [alive: alt b1] Our orders in this moment are quite specific. We have to research Alaskite technologies.
+RSoldier2: = [otherwise: alt b2] But our orders are to research Alaskite here.
+Titov: = [alt a1] Holy Ivan, Burlak, it's your brother!
+Dialogue Help3 (after Help1 or Help2)
+Burlak: = If we rescue VSsevolod, we will be able to defend ourselves more effectively.
+Lipshchin: = [alive] But we can't separate. There are too few of us. And if we leave, Yanks will capture this base.
+RSoldier1: = [otherwise] But there are not enough of us, comrade Gorky. And Yanks would capture this base if we left.
+Burlak: = I am the commander. The decision is mine alone.
+Designer's notes
+American reaction depends on what the player does. Basically, they will attack the smaller group – if the player sends all his men North, they will attack and capture the Ovsyenko base, if he splits they will attack the group travelling North if they think capturing the base is too difficult (like there is more than, say, 3 men left).
+Dialogue OvsyenkoCaptured (if Ovsyenko fails)
+Gleb: = [alive: alt a1] See, comrade Gorky? The base is back in enemy hands! How do you justify this Gorky!
+Burlak: = [alt a1] (sighs) Comrade Gleb, I am trying to save our brave soldiers.
+RSoldier1: = [otherwise] (sarcastic) This is brilliant! Now we have no base again!
+Dialogue PartyAttacked (if Americans attack the party travelling North)
+RSoldier1: = [present in the attacked group] Ambush! Ambush!
+Gleb: = [alive] Stretched too thin Gorky! Now it is the end for all.
+RSoldier2: = [otherwise] I don't think it was good to split the force, comrade commander.
+
+Dialogue OtherMeetVsev (when the player's units reach Northern base and Burlak is not with them)
+Vsevolod: = You must be the men Burlak sent.
+RSoldier1: = [present] Yes. Comrade Gorky had to remain at the base. You will see him soon.
+
+Dialogue MeetVsev (when Burlak meets Vsevolod)
+Vsevolod: = Burlak my brother! Looks like you’re doing well here.
+Burlak: = I wish it was true Sevi. A few months ago we were winning. Since then it has all gone wrong and we have lost all bases in the East sector.  Finding you is the first good news for a long time!
+
+Dialogue MeetVsev2 (if Southern  base was captured)
+Vsevolod: = (seriously) So you've abandoned your base to save us?
+Burlak: = What else could I do? Now we have to take it back.
+Vsevolod: = Maybe not. There are supplies in this depot. On their radio we hard of a cargo truck coming this way. We could capture it?
+
+Dialogue MeetVsev2a (if Southern base was not captured)
+Vsevolod: = (seriously) So you've risked your base to save us?
+Burlak: = There was no other choice. We must hurry, the research is being delayed.
+Vsevolod: = Bring the others to our base. The depot is well stocked.
+
+Dialogue MeetVsev3 (in any case continues)
+Burlak: = Might be a good idea.
+Vsevolod: = Tell me more about life here. Who is commander?
+Burlak: = Our commander is colonel Platonov. General Morozov is above him.
+Vsevolod: = I remember Morozov from North China. We shall see if he remembers me.
+Burlak: = It's strange, Sevi. You know, last time we caught an American professor. He spoke as if he wasn't coming from our own world.
+
+Dialogue MeetVsev4 (if StevensKilled =True)
+Burlak: = I had him executed. But it made me wonder if they are from a different future. Who can tell.
+
+Dialogue MeetVsev5 (if StevensKilled = False) What leads to MeetVev5 & 6??
+Burlak: = I interrogated him. He referred to Alaskite as Siberite. He claimed never to hear about Kauders-Kurisawa field generator. Or about the North-China crisis.
+Vsevolod: = Might be lying.
+Burlak: = I didn’t think so, and he had no reason to. He told me in his world Russia ruled over half of Europe, even half of Germany was in our power at one time. I wonder how many more futures there are?
+
+Dialogue MeetVsev6 (in any case continues)
+Vsevolod: = It is all interesting Burlak. But it doesn’t help us.
+Burlak: = You’re right. We have work to do.
+
+
+Dialogue Truck (when Am. truck arrives to Northern base and it is in Russian hands)
+Soldier1: = (English, with Native titles) Hi, Catherine! Have you got the burgers there?
+Burlak: = Some burgers, Yank! That truck and everything in it will be ours. Go! Go! Go!
+Dialogue DieVsev1 (if Burlak decides not to save his brother – this must happen before the player researches Stasis)
+Vsevolod: = Burlak! We are finished here! I'll blow the depot and that's it. Don't blame yourself. You did what you had to. See you in heaven little brother.
+Dialogue DieVsev2 (OtherMeetVsev or MeetVsev took place, Vsevolod is dying)
+Vsevolod: = Burlak! I can not hold any longer. For Russia, avenge me!
+
+Dialogue Stasis
+Petrosyan: = [in lab: alt a1] Comrade commander! We have made an important discovery. Using Alaskite, we can now build warping device that is capable of slowing down time.
+Dolgov: = [in lab: alt a2] Comrade commander! We have confirmed Alaskite can change time and space, like warping device.
+RSoldier1: = [in lab: alt a3] Comrade commander! We have developed a personal warping device. It will slow down time around you.
+Burlak: = So we can move faster relative to surroundings?
+Petrosyan: = [alt a1] No, comrade commander, it slows time for the person wearing it. It could be used to stabilise the wounded awaiting treatment.
+Dolgov: = [alt a2] No, comrade. It will actually slow you down. Useful if you’re hit and waiting for treatment.
+RSoldier1: = [in lab: alt a3] No, comrade commander, it slows time for the person wearing it. It could be used to stabilise the wounded awaiting treatment.
+Burlak: = Thank you, comrade. Make sure it engages automatically if we are injured.
+
+Hint x Stasis
+
+Dialogue NextMiss1 (when stasis is researched)
+Platonov: = (over radio) Comrade Gorky! This is an emergency! Arabians are planning an attack on our main base. You must prevent it. Attack the Arabian base New Kabul East-North-East of your present position.
+
+Dialogue NextMiss2 (Vsevolod is dead)
+Platonov: = (cont.) You will be joined by supply trucks on the way. Don’t waste time - head east now! (mission accomplished)
+
+Dialogue NextMiss3 (Vsevolod is not dead)
+Platonov: = (cont.) We note you made contact with comrade Vsevolod Gorky. He has excellent record and will take a party of your best men for reconnaissance of the Arabian base. You will remain. A convoy is bringing resources you must use to construct vehicles for the attack.
+Platonov: = Then you will leave eastward and support the attack on New Kabul. Repair your vehicles and produce new ones if you can. Take Alaskite, there won’t be any where you are going.
+
+Dialogue NextMiss4 (in any case)
+Burlak: = (into radio) I understand, comrade colonel.
+Character selection 1
+# Select the characters to go with Vsevolod
+The player should give Vsevolod so many characters that he is left with six. If he has less than 9 characters, he should always assign at least three.
+Designer's notes
+A convoy of three or four fully loaded Russian trucks should appear immediately. Their drivers constitute reinforcements for the player, one of them is Kirilenkova, if she survived through mission 4. If not, there should be another female character we will refer to as Kirilenkova. There will be also more reinforcements to bring the total of the player's characters to nine.
+Query EndGame
+Are you sure you want to end the mission and enter the next one with the vehicles now in the exit area?
+#1 Yes
+#2 No
+Dialogue KillGleb (If the player kills Gleb)
+Platonov: = (over radio) What do you mean by that, comrade Gorky? You will be court-martialled for murder of political commissar! (mission fails)
+Victory Research
+Research completed.
+Victory Exit
+Research completed, exit area reached.
+Loss Burlak
+Burlak is dying.
+Loss Gleb
+You can't just kill political commissars. Try sending him to the front line next time.
+Loss NoDepotNoEngineerNoLab
+You cannot accomplish the mission now.
+Medal Vsevolod
++Brother Vsevolod saved
+- You failed to save your brother
+Medal Ovsyenko
++ V. A. Ovsyenko base saved
+- You lost V. A. Ovsyenko base
+Medal Prediction
++ Materialisation Prediction researched
+- You haven't researched materialisation prediction.
+input
+  characters
+    Burlak
+    Petrosyan
+    Karamazov
+    Petrovova
+    Gleb
+  variables
+    BelkovFreed
+    StevensKilled
+    OvseynkoTime
+output
+  characters
+    Burlak
+    Petrosyan
+    Karamazov
+    Petrovova
+    Gleb
+    Dolgov
+  variables
+    VsevSaved

@@ -1,0 +1,68 @@
+var ru,ru2;
+var platonov,gleb,burlak;
+var tmp,tmp1;
+
+starting
+begin
+  SA_OnMissionStart;
+  ru=3;
+  ru2=6;
+  uc_side=ru2;
+  platonov=newcharacter('Platonov');
+  if not platonov then msg('neny Platonov');
+  gleb=newcharacter('Gleb');
+  if not gleb then msg('neny Gleb');
+  uc_side=ru;
+//  burlak=newcharacter('Burlak');
+//  if not burlak then msg('neny Burlak');
+  burlak=127;
+
+  comhold([platonov,gleb,burlak]);
+  placeunitxy(platonov,31,23,false);
+  placeunitxy(gleb,29,23,false);
+  placeunitxy(burlak,34,29,false);
+
+  addcomturnunit([platonov,gleb],burlak);
+  addcomturnunit([burlak],gleb);
+
+  centernowonunits([platonov,gleb,burlak]);
+
+  uc_side=ru2;
+  tmp1=[];
+  uc_nation=nation_russian;
+  preparesoldier(sex_male,8);
+  tmp=createhuman;
+  placeunitxy(tmp,27,27,false);
+  tmp1=tmp1^[tmp];
+  preparesoldier(sex_male,8);
+  tmp=createhuman;
+  placeunitxy(tmp,28,29,false);
+  tmp1=tmp1^[tmp];
+  preparesoldier(sex_male,8);
+  tmp=createhuman;
+  placeunitxy(tmp,29,31,false);
+  tmp1=tmp1^[tmp];
+  preparesoldier(sex_male,8);
+  tmp=createhuman;
+  placeunitxy(tmp,30,33,false);
+  tmp1=tmp1^[tmp];
+  comturnunit(tmp1,burlak);
+
+  ingameon;
+  wait(0$1);
+  say(gleb,'DExecution-Glb-1');
+  say(platonov,'DExecution-Pla-1');
+  say(burlak,'DExecution-Bur-1');
+  say(platonov,'DExecution-Pla-2');
+
+//  comexitbuilding(tmp1);
+  comattackunit(tmp1,burlak);
+  while getlives(burlak)>hranice_umirani do wait(0$0.3);
+  comattackunit(tmp1,burlak);
+
+  while islive(burlak) do wait(0$1);
+  wait(0$1);
+
+  youlost('Fail');
+  ingameoff;
+end;

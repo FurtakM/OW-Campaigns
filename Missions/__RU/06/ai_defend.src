@@ -1,0 +1,45 @@
+
+var rDef1, rDef2;
+export idDef1, idDef2;
+export toDef1, toDef2;
+every 0$1 do
+begin
+   rDef1:=McRegistry(ai, [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, def_base],[mc_reg_area_to_protect,def_base]]);
+   rDef2:=McRegistry(ai, [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, def_base3],[mc_reg_area_to_protect,def_base3]]);
+//   [mc_reg_refresh_time, ticks]            ... interval between two registrations (default 0$1)
+//   [mc_reg_area_to_guard, defarea]         ... registries enemies in defined area (default none)
+//   [mc_reg_area_to_protect, defarea]       ... registries enemies attacking units in specified area (default none)
+//   [mc_reg_units_to_protect, listofunits]  ... registries enemies attackign specified units (default none)
+//   [mc_reg_expire_stops_to_attack, ticks]  ... how long after enemy stops to attack the registration expires (default 0$3)
+//   [mc_reg_expire_leaves_area, ticks]      ... how long after enemy leaves area the registration expires (default 0$2)
+//   (-)mc_reg_ignore_fog                    ... ignores fog so you can see all enemies in area (default false)
+//   (-)mc_reg_only_important                ... doesn't raise event if result changes from nonzero value to another nonzero value (default false)
+//)
+   idDef1:=McDefend(10, rDef1, toDef1,[mc_def_advantage, mcdef_difficulty]);//-mc_change_to_soldiers, -mc_change_to_mechanics]);
+   idDef2:=McDefend(10, rDef2, toDef2,[mc_def_advantage, na_kopci_mcdef_difficulty]);
+// runs McDefend macro and returns mcid
+// There must be running McRegistry macro to start McDefend - enemies are registred by this McRegistry. McDefend
+// starts after each registration of this McRegistry. Parameters:
+//
+//   [mc_def_advantage, percent]       ... how great advantage over enemy is enough (default 200, twice)
+//   [mc_area_dont_leave, defarea] ... area where must all defenders be (default none)
+//   (-)mc_change_to_soldiers          ... set here if McDefend can switch people to soldiers
+//   (-)mc_change_to_mechanics         ... set here if McDefend can switch people to mechanics
+end;
+every 0$2 do
+var r1,r2;
+begin
+   todef1:=UnitFilter((fort isect (b3 ^ b4)) ^ ((a3 ^ a4) isect sol) ^ attack ^ defence, [[f_side,ai],[f_ok]]);
+   todef2:=UnitFilter((fort isect b1) ^ (a1 isect sol), [[f_side,ai],[f_ok]]);
+
+   r1:=GetMcUnits(idDef1) diff todef1;
+   add_to(r1);
+   AddMcUnits(idDef1, todef1);
+
+   r2:=GetMcUnits(idDef2) diff todef2;
+   add_to(r2);
+   if not ovsyenkotaken or ovsyenkocaptured then
+     AddMcUnits(idDef2, todef2 );
+
+   enable;
+end;

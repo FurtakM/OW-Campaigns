@@ -1,0 +1,44 @@
+every 0$1 marked 301 do // Asking about Freetime
+var filter,x,y,d,lidi;
+begin
+  FreetimeAsked:=true;
+  if NOT FreeTimeGranted AND (IsOK(Petrovova) OR IsOK(Kirilenkova) OR IsOK(Kapitsova)) AND (IsOK(Kuzmov) OR IsOK(Gnyevko) OR IsOK(Titov) OR IsOK(Oblukov)) then
+  begin
+    D_FreeTime;
+    case Query('QFreeTime') of
+      1:
+      begin
+        FreeTimeGranted:=true;
+        D_QrFreeTime1;
+        ComExitVehicle([FreeMan,FreeWoman]);
+        SetSide([FreeMan,FreeWoman],ally);
+        ComMoveXY([FreeMan,FreeWoman],115,32);
+        repeat
+          Wait(0$1);
+          lidi:=FilterUnitsInArea(HandOverEnterArea,[f_side,ally]);
+        until (0+lidi)=2;
+        RemoveUnit(FreeMan);
+        RemoveUnit(FreeWoman);
+        Wait(3$0);
+        PlaceUnitArea(FreeMan,HandOverEnterArea,false);
+        PlaceUnitArea(FreeWoman,HandOverEnterArea,false);
+        filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+        if (0+filter)<>0 then
+        begin
+          x:=GetX(filter[1]);
+          y:=GetY(filter[1]);
+          d:=GetDir(filter[1]);
+        end
+        else
+        begin
+          x:=GetX(Burlak);
+          y:=GetY(Burlak);
+          d:=1;
+        end;
+        ComMoveXY([FreeMan,FreeWoman],ShiftX(x,d,5),ShiftY(y,d,5));
+        SetSide([FreeMan,FreeWoman],you);
+      end;
+      2:D_QrFreeTime2;
+    end;
+  end;
+end;

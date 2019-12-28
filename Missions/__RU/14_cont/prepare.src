@@ -1,0 +1,36 @@
+export
+  hloupi,vbudovach;
+
+function prepare_grps;
+  var un,pom;
+  begin
+    hloupi:=FilterUnitsInArea(arhloupi,[f_type,unit_vehicle]);
+    pom:=FilterAllUnits([[f_side,2],[f_type,unit_building]]);
+    for un in pom do
+      vbudovach:=vbudovach ^ UnitsInside(un);
+  end;
+
+every 0$1 do
+  var un;
+  begin
+    for un in vbudovach do
+      if not IsInUnit(un) then
+        if GetDistUnits(ArDepot,un)>6 then
+          ComMoveUnit(un,ArDepot);
+    enable;
+  end;
+
+
+
+every 0$1 trigger FilterUnitsInArea(past,[[f_side,3],[f_see,2],[f_weapon,ru_rocket_launcher]]) do
+  var cil;
+  begin
+    cil:=FilterUnitsInArea(past,[[f_side,3],[f_see,2],[f_weapon,ru_rocket_launcher]])[1];
+    ComAttackUnit(hloupi,cil);
+    enable;
+  end;
+
+starting
+  begin
+    prepare_grps;
+  end;

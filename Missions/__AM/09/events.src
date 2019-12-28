@@ -1,0 +1,5 @@
+on DestinationUnreachable(un) do
+begin
+   if un=JMM then ComMoveXY(JMM, Rand(47,89) , Rand(53,95));
+end;
+

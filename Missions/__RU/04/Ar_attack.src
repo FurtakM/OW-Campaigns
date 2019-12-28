@@ -1,0 +1,243 @@
+export function prepare_arabian_attack;
+var vehicle_set,j,auto,abc;
+begin
+  attack:=[];
+
+  vehicle_set:=[ // chassis, vc_engine, vc_weapon, vc_control
+  [ar_light_trike,engine_combustion,ar_light_gun,control_manual],
+  [ar_light_trike,engine_combustion,ar_double_machine_gun,control_manual],
+  [ar_medium_trike,engine_combustion,ar_gun,control_manual],
+  [ar_medium_trike,engine_combustion,ar_gatling_gun,control_manual],
+  [ar_medium_trike,engine_combustion,ar_flame_thrower,control_manual],
+  [ar_half_tracked,engine_combustion,ar_flame_thrower,control_manual],
+  [ar_half_tracked,engine_combustion,ar_rocket_launcher,control_manual],
+  [ar_half_tracked,engine_combustion,ar_gun,control_manual]];
+
+  for j:=1 to (0+waypointsEND) do // creating of arabian attack
+  begin
+    uc_side:=arab;
+    uc_nation:=nation_arabian;
+    uc_direction:=3;
+    hc_name:='';
+    case Rand(1,100) of
+       1..10:PrepareHuman(0,class_soldier,Rand(3,6));
+      11..60:PrepareHuman(0,class_mechanic,Rand(3,6));
+      61..90:PrepareHuman(0,class_engineer,Rand(3,6));
+      91..100:PrepareHuman(0,class_scientistic,Rand(3,6));
+    end;
+
+    auto:=Rand(1,(0+vehicle_set));
+
+    vc_chassis:=vehicle_set[auto][1];
+    vc_engine:=vehicle_set[auto][2];
+    vc_weapon:=vehicle_set[auto][3];
+    vc_control:=vehicle_set[auto][4];
+                                                                
+    attack:=attack union CreateVehicle;
+
+    abc:=CreateHuman;
+    PlaceHumanInUnit(abc,attack[j]);
+    SetSkill(abc,skill_mechanical,Rand(3,7));
+    SetFuel(attack[j],Rand(70,95));
+    SetLives(attack[j],Rand(900,1000));
+  end;
+
+{  for j:=1 to (0+selfdefendEND) do // creating of stupid arabians, who will only stay and self defend
+  begin
+    uc_side:=arab;
+    uc_nation:=nation_arabian;
+    uc_direction:=3;
+    hc_name:='';
+    PrepareHuman(0,0,Rand(4,7));
+
+    auto:=Rand(1,(0+vehicle_set));
+
+    vc_chassis:=vehicle_set[auto][1];
+    vc_engine:=vehicle_set[auto][2];
+    vc_weapon:=vehicle_set[auto][3];
+    vc_control:=vehicle_set[auto][4];
+
+    selfdefend:=selfdefend union CreateVehicle;
+
+    abc:=CreateHuman;
+    PlaceHumanInUnit(abc,selfdefend[j]);
+    SetSkill(abc,skill_mechanical,Rand(3,7));
+    SetFuel(selfdefend[j],Rand(70,95));
+    SetLives(selfdefend[j],Rand(900,1000));
+  end;
+}
+end;
+
+every 0$1 marked 10 do  // placing of arabian attack
+var waypoints,points,filterex,filterin,rnd,j;
+begin
+  waypoints:=[[98,6],[94,9],[90,14],[87,17],[81,18],[80,23]];
+
+  //waypointsR:=[[88,42],[99,48],[107,55],[113,62],[120,76],[122,89],[122,98],[118,104],[111,105]];
+  //waypointsL:=[[76,36],[66,35],[59,38],[55,44],[54,52],[56,62],[62,75],[71,85],[79,94],[91,102],[103,105]];
+
+  for j:=1 to (0+waypointsEND) do
+  begin
+    Wait(Rand(0$5,0$10));
+
+    PlaceUnitArea(attack[j],EnterArea,false);
+
+    if j=1 then
+    begin
+      disable(18); // Convoy without task controling
+      enable(9);
+      enable(19); // Hint 'CapturingVehicles1' controling
+    end;
+
+    for points in waypoints do
+    begin
+      case Rand(1,2) of
+        1:if IsOK(attack[j]) then ComAgressiveMove(attack[j],points[1],points[2]);
+        2:if IsOK(attack[j]) then AddComMoveXY(attack[j],points[1],points[2]);
+      end;
+    end;
+
+    filterex:=FilterUnitsExceptArea(KnollArea,[f_type,unit_building]);
+    filterin:=FilterUnitsInArea(KnollArea,[f_type,unit_building]);
+
+    if 0+filterin >= 0+filterex then
+    begin
+      case Rand(1,2) of
+        1:if IsOK(attack[j]) then AddComAgressiveMove(attack[j],waypointsEND[j][1],waypointsEND[j][2]);
+        2:if IsOK(attack[j]) then AddComMoveXY(attack[j],waypointsEND[j][1],waypointsEND[j][2]);
+      end;
+
+      if 0+filterex > 0 then
+      begin
+        Wait(10);
+        rnd:=Rand(1,0+filterex);
+        if IsOK(attack[j]) then AddComAgressiveMove(attack[j],GetX(filterex[rnd]),GetY(filterex[rnd]));
+      end;
+    end
+    else
+    begin
+      if 0+filterex > 0 then
+      begin
+        rnd:=Rand(1,0+filterex);
+        if IsOK(attack[j]) then AddComAgressiveMove(attack[j],GetX(filterex[rnd]),GetY(filterex[rnd]));
+        Wait(10);
+      end;
+      if IsOK(attack[j]) then AddComAgressiveMove(attack[j],waypointsEND[j][1],waypointsEND[j][2]);
+    end;
+
+//    display_strings:='krok:'&j&' / attack:'&(0+waypointsEND); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  end;
+
+//  display_strings:='Attack disablovan !!!! krok:'&j&' / attack:'&(0+waypointsEND); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  Wait(0$20);
+  Dialogue7a;
+  enable(16); // Attack on closiest player unit
+  Wait(0$15);
+  Dialogue8;
+  Wait(0$15);
+  Dialogue9;
+  Wait(0$15);
+  create_gaydar;
+  Wait(0$34);
+  enable(14);
+end;
+
+every 0$10 marked 14 do  // Stealing and Breakthruing
+var i,un,live_attack;
+begin
+  live_attack:=[];
+  for un in attack do
+  begin
+    Wait(2);
+    if (IsOK(un)) AND (Not HasTask(un)) then
+    begin
+      live_attack:=live_attack union un;
+      i:=i+1;
+    end;
+  end;
+
+  if i>(0+live_attack)*0.7 then steal_player_buildings;
+  if i=(0+live_attack) then ComAgressiveMove(live_attack,73,139);
+//  display_strings:='Free arabians: '&i&' of '&(0+live_attack);  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  enable;
+end;
+
+export function steal_player_buildings; // Capturing player's base
+var my_filter_depot,my_filter_other,i,veh;
+begin
+  my_filter_depot:=FilterUnitsInArea(KnollArea,[[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+  my_filter_other:=FilterUnitsInArea(KnollArea,[[f_side,you],[[f_not,[f_btype,b_depot]],[f_type,unit_building]]]);
+
+  if (0+my_filter_depot)>0 Or (0+my_filter_other)>0 then
+  begin
+    for veh in attack do
+    begin
+      if IsDrivenBy(veh)<>0 AND GetClass(IsDrivenBy(veh))=classtype_engineer then
+      begin
+        driver:=IsDrivenBy(veh);
+        ComExitVehicle(driver);
+        break;
+      end;
+    end;
+
+    Wait(10);
+
+    if (0+my_filter_depot)>0 then
+      for i:=1 to (my_filter_depot+0) do
+        AddComEnterUnit(driver,my_filter_depot[i]);
+
+    Wait(10);
+
+    if (0+my_filter_other)>0 then
+      for i:=1 to (my_filter_other+0) do
+        AddComEnterUnit(driver,my_filter_other[i]);
+  end;
+end;
+
+every 0$1+0$0.6 marked 9 do  // Here they come, brace yourself.
+begin
+  if See(you,attack[1]) then
+  begin
+    Dialogue7;                       
+    disable;
+    Disabled9:=true;
+  end;
+  if not disabled9 then enable;
+end;
+
+every 0$1 marked 16 do // Attack on closiest player unit
+var un1,un2,un_mem,distance,my_filter;
+begin
+  my_filter:=FilterAllUnits([[f_side,you],[f_or,[f_type,unit_human],[f_type,unit_vehicle],[f_btype,b_bunker],[f_btype,b_breastwork]]]);
+  if my_filter=0 then
+    my_filter:=FilterAllUnits([f_side,you]);
+  attack:=UnitFilter(attack,[f_ok]);
+  if my_filter>0 and attack>0 then
+    for un1 in attack do
+    begin
+      if IsOK(un1) then
+      begin
+        distance:=GetDistUnits(un1,Burlak);
+        un_mem:=Burlak;
+        for un2 in my_filter do
+        begin
+          if distance > GetDistUnits(un1,un2) then
+          begin
+            distance:=GetDistUnits(un1,un2);
+            un_mem:=un2;
+          end;
+          Wait(3);
+        end;
+        ComAttackUnit(un1,un_mem);
+      end;
+      Wait(3);
+    end;
+  if attack>0 then enable;
+end;
+
+
+
+
+
+

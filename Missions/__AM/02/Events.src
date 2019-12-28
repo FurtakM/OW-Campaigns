@@ -1,0 +1,24 @@
+{EXPORT Event_John;
+EXPORT Event_John_Parameters;
+
+ON SailEvent(parameters) DO
+  begin
+    case parameters of
+
+      Event_John:
+        begin
+          ComMoveXY(John, 47, 68);
+          WaitTask(John, 0$0.4);
+
+          AddComTurnUnit(John, Speaker);   // Who is currently speaking
+
+          AddComWait(John, 0$5);
+          AddComMoveXY(John, 35, 60);
+
+          WaitTask(John, 0$0.4);            // Wait1
+
+          AddComTurnUnit(John, Speaker);
+        end;
+
+    end;
+  end;}

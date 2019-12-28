@@ -1,0 +1,280 @@
+@ Stealing the Steel
+% Vypadá to, že v oblasti operuje ještì jedna síla, podle všeho Rusové. Johnovi se podaøilo uprchnout pøed jejich hlídkami a spojit se s dalšími amerièany, ale stále se nacházejí na území nepøítele.
+& Somewhere in Siberia, some 2,000,000 years B.C.
+
+// Dialogue 1 (after start of mission, hidden in forest)
+$ D1-JMM-1
+- Dobøe, co teda víme. Z nìjakého dùvodu je tady plno Rusù. Èekají na nás, a kdo nestihne utéct, toho nemilosrdnì odpraví. Dá se nìjak odhadnout, jaké máme ztráty?
+$ D1-Sol1-1
+- Nevím, jste první, koho jsem potkal.
+$ D1-FSol2-1
+- Slyšela jsem støelbu, ale nevím.
+$ D1-Sol3-1
+- Vidìl jsem dvì tìla. 
+$ D1-Lisa-1
+- Phill Carpenter, nesla jsem ho asi dvì míle, ale nemohla jsem nic dìlat, umøel mi pøed oèima.
+$ D1-JMM-2
+- Já sám vím o jednom.
+$ D1-JMM-2a
+- Já sám vím o dvou.
+$ D1-Sol1-2
+- To nejsou zrovna povzbudivé výpoèty.
+$ D1-Lisa-2
+- A to urèitì o mnoha dalších nevíme. Tipuju ztráty tak šedesát až osmdesát procent.
+$ D1-FSol2-2
+- Zatracenì, jak se to mohlo stát? Jak nás pøedbìhli?
+$ D1-Sol3-2
+- Když si zaène èlovìk pohrávat s èasem...
+$ D1-JMM-3
+- Ticho! Zachytil jsem nìjaké vysílání.
+$ D1-Pow-3
+- (weak signal over radio) Všem novì zformovaným jednotkám. Hovoøí plukovník Powell ze základny Alfa. Naše základna je na sever od oblasti, kde operují ruské jednotky neznámého pùvodu. Hlavní fronta probíhá asi sedm mil severnì od vás. Nedoporuèuji, opakuji, nedoporuèuji pokus o prùnik na sever. (squeks in radio)
+$ D1-Cyrus-3
+- (if present) A to jako máme... 
+$ D1-Lisa-3
+- Pst! Drž hubu!
+$ D1-Pow-4
+- (continues) Navažte kontakt s ostatními skupinami a konsolidujte svoji pozici. Shromažïujte materiál, který pøistane ve vaší oblasti. Pokud budete dost silní, využijte své pozice v týlu nepøítele a obsaïte ruské pomocné budovy. Sami nic dalšího nepodnikejte, èekejte na další instrukce. Opakuji, žádné blbosti.
+$ D1-Cyrus-4
+- (if present) Kurva, dva milióny let v minulosti, obklopenej nasranejma Rusákama, to skuteènì potøebuju, aby mi nìjakej šašek øíkal, že nemám dìlat žádný blbosti.
+$ D1-Bobby-4
+- (if present) Slyšel jsem dobøe? Máme dráždit Rusy a obsazovat jim základny?
+$ D1-Lisa-4
+- (if one of the preceding lines actually took place) Byl to rozkaz! Už dávno jsem si všimla, že chlapi radši kecaj, než aby poøádnì makali.
+$ D1-JMM-4
+- Dobøe, jdeme.
+$ D1-Bobby-5
+- Ano, pane!
+
+# M1
+Add Main capture
+- Obsadit ruská skladištì v oblasti.
+Add Main wait
+- Poèkat na další instrukce.
+Add Secondary join
+- Spojit se s ostatními americkými vojáky v oblasti.
+#
+
+// Dialogue X1 (when Americans attack northern base first)
+$ DX1-JMM-1
+- Zpátky! Proti opevnìní se samopalem nic nezmùžeme. Tady se nedá nic dìlat.
+
+// Dialogue X2 (when Americans capture southern base)
+$ DX2-JMM-1
+- Neuvìøitelné. V životì jsem nevidìl tak podivná vozidla. Pøipadají mi jako z nìjaké sci-fi.
+$ DX2-Bobby-1
+- (if present) Doufám, že to budeme umìt øídit.
+$ DX2-JMM-2
+- (if dialogue X1 took place already) S tím bychom mohli dobýt to opevnìní na severu!
+
+// Dialogue X2a (when someone other than JMM enters a vehicle - use his sentence)
+$ DX2a-JMM-1
+- Tak co? Pùjde to?
+$ DX2a-Lisa-1
+- Ale jo, øídila už jsem lecos... jenom koukám, že nádrž je skoro prázdná!
+$ DX2a-Bobby-1
+- Jasnì, šéfe, auta jsou mùj koníèek... hmm... jestli tahle vìc ukazuje stav nádrže, tak nemáme moc benzínu!
+$ DX2a-Cyrus-1
+- Takovejch zasranejch páèek, to jsem už dlouho nevidìl, pane. A je tu proklatì málo benzínu.
+$ DX2a-Sol1-1
+- Øízení snad zvládnu, jenom je tu málo benzínu.
+$ DX2a-FSol2-1
+- Øízení snad zvládnu, jenom je tu málo benzínu.
+$ DX2a-JMM-2
+- Takže s ním šetøete, nejbližší benzínka, o které vím, je dva milióny let daleko.
+
+// Dialogue X2b (when JMM enters a vehicle)
+$ DX2b-Lisa-1
+- (if present) Tak co, poruèíku?
+$ DX2b-JMM-1
+- No, tohle je teda stroj! Øízením to pøipomíná spíš bagr, než bojovou techniku. Koukám, budeme muset zatracenì šetøit benzínem, nádrž je skoro prázdná.
+
+// Dialogue X3 (when Americans attacks southern base)
+$ DX3-Rus1-1
+- (To jsou Amerièani! Rychle do strojù!) Eto Amerikanci! Bystro v mašiny!
+$ DX3-JMM-1
+- Sakra, ruský tanky! Sejmìte øidièe, než se k nim dostanou!
+
+// Dialogue 2 (when Khatam meets someone and JMM  not present.).
+$ D2-Kha-1
+- No, koneènì jsem nìkoho našel. Tak co, jak se vám ïaurùm líbí v dobì, kde se nemùžete cpát vepøovým?
+
+// Dialogue 2a (when Khatam meets MacMillan)
+$ D2a-Kha-1
+- Paul Khatam, atomový fyzik, poruèíku.
+$ D2a-Kha-1a
+- (if Dialogue 2 doesnt take place) Tak co, jak se vám ïaurùm líbí v dobì, kde se nemùžete cpát vepøovým?
+$ D2a-JMM-1
+- Máš zatracenou kliku, že jsme tì našli døív než Rusové. Hodnì lidí takové štìstí nemìlo.
+$ D2a-Kha-2
+- U vousu Prorokova! Rusáci? Co tady dìlaj nìjaký Rusáci?
+$ D2a-JMM-2
+- To by mì taky zajímalo. Mají tu víc lidí, víc techniky, víc materiálu, a zabíjejí nás jako mouchy.
+$ D2a-Kha-3
+- Mùj dìda vždycky øíkal: 'Dobrej Rus, mrtvej Rus.' V Afghanistánu si jich užil docela dost.
+$ D2a-JMM-3
+- Tak to tady na dìdu budeš vzpomínat èasto.
+
+// Dialogue 3 (when Americans seize northern Russian base)
+$ D3-JMM-1
+- (into radio) Haló, Alfo, tady poruèík John MacMillan. Obsadili jsme nìjakou ruskou instalaci. Mùžete mi nìkdo, k èertu, øíct, co se vlastnì dìje a kde jsme?
+$ D3-Pow-1
+- (over radio) Gratuluju, poruèíku. Pøidìluju vám vysílací znak Kobra 1. Omezte vysílání na minimum. Vyhodnocujeme vaši pøesnou polohu.
+
+// Dialogue 3a (when Americans seize northern Russian base)
+$ D3a-Pow-1
+- (over radio, if second base is not captured) ... Podle našich údajù je v oblasti ještì jedna základna. Zkuste ji obsadit také.
+
+// Dialogue 3b (when Americans seize northern Russian base)
+$ D3b-JMM-1
+- (if second base is captured later) Poruèík MacMillan volá Alfu. Obsadili jsme druhé skladištì. Oèekáváme další instrukce.
+
+// Dialogue 3c (when Americans seize northern Russian base)
+$ D3c-Pow-1
+- (over radio, if second base if captured, even later) Zatím udržujte svoje postavení a snažte se do severnìjší základny shromáždit co nejvíc materiálu. Zkuste tam pøepravit i materiál ze druhé základny. Budeme vás informovat o dalším postupu. 
+$ D3c-JMM-1
+- Nemùžete mi už nìkdo øíct, co se tu, sakra, dìje?
+$ D3c-Pow-2
+- Neøíkal jsem ti, abys nepoužíval vysílaèku zbyteènì? Tak koukej zavøít hubu a èekej, až se ti ozvem!
+
+# M2
+Out capture
+Add Secondary collect
+- Shromáždi v severní základnì co nejvíce materiálu
+#
+
+// Dialogue 3d (when Americans seize northern Russian base)
+$ D3d-JMM-1
+- Tak, dáme se do toho. Nìkdo by mìl hlídat, nìkdo sbírat a nosit materiál...
+
+// Dialogue 4 (when a Russian soldier appears in the American position)
+$ D4-Mikh-1
+- (in Russian) Èto sluèilos? Kto vy? Gdì Saša? (subtitle: Co se stalo? Kdo jste? Kde je Saša?)
+$ D4-Sol1-1
+- Na shledanou v pekle, soudruhu. Teï ti nepomùže ani Gagarin.
+$ D4-FSol2-1
+- Na shledanou v pekle, soudruhu. Teï ti nepomùže ani Gagarin.
+$ D4-Mikh-2
+- (with heavy accent) Nestøílejte! Kdo je to Gagarin?
+
+// Query s1
+? Qs1
+Rusové bez milosti zabili spoustu vašich lidí. Tenhle ale nevypadá jako voják. Co s ním?
+- Zabít Rusa
+- Zajmout a vyslechnout ho
+- Nechat ho jít
+?
+
+// Dialogue 4a (when player selects the second option)
+$ D4a-Sol1-1
+- Poruèíku, zajali jsme jednoho z nich. Zdá se, že trochu umí anglicky. Myslím, že bychom ho mìli vyslechnout... Hni sebou, Ivane.
+$ D4a-FSol2-1
+- Poruèíku, zajali jsme jednoho z nich. Zdá se, že trochu umí anglicky. Myslím, že bychom ho mìli vyslechnout... Hni sebou, Ivane.
+$ D4a-Mikh-1
+- Já Michail, ne Ivan. (Russian starts to follow soldier)
+$ D4a-JMM-1
+- (if too far) Výbornì, doveïte ho ke mì.
+
+// Dialogue 4b (when Mikhal meets MacMillan)
+$ D4b-JMM-1
+- Díky, dobrá práce. Máme prvního zajatce.
+$ D4b-Mikh-1
+- Já ne voják, já žádná zbraò. Já nikdy zabil nikoho. Nestøílet, prosím.
+$ D4b-JMM-2
+- Mluv, jak jste se sem dostali? Co po nás chcete?
+$ D4b-Mikh-2
+- Já inženýr iz Moskovskovo Instituta. Já nechtìl cestovat, ale strana potøeboval nutnì prý mì. My chránit museli nerostné bohatství vlasti. Prezident Soljanov øekl, že to naše povinnost. Já mám bratranec v Seatle, já kamarád s Amerika...
+$ D4b-JMM-3
+- Poèkej, jaký Soljanov? Jaký letopoèet se psal, když tì povolali?
+$ D4b-Mikh-3
+- Byl únor 2009. Vy neznajete soudruh Alexej Soljanov?
+$ D4b-JMM-4
+- 2009? To byl už prezidentem Ruska Prochorov, ne?
+$ D4b-Mikh-4
+- Prochorov? Já nikdy neslyšel o tomto. Soljanov prezident už ètrnáct let. On inicioval Washingtonskou smlouvu 1997, veliký krok k vzájemnému...
+$ D4b-JMM-5
+- O èem to mluvíš? Tohle bude asi naše velení dost zajímat. Hej, zamknìte ho do skladištì a dobøe ho hlídejte!
+
+# M3
+Add Secondary
+- Vezmi zajatce do severního depotu a dobøe ho hlídej
+#
+
+// Dialogue 5 (when Russian trucks appears)
+$ D5-Rus2-1
+- (už z dálky volá) Nastasjo Stepanovno, nemùžeme se doèkat tvých pirožkù.
+$ D5-Rus2-1a
+- To není možný! Nikolaji, otoè to zpátky, tady se stalo nìco hroznýho.
+
+// Dialogue 5a (when Americans fail to destroy both Russian trucks)
+$ D5a-Sol1-1
+- (only one truck managed to escape) To bylo pøekvapení! Co mu asi jeho velitel øekne, když se vrátí s prázdnou a sám?
+$ D5a-Sol1-1a
+- (both trucks managed to escape) To bylo pøekvapení! Co jim asi jejich velitel øekne, až se vrátí s prázdnou?
+$ D5a-JMM-1
+- (seriously) Myslím, že øekne: 'Soudruzi, pudem je nakopat do prdele.'
+$ D5a-Sol1-2
+- Zatracenì.
+$ D5a-JMM-2
+- Musíme se pøipravit na útok.
+
+// Dialogue 6 (after time limit, when Americans still hold the Russian base - end of mission)
+$ D6-Pow-1
+- (into radio) Alfa volá Kobru 1, Alfa volá Kobru 1. Dobrá práce, chlapi. Zatím se nemusíte bát dalšího ruského útoku. Naložte, co poberete, skladištì zniète. Pøesuòte se asi míli na severovýchod, spojíte se se skupinou kapitána Cornella. Spoleènì se pokusíte o prùlom. (mission ends)
+
+// Dialogue 7a (when Russian tries to escape and someone spots him)
+$ D7a-Sol1-1
+- Stùj. Stùj nebo... (zastøelí ho)
+$ D7a-Sol1-1a
+- ... chtìl jsem øíct, stùj nebo støelím.
+$ D7a-FSol2-1
+- Stùj. Stùj nebo... (zastøelí ho)
+$ D7a-FSol2-1a
+- ... chtìla jsem øíct, stùj nebo støelím.
+
+// Dialogue 7 (when Russian escapes and MacMillan is near to warehouse)
+$ D7-JMM-1
+- (moves to warehouse) Hej! Kde je ten Ivan? Jak vám mohl utéci? Øekl jsem, že ho máte dobøe hlídat!
+$ D7-Cyrus-1
+- Sakra. Mìli jsme ho odprásknout hned, hajzla.
+$ D7-Lisa-1
+- To je katastrofa. Výkvìt americký armády není schopen uhlídat jedinýho neozbrojenýho chlápka.
+
+// Dialogue 8 (when player attacks depot)
+$ D8-JMM-1
+- Stop! Nestøílejte do toho skladištì, nikdo v nìm není! Máme ho obsadit, ne znièit!
+
+// Dialogue 9 (during final attack)
+$ D9-Rus3-1
+- (Soudruzi, musíme získat všechno zpìt. Za Rusko!) Tovaryšèi, nam nado iskat vsjo nazpjat! Za Russiu!
+$ D9-Russ-1
+- (bez titulku) Uráááá!
+
+^ MAIN
+Základny dobyty.
+
+* Cans
++ Spousta koøisti.
+- Sehnal jsi málo materiálu.
+*
+
+* Deaths
++ Malé ztráty.
+- Mìl jsi pøíliš velké ztráty
+*
+
+* Prisoner
++ Získán zajatec.
++ Zajatec vyslechnut, zastøelen na útìku.
+- Nezískal jsi Ruského zajatce
+- Neuhlídal jsi Ruského zajatce
+*
+
+| JMM
+John MacMillan umírá.
+
+| DepotDestroyed
+Skladištì, které jsi mìl obsadit, je znièeno.
+
+| DepotCaptured
+Skladištì, které jsi mìl obsadit, je v ruských rukou.

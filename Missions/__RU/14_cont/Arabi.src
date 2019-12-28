@@ -1,0 +1,929 @@
+// DalöÌ postavy.
+Var ArSci1, ArSci2, ArSci3, ArSci4, ArMech1, ArMech2, ArEng1, ArEng2;
+Var ArMechDalkar;        // Mechanik na d·lkovÈ ovl·d·nÌ.
+Var Obranci, Sejkove, VolnyLidi;
+Var Auta, Utok_Auta;
+Var KdoOtravuje;         // Otravov·nÌ.
+Var MakroObrana;         // ObrannÈ makro.
+Var Miny;                // Pozice min.
+Var ObranaBehemota;      // self-propelled bomby, kterÈ likvidujÌ behemota.
+Var MakroKamikaze;       // Makro pro ˙tok opic kamikaze.
+Var RegUtok;             // Registrace pro ˙tok.
+Var VolnyRidiciOpicaci;  // Kolik je volnejch ¯idiË˘ opiË·k˘.
+Var ArDalkar;            // Vozidlo na d·lkovÈ ovl·d·nÌ.
+Var KolikDalkovych;      // Kolik m·m d·lkovÏ ovl·dan˝ch aut.
+Var DelamDalkare;        // Je d·lkov˝ ovladaË zad·n k v˝robÏ?
+Var MakroUtok;           // Makro na ˙tok.
+Export ProbihaUtok;         // ProbÌh· pr·vÏ ˙tok?
+Var CisloUtoku;          // Kolik·t˝ ˙tok je v po¯adÌ.
+Var PrvniUtok;           // »ek·nÌ do prvnÌho ˙toku.
+Var Utok_ZbyvaMinut;     // Kolik minut zb˝v· do prvnÌho ˙toku.
+Var CasyUtoku;           // PoËty minut mezi ˙toky.
+Var PstZbrane;           // PravdÏpodobnost zbranÌ do aut.
+Var VidelRusa;           // Uû vidÏl Arab nÏjakou ruskou jesnotku?
+Var MakroPresunZakladna; // P¯esun jednotek zpÏt do z·kladny.
+Var BeziStahovani;       // BeûÌ trigger 32?
+Var MaxOpice;            // Maxim·lnÌ moûn˝ poËet opic.
+Var ZpozdeniOpice;       // ZpoûdÏnÌ vytv·¯enÌ opic.
+Var PstOpiceRus;         // PravdÏpodobnost, ûe respawnovan· opice odejde do jinÈ arey.
+Var OpiceLimit;          // Maxim·lnÌ moûn˝ poËet vytvo¯en˝ch opic.
+Var OpiceNajednouPocet;  // Maxim·lnÌ poËet na jedno vytvo¯enÌ.
+Var KdoLeci;             // Seznam, kdo lÈËÌ.
+Var KdoOpravuje;         // Seznam, kdo opravuje.
+Var KdoLakaOpice;        // Seznam, kdo tamuje opice.
+
+
+Export Function init_arabi;
+Var Reg, Base;
+Begin
+  Disable (31); Disable (32); Disable (33);
+  SetBName (ArDepot, 'newsamark');
+  // PromÏnnÈ.        
+  KdoOtravuje = [];
+  Auta = []; Utok_Auta = [];
+  ObranaBehemota = [ArProp1, ArProp2, ArProp3];
+  VolnyRidiciOpicaci = 0;
+  ArDalkar = 0; KolikDalkovych = 0; DelamDalkare = false;
+  ProbihaUtok = false; Utok_ZbyvaMinut = -1; CisloUtoku = 1;
+  VidelRusa = false;
+  KdoLeci = []; KdoOpravuje = []; KdoLakaOpice = [];
+  // Sloûitost.
+  If Difficulty = 1 then
+  Begin
+    DestroyUnit (ArBunk2);
+    DestroyUnit (ArBunk5);
+  End;
+  PrvniUtok = dif_PrvniUtok [Difficulty];
+  CasyUtoku = dif_CasovacUtoku [Difficulty];
+  PstZbrane = dif_PstZbrane [Difficulty];
+  MaxOpice = dif_MaxOpice [Difficulty];
+  ZpozdeniOpice = dif_ZpozdeniOpice [Difficulty];
+  PstOpiceRus = dif_PstOpiceRus [Difficulty];
+  OpiceLimit = dif_OpiceLimit [Difficulty];
+  OpiceNajednouPocet = dif_OpiceNajednouPocet [Difficulty];
+  // Postavy.
+  vytvor_postavy;
+  // Suroviny v z·kladnÏ.
+  Base = GetBase (ArDepot);
+  SetResourceType (Base, MAT_CANS, Rand (300, 400));
+  SetResourceType (Base, MAT_OIL, Rand (100, 300));
+  SetResourceType (Base, MAT_SIBERIT, Rand (40, 80));
+  // Ovl·d·nÌ.
+  Reg = McRegistry (side_Ar, [[MC_REG_AREA_TO_PROTECT, AraboveObrana]]);
+  MakroObrana = McDefend (0, Reg, Sejkove union Obranci union VolnyLidi union [ArBarracks, ArBunk1, ArBunk2, ArBunk3, ArBunk4, ArBunk5, ArBunk6], [[MC_AREA_DONT_LEAVE, Arabove]]);
+  MakroPresunZakladna = McCustom (1, Sejkove union Obranci union VolnyLidi);
+  // ⁄toky.
+  RegUtok = McRegistry (side_Ar, [[MC_REG_AREA_TO_GUARD, RusoveUtok], MC_REG_IGNORE_FOG]);
+  MakroKamikaze = McAttack (20, RegUtok, [], [MC_NO_STOP]);
+  MakroUtok = 0;
+  // Miny.
+  init_miny;
+End;
+
+
+Function init_miny;
+Var M;
+Begin
+  If Difficulty = 1 then Miny = []
+  else Begin
+    Miny = [[168,77],[169,76],[170,75],[179,90],[178,87],[179,86]];
+    If Difficulty = 3 then Miny = Miny ^ [[170,79],[171,78],[172,77],[87,5],[89,13],[97,24],[97,23],[103,33],[111,41],[120,52],[128,57],[140,62],[148,76],[154,86],[161,87]];
+    For M in Miny do PlaceMine (M [1], M [2], side_Ar, 0);
+  End;
+End;
+
+
+// Vytvo¯Ì postavy a pl·cne je buÔ do budov, nebo na mapu.
+Function vytvor_postavy;
+Var Bunkry, B;
+Begin
+  // Voj·ci do bunkr˘.
+  ArSci1 = vytvor_postavu_B (ArLabWS, CLASS_SCIENTISTIC);
+  ArSci2 = vytvor_postavu_B (ArLabWS, CLASS_SCIENTISTIC);
+  ArSci3 = vytvor_postavu_B (ArLabBO, CLASS_SCIENTISTIC);
+  ArSci4 = vytvor_postavu_B (ArLabBO, CLASS_SCIENTISTIC);
+  ArMech1 = vytvor_postavu_B (ArFact, CLASS_MECHANIC);
+  ArMech2 = vytvor_postavu_B (ArFact, CLASS_MECHANIC);
+  vytvor_postavu_B (ArDepot, CLASS_ENGINEER);
+  ArEng1 = vytvor_postavu_A (Arabove, CLASS_ENGINEER);
+  ArEng2 = vytvor_postavu_A (Arabove, CLASS_ENGINEER);
+  Obranci = vytvor_postavy_A (2 + 2 * Difficulty, Arabove, CLASS_SOLDIER);
+  VolnyLidi = vytvor_postavy_A (2 + dif_AraboveRidici [Difficulty], Arabove, CLASS_SOLDIER);
+  ArMechDalkar = vytvor_postavu_A (Arabove, CLASS_MECHANIC);
+  // Voj·ci do bunkr˘.
+  Bunkry = FilterAllUnits ([[F_SIDE, side_Ar], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_BUNKER]]);
+  For B in Bunkry do Obranci = Obranci union [vytvor_postavu_B (B, CLASS_SOLDIER)];
+  // äejkovÈ na mapu.
+  If Abdul then PlaceUnitArea (Abdul, Arabove, false);
+  If Omar then PlaceUnitArea (Omar, Arabove, false);
+  Sejkove = vytvor_postavy_A (1 + Difficulty, Arabove, CLASS_DESERT_WARIOR);
+  If Abdul then Sejkove = Sejkove union [Abdul];
+  If Omar then Sejkove = Sejkove union [Omar];
+End;
+
+
+Function vytvor_postavu (Cls);
+Var X, Y;
+Begin
+  // Vytvo¯it postavu.
+  UC_Side = side_Ar; UC_Nation = NATION_ARABIAN;
+  HC_Sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_Class = Cls;
+  PrepareClassSkills (Cls, 7);
+  Result = CreateHuman;
+End;
+
+
+Function vytvor_postavu_B (Budova, Cls);
+Begin
+  Result = vytvor_postavu (Cls);
+  PlaceHumanInUnit (Result, Budova);
+End;
+
+
+Function vytvor_postavu_A (Area, Cls);
+Begin
+  Result = vytvor_postavu (Cls);
+  PlaceUnitArea (Result, Area, false);
+End;
+
+
+Function vytvor_postavy_A (Pocet, Area, Cls);
+Var I;
+Begin
+  Result = [];
+  For I = 1 to Pocet do Result = Result union [vytvor_postavu_A (Area, Cls)];
+End;
+
+
+Function zpet_do_labu (Kdo);
+Begin
+  If Kdo = ArSci1 then AddComEnterUnit (Kdo, ArLabWS)
+  else If Kdo = ArSci2 then AddComEnterUnit (Kdo, ArLabWS)
+  else If Kdo = ArSci3 then AddComEnterUnit (Kdo, ArLabBO)
+  else If Kdo = ArSci4 then AddComEnterUnit (Kdo, ArLabBO);
+End;
+
+
+Function zacni_vynalezat;
+Begin
+  AddComResearch (ArLabWS, TECH_ROCKET);
+  AddComResearch (ArLabWS, TECH_FLAME);
+  AddComResearch (ArLabWS, TECH_MORTAR);
+  AddComResearch (ArLabWS, TECH_EXPLOS);
+  AddComResearch (ArLabWS, TECH_SELFDEST);
+  AddComResearch (ArLabWS, TECH_WEAP1);
+  AddComResearch (ArLabWS, TECH_SIB1);
+  AddComResearch (ArLabWS, TECH_WEAP2);
+  AddComResearch (ArLabWS, TECH_SIB2);
+  AddComResearch (ArLabWS, TECH_WEAP3);
+  AddComResearch (ArLabWS, TECH_SIB3);
+  AddComResearch (ArLabBO, TECH_RADAR);
+  AddComResearch (ArLabBO, TECH_REMCONT);
+  AddComResearch (ArLabBO, TECH_STIMDRUGS);
+  AddComResearch (ArLabBO, TECH_BIODET);
+  AddComResearch (ArLabBO, TECH_MATDET);
+  AddComResearch (ArLabBO, TECH_HIDCAM);
+  AddComResearch (ArLabBO, TECH_TECH1);
+  AddComResearch (ArLabBO, TECH_BIO1);
+  AddComResearch (ArLabBO, TECH_OPTO1);
+  AddComResearch (ArLabBO, TECH_TECH2);
+  AddComResearch (ArLabBO, TECH_BIO2);
+  AddComResearch (ArLabBO, TECH_OPTO2);
+  AddComResearch (ArLabBO, TECH_TECH3);
+  AddComResearch (ArLabBO, TECH_BIO3);
+  AddComResearch (ArLabBO, TECH_OPTO3);
+End;
+
+
+// VynalÈz·nÌ.
+Every 0$2.3 do
+Begin
+  zacni_vynalezat;
+End;
+
+
+// Otr·venÌ siberitovÈho dolu.
+Function otravuj;
+Var Vedci, Doly, I, Dul, X, Y;
+Begin
+  Result = false;
+  If (RusMaOtraveno >= 2) then Exit;
+  If KdoOtravuje then Exit;
+  // Seznam vÏdc˘.
+  Vedci = FilterAllUnits ([[F_SIDE, side_Ar], [F_TYPE, UNIT_HUMAN], [F_CLASS, CLASS_SCIENTISTIC]]);
+  If not Vedci then Exit;
+  // Seznam siberitov˝ch dol˘.
+  Doly = FilterAllUnits ([[F_SIDE, side_Ru], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_SIBERITE_MINE]]);
+  If (not Doly) and (Tick < 30$0) then Exit;
+  // NajÌt nejv˝chodnÏjöÌ d˘l.
+  If Doly then
+  Begin
+    X = -1; Y= -1; Dul = 0;
+    For I in Doly do
+    Begin
+      If not Dul or GetX (Dul) > X then
+      Begin
+        Dul = I;
+        X = GetX (Dul); Y = GetY (Dul);
+      End
+    End
+  End else Begin
+    Doly = GetResourceArea (RusoveUtok, MAT_SIBERIT);
+    Doly = [[74,6],[23,9],[144,97]];
+    If not Doly then Exit;
+    X = -1; Y = -1;
+    For I in Doly do
+    Begin
+      If (X = -1) or (I [1] > X) then
+      Begin
+        X = I [1]; Y = I [2];
+      End;
+    End;
+  End;
+  // Poölu tam jednoho vÏdce. ZajistÌm, aby vÏdec p¯iöel z v˝chodu.
+  KdoOtravuje = [nahoda_seznam (Vedci)];
+  ComExitBuilding (KdoOtravuje); Wait (0$1);
+  If (Y <= 20) then AddComMoveXY (KdoOtravuje, 95, 5);
+  AddComContaminate (KdoOtravuje, X, Y);
+  AddComMoveToArea (KdoOtravuje, Arabove);
+  AddComSailEvent (KdoOtravuje, 101);
+End;
+
+
+// Kontaminace dokonËena.
+Export Function event_Kontaminovano;
+Var Kdo;
+Begin
+  // Poöleme vöechny vÏdce zp·tky do pr·ce.
+  For Kdo in KdoOtravuje do zpet_do_labu (Kdo);
+  KdoOtravuje = [];
+End;
+
+
+Export Function arabi_UnitDestroyed (Un);
+Begin
+  // Jde o kontamin·tora?
+  If Un in KdoOtravuje then
+  Begin
+    KdoOtravuje = KdoOtravuje diff [Un];
+    If not KdoOtravuje then RaiseSailEvent (101);
+  End;
+  // DalöÌ skupiny?
+  If Un in Obranci then Obranci = Obranci diff [Un];
+  If Un in VolnyLidi then VolnyLidi = VolnyLidi diff [Un];
+  If Un in Auta then Auta = Auta diff [Un];
+  If Un in Utok_Auta then Utok_Auta = Utok_Auta diff [Un];
+  If Un in Sejkove then Sejkove = Sejkove diff [Un];
+  If Un in ObranaBehemota then ObranaBehemota = ObranaBehemota diff [Un];
+  If Un in KdoLakaOpice then KdoLakaOpice = KdoLakaOpice diff [Un];
+  // LÈËenÌ?
+  If Un in KdoLeci then KdoLeci = KdoLeci diff [Un];
+  If Un in KdoOpravuje then KdoOpravuje = KdoOpravuje diff [Un];
+End;
+
+
+Export Function arabi_VehicleCaptured (VehNew, VehOld, OrigSide, Hum);
+Begin
+  // Auta.
+  If VehOld in Auta then Auta = Auta diff [VehOld];
+  If GetSide (VehNew) = side_Ar then Auta = Auta union [VehNew];
+  // ⁄toËnÌci.
+  If VehOld in Utok_Auta then Utok_Auta = Utok_Auta diff [VehOld];
+End;
+
+
+Function vyrob_autak;
+Var Chassis, Weapon, P;
+Begin
+  P = Rand (1, 100);
+  If (Difficulty = 1) and (P >= 65) then P = 64;
+  If P < 8 then Begin Weapon = AR_MULTIMISSILE_BALLISTA; Chassis = AR_HOVERCRAFT; End
+  else If P < 15 then Begin Weapon = AR_DOUBLE_MACHINE_GUN; Chassis = AR_HOVERCRAFT; End
+  else If P < 35 then Begin Weapon = AR_GATLING_GUN; Chassis = AR_MEDIUM_TRIKE; End
+  else If P < 65 then Begin Weapon = AR_GUN; Chassis = AR_MEDIUM_TRIKE; End
+  else Begin Weapon = AR_ROCKET_LAUNCHER; Chassis = AR_MEDIUM_TRIKE; End;
+  // D·t n·hodn˝ podvozek, ale aspoÚ tak dobr˝ jako je pot¯eba
+  Chassis = Rand (Chassis, AR_HALF_TRACKED);
+  // Zadat v˝robu.
+  AddComConstruct (ArFact, Chassis, ENGINE_SIBERITE, CONTROL_MANUAL, Weapon);
+End;
+
+
+// VyrobÌ automobil ¯Ìzen˝ opicÌ.
+Function vyrob_auto_opice;
+Begin
+  // Zadat v˝robu.
+  AddComConstruct (ArFact, AR_MEDIUM_TRIKE, ENGINE_SIBERITE, CONTROL_APEMAN, AR_SELFPROPELLED_BOMB);
+End;
+
+
+Export Function arabi_EnterBuilding (Building, Un);
+Begin
+  If (Building = ArFact) and (GetSide (Un) = side_Ar) and (GetClass (Un) = CLASS_APEMAN) then
+  Begin
+    VolnyRidiciOpicaci = VolnyRidiciOpicaci + 1;
+    vyrob_auto_opice;
+  End;
+End;
+
+
+// PostavenÌ auta.
+Export Function arabi_VehicleConstructed (Veh, Fact);
+Var Ridic, Volni, Control, Weapon, NovyRidic;
+Begin
+  If GetSide (Veh) = side_Ar then
+  Begin
+    Auta = Auta union [Veh];
+    Control = GetControl (Veh);
+    Weapon = GetWeapon (Veh);
+    // Je to d·lkov˝ ovl·d·nÌ?
+    If (Weapon = AR_CONTROL_TOWER) then
+    Begin
+      ArDalkar = Veh;
+      NovyRidic = ArMechDalkar;
+      DelamDalkare = false;
+    End;
+    // ÿÌzenÌ?
+    If (Control = CONTROL_MANUAL) then
+    Begin
+      // Vystoupit mechanikem.
+      Wait (0$2.5);
+      Ridic = IsDrivenBy (Veh);
+      // Vystoupit.
+      Wait (0$3);
+      ComExitVehicle (Ridic);
+      Wait (0$1);
+      While IsDrivenBy (Veh) = Ridic do Wait (0$1);
+      // Nastoupit.
+      AddComEnterUnit (Ridic, Fact);
+      If NovyRidic then ComEnterUnit (NovyRidic, Veh);
+      // P¯idat do obr·nc˘.
+      AddMcUnits (MakroObrana, [Veh]);
+      AddMcUnits (MakroPresunZakladna, [Veh]);
+    End;
+    // OpiË·k?
+    If (Control = CONTROL_APEMAN) and (VolnyRidiciOpicaci > 0) then
+    Begin
+      VolnyRidiciOpicaci = VolnyRidiciOpicaci - 1;
+    End;
+    If (Control = CONTROL_APEMAN) and (Weapon = AR_SELFPROPELLED_BOMB) then
+    Begin
+      Wait (0$3.6);
+      AddMcUnits (MakroKamikaze, [Veh]);
+    End;
+    // Pokud je ovl·d·nÌ d·lkovÈ, nalinkuju ho.
+    If (GetControl (Veh) = CONTROL_REMOTE) then
+    Begin
+      // Nalinkovat na ovl·daËe.
+      LinkVehicleToHuman (Veh, ArMechDalkar);
+      KolikDalkovych = KolikDalkovych + 1;
+      // P¯idat auù·k do obrany.
+      Wait (0$3);
+      AddMcUnits (MakroPresunZakladna, [Veh]);
+    End;
+  End;
+End;
+
+
+Function vyber_zbran;
+Var P;
+Begin
+  P = Rand (1, 100);
+  If P < PstZbrane [1] then Result = AR_FLAME_THROWER
+  else If P < PstZbrane [2] then Result = AR_GUN
+  else If P < PstZbrane [3] then Result = AR_GATLING_GUN
+  else Result = AR_ROCKET_LAUNCHER;
+End;
+
+
+Function vyber_ovladani;
+Begin
+  Result = CONTROL_MANUAL;
+  If not ArDalkar or not IsOk (ArDalkar) then Exit;
+  If not ArMechDalkar or not IsOk (ArMechDalkar) then Exit;
+  If UnitsLinked (ArMechDalkar) >= GetSkill (ArMechDalkar, SKILL_MECHANICAL) then Exit;
+  Result = CONTROL_REMOTE;
+End;
+
+
+// Kontrola, zda je moûnÈ vyrobit vozidlo.
+Function kontrola_vyroby;
+Var Base, Chassis, Weapon, Control;
+Begin
+  // Pokud nenÌ tov·rna OK nebo nÏco vyr·bÌ, konËÌm.
+  If not IsOK (ArFact) or HasTask (ArFact) then Exit;
+  // Pokud ji nÏkdo zajal, konec.
+  If GetSide (ArFact) <> side_Ar then Exit;
+  // Pokud uvnit¯ nikdo nenÌ, konËÌm.
+  If not UnitsInside (ArFact) then Exit;
+  // Vyberu nÏjakÈ vozidlo a vyrobÌm ho.
+  If (GetTech (TECH_REMCONT, side_Ar) = STATE_RESEARCHED) and not ArDalkar and not DelamDalkare and Prob (75) then
+  Begin
+    Chassis = AR_MEDIUM_TRIKE;
+    Weapon = AR_CONTROL_TOWER;
+    Control = CONTROL_MANUAL;
+  End else Begin
+    If Prob (50) then Chassis = AR_MEDIUM_TRIKE
+    else Chassis = AR_HALF_TRACKED;
+    Weapon = vyber_zbran;
+    Control = vyber_ovladani;
+  End;
+  // Kontrola, zda je to OK.
+  If not CanBeConstructed (ArFact, Chassis, ENGINE_SIBERITE, Control, Weapon) then Begin
+    If not CanBeConstructed (ArFact, AR_LIGHT_TRIKE, ENGINE_SIBERITE, Control, AR_LIGHT_GUN) then Exit;
+    Chassis = AR_LIGHT_TRIKE;
+    Weapon = AR_LIGHT_GUN;
+  End;
+  // Pokud nem·m dost surovin, konËÌm.
+  Base = GetBase (ArFact);
+  If GetResourceType (Base, MAT_CANS) < 120 then Exit;
+  If GetResourceType (Base, MAT_SIBERIT) < 30 then Exit;
+  // PostavÌme vozidlo.
+  AddComConstruct (ArFact, Chassis, ENGINE_SIBERITE, Control, Weapon);
+  If Weapon = AR_CONTROL_TOWER then
+  Begin
+    DelamDalkare = true;
+    Enable (33);
+  End;
+End;
+
+
+// Pokud do pÏti minut od zad·nÌ nevyrobÌm d·lkovÈ ovl·d·nÌ, zkusÌm
+// to znova.
+Every 5$1 Marked 33 do
+Begin
+  If not ArDalkar then DelamDalkare = false;
+End;
+
+
+// Handler pro v˝robu vozidel.
+Every 0$19 do
+Begin
+  kontrola_vyroby;
+  Enable;
+End;
+
+
+// Arabsk˝ ˙tok.
+Function zjisti_auta_na_utok;
+Var KolikChci, I, Riditelne;
+Begin
+  // ZjistÌm, kolik auù·k˘ chci.
+  KolikChci = dif_UtokSkupina [Difficulty];
+  I = Rand (1, 100);
+  If (I < 25) then KolikChci = KolikChci - 1
+  else If (I > 75) and (CisloUtoku > 1) then KolikChci = KolikChci + 1;
+  // ZjistÌm, kterÈ auù·ky jsou k dispozici.
+  Riditelne = [];
+  For I in Auta do
+  Begin
+    If (GetControl (I) = CONTROL_MANUAL) and not IsDrivenBy (I) then Continue;
+    If (GetWeapon (I) = AR_CONTROL_TOWER) then Continue;
+    If (GetLives (I) < HRANICE_ZDRAVI) then Continue;
+    Riditelne = Riditelne union [I];
+  End;
+  // M·m dost auù·k˘?
+  If Riditelne >= KolikChci then
+  Begin
+    If (Tick > 45$0) then Result = Riditelne
+    else Begin
+      // Vezmu prvnÌ auù·ky.
+      Result = [];
+      For I = 1 to KolikChci do
+        Result = Result union Riditelne [I];
+    End;
+    // P¯id·m i nÏjakÈ voj·ky.
+    If Obranci > 4 then
+      For I = 1 to Rand (1, 2) do
+        Result = Result union [Obranci [I]];
+  End else Result = [];
+End;
+
+
+// ZaËne ˙tok s vozidly z Utok_Auta.
+Function zacni_utok;
+Begin
+  ProbihaUtok = true;
+  // Otr·vit d˘l?
+  If (RusMaOtraveno < 2) and not KdoOtravuje and RusMaSiberit then
+  Begin
+    otravuj;
+    // PoËk·me chvÌli, aby mÏl vÏdec öanci dostat se k dolu
+    // v okamûiku ˙toku.
+    Wait (Rand (0$10, 0$15));
+  End;
+  // P¯id·m p¯Ìkaz na ˙toËenÌ.
+  MakroUtok = McAttack (10, RegUtok, Utok_Auta, [[MC_RETREAT_AREA_PEOPLE, AraboveParkoviste], [MC_RETREAT_AREA_VEHICLES, AraboveParkoviste], [MC_RETREAT_LIVES_PEOPLE, 10], [MC_RETREAT_LIVES_VEHICLES, 10]]);
+End;
+
+
+// ZruöÌ ˙tok.
+Function vrat_utok;
+Var I;
+Begin
+  ProbihaUtok = false; CisloUtoku = CisloUtoku + 1;
+  // OkamûitÏ zastavÌ ˙tok a poöle vozidla zpÏt.
+  MakroUtok = 0;
+  AddComMoveToArea (Utok_Auta, Arabove);
+End;
+
+
+Export Function arabi_McAttackDone (McId, Un);
+Begin
+  vrat_utok;
+End;
+
+
+// Vr·tÌ prvnÌ Ëlen v Ëasech ˙tok˘.
+Function zjisti_cas_utoku;
+Begin
+  If CasyUtoku then
+  Begin
+    Result = CasyUtoku [1];
+    If CasyUtoku > 1 then CasyUtoku = Delete (CasyUtoku, 1);
+  End else Result = 5;
+End;
+
+
+// ZjistÌ, zda ArabovÈ dos·hli bodu, od kterÈho je moûnÈ ˙toËit.
+Function utoceni_splneny_predpoklady;
+Begin
+  // ⁄toËit m˘ûu tehdy, pokud jsem buÔ vidÏl Rusa nebo pokud uplynula
+  // dostateËnÏ dlouh· doba.
+  Result = VidelRusa or (Tick > 12$0);
+  // Aby to nebylo ˙plnÏ deterministickÈ, budu nÏkterÈ ˙toky odkl·dat.
+  If Prob (25) then Result = false;
+End;
+
+
+// Kaûdou cca minutu je vol·na tato funkce.
+Function casovac_utok;
+Begin
+  // Pokud probÌh· ˙tok nebo jsou ArabovÈ KO, nedÏl·m nic.
+  If ProbihaUtok then Exit;
+  If ArabiZniceni then Exit;
+  // Zkontrolujeme, zda m·me nastavenÈ poËÌtadlo minut.
+  If Utok_ZbyvaMinut = -1 then Utok_ZbyvaMinut = zjisti_cas_utoku;
+  // OdeËteme jednu minutu.
+  If Utok_ZbyvaMinut > 0 then Utok_ZbyvaMinut = Utok_ZbyvaMinut - 1;
+  // ZjistÌme, zda je moûnÈ v˘bec zaËÌt s ˙tokem.
+  // Pokud ne, ne˙toËÌme - ale poËÌtadlo odeËt·me.
+  If not utoceni_splneny_predpoklady then Exit;
+  // Pokud nedoöel ËasovaË na nulu, nedÏl·me nic.
+  If Utok_ZbyvaMinut > 0 then Exit;
+  // M·m v˘bec dostatek aut na ˙tok?
+  Utok_Auta = zjisti_auta_na_utok;
+  If not Utok_Auta then Exit;
+  // ⁄tok m˘ûe zaËÌt!
+  zacni_utok;
+  // NastavÌme ËasovaË na dalöÌ ˙tok.
+  Utok_ZbyvaMinut = zjisti_cas_utoku;
+End;
+
+
+// Tento trigger bude kontrolovat, zda m· zaËÌt ˙tok.
+Every 0$45 Marked 31 do
+Begin
+  Wait (Rand (0$0, 0$30));
+  casovac_utok;
+  Enable;
+End;
+
+
+Every 0$30 do
+Begin
+  Wait (1$0 * Rand (PrvniUtok [1], PrvniUtok [2]));
+  Enable (31);
+End;
+
+
+Function testuj_minu (X, Y);
+Var Jednotky;
+Begin
+  // Mina bouchne, pokud je v blÌzkosti Rus·k.
+  Jednotky = FilterAllUnits ([[F_SIDE, side_Ru], [F_DISTXY, X, Y, 2]]);
+  If Jednotky then
+  Begin
+    LaunchMineAtPos (X, Y, side_Ar);
+    Result = true;
+  End else Result = false;
+End;
+
+
+Every 0$1.1+0$0.7 do
+Var M, Bouchlo;
+Begin
+  // Otestovat, zda nem· bouchnout nÏjak· mina.
+  If not Miny then Exit;
+  Bouchlo = [];
+  For M in Miny do
+    If testuj_minu (M [1], M [2]) then
+      Bouchlo = Bouchlo ^ [M];
+  If Bouchlo then Miny = Miny diff Bouchlo;
+  If Miny then Enable;
+End;
+
+
+Function testuj_behemota (Un);
+Begin
+  If not IsInArea (Un, AraboveObrana) then Exit;
+  If not See (side_Ar, Un) then Exit;
+  AddComAttackUnit (ObranaBehemota, Un);
+End;
+
+
+Every 0$5.1 do
+Var Kdo, I;
+Begin
+  // Test na behemota.
+  Kdo = FilterUnitsInArea (AraboveObrana, [[F_SIDE, side_Ru], [F_TYPE, UNIT_VEHICLE], [F_CHASSIS, 25]]);
+  For I in Kdo do testuj_behemota (I);
+  If ObranaBehemota then Enable;
+End;
+
+
+Export Function arabi_ApemanTamed (Ape, Sci);
+var tmp,tmp1,tmp2;
+Begin
+  If GetSide (Sci) <> side_Ar then Exit;
+  // DovÈst opiË·ka do laborato¯e a zmÏnit profesi.
+  ComMoveToArea (Ape, Arabove);
+End;
+
+
+Function kamikazuj_opicaky;
+Var O;
+Begin
+  O = FilterAllUnits ([[F_SIDE, side_Ar], [F_TYPE, UNIT_HUMAN], [F_CLASS, CLASS_APEMAN_KAMIKAZE]]);
+  AddMcUnits (MakroKamikaze, O);
+End;
+
+
+Function zmen_na_kamikaze (Ape);
+Begin
+  AddComEnterUnit (Ape, ArLabWS);
+  AddComChangeProfession (Ape, CLASS_APEMAN_KAMIKAZE);
+  AddComExitBuilding (Ape);
+End;
+
+
+Function chci_ridice_opicaka;
+Begin
+  Result = false;
+  If VolnyRidiciOpicaci >= 2 then Exit;
+  If UnitsInside (ArFact) > 4 then Exit;
+  If Prob (50) then Exit;
+  Result = true;
+End;
+
+
+Function men_na_kamikaze;
+Var O, I;
+Begin
+  O = FilterAllUnits ([[F_SIDE, side_Ar], [F_TYPE, UNIT_HUMAN], [F_CLASS, CLASS_APEMAN], [F_OUTSIDE]]);
+  For I in O do
+  Begin
+    If IsBusy (I) then Continue;
+    If HasTask (I) then Continue;
+    If IsInUnit (I) then Continue;
+    If chci_ridice_opicaka then
+    Begin
+      ComEnterUnit (I, ArFact);
+    End else zmen_na_kamikaze (I);
+  End;
+End;
+
+
+Function vedec_volny (List);
+Var I, OK;
+Begin
+  OK = [];
+  For I in List do
+    If IsInUnit (I) or not HasTask (I) then OK = OK union [I];
+  Result = nahoda_seznam (OK);
+End;
+
+
+Function lakej_opice;
+Var Opice, Kdo, I;
+Begin
+  // Zjistit, kdo bude opice l·kat.
+  If KdoLakaOpice then Exit;
+  Kdo = vedec_volny ([ArSci1, ArSci2, ArSci3, ArSci4] diff KdoLeci);
+  If not Kdo then Exit;
+  If HasTask (Kdo) then Exit;
+  // Zjistit opice.
+  Opice = FilterUnitsInArea (AraboveOpice, [[F_SIDE, side_Neutral], [F_CLASS, CLASS_APEMAN]]);
+  If not Opice then Exit;
+  // Nal·kat opice.
+  KdoLakaOpice = [Kdo];
+  ComExitBuilding (KdoLakaOpice);
+  For I in Opice do AddComTameXY (KdoLakaOpice, GetX (I), GetY (I));
+  AddComSailEvent (KdoLakaOpice, 103);
+End;
+
+
+Export Function event_DolakanaOpice;
+Var Kdo;
+Begin
+  For Kdo in KdoLakaOpice do zpet_do_labu (Kdo);
+  KdoLakaOpice = [];
+End;
+
+
+Function vytvor_nove_opice;
+Var Opice, I, Hex, Pocet;
+Begin
+  // Existuje poËet opic, p¯i kterÈm nevytv·¯Ìm?
+  Result = true;
+  Opice = FilterAllUnits ([[F_OR, [F_CLASS, CLASS_APEMAN], [F_CLASS, CLASS_APEMAN_SOLDIER], [F_CLASS, CLASS_APEMAN_ENGINEER], [F_CLASS, CLASS_APEMAN_KAMIKAZE]]]);
+  If Opice > MaxOpice then Exit;
+  // Zjistit poËet opic, kterÈ vytvo¯Ìm teÔ.
+  Pocet = Rand (1, OpiceNajednouPocet);
+  If (OpiceLimit <> -1) and (Pocet > OpiceLimit) then Pocet = OpiceLimit;
+  // Vytvo¯it opice.
+  Opice = create_nature (CLASS_APEMAN, Pocet, CreateOpice);
+  For I in Opice do
+    If Prob (PstOpiceRus) then
+    Begin
+      Hex = RandHexArea (Les, true);
+      If Hex then ComMoveXY (I, Hex [1], Hex [2]);
+    End;
+  // Dosaûen celkov˝ limit opic?
+  If OpiceLimit <> -1 then
+  Begin
+    OpiceLimit = OpiceLimit - Pocet;
+    If OpiceLimit = 0 then Result = false;
+  End;
+End;
+
+
+Every 0$15.3 do
+Begin
+  men_na_kamikaze;
+  Enable;
+End;
+
+
+Every 0$7.1 do
+Begin
+  kamikazuj_opicaky;
+  Enable;
+End;
+
+
+Every 1$13 do
+Begin
+  lakej_opice;
+  Enable;
+End;
+
+
+Every 2$25 do
+Begin
+  Wait (Rand (ZpozdeniOpice [1], ZpozdeniOpice [2]));
+  If vytvor_nove_opice then Enable;
+End;
+
+
+// Uû jsem vidÏl Rusy?
+Every 0$1.1 Trigger vidi_strana_stranu (side_Ar, side_Ru) do
+Begin
+  VidelRusa = true;
+End;
+
+
+Function zarid_ridice (Veh);
+Var Lidi, I;
+Begin
+  // Jestli je to d·lkovÈ ovl·d·nÌ, vezmu ovl·daËe.
+  If Veh = ArDalkar then
+  Begin
+    If IsOk (ArMechDalkar) and not IsInUnit (ArMechDalkar) then
+    Begin
+      ComEnterUnit (ArMechDalkar, Veh);
+      Exit;
+    End;
+  End;
+  // Jinak vezmu kohokoliv.
+  Lidi = UnitFilter (VolnyLidi, [[F_OUTSIDE]]);
+  For I in Lidi do If not HasTask (I) then
+  Begin
+    ComEnterUnit (I, Veh);
+    Exit;
+  End;
+End;
+
+
+Function nastupuj_auta;
+Var Auta, I;
+Begin
+  // Za¯ÌdÌ, aby do volnÈho auta nÏkdo nastoupil.
+  Auta = FilterUnitsInArea (AraboveObrana, [[F_TYPE, UNIT_VEHICLE], [F_CONTROL, CONTROL_MANUAL], [F_EMPTY]]);
+  If not Auta then Exit;
+  For I in Auta do zarid_ridice (I);
+End;
+
+
+Every 0$17 do
+Begin
+  nastupuj_auta;
+  Enable;
+End;
+
+
+Every 0$5.1 do
+Var I, Stahnout;
+Begin
+  Stahnout = true;
+  For I in GetMcUnits (MakroObrana) do
+    If (GetUnitMc (I) = MakroObrana) then
+    Begin
+      Stahnout = false;
+      break;
+    End;
+  Enable;
+  If Stahnout <> BeziStahovani then
+  Begin
+    If Stahnout then Enable (46) else Disable (46);
+    BeziStahovani = Stahnout;
+  End;
+End;
+
+
+Every 0$30 Marked 32 do
+Var I;
+Begin
+  // P¯esune jednotky, kterÈ nebr·nÌ, do z·kladny. Vol· se 30 sekund potÈ,
+  // co skonËÌ McDefend v pouûÌv·nÌ jednotek.
+  For I in GetMcUnits (MakroPresunZakladna) do
+    If (GetUnitMc (I) = MakroPresunZakladna) and (GetDistUnitArea (I, Arabove) > 0) and not IsInUnit (I) and not HasTask (I) then
+      ComMoveToArea (I, Arabove);
+  BeziStahovani = false;
+End;
+
+
+// SbÌr·nÌ beden.
+Every 1$16 do
+Var Inz;
+Begin
+  Inz = FilterAllUnits ([[F_SIDE, side_Ar], [F_TYPE, UNIT_HUMAN], [F_CLASS, CLASS_ENGINEER], [F_OK]]);
+  sbirej_bedny (Inz, Arabove);
+  opravuj_budovy (Inz, Arabove, side_Ar);
+  Enable;
+End;
+
+
+Function opravuj;
+Begin
+  If KdoOpravuje then Exit;
+  KdoOpravuje = opravuj_auta ([ArMech1, ArMech2], 104, Arabove, side_Ar, Utok_Auta);
+End;
+
+
+Function kuryruj;
+Begin
+  If KdoLeci then Exit;
+  KdoLeci = kuryruj_lidi ([ArSci1, ArSci2, ArSci3, ArSci4] diff KdoLakaOpice, 105, Arabove, side_Ar);
+End;
+
+
+Export Function event_ArabiOprava (Event);
+Var Kdo;
+Begin
+  Case Event of
+  104: Begin
+         ComEnterUnit (KdoOpravuje, ArFact);
+         KdoOpravuje = [];
+       End;
+  105: Begin
+         For Kdo in KdoLeci do zpet_do_labu (Kdo);
+         KdoLeci = [];
+       End;
+  End;
+End;
+
+
+// Oprava aut a lidÌ.
+Every 0$57 do
+Begin
+  opravuj;
+  kuryruj;
+  Enable;
+End;
+
+Every 10$0 trigger difficulty = 3 do
+var i;
+begin
+
+  for i in FilterAllUnits([[f_side, 2], [f_type, unit_vehicle], [f_or, [f_weapon, ar_gun], [f_weapon, ar_rocket_launcher], [f_weapon, ar_gatling_gun]]]) do
+  begin
+    ComAgressiveMove(i, 26, 25);
+  end;
+
+  enable;
+
+end;
+
+

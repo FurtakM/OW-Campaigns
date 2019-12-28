@@ -1,0 +1,246 @@
+export saved;
+export found;
+export guard_seen;
+
+every 0$1 do
+  begin
+    if not guard_seen then
+      begin
+        SetLives(guard,guard_lives[difficulty]);
+        enable;
+      end;
+  end;
+
+every 0$0.5 trigger (UnitFilter(guard,[f_see,you])>0) and (FilterAllUnits([[f_side,you],[f_see,russians]])>0) do
+  var cyr,bob;
+  begin
+    guard_seen:=true;
+
+//    InsertMusic('musicdemo2.wav');
+    DialogueOn;
+    wait(0$0.5);
+
+    Say(guard[1],'D6-FRus1-1');
+    Say(JMM,'D6-JMM-1');
+    cyr:=IsOk(Cyrus)and GetSide(Cyrus)=you and GetDistUnitXY(Cyrus,94,5)<=25;
+    bob:=IsOk(Bobby)and GetSide(Bobby)=you and GetDistUnitXY(Bobby,94,5)<=25;
+    if cyr and bob then
+      begin
+        async;
+        Say(Cyrus,'D6-Cyrus-1');
+        sync;
+        wait(0$0.3);
+        SayNoFace(Bobby,'D6-Bobby-1');
+      end
+    else if cyr then                                  
+      Say(Cyrus,'D6-Cyrus-1')     
+    else
+      Say(Bobby,'D6-Bobby-1');
+
+    DialogueOff;
+
+    wait(final_hunt_wait[difficulty]);
+
+    ComAgressiveMove(FilterAllUnits([[f_side,russians],[f_outside]]) diff guard diff trappers,95,12);
+    ComAgressiveMove(FilterAllUnits([[f_side,russians],[f_type,unit_vehicle]]),95,15);
+
+    ComWalk(trappers);
+    AddComAgressiveMove(trappers,91,10);
+  end;
+
+every 0$0.5 trigger not UnitFilter(guard,[f_ok]) do
+  begin
+    enable(42);
+    if (IsOk(Cyrus)and(Cyrus in found))or(IsOk(Bobby)and(Bobby in found)) then
+      Say(JMM,'D6a-JMM-1');
+//    ComMoveXY(JMM,94,1);
+  end;
+
+function escaped(un);
+  begin
+    if (GetType(un)=unit_vehicle) then
+      if IsDrivenBy(un) then
+        begin
+          saved:=saved^[IsDrivenBy(un)];
+          RemoveUnit(un);
+        end
+      else
+    else
+      begin
+        saved:=saved^[un];
+        if IsInUnit(un) then
+          RemoveUnit(IsInUnit(un))
+        else
+          RemoveUnit(un);
+      end;
+  end;
+
+function ask_for_waiting; // JMM in area escape
+  var all,un,escb,leave,cyr,bob;
+     
+  begin
+    // vsichni zdravi krome JMM, melo by to brat i lidi v auticku...
+    all:=[];
+    if (Bobby in found)and IsOk(Bobby) then
+      all:=all^[Bobby];
+    if (Cyrus in found)and IsOk(Cyrus) then
+      all:=all^[Cyrus];
+
+    if all then
+      begin
+        // je-li vubec nekdo takovy...
+        escb:=[];
+        if IsInArea(Bobby,escapebig) then
+          escb:=escb^[Bobby];
+        if IsInArea(Cyrus,escapebig) then
+          escb:=escb^[Cyrus];
+        {
+        FilterUnitsInArea(escapebig,[[f_side,you],[f_type,unit_human],[f_ok]]) diff [JMM];
+        escb_veh:=FilterUnitsInArea(escapebig,[[f_side,you],[f_type,unit_vehicle],[f_ok]]);
+        for un in escb_veh do
+          if IsDrivenBy(un) then
+            if IsDrivenBy(un)<>JMM then
+              escb:=escb union IsDrivenBy(un);}
+
+        if all diff escb then
+          if (Query('Q2')=2) then
+            leave:=true
+          else
+            leave:=false
+        else
+          leave:=true;
+
+        if leave then
+          begin
+            if IsInUnit(JMM) then
+              escaped(IsInUnit(JMM))
+            else
+              escaped(JMM);
+            InGameOn;
+            repeat
+              cyr:=IsOk(Cyrus)and(Cyrus in found);
+              bob:=IsOk(Bobby)and(Bobby in found);
+              if cyr then
+                ComMoveXY(Cyrus,94,1);
+              if bob then
+                ComMoveXY(Bobby,94,1);
+              wait(0$1);
+              if IsInArea(Cyrus,escape) then
+                begin
+                  escaped(Cyrus);
+                  cyr:=false;
+                end;
+              if IsInArea(Bobby,escape) then
+                begin
+                  escaped(Bobby);
+                  bob:=false;
+                end;
+            until not cyr and not bob;
+            InGameOff;
+            vitezstvi;
+          end;
+      end
+    else
+      begin
+        if IsInUnit(JMM) then
+          escaped(IsInUnit(JMM))
+        else
+          escaped(JMM);
+        vitezstvi;
+      end;
+  end;
+
+every 0$0.5 trigger IsInArea(Bobby,escape)or IsInArea(Cyrus,escape)
+     or (not (Bobby in found) or not IsOk(Bobby))and(not (Cyrus in found) or not IsOk(Cyrus)) do
+  begin
+    
+    if IsInArea(Bobby,escape) then
+      escaped(Bobby);
+    if IsInArea(Cyrus,escape) then
+      escaped(Cyrus);
+
+    if IsInArea(JMM,escape) and IsOk(JMM) then ask_for_waiting
+    else
+      if not FilterAllUnits([[f_side,you],[f_type,unit_human],[f_ok]]) and (JMM in saved) then
+        vitezstvi;
+
+    enable;
+
+  end;
+
+every 0$0.7 trigger IsInArea(JMM,escape) and IsOk(JMM) marked 42 do
+  begin
+    ask_for_waiting;
+    if not JMM in saved then
+      begin
+        repeat
+          wait(0$0.7);
+          if (not (Cyrus in found)or not IsOk(Cyrus) or IsInArea(Cyrus,escapebig))and
+             (not (Bobby in found)or not IsOk(Bobby) or IsInArea(Bobby,escapebig))and IsOk(JMM) then
+            ask_for_waiting;
+        until (JMM in saved)or not IsInArea(JMM,escape) or not IsOk(JMM);
+        if not IsInArea(JMM,escape) then
+          enable;
+      end;
+  end;
+ 
+function vitezstvi;
+  begin
+    wait(0$1);
+    AddMedal('JMM',1);
+    if Bobby in saved then
+      AddMedal('Bobby',1)
+    else
+      if Bobby in found then
+        AddMedal('Bobby',-2)
+      else
+        AddMedal('Bobby',-1);
+    if Cyrus in saved then
+      AddMedal('Cyrus',1)
+    else
+      if Cyrus in found then
+        AddMedal('Cyrus',-2)
+      else
+        AddMedal('Cyrus',-1);
+
+    // zraneni ci nenalezeni v teto misi jsou ztraceni
+    if not Bobby in saved then
+      SetLives(Bobby,0);
+    if not Cyrus in saved then
+      SetLives(Cyrus,0);
+
+//    PlayMusicNoLoop('musicdemo3.wav');
+    GiveMedals('MAIN');
+
+//    AddMusic('musicdemo1.wav');
+    RewardPeople(JMM union saved);
+
+    SaveCharacters(JMM,'JMM');
+    SaveCharacters(Bobby,'Bobby');
+    SaveCharacters(Cyrus,'Cyrus');
+
+    savevariable(getlives(bobby),'lives_bobby');
+    savevariable(getlives(cyrus),'lives_cyrus');
+    savevariable(getlives(jmm),'lives_jmm');
+
+    if not demo then
+      YouWin
+    else
+      ChangeMap(1,'__Am\04demo');
+  end;
+
+on UnitGoesToRed(un) do
+  begin
+    if un=JMM then
+      begin
+        if JMM in saved then
+          exit;
+        wait(0$3);
+        YouLost('JMM');
+      end;
+  end;
+
+on UnitDestroyed(un) do
+  begin
+    un:=un;
+  end;

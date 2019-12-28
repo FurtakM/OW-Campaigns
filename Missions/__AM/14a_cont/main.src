@@ -1,0 +1,214 @@
+export MacMillan,Burlak,Joan,ru_sci,                   // aliancni postavy
+       Powell,Stevens,                                 // americke postavyu
+       truck1,truck2;                                  // vozidla nasich hrdinu
+
+export blast_was_seen,                                 // zda jsi videl na vlastni oci vybuch
+       lab_destroyed,                                  // zda byla us lab znicena prilis rychle a nasi nemaji recept
+       time_out,                                       // odchod americanu ze zakladny  // turns true when the Americans start leaving the base
+       entered_contaminated_area,                      // vstup do kontaminovane arei
+       original_stevens,                               // pokud prezil puvodni Stevens, pak si to poznacim
+       blast_time,                                     // doba vybuchu (na ohodnoceni rychlosti pri dobyti zakladny)  // the tick at which the sib explosion occured
+       technology_taken,                               // ident toho, zda sem uz ziskal technologii siberitovky
+       keep_base_finished;                             // ukonceni udrzovani americke zakladny
+
+export you,americans;                                  // identifikatory stran
+
+export time_to_complete,
+       ru_artefact;
+
+
+// priprava jednotek
+function prepare_units;
+var JMM_car,
+    Bur_car,
+    JMM_load,
+    Bur_load;
+begin
+  uc_nation:=nation_american;
+  uc_side:=you;
+
+  // prepares MacMillan
+  MacMillan:=CreateCharacter('JMM');
+  SetClass(MacMillan,class_engineer);
+
+  // prepares Burlak
+  Burlak:=CreateCharacter('Burlak');
+  SetClass(Burlak,class_mechanic);
+
+  // prepare Joan
+  if TestCharacters('Joan') and CheckCharacterSet('Joan') then
+    Joan:=CreateCharacter('Joan')
+  else
+  // prepares russian scientist
+    begin
+      Joan:=false;
+      uc_nation:=nation_russian;
+      PrepareScientist(sex_male,8);
+      ru_sci:=CreateHuman;
+    end;
+
+  // prepares Powell
+  uc_nation:=nation_american;
+  uc_side:=americans;
+  Powell:=CreateCharacter('Powell');
+
+  // prepares Stevens                                  // !!!!! Stevens muze byt klidne mrtvy, koho pak loadnut ???
+  if TestCharacters('Stevens') and CheckCharacterSet('Stevens') then
+    begin
+      Stevens:=CreateCharacter('Stevens');
+      original_stevens:=true;
+    end
+  else
+    begin
+      uc_nation:=nation_american;
+      PrepareScientist(sex_male,8);
+      Stevens:=CreateHuman;
+      original_stevens:=false;
+    end;
+
+  uc_side=you;
+  uc_nation:=nation_american;
+  uc_direction:=5;
+
+  // vytvoreni MacMillanova vozidla // Vehicle for JMM
+  JMM_car:=LoadVariable('JMM_car',[us_medium_tracked,engine_combustion,control_manual,us_cargo_bay]);
+  JMM_load:=LoadVariable('JMM_car_load',0);
+
+  if JMM_car[1] in [us_light_wheeled,us_medium_wheeled,us_medium_tracked,us_heavy_tracked,us_morphling] then
+    uc_nation:=nation_american
+  else
+    uc_nation:=nation_russian;
+  vc_chassis:=JMM_car[1];
+  vc_engine:=JMM_car[2];
+  vc_control:=JMM_car[3];
+  vc_weapon:=JMM_car[4];
+  truck1:=CreateVehicle;
+
+  if JMM_load>0 then
+    SetCargo(truck1,mat_oil,JMM_load);
+
+
+  Bur_car:=LoadVariable('Bur_car',[ru_medium_tracked,engine_combustion,control_manual,ru_gatling_gun]);
+  Bur_load:=LoadVariable('Bur_car_load',0);
+
+  if Bur_car[1] in [ru_medium_wheeled,ru_medium_tracked,ru_heavy_wheeled,ru_heavy_tracked] then
+    uc_nation:=nation_russian
+  else
+    uc_nation:=nation_american;
+  vc_chassis:=Bur_car[1];
+  vc_engine:=Bur_car[2];
+  vc_control:=Bur_car[3];
+  vc_weapon:=Bur_car[4];
+  truck2:=CreateVehicle;
+
+  if Bur_load>0 then
+    SetCargo(truck2,mat_oil,Bur_load);
+
+  // umisteni Burlaka a MacMillana do jejich vozidel
+  PlaceHumanInUnit(MacMillan,truck1);
+  PlaceHumanInUnit(Burlak,truck2);
+
+  // Place MacMillan and Burlak (in theirs trucks) on the map
+  PlaceUnitXY(truck1,200,86,false);
+  PlaceUnitXY(truck2,202,90,false);
+
+  ComFree([MacMillan,Burlak]);
+end;
+
+// definice stran a hlavnich promennych
+function prepare_sides;
+begin
+// who is who in this mission
+  you=7;
+  americans=1;
+
+  SetAttitude(you,americans,att_enemy,true);
+
+  blast_was_seen:=false;
+  time_out:=false;
+  entered_contaminated_area:=false;
+  blast_countdown:=false;
+  lab_destroyed:=false;
+  technology_taken:=false;
+  time_to_complete:=[15$0, 10$0, 8$0][difficulty];
+  ru_artefact:=4;
+
+  blast_done:=false;
+  query_started:=false;
+  dokecano:=false;
+  art_picked:=false;
+  art_cargo:=false;
+
+  Disable(1);     // hon na Burlaka nebo MacMillana  // Hunt on Burlak and JMM
+  Disable(2);     // hlidka 1  // patrol 1
+  Disable(3);     // hlidka 2  // patrol 2
+  Disable(4);     // odpocet vybuchu  // Siberite bomb explosion
+  Disable(5);     // varovani po vybuchu o odchodu americanu   // Dialogue some time after the sib bomb explosion
+  Disable(6);     // vstup do kontaminovane arei  // JMM or Burlak enters the contaminated area
+  Disable(7);     // odchod americanu ze zakladny   // Countdown to the Americans leaving their base
+  Disable(8);     // dialog o kontaminovane areji  // dialogue when they first reach the area influenced by the blast
+  Disable(9);     // odebirani americkych jednotek z unikove areji  // 'Every' removing AM troops from the escape area
+  Disable(10);    // odchod americanu ze zakladny  // 'Every' activating the Americans leaving their base
+end;
+
+
+// Startovni blok
+starting
+begin
+  prepare_sides;
+  prepare_units;
+
+  prepare_us_side;
+  starting_scene;
+end;
+
+
+//-----  Final Conditions  -----//
+export function konec_mise;
+var un,
+    JMM_car,
+    Bur_car;
+begin
+  AddMedal('Explosion',blast_was_seen);
+  AddMedal('BioHazard',entered_contaminated_area);
+  AddMedal('Speed',(TICK-blast_time)<time_to_complete);
+
+  GiveMedals('Main');
+  RewardPeople([Burlak,MacMillan]);
+
+  SaveCharacters(MacMillan,'JMM');
+  SaveCharacters(Burlak,'Burlak');
+
+  un:=IsInUnit(MacMillan);
+  if un and (GetType(un) = unit_vehicle) then
+    begin
+      JMM_car:=[GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un)];
+      SaveVariable(JMM_car,'JMM_car');
+    end
+  else
+    DeleteVariable('JMM_car');
+
+  un:=IsInUnit(Burlak);
+  if un and (GetType(un) = unit_vehicle) then
+    begin
+      Bur_car:=[GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un)];
+      SaveVariable(Bur_car,'Bur_car');
+    end
+  else
+    DeleteVariable('Bur_car');
+
+  YouWin;
+end;
+
+
+export function Mission_Failed(style);
+begin
+    case style of
+  1: YouLost('Burlak');
+  2: YouLost('JMM');
+  3: YouLost('Time');
+  4: YouLost('Artefact');
+  5: YouLost('Lab');
+  6: YouLost('Cargo');
+    end;
+end;

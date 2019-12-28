@@ -1,0 +1,349 @@
+7@ Water is Wide
+% The panicked retreat from the mercenaries has now become calmer. The Russians are adapting to the concept of two enemies while Burlak is despatched to learn more about the Arab mission.
+
+// Dialogue Intro (Burlak and his men hiding in forest)
+$ DIntro-Pla-1
+- Comrade Gorky, our base, V. A. Ovsyenko is under attack from Americans. It cannot fall into their hands. Osvyenko controls one of the Alaskite mines.
+$ DIntro-Bur-1
+- We have enemy contact, comrade colonel. We cannot move without being seen.
+$ DIntro-Pla-2
+- That is what you have to do! You are ordered to proceed West immediately! Do you understand me Comrade!?
+$ DIntro-Bur-2
+- Understood, comrade colonel.
+$ DIntro-Pla-3
+- Good. I will be able to assist you with the route as captain Bukov has scanned this area recently. Proceed directly to the West.
+
+# MWest
+Add Main West
+- Reach the West edge of the map with one vehicle for each of your men.
+#
+
+// Dialogue Start (After the start of the mission)
+$ DStart-Bur-1
+- (into radio) Comrade Platonov, we cannot continue. The river is blocking our path.
+$ DStart-Pla-1
+- (over radio) There should be no river, comrade Gorky.
+$ DStart-Bur-2
+- (into radio) Comrade Colonel it is here and we cannot cross it with vehicles. We have Arabians on our heels. What can you suggest?
+$ DStart-Pla-2
+- (over radio) The data clearly show a path to the East that heads directly here. You had better look a bit harder Comrade Lieutenant.
+
+# MBegin
+Add Main Reach
+- Reach the South West corner of the map with one vehicle for each of your men. You will need tracked chassis to get there.
+Add Main Survive
+- At least 6 of your men must survive.
+#
+
+// Dialogue Doubts (After the first dialogue)
+$ DDoubts-Kar-1
+- Oh, shit! We are south of FUBAR!
+$ DDoubts-Ptr-1
+- (to Burlak) Why don't we just cross without he vehicles.
+$ DDoubts-Bur-1
+- Arabs would get us in no time.
+$ DDoubts-Kar-2
+- Platonov has dropped us in the shit. The stupid...(bastard)
+$ DDoubts-Glb-2
+- Shut up and think will you! We have to get out of this.
+$ DDoubts-Bur-2
+- Comrade Gleb is right. Stop talking and let's get to work. We have a little time and Ovsyenko base is relying on us.
+
+// Dialogue Arabs (when Arabians are first spotted)
+$ DArabs-RSol1-1
+- Shit, the Arabs managed to dig themselves in.
+$ DArabs-Kar-1
+- We can't get through here with the weapons we have.
+$ DArabs-Bur-1
+- (into radio) Comrade Platonov, the Arabians cut off our line of retreat. We have to defend ourselves.
+$ DArabs-Pla-1
+- (over radio) Hurry, Burlak. We need you here.
+
+// Dialogue Surrender (immediately after Arabs)
+$ DSurrender-Omar-1
+- Your position is hopeless. Surrender and we may spare your lives. Resist and you will die like dogs.
+
+// Query Surrender
+? QSurrender
+The Arabian commander wants you to surrender. What will you do?
+-1 Accept the offer.
+-2 Try and stall him
+-3 Reject the offer.
+?
+
+// Dialogue QrSurrender#1 (mission failure)
+$ DQrSurrender#1-Bur-1
+- You are right, we have no choice, we surrender.
+
+// Dialogue QrSurrender#2 (postpones Arabian attack)
+$ DQrSurrender#2-Bur-1
+- What you say is true, but we follow orders. I will speak with my commander.
+
+// Dialogue QrSurrender#3 (Arabian attack will follow)
+$ DQrSurrender#3-Bur-1
+- Do your worst. The Red Army never surrenders.
+
+// Dialogue Shipments (when somebody crosses the southern ford - shipment materialises)
+$ DShipments-RSol1-1
+- Look, a shipment has arrived, just south of the river. We must bring it to base.
+$ DShipments-Bur-1
+- It will be good, as long as we can avoid mercenaries.
+$ DShipments-RSol1-2
+- If only we could transport crates here somehow.
+
+// Dialogue Road (when somebody spots the path in south)
+$ DRoad-RSol1-1
+- This must be the route to Ovsyenko.
+$ DRoad-RSol1-1a
+- [objective Defend still holds] As we thought. It's behind the river.
+
+// Dialogue ApeSpot (When first Apeman is spotted)
+$ DApeSpot-RSol1-1
+- [it is not Burlak] Look, Homo Siberitis.
+$ DApeSpot-Bur-1
+- [reply] Normally they are bastards, but I hear Americans have trained them.
+$ DApeSpot-Bur-1a
+- [it is Burlak] Look, the monkeys are here too. They are vicious bastards. I wonder how Yanks train them?
+$ DApeSpot-Pty-1
+- If they can do this, certainly we can.
+$ DApeSpot-Pty-1a
+- [lab completed] If we investigate this for a while I'm sure we can do the same. Imperialist scientists are no match for Soviets.
+$ DApeSpot-Pty-1b
+- [no lab] If we have somewhere to do research we can do the same as Americans. Imperialist scientists are no match for Soviets.
+
+// Dialogue ApeLab (When no lab is build for a long time and ApeSpot took place)
+$ DApeLab-Pty-1
+- Comrade commander, we need a laboratory to conduct our research. Even Soviet scientist cannot progress far without equipment.
+
+// Dialogue ApeLangCompl (Apeman language researched)
+$ DApeLangCompl-Pty-1
+- Comrade commander, Soviet scientists have decoded the language  of Homo Siberitis. We are ready to try and tame them.
+$ DApeLangCompl-Bur-1
+- Good. What do you need from me?
+$ DApeLangCompl-Pty-2
+- Just armed backup in case there are problems; that is all.
+$ DApeLangCompl-Bur-2
+- You need armoured vehicles?
+$ DApeLangCompl-Pty-3
+- That will not be necessary. It would only scare the Apemen.
+$ DApeLangCompl-Bur-3
+- I don't see any problem, then. What did you call them... Apemen?
+$ DApeLangCompl-Pty-4
+- Apemen? This is new scientific term comrade!
+
+! ApemenTaming
+ApemenTaming
+
+There will be hint...
+!
+
+// Dialogue ApeTame (When first Apeman is tamed)
+$ DApeTame-Sci1-1
+- Comrade commander, we made in important breakthrough. Let me present new volunteer for Red Army Pliocene Group.
+$ DApeTame-Bur-1
+- Welcome, comrade Apeman.
+
+// Dialogue ApeWorkSol (When first Apeman is taken into lab)
+$ DApeWorkSol-Bur-1
+- Now you have the specimen you need what areas will you explore?
+$ DApeWorkSol-Pty-1
+- Either we can teach him how to work, or use weapons. Either way, it is no problem.
+$ DApeWorkSol-Bur-2
+- Good. I will let you know what we require.
+
+// Dialogue ApeWorkCompl (When research of Apeman psychology is completed)
+$ DApeWorkCompl-Pty-1
+- We have trained Apemen to work, comrade commander. All you need now is to take him to depot and put him in the outfit.
+$ DApeWorkCompl-Bur-1
+- Good work, comrades.
+
+// Dialogue ApeSolCompl (When research of Apeman aggressiveness  is completed)
+$ DApeSolCompl-Pty-1
+- We now know how to make Apeman fight, comrade commander. Just take him to armoury and give him kit. They will make good soldiers.
+$ DApeSolCompl-Bur-1
+- Excellent work comrades.
+
+! ApemenUsing
+ApemenUsing
+
+There will be hint...
+!
+
+// Dialogue Stevens (when somebody goes North to tame Apemen; American scientist materialises)
+$ DStevens-RSol1-1
+- [not Petrosyan] Hey! Another Yank! Say good bye to Mickey Mouse, soldier!
+$ DStevens-Huck-1
+- (English, with Native titles) Don't shoot, please! I'm not a soldier! I'm a scientist - professor Stevens!
+$ DStevens-Pty-1
+- [reply]. I know him! Don't shoot.
+$ DStevens-Pty-1a
+- [continues in any case] (English) Professor Stevens, I am a Soviet scientist. We met in Berlin, your lecture on stealth radar.
+$ DStevens-Huck-2
+- I don't know what you're talking about....
+$ DStevens-Pty-2
+- You are professor Hugh Stevens, from Jet Propulsion Lab in Pasadena?
+$ DStevens-Huck-3
+- Yes, but I've never lectured in Berlin. I haven't been there since the wall came down.
+$ DStevens-Pty-3
+- What wall?
+$ DStevens-Huck-4
+- The one that your East-German comrades built.
+$ DStevens-Pty-4
+- There was no wall. I don't know what you're talking about. Come, I must take you to my commander. We will resolve this later. (Stevens starts to follow Petrosyan).
+
+// Dialogue StevensBurlak (When Stevens enters the base)
+$ DStevensBurlak-Pty-1
+- Comrade commander, this is American scientist, Dr Stevens.
+$ DStevensBurlak-Bur-1
+- So why is he breathing?
+$ DStevensBurlak-Pty-2
+- I knew him, or at least I thought I did. I think he has important information.
+
+// Query Kill
+? QKill
+An American scientist has appeared in mysterious circumstances. Do you want to:
+-1 Kill him.
+-2 Keep him alive.
+?
+
+// Dialogue Kill-1 
+$ DKill-1-Bur-1
+- He is too valuable to the Yanks. Kill him anyway. (status changed to Enemy)
+$ DKill-1-Glb-1
+- It is the only sensible way Comrade Lieutenant.
+
+// Dialogue Kill-2 
+$ DKill-2-Bur-1
+- What kind of information?
+$ DKill-2-Pty-1
+- He seems to have different memories of the world he left behind. It seems a different future from the one we come from. Even Soviet scientists are baffled.
+$ DKill-2-Bur-2
+- All right, take him to depot, I'll interrogate him later. (Stevens walks to depot and enters - he switches side to Burlak's).
+
+// Dialogue Release (If the player sends Stevens out)
+$ DRelease-Bur-1
+- So what shall we do with this American? He's told me all I want to know.
+
+// Query KillAgain
+? QKillAgain
+You have interrogated the American scientist. What do you wan to do with him now?
+-1 Kill him.
+-2 Let him go
+-3 Return him to depot.
+?
+
+// Dialogue QrKillAgain#1 
+$ DQrKillAgain#1-Bur-1
+- Get rid of him.
+
+// Dialogue QrKillAgain#2 
+$ DQrKillAgain#2-Bur-1
+- Dr. Stevens. I am a soldier not a butcher. I am going to release you.
+$ DQrKillAgain#2-Bur-1a
+- Get back to the depot, Dr. Stevens. I must decide what to do with you.
+
+// Dialogue StevensLeftBehind 
+$ DStevensLeftBehind-Pty-1
+- [alive] What about professor Stevens? We left him in the depot.
+$ DStevensLeftBehind-RSol1-1
+- [otherwise] What about that American? We left him in the depot.
+$ DStevensLeftBehind-Bur-1
+- We're not going back for him. If Arabians find him, he won't last long.
+
+// Dialogue Mastodon (First Arabian noble on mastodon is spotted)
+$ DMastodon-RSol1-1
+- [not Burlak] Comrade commander, look at this! Arab sheikhs using mastodons for camels! It is incredible.
+$ DMastodon-Bur-1
+- [otherwise] This is incredible, the Arabians are riding mastodons like camels.
+$ DMastodon-Glb-1
+- Complete bourgeois decadence!
+
+// Dialogue Omar (if Omar is killed - this should be very likely)
+$ DOmar-Kar-1
+- [present] We've got the bastard! Mastodon looks good but moves like snail.
+$ DOmar-Ptr-1
+- [present] It was too easy!
+$ DOmar-RSol1-1
+- [otherwise] We send the sheikh and his pet to their deaths.
+$ DOmar-Hke-1
+- You'll pay for this, you communist bastards! I will take revenge for Omar!
+$ DOmar-Bur-1
+- Your threats make me laugh mercenary. We will always beat you because we fight for more than money. We fight for our country!
+
+// Dialogue Breakthrough (when Arabian positions are destroyed or Burlak and his men are east of them)
+$ DBreakthrough-Ptr-1
+- [present] Finally, some action!
+$ DBreakthrough-Bur-1
+- (into radio) Comrade Platonov, we have destroyed the Arabian positions and now head west.
+$ DBreakthrough-Pla-1
+- It is too late, comrade Gorky. Ovsyenko base has fallen already.
+$ DBreakthrough-Pla-1a
+- [action was fast] But if you move quickly, you may take the Americans before they dig themselves in.
+$ DBreakthrough-Pla-1b
+- [action was slow] You were too slow Comrade Gorky. Your incompetence means the enemy has had time to station it's defences there. You will have hard time getting him out!
+$ DBreakthrough-Pla-1c
+- Before you go make sure you destroyed the lab, the enemy must not obtain our technologies.
+
+# MOutDefend
+Out Defend
+#
+
+# MAddLab
+Add secondary Lab
+- Destroy your laboratory before you retreat west.
+#
+
+# MOutLab
+Out Lab
+#
+
+// Dialogue Patrol (when they run into Arabian patrol)
+$ DPatrol-Kar-1
+- [alive] These shit-faced pillow-biters! They won't let us go!
+$ DPatrol-Ptr-1
+- [alive] More easy game! Come on, come on!
+$ DPatrol-RSol1-1
+- [otherwise] Shit! There are more of the bastards!
+$ DPatrol-Bur-1
+- It would have been better to let them pass. Now we have no choice. They must die.
+
+// Query Vehicles
+? QVehicles
+You have reached the exit area, but some of your men don't have their vehicles.
+-1 Continue mission
+?
+
+// Query EndMission
+? QEndMission
+Not all of your men have reached the exit area. What do you want to do? (If you select "Continue", you can end the mission at any time through "Mission objectives" dialogue.)
+-1 End mission.
+-2 Continue mission.
+?
+
+^ Main
+Exit area reached, everybody has their vehicle.
+
+| Burlak
+Burlak is dead.
+
+| Survive
+You don't have enough men to finish this mission.
+
+| Surrender
+You surrendered to the Arabians.
+
+* Time
++ Little time wasted
+- Breaking through Arabian position took too long.
+*
+
+* Apemen
++ Apeman tamed
+- You did not tame any Apemen.
+- You did not research Apeman language.
+*
+
+* Abdul
++ Sheikh Omar killed
+- You missed the chance to kill an Arabian sheikh.
+*

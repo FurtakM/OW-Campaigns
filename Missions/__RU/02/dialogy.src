@@ -1,0 +1,1046 @@
+VAR prilis_na_north;
+VAR is_out_base;
+VAR wasattack;
+VAR ridic_1_auta;
+VAR je_mimo;
+VAR byl_v_zakladne;
+VAR kecal_s_platonovem;
+VAR znicene_bw;
+VAR bw_e_nasli;
+VAR cont_mission;
+VAR kecy_bw_w;
+EXPORT navrat_a_konec;
+EXPORT belkov_solved;
+
+VAR skurveny_mission_objectiv_uz_prosel;
+
+VAR konstanta_utoceni;
+
+VAR kecy_pri_vraceni_belkova;
+
+/// uvodni nastaveni hodnot
+EVERY 0$0.1 DO
+VAR i;
+begin
+  prilis_na_north=[1,2,4,5,6];
+  is_out_base=[3];
+  bw_e_nasli=false;
+  kecy_bw_w=false;
+  wasattack=false;
+  je_mimo=false;
+  byl_v_zakladne=false;
+  kecal_s_platonovem=false;
+  znicene_bw=false;
+  belkov_solved=1;
+  konstanta_utoceni=0;
+  navrat_a_konec=false;
+  cont_mission=false;
+  skurveny_mission_objectiv_uz_prosel=false;
+  kecy_pri_vraceni_belkova=0;
+  for i in [991,992] do disable(i);
+  // 991 dialog D1a var without vehicle
+  // 992 dialog D1 var. with vehicle
+end;
+
+// uvodni dialog
+EVERY 0$3 DO
+begin
+  ComTurnUnit(kurin,bur);
+  ComTurnUnit(bur,kurin);
+  Say(kurin,'D1-Kur-1');
+  Say(bur,'D1-Bur-1');
+  Say(kurin,'D1-Kur-2');
+  Say(bur,'D1-Bur-2');
+  Say(kurin,'D1-Kur-3');
+  if gny<>0 then Say(kurin,'D1-Kur-3a');
+  SaveForQuickRestart;
+  wait(0$1);
+  ChangeMissionObjectives('M1');
+  InGameOff;
+  stav=1;
+  enable(991); // muze probehnout dialog D1a bez vozidla
+end;
+
+// prichod do druhe baze
+EVERY 0$1 TRIGGER SeeXY(You,69,83) or SeeXY(You,73,96) and (not kecal_s_platonovem) DO
+VAR pom;
+VAR sq;
+begin
+  DialogueOn;
+  if SeeXY(You,71,84) then pom=Ru2_vb1
+                      else pom=Ru2_vb2;
+  Say(pom,'D2-RSol1-1');
+  Say(bur,'D2-Bur-1');
+  Say(pom,'D2-RSol1-2');
+  stav=2;
+  DialogueOff;
+end;
+
+// rozhovor s platonovem
+EVERY 0$1 TRIGGER IsInArea(bur,near_plat) DO
+begin
+  kecal_s_platonovem=true;
+  DialogueOn;
+  ComHold(bur);
+  ComTurnUnit(plat,bur);
+  AddComTurnUnit(bur,plat);
+  Say(plat,'D2-Pla-2');
+  Say(bur,'D2-Bur-2');
+  Say(plat,'D2-Pla-3');
+  Say(bur,'D2-Bur-3');
+  Say(plat,'D2-Pla-4');
+  Say(bur,'D2-Bur-4');
+  Say(plat,'D2-Pla-5');
+  info_q([1,2,3,4]);
+  Say(plat,'D3-Pla-1');
+  Say(bur,'D3-Bur-1');
+  ChangeMissionObjectives('M2a');
+  Hint('Base');
+  Hint('Depot');
+  Hint('Construction');
+  DialogueOff;
+  ComFree(plat);
+  AddComFree(bur);
+  stav=3;
+  SetSide(RU2_dep,You);
+  SetSide(plat,You2);
+  SetSide(RU2_bu1,You2);
+  SetSide(RU2_bu2,You2);
+  SetSide(RU2_vb1,You2);
+  SetSide(RU2_vb2,You2);
+  SetSide(RU2_hv1,You2);
+  SetSide(RU2_hv2,You2);
+  ComStop(RU2_hv1);
+  ComStop(RU2_hv2);
+end;
+
+// info query
+function info_q(q);
+VAR pom;
+VAR q1;
+begin
+  pom=SelectiveQuery('QMoreInfo',q);
+  case pom of
+   1:begin
+       Say(bur,'D2a-Bur-1');
+       Say(plat,'D2a-Pla-1');
+       q1=q diff 1;
+       if q1>=2 then info_q(q1);
+     end;
+   2:begin
+       Say(bur,'D2b-Bur-1');
+       Say(plat,'D2b-Pla-1');
+       q1=q diff 2;
+       if q1>=2 then info_q(q1);
+     end;
+   3:begin
+       Say(bur,'D2c-Bur-1');
+       Say(plat,'D2c-Pla-1');
+       q1=q diff 3;
+       if q1>=2 then info_q(q1);
+     end;
+  end;
+end;
+
+// prilis na north
+EVERY 0$1 TRIGGER stav in prilis_na_north DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Upozarea,[[f_side,You]]);
+  if pom>0 then
+    begin
+      ComHold(pom);
+      DialogueOn;
+      posli_lidi_zpet;
+      if bur in pom then Say(Bur,'D1b-Bur-1')
+                    else Say(Kov,'D1b-Kov-1');
+      DialogueOff;
+      InGameOn;
+      while FilterUnitsInArea(Upozarea,[[f_side,You]])<>0 do
+        begin
+          wait(0$2);
+          posli_lidi_zpet;
+        end;
+      InGameOff;
+    end;
+  enable;
+end;
+
+// dostaveni labu
+EVERY 0$1 TRIGGER FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_lab]])=1 DO
+VAR pom,pom1;
+begin
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_lab]]);
+  pom1=7;
+  while IsConstructed(pom[1])<>0 do wait(0$2);
+  DialogueOn;
+  Hint('Laboratory');
+  Hint('Healing');
+  Say(bur,'D5a-Bur-1');
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_workshop]]);
+  if pom>0 then pom1=IsConstructed(pom[1]);
+  if pom1=0 then begin
+                   Say(plat,'D5a-Pla-1');
+                   ChangeMissionObjectives('M2');
+                   pokracovani_rozhovoru;
+                   Hint('BuildingVehicles');
+                 end
+            else begin
+                   Say(plat,'D5a-Pla-1a');
+                   ChangeMissionObjectives('M2b');
+                 end;
+  DialogueOff;
+end;
+
+// dostaveni workshopu
+EVERY 0$1 TRIGGER FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_workshop]])=1 DO
+VAR pom,pom1;
+begin
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_workshop]]);
+  pom1=7;
+  while IsConstructed(pom[1])<>0 do wait(0$2);
+  DialogueOn;
+  if GetTech(tech_OilEng,You)=state_researched then Hint('Workshop2')
+                                               else Hint('Workshop1');
+  Say(bur,'D5b-Bur-1');
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_lab]]);
+  if pom>0 then pom1=IsConstructed(pom[1]);
+  if pom1=0 then begin
+                   Say(plat,'D5b-Pla-1');
+                   ChangeMissionObjectives('M2');
+                   pokracovani_rozhovoru;
+                   Hint('BuildingVehicles');
+                 end
+            else begin
+                   Say(plat,'D5b-Pla-1a');
+                   ChangeMissionObjectives('M2c');
+                 end;
+  DialogueOff;
+end;
+
+// dalsi pokracovani rozhovoru
+function pokracovani_rozhovoru;
+begin
+  if Researched(You,tech_OilEng)
+    then begin
+           Say(bur,'D7b-Bur-1');
+           Say(plat,'D7b-Pla-1');
+         end
+    else begin
+           Say(bur,'D7a-Bur-1');
+           Say(plat,'D7a-Pla-1');
+         end;
+end;
+
+// kdyz jde mimo zakladnu
+EVERY 0$1 TRIGGER stav in is_out_base DO
+VAR pom,pom1;
+begin
+  pom=FilterUnitsInArea(Out_base,[[f_side,You],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  if pom>0 then
+    begin
+      ComHold(pom);
+      DialogueOn;
+      Say(plat,'D8-Pla-1');
+      DialogueOff;
+      InGameOn;
+      posli_rusi_zpet_out_base;
+      while FilterUnitsInArea(Out_base,[[f_side,You],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]])<>0 do
+        begin
+          wait(0$2);
+          posli_rusi_zpet_out_base;
+        end;
+      InGameOff;
+    end;
+  enable;
+end;
+
+// kdyz je vyroben prvni auto (vehicle)
+EVERY 0$1 marked 300 DO
+VAR pom;
+begin
+  wait(0$4);
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_type,unit_vehicle]]);
+  DialogueOn;
+  Say(bur,'D9-Bur-1');
+  Say(plat,'D9-Pla-1');
+  ChangeMissionObjectives('M3');
+  stav=4;
+  DialogueOff;
+  Hint('Driving');
+  wait(0$10);
+{  if pom>0 then begin
+                  auto_belkov=pom[1];
+                  if IsDrivenBy(pom[1]) then Hint('Driving');
+                end;}
+end;
+
+// opravovani aut
+EVERY 0$5 TRIGGER stav>3 DO
+VAR pom,i;
+VAR a;
+begin
+  a=false;
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+  for i in pom do if GetLives(i)<900 then a=true;
+  if a then Hint('Repair')
+       else enable;
+end;
+
+// nedostatek benzinu
+EVERY 0$5 TRIGGER stav>3 DO
+VAR pom,i;
+VAR a;
+begin
+  a=false;
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+  for i in pom do if GetFuel(i)<20 then a=true;
+  if a then Hint('Fuel')
+       else enable;
+end;
+
+// nedostatek benzinu uz neni zadny
+{EVERY 0$5 TRIGGER stav>3 DO
+VAR pom,i;
+VAR a;
+begin                      
+  a=false;
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+  for i in pom do if GetFuel(i)=0 then a=true;
+  if a then Hint(Fuel2)
+       else enable;
+end;
+}
+// prijezd burlaka do 1. baze s autem
+EVERY 0$2 TRIGGER stav=4 and test_is_auto_in_area DO
+VAR auto;
+VAR ridic;
+begin
+  disable(991);         // dialog bez vozidla uz nemuze probehnout
+  InGameOn;
+  auto=FilterUnitsInArea(RU1_base,[[f_side,You],[f_type,unit_vehicle]]);
+  auto=auto[1];
+  ridic=IsDrivenBy(auto);
+  ComMoveXY(ridic,117,101);
+  CenterOnUnits([auto]);
+  SetFuel([auto], 100);
+  Say(kurin,'D10-Kur-1');
+  Say(bel,'D10-Bel-1');
+  ComExitVehicle(ridic);
+  AddComHold(ridic);
+  wait(0$1);
+  if BELKOV_MRTVY then
+    begin
+      Say(bur,'D10-Bur-1');
+      Say(bel,'D10-Bel-2');
+      Say(bur,'D10-Bur-2');
+    end;
+  AddComHold(ridic);
+  if BELKOV_MRTVY then Say(kurin,'D10-Kur-2a')
+                  else Say(kurin,'D10-Kur-2');
+  ComExitBuilding(bel);
+  while IsInUnit(ridic)<>0 do
+    begin
+      wait(0$1);
+      ComExitVehicle(ridic);
+    end;
+  AddComEnterUnit(bel,auto);
+  wait(0$1);
+  while IsInUnit(bel)=0 do
+    begin
+      wait(0$1);
+      ComExitBuilding(bel);
+      AddComEnterUnit(bel,auto);
+    end;
+  ComFree(ridic);
+  Say(kurin,'D10-Kur-2b');
+  ridic_1_auta=ridic;
+  ChangeMissionObjectives('M4');
+  objReturn:=True;
+  stav=5;
+  InGameOff;
+  rusi_cesta_na_sever;
+  enable(992);
+end;
+
+// navrat do 2. base
+EVERY 0$1 TRIGGER stav=5 and IsInArea(ridic_1_auta,RU2_base) DO
+VAR poc,i;
+begin
+  poc=0;
+  DialogueOn;
+  Say(plat,'D11-Pla-1');
+  for i in Rusi_enter do if IsLive(i) then poc=poc+1;
+  if poc>1 then Say(bur,'D11-Bur-1a')
+           else Say(bur,'D11-Bur-1');
+  ChangeMissionObjectives('M5');
+  objReturn:=False;
+  CreateCratesXYR(2,64,83,6,true);
+  stav=6;
+  DialogueOff;
+end;
+
+// dialog pri boreni budovy be prikazu
+EXPORT function dialog_boreni;
+begin
+  Say(plat,'D6-Pla-1');
+  Say(bur,'D6-Bur-1');
+end;
+
+// dialog priprava americke pasti na rusi
+EXPORT function dialog_past_amici;
+VAR pom,i;
+begin
+  DialogueOn;
+  CenterOnUnits(Rusi_sever);
+  wait(0$2);
+  pom=UnitFilter(Amici_past,[[f_ok],[f_type,unit_human]]);
+  for i in pom do if GetSex(i)=sex_male then
+                    begin
+                      SayRadio(i,'D13-Sol1-1');
+                      break;
+                    end;
+  SayRadio(bel,'D13-Bel-1');
+  SayRadio(kurin,'D13-Kur-1');
+  SayRadio(bel,'D13-Bel-2');
+//  DialogueOff;
+end;
+
+// kazdy ma postavene svoje auto - ukonceni m5
+EXPORT function rozhovor_ukonceni_m5;
+begin
+  wait(0$2);
+  DialogueOn;
+  Say(bur,'D12-Bur-1');
+  Say(plat,'D12-Pla-1');
+  Say(bur,'D12-Bur-2');
+  Say(plat,'D12-Pla-2');
+  Say(bur,'D12-Bur-3');
+  Say(plat,'D12-Pla-3');
+  ChangeMissionObjectives('M6');
+  DialogueOff;
+  disable(992);                      // znepristupneni rozhovoru D1a s autem
+  MissionProper;
+end;
+
+// dialog ... americka past sklapla
+EVERY 0$5 TRIGGER stav=7 DO
+VAR i;
+VAR pom;
+VAR avideni;
+begin
+  wait(0$1);
+  dialog_past_amici;
+  CenterNowOnXY(58,17);
+  ComMoveXY(Rusi_sever,59,16);
+  pom=FilterAllUnits([[f_side,You]]);
+  ComStop(pom);
+  for i in pom do DoNotAttack(Amici,i);  // neutoci na burlaka a spol
+  DoNotAttack(Amici,bel);                // neutoci na belkova
+  DialogueOff;
+  InGameOn;
+  avideni=place_amik_k_videni;
+  ComMoveXY(avideni,55,11);
+  while FilterAllUnits([[f_side,Amici],[f_see,You2]])=0 do
+    begin
+      wait(0$03);
+      ComMoveXY(avideni,55,11);
+    end;
+  DoNotAttack(Amici,auto_belkov);
+  while IsInUnit(bel) do
+    begin
+      ComExitVehicle(bel);
+      wait(0$0.1);
+    end;
+  Amici_past = Amici_past ^ avideni;
+  wait(0$0.5);
+  AddComMoveXY(bel,47,7);
+  AddComMoveXY(bel,33,5);
+  AddComMoveXY(bel,34,11);
+  AddComMoveXY(bel,45,13);
+  SetLives(IsInUnit(bel),600);
+  ComWalk(Amici_past);
+  InGameOff;
+  DialogueOn;
+  Say(Amici_past[1],'D14-Sol1-1');
+  DialogueOff;
+  music_class=music_combat;
+  InGameOn;
+  for i in Rusi_sever do if GetType(i)=unit_vehicle then Rusi_sever=Rusi_sever diff i;
+  ComMoveXY(Rusi_sever,47,7);
+  AddComMoveXY(Rusi_sever,33,5);
+  AddComMoveXY(Rusi_sever,34,11);
+  AddComMoveXY(Rusi_sever,45,13);
+  Rusi_sever=Rusi_sever^bel;
+  InGameOff;
+  DialogueOn;
+  Say(bel,'D14-Bel-1');
+  DialogueOff;
+  InGameOn;
+  ComAgressiveMove(Amici_past,62,18);
+  wait(2);
+  rusi_save_belkov;
+  amici_boj;
+  belkov_solved=1;
+  CenterOnUnits([bel]);
+  wait(0$2);
+  while not See(Amici,bel) do
+    begin
+      AddComMoveUnit(Amici_past,bel);
+      wait(0$1);
+    end;
+  InGameOff;
+  DialogueOn;
+  SayRadio(bel,'D14-Bel-1a');
+  SayRadio(kurin,'D14-Kur-1');
+  SayRadio(bel,'D14-Bel-2');
+  SayRadio(kurin,'D14-Kur-2');
+  DialogueOff;
+  music_class=0;
+  for i in pom do NormalAttack(Amici,i);
+  NormalAttack(Amici,bel);
+  amici_po_kecech;
+  wait(0$5);
+  dialog_burlak_help;
+end;
+
+// burlak zada o povoleni pomoci belkovovi
+function dialog_burlak_help;
+begin
+  DialogueOn;
+  Say(bur,'D14a-Bur-1');
+  Say(plat,'D14a-Pla-1');
+  Say(bur,'D14a-Bur-2');
+  Say(plat,'D14a-Pla-2');
+  Say(bur,'D14a-Bur-3');
+  Say(plat,'D14a-Pla-3');
+  Say(bur,'D14a-Bur-4');
+  Say(plat,'D14a-Pla-4');
+  DialogueOff;
+end;
+
+// vidi zapadni veze
+{EVERY 0$1 TRIGGER stav>6 and (SeeXY(You,62,56) or Attacks(BWW_1)<>0 or Attacks(BWW_2)<>0) and FilterUnitsInArea(Sk_kopec,[[f_side,You]])=0 DO
+VAR pom;
+begin
+  if kecy_bw_w
+    then disable
+    else
+      begin
+        videli_w=true;
+        wait(0$1);
+        CenterOnUnits([BWW_1,BWW_2]);
+        DialogueOn;
+        Say(bur,'D15-Bur-1');
+        if IsOK(Gny) then Say(Gny,'D15-Gny-1')
+                     else if IsOK(Kov) then Say(Kov,'D15-Kov-1');
+        Say(bur,'D15-Bur-2');
+        if IsOK(Kov) then Say(Kov,'D15-Kov-2');
+        Say(bur,'D15-Bur-3');
+        if (not kecy_bw_w) and (not skurveny_mission_objectiv_uz_prosel) then
+          begin
+            ChangeMissionObjectives('M7');
+            skurveny_mission_objectiv_uz_prosel=true;;
+          end;
+        kecy_bw_w=true;
+        Hint('Visibility');
+        wait(0$1);
+        DialogueOff;
+        pom=FilterAllUnits([[f_side,You],[f_see,Amici]]);
+        if pom=0 then pom=[bur];
+        CenterOnUnits(pom);
+        wasattack=true;
+        stav=8;
+      end;
+end;
+
+// vidi vychodni veze
+EVERY 0$1 TRIGGER stav>6 and (SeeXY(You,91,61) or Attacks(Am_bre1)<>0 or Attacks(Am_bre2)<>0) DO
+VAR pom;
+begin
+  wait(0$1);
+  CenterOnUnits([Am_bre1,Am_bre2]);
+  DialogueOn;
+  if videli_w then if IsOK(Kov) then Say(Kov,'D16-Kov-1a')
+              else if IsOK(Kov) then Say(Kov,'D16-Kov-1');
+  Say(bur,'D16-Bur-1');
+  if IsOK(Gny) then Say(Gny,'D16-Gny-1');
+  DialogueOff;
+  pom=FilterAllUnits([[f_side,You],[f_see,Amici]]);
+  if pom=0 then pom=[bur];
+  CenterOnUnits(pom);
+  bw_e_nasli=true;
+  videli_e=true;
+end;
+
+// pta se, jestli muze utocit na bw
+function dialog_muze_utocit_na_bw;
+VAR pom;
+begin
+  DialogueOn;
+  pom=Query('QAttackBw');
+  case pom of
+   1:begin
+       stav_utoku=1;
+       SayRadio(bur,'D17-Bur-1');
+       SayRadio(plat,'D17-Pla-1');
+       SayRadio(bur,'D17-Bur-2');
+       SayRadio(plat,'D17-Pla-2');
+     end;
+   2:begin
+       stav_utoku=2;
+       SayRadio(bur,'D18-Bur-1');
+       SayRadio(plat,'D18-Pla-1');
+       SayRadio(bur,'D18-Bur-2');
+       SayRadio(plat,'D18-Pla-2');
+       posily_go=true;
+     end;
+   3:stav_utoku=3;
+  end;
+  if videli_w then begin
+                     if IsOK(Gny) then begin
+                                         Say(Gny,'D19-Gny-1');
+                                         Say(bur,'D19-Bur-1');
+                                       end;
+                   end
+              else begin
+                     if IsOK(Kov) then begin
+                                         Say(Kov,'D19-Kov-1');
+                                         Say(bur,'D19-Bur-2');
+                                       end;
+                   end;
+  DialogueOff;
+end;
+
+// ukonceni mise
+EVERY 0$2 TRIGGER stav>=7 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]]);
+  if pom=0 then begin
+                  znicene_bw=true;
+                  DialogueOn;
+                  Say(bur,'D20-Bur-1');
+                  Say(plat,'D20-Pla-1');
+                  ChangeMissionObjectives('M8');
+                  DialogueOff;
+                 end
+           else enable;
+end;
+
+}
+
+// hint k bednam
+EVERY 0$6 TRIGGER bedny_hint DO
+begin
+  Hint('GatheringMaterial');
+end;
+
+// hlaska platonova, ze nasel bedny
+EXPORT function hlaska_platonov_bedny;
+begin
+  Say(plat,'D4-Pla-1');
+end;
+
+{// jestli uz vylezl na hledani
+EVERY 0$1 TRIGGER stav>6 and not IsInArea(bur,RU2_base) DO
+begin
+  je_mimo=false;
+end;
+
+// jestli uz vylezl na hledani podruhe
+EVERY 0$1 TRIGGER stav>6 and not IsInArea(bur,RU2_base) and byl_v_zakladne DO
+begin
+  je_mimo=false;
+end;
+
+// pokec, kdyz se vrati zpatky do zakladny
+EVERY 0$1 TRIGGER je_mimo and IsInArea(bur,RU2_base) DO
+VAR BW_e,BW_w;
+VAR ve,vw;
+begin
+  DialogueOn;
+  BW_w=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,unit_building],[f_ok]]);
+  BW_e=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,unit_building],[f_ok]]);
+  if videli_e and BW_e>0 then ve=true
+                         else ve=false;
+  if videli_w and BW_w>0 then vw=true
+                         else vw=false;
+  if ve or vw then Say(plat,'D25-Pla-1');
+  if vw and ve
+    then Say(bur,'D25-Bur-1')
+    else begin
+           if ve then Say(bur,'D25-Bur-1a')
+                 else
+           if vw then Say(bur,'D25-Bur-1b')
+                 else
+           if (not videli_w) and (not videli_e) then Say(bur,'D25-Bur-1c');
+         end;
+  byl_v_zakladne=true;
+  je_mimo=false;
+  DialogueOff;
+end;
+
+// pokec, kdyz se vrati zpatky do zakladny podruhe
+EVERY 0$1 TRIGGER je_mimo and IsInArea(bur,RU2_base) and byl_v_zakladne DO
+VAR BW_e,BW_w;
+VAR ve,vw;
+VAR pom;
+begin
+  DialogueOn;
+  BW_w=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,unit_building],[f_ok]]);
+  BW_e=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,unit_building],[f_ok]]);
+  if videli_e and BW_e>0 then ve=true
+                         else ve=false;
+  if videli_w and BW_w>0 then vw=true
+                         else vw=false;
+  if ve or vw then Say(plat,'D25a-Pla-1');
+  if vw then Say(bur,'D25a-Bur-1b')
+        else
+  if ve then Say(bur,'D25a-Bur-1a')
+        else
+  if (not videli_w) and (not videli_e) then Say(bur,'D25a-Bur-1');
+  if videli_w and IsOK(BWW_1) and IsOK(BWW_2) then
+    begin
+      Say(bur,'D25b-Bur-1');
+      Say(plat,'D25b-Pla-1');
+    end;
+  if IsOK(BWW_1) and IsOK(BWW_2)
+    then Say(plat,'D25c-Pla-1')
+    else begin
+           pom=SeeGreyArea(You,Narea);
+           if pom<procento_odkrytych_pro_vyhru[difficulty] then Say(plat,'D25c-Pla-1a');
+         end;
+  DialogueOff;
+end;
+
+// dialog o pomoci belkovovi
+EVERY 0$1 TRIGGER stav>6 DO
+VAR pom,pom1;
+VAR vyber;
+begin
+  pom=FilterUnitsInArea(Test4,[[f_side,You]]);
+  if pom>0 then begin
+                  DialogueOn;
+                  vyber=Query('QAttackAm');
+                  case vyber of
+                   1:begin
+                       SayRadio(bur,'D21-Bur-1');
+                       SayRadio(plat,'D21-Pla-1');
+                       if not (stav_utoku in [2,3]) then stav_utoku=1;
+                     end;
+                   2:begin
+                       SayRadio(bur,'D22-Bur-1');
+                       pom1=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]]);
+                       if pom1>0 then SayRadio(plat,'D22-Pla-1a')
+                                 else if posily_go then SayRadio(plat,'D22-Pla-1b')
+                                                   else begin
+                                                          SayRadio(plat,'D22-Pla-1');
+                                                          posily_go=true;
+                                                        end;
+                       if stav_utoku<>3 then stav_utoku=2;
+                     end;
+                   3:stav_utoku=3;
+                  end;
+                  if IsLive(Gny) and vyber in [1,2]
+                    then begin
+                           Say(Gny,'D23-Gny-1');
+                           Say(bur,'D23-Bur-1');
+                         end;
+                  ChangeMissionObjectives('M9');
+                  DialogueOff;
+                  wait(0$10);
+                  Hint('CapturingVehicles1');
+//                  Hint('CapturingVehicles2'); Proc? Proc? Proc?
+                end
+           else enable;
+end;
+
+// zachraneni Belkova
+EVERY 0$2 TRIGGER stav>6 and belkov_solved=1 and FilterUnitsInArea(Belkov_kop,[[f_side,You]])>0 DO
+VAR i,pom;
+begin
+  DialogueOn;
+  Say(bel,'D24-Bel-1');
+  if BELKOV_MRTVY then Say(bur,'D24-Bur-1a')
+                  else Say(bur,'D24-Bur-1');
+  Say(bel,'D24-Bel-2');
+  Say(bur,'D24-Bur-2');
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+  if GetSide(auto_belkov)=You then Say(Bur,'D24-Bur-2a');
+  if FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]])>0
+    then Say(plat,'D24-Pla-2a')
+    else Say(plat,'D24-Pla-2');
+  saved_bel=true;
+  belkov_solved=2;
+  pom=SeeGreyArea(You,Narea);
+  if pom>=procento_odkrytych_pro_vyhru[difficulty] and FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]])=0 
+    then begin
+           navrat_a_konec=true;
+           ChangeMissionObjectives('M10a');
+         end
+    else ChangeMissionObjectives('M9a');
+  for i in Rusi_sever do if IsLive(i) then SetSide(i,You);
+  if IsLive(bel) then SetSide(bel,You);
+  DialogueOff;
+end;
+
+// utok na vychodni breastworky
+EVERY 0$1 TRIGGER videli_e DO
+VAR pom,pom1,i;
+VAR nosay;
+begin
+  pom=0;
+  nosay=false;
+  for i in Rusi_enter do
+    if Attacks(i)=BWW_1 or Attacks(i)=BWW_2 then pom=pom+1;
+  if pom>0 then begin
+                  DialogueOn;
+                  if IsOK(Gny) then Say(Gny,'D19A-Gny-1')
+                               else
+                  if IsOK(kov) then Say(Kov,'D19A-Kov-1')
+                               else begin
+                                      pom1=GetPeople(sex_male,class_mechanic,[bur]);
+                                      if pom1=0 then nosay=true
+                                                else Say(pom1[1],'D19A-Kov-1');
+                                    end;
+                  DialogueOff;
+                end
+           else enable;
+end;
+
+}
+// ziskavani lidi podle povolani
+function GetPeople(sex,povolani,diffseznam);
+VAR pom,pom1,pom2,pom3,pom4;
+begin
+  pom1=FilterAllUnits([[f_side,You],[f_class,class_scientistic],[f_sex,sex]]);
+  pom2=FilterAllUnits([[f_side,You],[f_class,class_mechanic],[f_sex,sex]]);
+  pom3=FilterAllUnits([[f_side,You],[f_class,class_engineer],[f_sex,sex]]);
+  pom4=FilterAllUnits([[f_side,You],[f_class,class_soldier],[f_sex,sex]]);
+
+  case povolani of
+   class_scientistic:pom=pom1;
+   class_mechanic:pom=pom2;
+   class_engineer:pom=pom3;
+   class_soldier:pom=pom4;
+  end;
+
+  if povolani<>class_scientistic then pom=pom^pom1;
+  if povolani<>class_mechanic then pom=pom^pom2;
+  if povolani<>class_engineer then pom=pom^pom3;
+  if povolani<>class_soldier then pom=pom^pom4;
+
+  result:= pom diff diffseznam;
+end;
+
+// navrat do prvni baze nez dojde do kirova
+EVERY 0$1 TRIGGER test_is_in_area_burlak and venku marked 991 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU1_base,[[f_side,You],[f_type,unit_vehicle]]);
+  if pom>0 then exit;
+  InGameOn;
+  Say(kurin,'D1a-Kur-1');
+  InGameOff;
+  venku=false;
+end;
+
+// dialog - navrat i s autem
+EVERY 0$1 TRIGGER test_is_in_area_burlak and venku marked 992 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU1_base,[[f_side,You],[f_type,unit_vehicle]]);
+  if pom>0 then
+    begin
+      InGameOn;
+      Say(kurin,'D1a-Kur-1a');
+      InGameOff;
+      venku=false;
+    end
+           else enable;
+end;
+
+{
+// utok na vychodni breastworky
+EVERY 0$1 TRIGGER bw_e_nasli DO
+VAR pom,pom1,i;
+VAR nosay;
+begin
+  pom=0;
+  nosay=false;
+  for i in Rusi_enter do
+    if Attacks(i)=am_bre1 or Attacks(i)=am_bre2 then pom=pom+1;
+  if pom>0 then begin
+                  DialogueOn;
+                  if IsOK(Gny) then Say(Gny,'D16A-Gny-1')
+                               else
+                  if IsOK(kov) then Say(Kov,'D16A-Kov-1')
+                               else begin
+                                      pom1=GetPeople(sex_male,class_mechanic,[bur]);
+                                      if pom1=0
+                                        then nosay=true
+                                        else for i in pom1 do
+                                                if GetSex(pom1[1])=sex_male
+                                                  then
+                                                    begin
+                                                      Say(pom1[1],'D16A-Kov-1');
+                                                      break;
+                                                    end;
+                                    end;
+                  if not nosay then Say(bur,'D16A-Bur-1');
+                  DialogueOff;
+                end
+           else enable;
+end;
+
+// vychodni breastworky znicene
+EVERY 0$3 TRIGGER IsDead(Am_bre1) and IsDead(Am_bre2) DO
+begin
+  DialogueOn;
+  SayRadio(bur,'D20a-Bur-1');
+  SayRadio(plat,'D20a-Pla-1');
+  DialogueOff;
+end;
+}
+// vysel ze zakladny
+EVERY 0$2 TRIGGER stav>6 and not IsInArea(bur,RU2_base) DO
+begin
+  je_mimo=true;
+  enable;
+end;
+
+// chcipnuti belkova
+EXPORT function dialog_belkov_smrt;
+VAR pom;
+begin
+  InGameOn;
+  belkov_solved=3;
+  if pom>=procento_odkrytych_pro_vyhru[difficulty] and FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]])=0
+    then begin
+           navrat_a_konec=true;
+           ChangeMissionObjectives('M10a');
+         end
+    else ChangeMissionObjectives('M9a');
+  InGameOff;
+end;
+
+// kileni pratel - konec
+EVERY 0$1 DO
+VAR pom,i;
+VAR Ru_Units;
+begin
+  Ru_Units=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_human],[f_type,unit_vehicle]]]);
+  for i in Ru_Units do
+    begin
+      pom=Attacks(i);
+      if pom<>0 then if Getside(pom) in [You2,You3] then konstanta_utoceni=konstanta_utoceni+1;
+      if pom=bel or pom=plat or pom=kurin then konstanta_utoceni=konstanta_utoceni+10;
+    end;
+  if konstanta_utoceni<10 then enable;
+end;
+
+// ukonceni mise kvuli kileni vlastnich
+EVERY 0$1 TRIGGER konstanta_utoceni>=10 DO
+begin
+  konec_mise_utok;
+end;
+
+{
+// query shora o utoku
+EVERY 0$1 TRIGGER FilterUnitsInArea(Kopec,[[f_side,You]])>0 DO
+VAR pom,pom1,i;
+begin
+  pom=FilterAllUnits([[f_side,Amici],[f_or,[f_see,You],[f_see,You2]]]);
+  if (BWW_1 in pom) or (BWW_2 in pom) then pom1=true
+                                      else pom1=false;
+  if pom1 then begin
+                 CenterOnUnits([BWW_1,BWW_2]);
+                 dialog_muze_utocit_na_bw;
+                 CenterOnUnits(pom);
+                 if (not kecy_bw_w) and (not skurveny_mission_objectiv_uz_prosel)
+                   then begin
+                          ChangeMissionObjectives('M7');
+                          skurveny_mission_objectiv_uz_prosel=true;
+                        end;
+                 kecy_bw_w=true;
+                 Hint('Visibility');
+                 Hint('Hold');
+                 HInt('Hold2');
+                 videli_w=true;
+                 stav=8;
+               end
+          else enable;
+end;
+}
+// zhozeni chart
+{
+EVERY 0$1 DO
+VAR pom;
+begin
+  pom=SeeGreyArea(You,Narea);
+  if pom>=procento_odkrytych_pro_vyhru[difficulty]
+    then begin
+           ChangeMissionObjectives('M10');
+           ChangeMissionObjectives('M10a');
+         end
+    else enable;
+end;
+
+// zachraneni ostatnich lidi kdyz belkov chcipne
+EVERY 0$3 TRIGGER belkov_solved=3 and FilterUnitsInArea(Belkov_kop,[[f_side,You]])>0 DO
+VAR i,pom;
+begin
+  pom=FilterUnitsInArea(Belkov_kop,[[f_side,You2]]);
+  for i in pom do SetSide(i,You);
+end;
+
+// ukonceni
+EVERY 0$5 TRIGGER navrat_a_konec and (not cont_mission) DO
+VAR pom,pom1,i;
+begin
+  pom=FilterUnitsExceptArea(RU2_base,[[f_side,You],[f_type,unit_human]]);
+  pom1=FilterUnitsExceptArea(RU2_base,[[f_side,You],[f_type,unit_vehicle]]);
+  for i in pom1 do if IsInUnit(i) then pom=pom^IsInUnit(i);
+  if pom=0 then konec_mise
+           else enable;
+end;
+
+}
+{
+Say(b,'D26-Bur-1')
+Say(b,'D26-Kov-1')
+Say(b,'D26-Gny-1')
+Say(b,'D26-Bur-2')
+}
+
+// hint na skilovani lidi
+EXPORT function hint_skilly;
+begin
+  Hint('Skills');
+end;
+
+// hint na recapturing vozidel
+EVERY 0$2 DO
+VAR pom;
+VAR i;
+VAR hinton;
+begin
+  hinton=false;
+  pom=FilterUnitsInArea(VEHCAP,[[f_side,Amici],[f_type,unit_vehicle]]);
+  for i in pom do if IsDrivenBy(i)=0 then hinton=true;
+  if hinton then Hint('CapturingVehicles1')
+            else enable;
+end;
+
+// pridany hint Building2
+EVERY 0$2 DO
+VAR pom,i;
+VAR BUDE_hint;
+begin
+  BUDE_hint=false;
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_building]]);
+  for i in pom do if IsConstructed(i)<>0 then BUDE_hint=true;
+  if BUDE_hint then Hint('Building2')
+               else enable;
+end;

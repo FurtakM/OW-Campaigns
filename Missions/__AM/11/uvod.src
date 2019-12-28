@@ -1,0 +1,166 @@
+VAR plazici;
+VAR navrat;
+VAR zradci;
+
+VAR pom,i;
+
+VAR pocet_spadlych_beden;
+
+// uvodni inicializace promennych
+EVERY 0$0.1 DO
+begin
+  pocet_spadlych_beden=0;
+end;
+
+// ********* uvodni intro - zrada arabskych zoldaku *******
+// plazeni Amiku
+EVERY 0$0.1 DO
+VAR sold;
+begin
+  navrat:=false;
+  sold=UnitFilter(Amici_enter,[[f_class,class_soldier]]);
+  if sold<4 then msg('ERROR: malo vojaku . je to v prdeli')
+            else plazici:=[sold[1],sold[2],sold[3],sold[4]];
+  ComMoveXY(Radar_enter,87,137);
+  AddComMoveXY(Radar_enter,89,134);
+  AddComMoveXY(Radar_enter,91,131);
+  AddComHold(Radar_enter);
+  AddComMoveXY(plazici[1],84,127);
+  AddComCrawl(plazici[1]);
+  AddComMoveXY(plazici[1],91,126);
+  AddComMoveXY(plazici[2],85,127);
+  AddComCrawl(plazici[2]);
+  AddComMoveXY(plazici[2],93,128);
+  AddComMoveXY(plazici[3],83,126);
+  AddComCrawl(plazici[3]);
+  AddComMoveXY(plazici[3],92,128);
+  AddComMoveXY(plazici[4],82,125);
+  AddComCrawl(plazici[4]);
+  AddComMoveXY(plazici[4],90,127);
+  AddComHold(plazici);
+  CenterNowOnXY(92,135);
+end;
+
+// chodici mrtvola
+EVERY 0$0.5 TRIGGER IsAt(Radar_enter,91,131) DO
+begin
+  ComMoveXY(mrtvola,105,139);
+  AddComTurnXY(mrtvola,103,137);
+  CenterOnXY(97,132);
+end;
+
+// vrazedny zradce
+EVERY 0$1 TRIGGER IsAt(mrtvola,105,139) DO
+begin
+  ComExitBuilding(zradce1);
+  ComMoveXY(zradce1,107,138);
+end;
+
+// otoceni a vrazda
+EVERY 0$1 TRIGGER IsAt(zradce1,107,138) DO
+begin
+  ComTurnUnit(mrtvola,zradce1);
+  SayNoFace(mrtvola,'D1a-Merc1-1');
+  SayNoFace(zradce1,'D1a-FMerc2-1');
+  ComMoveUnit(zradce1,mrtvola);
+  SetLives(mrtvola,300);
+  wait(0$1);
+  AddComTurnXY(mrtvola,101,141);
+  AddComTurnUnit(zradce1,mrtvola);
+  AddComHeal(zradce1,mrtvola);
+  wait(0$2);
+  SetLives(mrtvola,40);
+  wait(0$0.5);
+  ForceSayNoFace(mrtvola,'D1a-Merc1-2');
+  KillUnit(mrtvola);
+  SayNoFace(zradce1,'D1a-FMerc2-2');
+  // utek zradcu ze zakladny
+  ComExitBuilding([zradce4,zradce5]);
+  ComExitBuilding([zradce2,zradce3,zradce6,zradce7]);
+  ComMoveXY([zradce2,zradce3,zradce6,zradce7],165,141);
+  KillUnit(mrtvola2);
+  AddComMoveUnit(zradce4,utek2);
+  AddComMoveUnit(zradce5,utek1);
+  SetFuel(utek1,0);
+  SetFuel(utek2,0);
+  wait(0$1);
+  AddComMoveXY(utek1,162,142);
+  AddComMoveXY(utek2,162,139);
+  ComMoveXY(zradce1,162,140);
+  AddComMoveXY([zradce1,zradce2,zradce3,zradce6,zradce7],175,128);
+  AddComMoveXY([zradce1,zradce2,zradce3,zradce6,zradce7],126,94);
+  AddComMoveXY([zradce1,zradce2,zradce3,zradce6,zradce7],165,92);
+
+  // amici zpet
+  ComFree(plazici);
+  ComFree(Radar_enter);
+  ComMoveXY(plazici,86,133);
+  navrat:=true;
+end;
+
+// opetne doplneni benzinu a odjezd
+EVERY 0$5 DO
+begin
+  if IsInArea(utek1,Benal) and IsInArea(utek2,Benal) then
+    begin
+      SetFuel([utek1,utek2],100);
+      ComEnterUnit(zradce5,utek1);
+      ComEnterUnit(zradce4,utek2);
+      AddComMoveXY([zradce4,zradce5],179,136);
+      AddComMoveXY([zradce4,zradce5],153,108);
+      AddComMoveXY([zradce4,zradce5],126,91);
+      AddComMoveXY([zradce4,zradce5],165,92);
+      zradci=[zradce1,zradce2,zradce3,zradce4,zradce5,zradce6,zradce7,utek1,utek2];
+      Odebirani=true;
+    end
+   else enable;
+end;
+
+// odebirani na konci
+EVERY 0$1 TRIGGER Odebirani DO
+begin
+  pom=FilterUnitsInArea(ExitAR,[[f_side,Arabi]]);
+  for i in pom do RemoveUnit(i);
+  if UnitFIlter(zradci,[[f_ok]])>0 then enable
+                                   else Odebirani=false;
+end;
+
+// navrat
+EVERY 0$1 TRIGGER navrat DO
+begin
+  if IsAt(plazici[1],86,133) or IsAt(plazici[2],86,133) or IsAt(plazici[3],86,133) or IsAt(plazici[4],86,133)
+    then
+      begin
+        ComWalk(plazici);
+        AddComMoveXY(plazici,83,148);
+        ComMoveXY(Radar_enter,87,152);
+      end
+    else enable;
+end;
+
+// changemission
+EVERY 0$1 TRIGGER navrat DO
+begin
+  if IsInArea(plazici[1],AMret) then begin
+                                       chmo1;
+                                       InGameOff;
+                                     end
+                                else enable;
+end;
+
+// bedny - padani beden do prvni arabske baze
+EVERY 0$10 TRIGGER A1_dobyta DO
+VAR pom;
+begin
+  wait(Rand(1$0,2$20));
+  pom=Rand(4-difficulty,5);
+  CreateCratesArea(pom,Abase1,true);
+  pocet_spadlych_beden=pocet_spadlych_beden+pom;
+  if pocet_spadlych_beden<max_bedny[difficulty] then enable;
+end;
+
+// pridani mnozstvi beden v ohledu na cas
+EVERY 0$10 TRIGGER A2_dobyta DO
+begin
+  pocet_spadlych_beden=pocet_spadlych_beden-10+difficulty;
+end;

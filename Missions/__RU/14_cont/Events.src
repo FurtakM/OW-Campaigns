@@ -1,0 +1,94 @@
+// Události.
+
+
+On Contact (Side1, Side2) do
+Begin
+  legion_Contact (Side1, Side2);
+End;
+
+
+On UnitDestroyed (Un) do
+Begin
+  rusove_UnitDestroyed (Un);
+  arabi_UnitDestroyed (Un);
+  legion_UnitDestroyed (Un);
+End;
+
+
+On VehicleConstructed (Veh, Fact) do
+Begin
+  arabi_VehicleConstructed (Veh, Fact);
+  legion_VehicleConstructed (Veh, Fact);
+End;
+
+
+On BuildingComplete (Build) do
+Begin
+  rusove_BuildingComplete (Build);
+End;
+
+
+On SibDepositContaminated (Un, X, Y) do
+Begin
+  rusove_SibDepositContaminated (Un, X, Y);
+End;
+
+
+On SailEvent (Event) do
+Begin
+  Case Event of
+  101: event_Kontaminovano;
+  103: event_DolakanaOpice;
+  104, 105: event_ArabiOprava (Event);
+  111: event_KoupeniPrisli;
+  112: event_UprchliciPrisli;
+  113, 114: event_LegionOprava (Event);
+  115: event_LegionPrebarvi;
+  End;
+End;
+
+
+On BuildingCaptured (Build, OrigSide, Eng) do
+Begin
+  rusove_BuildingCaptured (Build, OrigSide, Eng);
+End;
+
+
+On VehicleCaptured (VehNew, VehOld, OrigSide, Hum) do
+Begin
+  rusove_VehicleCaptured (VehNew, VehOld, OrigSide, Hum);
+  arabi_VehicleCaptured (VehNew, VehOld, OrigSide, Hum);
+  legion_VehicleCaptured (VehNew, VehOld, OrigSide, Hum);
+End;
+
+
+On BehemothConstructed (Un) do
+Begin
+  rusove_BehemothConstructed (Un);
+End;
+
+
+On ApemanTamed (Ape, Sci) do
+Begin
+  arabi_ApemanTamed (Ape, Sci);
+End;
+
+
+On EnterBuilding (Building, Un) do
+Begin
+  arabi_EnterBuilding (Building, Un);
+End;
+
+
+On McAttackDone (McId, Un) do
+Begin
+  arabi_McAttackDone (McId, Un);
+End;
+
+
+Every 1$59 do
+Begin
+  RandomizeAll;
+End;
+
+

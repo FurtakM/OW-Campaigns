@@ -1,0 +1,32 @@
+var opravit;
+var opravari;
+
+//hledani budov na opravu
+every 0$3 trigger not under_attack do
+var zivoty,i,bb;
+begin
+    opravit:=[];
+    zivoty:=[];
+
+    for i in UnitFilter(can_repair, [f_side,ai]) do begin
+        if GetLives(i)<1000 and (difficulty>2 and GetX(i)=41 and GetX(i)=23) then begin
+           opravit:=opravit ^ [i];
+           zivoty:=zivoty ^ [GetLives(i)];
+        end;
+    end;
+    if opravit then begin
+      opravit:=SortListByListAsc(opravit, zivoty);
+    end;
+    enable;
+end;
+
+//opravy budov
+every 0$3 trigger not under_attack do
+begin
+    if opravit then begin
+      if opravit[1] in can_repair then
+        ComRepairBuilding(UnitFilter(eng, [f_dist, opravit[1], (5-GetLives(opravit[1])div 200)* 7]), opravit[1]);
+    end;
+
+    enable;
+end;

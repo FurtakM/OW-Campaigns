@@ -1,0 +1,98 @@
+var ShootAreaNr,BarrelAreas,StandAreas;
+
+every 0$1 marked 201 do // Asking about Shooting Gallery
+begin
+  GalleryAsked:=true;
+  Wait(Rand(0$10,0$20));
+  D_FiringRange;
+  case Query('QShootingGallery') of
+    1:
+    begin
+      GalleryBuild:=true;
+      D_QrShootingGallery1;
+      Wait(0$2);
+      Hint('ShootingGallery');
+      ShootAreaNr:=1;
+      BarrelAreas:=[BarrelArea1,BarrelArea2,BarrelArea3,BarrelArea4,BarrelArea5];
+      StandAreas:=[StandArea1,StandArea2,StandArea3,StandArea4,StandArea5];
+      enable(202); // Shooting Gallery controling
+      enable(203); // Adding experiency for shooters
+    end;
+    2:
+    begin
+      D_QrShootingGallery2;
+      SetAreaMapShow(ShootArea,0);
+    end;
+  end;                                     
+end;                                                              
+
+every 0$0.5 marked 202 do // Shooting Gallery controling
+var shooters,un,buildings;
+begin
+  enable;
+  shooters:=FilterUnitsInArea(ShootArea,[[f_type,unit_human],[f_not,[f_hastask]],[f_nation,nation_russian]]);
+//  display_strings:='shooters: '&[shooters]; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if shooters<>[] then
+  begin
+    for un in shooters do
+    begin 
+      buildings:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+      if buildings<>[] then
+      begin
+        if NOT (GetClass(un)=class_engineer) then
+        begin
+          ComMoveXY(un,ShiftX(GetX(buildings[1]),GetDir(buildings[1]),3),ShiftY(GetY(buildings[1]),GetDir(buildings[1]),3));
+          Wait(10);
+          while HasTask(un) do
+          begin
+            Wait(10);
+          end;
+          if UnitsInside(buildings[1])=6 then
+          begin
+            ComExitBuilding((UnitsInside(buildings[1]))[1]);
+            while HasTask((UnitsInside(buildings[1]))[1]) do
+            begin
+              Wait(10);
+            end;
+          end;
+          ComEnterUnit(un,buildings[1]); Wait(1);
+          AddComChangeProfession(un,class_engineer); Wait(1);
+          AddComExitBuilding(un); Wait(1);
+        end;
+        if GetCargo(un,mat_oil)=0 then AddComTransport(un,buildings[1],mat_oil); Wait(1);
+        repeat Wait(0$1) until NOT HasTask(un);
+        if GetCargo(un,mat_oil)<>0 then
+        begin
+          AddComMoveToArea(un,BarrelAreas[ShootAreaNr]); Wait(1);
+          AddComUnload(un); Wait(1);
+          AddComSailEvent(un,un);
+          AddComMoveToArea(un,StandAreas[ShootAreaNr]); Wait(1);
+          ShootAreaNr:=ShootAreaNr+1;
+          if ShootAreaNr=6 then ShootAreaNr:=1;
+        end;
+      end;
+    end;
+  end;
+end;
+
+every 0$0.1+0$0.05 marked 203 do // Adding experiency for shooters
+var un,shoot_filter;
+begin
+  shoot_filter:=FilterUnitsInArea(ShootArea,[[f_type,unit_human],[f_class,class_engineer],[f_hastask],[f_nation,nation_russian]]);
+//  display_strings:=[shoot_filter]; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  if shoot_filter<>[] then
+    for un in shoot_filter do
+      if GetTaskList(un)<>[] then
+        if (GetTaskList(un)[1][1]='A') AND (InArea(GetTaskList(un)[1][2],GetTaskList(un)[1][3],ShootArea)) then AddExperience(un,skill_combat,1);
+  enable;
+end;
+
+on SailEvent(un) do // Searching barrels for shooting
+var x,y,i;
+begin
+  x:=GetX(un);
+  y:=GetY(un);
+  for i:=0 to 5 do
+    if HexInfo(ShiftX(x,i,1),ShiftY(y,i,1))=-1 then
+      AddComAttackPlace(un,ShiftX(x,i,1),ShiftY(y,i,1));
+end;

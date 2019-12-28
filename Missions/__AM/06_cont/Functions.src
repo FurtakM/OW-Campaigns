@@ -1,0 +1,487 @@
+export function ne_v_boji;
+begin
+   while bojujese do
+         wait(0$4);
+end;
+export function bojujese;
+begin
+   result:=true and not FilterAllUnits([[f_dist,JMM,40],[f_side,russians]]);
+end;
+export function TvojiLidi;
+begin
+   result:=FilterAllUnits([[f_side,you],[f_type,unit_human]]);
+end;
+
+export function filter_type_unit(from_units, human, vehicle, building);
+var temp1, temp2, temp3;
+var un2;
+begin
+     if human then begin
+        temp1:=UnitFilter(from_units, [f_type,unit_human]);
+     end;
+     if vehicle then begin
+        temp2:=UnitFilter(from_units, [f_type,unit_vehicle]);
+     end;
+     if building then begin
+        temp3:=UnitFilter(from_units, [f_type,unit_building]);
+     end;
+     temp1:=add(temp1, temp2);
+     temp1:=add(temp1, temp3);
+     result:=temp1;
+end;
+
+
+export function find_easiest_way(px, py, hloubka, krok, for_units, host_side, queue);
+var x,y;
+var x2,y2;
+var lx,ly;
+var howgood, smer;
+var i2, j2, size2;
+var hsee, kolem;
+var for_unit;
+begin
+     for for_unit in for_units do begin
+
+       x:=px;
+       y:=py;
+       lx:=px;
+       ly:=py;
+
+       for j2:=1 to hloubka do begin
+         howgood:=50000;
+         smer:=0;
+         kolem:=0;
+         for i2:=0 to 5 do begin
+           x2:=ShiftX(x, i2, krok);
+           y2:=ShiftY(y, i2, krok);
+
+           hsee:=SeeXY(host_side, x2,y2);
+           if hsee<howgood and GetDistXY(px,py, x,y) < GetDistXY(px,py, x2,y2) then begin
+              howgood:=SeeXY(host_side, x2,y2);
+              smer:=i2;
+           end;
+           kolem:=kolem+hsee;
+         end;
+         x:=ShiftX(x, smer, krok);
+         y:=ShiftY(y, smer, krok);
+         lx:=lx ^ x;
+         ly:=ly ^ y;
+         if kolem=0 then break;
+       end;
+       for j2:=(lx+0) downto 1 do begin
+           if queue and j2=(lx+0) then 
+               ComMoveXY(for_unit, lx[j2], ly[j2])
+           else begin
+               com_queue:=true;
+               ComMoveXY(for_unit, lx[j2], ly[j2]);
+               com_queue:=false;
+           end;
+       end;
+    end;
+end;
+
+export function evade_shortest_way(for_units, queue, agressive);
+var for_unit;
+var unx, uny;
+begin
+     for for_unit in for_units do begin
+        unx:=GetX(for_unit);
+        uny:=GetY(for_unit);
+        evade_shortest_way_from_xy(unx, uny, for_unit, queue, agressive);
+     end;
+end;
+
+// must be already set external vars-> map_size_x, map_size_y
+export function evade_shortest_way_from_xy(unx, uny, for_units, queue, agressive);
+var foundswX, foundswY, foundswD;
+var eswTX, eswTY;
+var for_unit;
+begin
+     for for_unit in for_units do begin
+         foundswD:=50000;
+
+         eswTX:=0;
+         eswTY:=0;
+         while eswTX< map_size_x do begin
+               if GetDistXY(unx, uny, eswTX, eswTY) < foundswD then begin
+                  foundswX:=eswTX;
+                  foundswY:=eswTY;
+                  foundswD:=GetDistXY(unx, uny, eswTX, eswTY);
+               end;
+               eswTX:=eswTX+10;
+         end;
+         eswTX:=map_size_x div 2;
+         eswTY:=map_size_y-1;
+         while eswTX< (map_size_x+map_size_x div 2) do begin
+               if GetDistXY(unx, uny, eswTX, eswTY) < foundswD then begin
+                  foundswX:=eswTX;
+                  foundswY:=eswTY;
+                  foundswD:=GetDistXY(unx, uny, eswTX, eswTY);
+               end;
+               eswTX:=eswTX+10;
+         end;
+
+         eswTX:=0;
+         eswTY:=0;
+         while eswTY< (map_size_y) do begin
+               if GetDistXY(unx, uny, eswTX, eswTY) < foundswD then begin
+                  foundswX:=eswTX;
+                  foundswY:=eswTY;
+                  foundswD:=GetDistXY(unx, uny, eswTX, eswTY);
+               end;
+               eswTY:=eswTY+10;
+               eswTX:=eswTX+5;
+         end;
+
+         eswTX:=map_size_x;
+         eswTY:=1;
+         while eswTY< (map_size_y) do begin
+               if GetDistXY(unx, uny, eswTX, eswTY) < foundswD then begin
+                  foundswX:=eswTX;
+                  foundswY:=eswTY;
+                  foundswD:=GetDistXY(unx, uny, eswTX, eswTY);
+               end;
+               eswTY:=eswTY+10;
+               eswTX:=eswTX+5;
+         end;
+
+
+         if queue then begin
+//            ComHold(for_unit);
+            if agressive then begin
+                AddComAgressiveMove(for_unit, foundswX, foundswY);
+                AddComMoveToArea(for_unit, border);
+            end
+            else begin
+                AddComMoveXY(for_unit, foundswX, foundswY);
+                AddComMoveToArea(for_unit, border);
+            end;
+         end
+         else begin
+//            ComHold(for_unit);
+            if agressive then begin
+                ComAgressiveMove(for_unit, foundswX, foundswY);
+                AddComMoveToArea(for_unit, border);
+            end
+            else begin
+                ComMoveXY(for_unit, foundswX, foundswY);
+                AddComMoveToArea(for_unit, border);
+            end;
+         end;
+     end;
+end;
+
+export function see_any(strana, sez2);
+var sai, see_any_r;
+begin
+     see_any_r:=false;
+     for sai in sez2 do
+         if See(strana, sai) then begin
+            see_any_r:=true;
+            break;
+         end;
+     ;
+     result:=see_any_r;
+end;
+
+
+export function nearest_units_xy(from_units, x, y, skip, pocet, min_vzdal, max_vzdal);
+var list, list2;
+var un1, vzdal;
+var count;
+begin
+     un1:=1;
+     count:=0;
+     if pocet>from_units then pocet:=(from_units+0);
+     while un1<=pocet or count<=pocet do begin
+           vzdal:=GetDistUnitXY(un1, x,y);
+           if vzdal<=max_vzdal then begin
+              if un1>skip then begin
+                 if list then begin
+                    list:=list ^ from_units[un1];
+                    list2:=list2 ^ vzdal;
+                 end
+                 else begin
+                    list:=from_units[un1];
+                    list2:=vzdal;
+                 end;
+                 count:=count+1;
+              end;
+           end;
+           un1:=un1+1;
+     end;
+     result:=list;
+end;
+
+export function nearest_units_unit(from_units, for_unit, skip, pocet, min_vzdal, max_vzdal);
+var x,y;
+begin
+     x:=GetX(for_unit);
+     y:=GetY(for_unit);
+     result:=nearest_units_xy(from_units, x, y, skip, pocet, min_vzdal, max_vzdal);
+end;
+
+export function nearest_ememies_xy(side, x,y, skip, pocet, max_vzdal, human, vehicle, building);
+var from_units;
+begin
+     from_units:=FilterAllUnits([f_side, side]);
+     from_units:=filter_type_unit(from_units, human, vehicle, building);
+
+     nearest_units_xy(from_units, x,y, skip, pocet, 1, max_vzdal);
+end;
+
+export function nearest_ememies_unit(side, for_unit, skip, pocet, max_vzdal, human, vehicle, building);
+var from_units;
+begin
+     from_units:=FilterAllUnits([f_side, side]);
+     from_units:=filter_type_unit(from_units, human, vehicle, building);
+
+     nearest_units_unit(from_units, for_unit, skip, pocet, 1, max_vzdal);
+end;
+
+export function enter_near_vehicle(who, dist, what);
+var add, i, j;
+begin
+     for i in who do begin
+         for j in what do begin
+             if not IsDrivenBy(j) and GetDistUnits(i, j)<=dist then begin
+                ComEnterUnit(i,j);
+                break;
+             end;
+         end;
+     end;
+end;
+
+export function any_near(who, dist, what);
+var add, i, j;
+begin
+     for i in who do begin
+         add:=false;
+         for j in what do begin
+             if GetDistUnits(i, j)<=dist then begin
+                add:=true;
+             end;
+         end;
+         if add then begin
+            if result then
+               result:=result ^ i
+            else
+               result:=i;
+         end;
+     end;
+end;
+
+export function comqb;
+begin
+     com_queue:=true;
+end;
+export function comqe;
+begin
+     com_queue:=false;
+end;
+
+export function take_path(for_units, path, agressive);
+var i1;
+var a, x,y;
+begin
+     for_units:=UnitFilter(for_units, [f_alive]);
+     i1:=1;
+     while i1<=path do begin
+         a:=path[i1];
+         if a<0 then begin
+            while a<=-1 do begin
+               a:=a+1;
+               AddComWait(for_units,0$1);
+            end;
+
+            i1:=i1+1;
+         end
+         else begin
+            if a=0 then begin
+               a:=path[i1+1];
+               if a=0 then
+                  AddComReturn(for_units);
+               if a=1 then
+                  AddComRemember(for_units);
+            end
+            else begin
+                x:=path[i1];
+                y:=path[i1+1];
+                if x<=3 and y<=3 then begin
+                   Msg('kam to jedes (take path)');
+                   Msg([x,y]);
+                end;
+
+                if agressive then
+                   AddComAgressiveMove(for_units, x, y)
+                else
+                   AddComMoveXY(for_units, x, y);
+            end;
+            i1:=i1+2;
+         end;
+     end;
+end;
+
+
+export function find_drivers(cars, drivers, take_out);
+var empty, free, i, konec;
+begin
+     cars:=UnitFilter(cars, [f_alive]) union [];
+     drivers:=UnitFilter(drivers, [f_alive]) union [];
+
+     for i in cars do
+         if not IsDrivenBy(i) then
+            empty:=add(empty,i);
+     if take_out then begin
+       for i in drivers do
+           if not (IsInUnit(i) in cars) then
+              free:=add(free,i);
+     end
+     else begin
+       for i in drivers do
+           if not IsInUnit(i) then
+              free:=add(free,i);
+     end;
+
+     result:=cars diff empty;
+
+     if empty <= free then
+        konec:=empty
+     else
+        konec:=free;
+
+     for i:=1 to konec do begin
+         ComEnterUnit(free[i], empty[i]);
+         result:=add(result,empty[i]);
+     end;
+end;
+
+export function full_forts(forts, sols);
+var empty, free, i, konec;
+begin
+     forts:=forts union [];
+     sols:=sols union [];
+
+     for i in forts do
+         if not UnitsInside(i) then
+            empty:=add(empty,i);
+     for i in sols do
+         if not IsInUnit(i) and not IsBusy(i) then
+            free:=add(free,i);
+
+     result:=forts diff empty;
+
+     if empty <= free then
+        konec:=empty
+     else
+        konec:=free;
+
+     for i:=1 to konec do begin
+         ComEnterUnit(free[i], empty[i]);
+         result:=add(result,empty[i]);
+     end;
+end;
+
+
+export function depart(cars, drivers, path, argessive, take_out);
+var pojedou;
+begin
+     pojedou:=find_drivers(cars, drivers, take_out);
+     wait_for_drivers(pojedou);
+     take_path(pojedou, path, argessive);
+end;
+
+export function wait_for_drivers(cars);
+var i, vsichni_ready, k;
+begin
+     k:=0;
+     while not vsichni_ready do begin
+           vsichni_ready:=true;
+           k:=k+1;
+           for i in cars do
+               if not IsDrivenBy(i) then
+                  vsichni_ready:=false;
+
+           wait(0$1.0);
+     end;
+end;
+
+
+export function rand_xy_in_map;
+var x,y;
+begin
+     y:=Rand(2,map_size_y-2);
+     x:=Rand(y div 2 + 2,map_size_x + y div 2 - 2);
+
+     result:=[x,y];
+end;
+
+
+export function TalkOn;
+begin
+     stop_talking:=true;
+end;
+export function TalkOff;
+begin
+     stop_talking:=false;
+end;
+
+//vynecha apemany
+//vybere prvniho z skupiny lidi se zadanym pohlavim sex (0=obe)
+//a zadanym Hclass (0=jakykoliv)
+export function SayAny(lidi, ident, side, sex, Hclass, index);
+var kdo;
+begin
+     kdo:=WhoSayAny(lidi, side, sex, Hclass, index);
+     if kdo then
+        result:=Say(kdo, ident)
+     else
+        result:=false;
+end;
+export function WhoSayAny(lidi, side, sex, Hclass, index);
+begin
+     lidi:=UnitFilter(lidi, [[f_type,unit_human],[f_side,side],f_not,[f_nation,nation_nature]]);
+     if sex<>0 then
+        lidi:=UnitFilter(lidi, [f_sex,sex]);
+
+     if Hclass<>0 then
+        lidi:=UnitFilter(lidi, [f_class,Hclass]);
+
+     if index<=0 then index:=1;
+
+     if lidi>=index then
+        result:=lidi[index]
+     else
+        result:=0;
+end;
+
+export function add(list, list1);
+begin
+     if list=0 then
+        list:=[];
+     if list1=0 then
+        list1:=[];
+     result:=list ^ list1;
+end;
+export function split(list);
+var l1,l2, i;
+begin
+     l1:=[];
+     l2:=[];
+     for i:=1 to list div 2 do begin
+         l1:=l1^list[i];
+     end;
+     l2:=list diff l1;
+     result:=[l1] ^ [l2];
+end;
+
+export hinty_co_byli;
+export function MyHint(ident);
+begin
+  if not hinty_co_byli then
+    hinty_co_byli:=[];
+  if not (ident in hinty_co_byli) then begin
+    hinty_co_byli:=hinty_co_byli ^ ident;
+    Hint(ident);
+  end;
+end;

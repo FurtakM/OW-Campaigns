@@ -1,0 +1,299 @@
+@ Prayer for the dead
+% The moment the Russians looked certain of victory they were besieged by an unknown enemy. Now they must defend themselves against a new force, and whoever these soldiers are, they know what they're doing.
+
+// Dialogue  
+
+// Dialogue 1 (after the start of the mission - at provisional Russian base in the bottom part of the map)
+$ D1-Sol1-1
+- (over radio) Comrade Platonov, the evacuation is ready. We can start in ten minutes.
+$ D1-Pla-1
+- (over radio) It is the only way, our losses are too many, comrade Kurin is amongst them.
+$ D1-Pla-1a
+- (TO BURLAK) Burlak, we need cover for our retreat. This may cost a few lives but it will save many.
+$ D1-Bur-1
+- I understand Comrade Platonov.
+$ D1-Pla-2
+- You are the only one we can depend on Burlak. You must take eight men and construct a base on the knoll to the South. When you are ready we will send all the material you need. Now hurry comrade. We cannot survive long.
+$ D1-Bur-2
+- Very well Comrade Major. You may depend on me.
+
+# M1 (+Build, +Defend)
+Add Main Build
+- Build a base to protect the withdrawing Russian forces
+Add Main Defend
+- Defend your position until you receive other orders.
+#
+
+// Dialogue 2x (Depot is constructed on a wrong spot)
+$ D2x-Pla-1
+- This is not where I told you to build your base, comrade Gorky. Move to the hill.
+
+// Dialogue 2 (Depot is constructed)
+$ D2-Bur-1
+- Comrade major, we have constructed the depot. We need more material now.
+$ D2-Pla-1
+- Very well, comrade Burlak. Material is on its way. (about this time the convoys start to pass through the area)
+
+// Dialogue 2a (short time afterwards a truck full of material comes to base)
+$ D2a-Sol1-1
+- This is for our heroic rear-guard. Comrade Platonov says that you'll soon receive more.
+
+// Dialogue 2b (some time later, when the supply of material is almost depleted)
+$ D2b-Kuz-1
+- Seems to me crates are taking too long, Burlak. Maybe we should take care of it ourselves.
+$ D2b-Bur-1
+- What's your idea Comrade?
+$ D2b-Kuz-2
+- There are plenty of crates going elsewhere.
+$ D2b-Bur-2
+- You're suggesting a little diversion?
+$ D2b-Kuz-3
+- Precisely.
+
+// Query 1 (Pinching vehicles)
+? Q1
+The promised material fails to appear. If you wish you can divert some of the trucks that are passing around you to your depot, just stand in heir way. Of course your superiors might not be pleased!
+- OK
+?
+
+// Query QrSteal
+? QQrSteal
+Do you want to steal this truck?
+-1 Yes
+-2 No
+?
+
+// Dialogue QrSteal#1 
+$ DQrSteal#1-Bur-1
+- Hello comrade. We need your supplies.
+
+// Dialogue QrSteal#2 
+$ DQrSteal#2-Bur-1
+- Nothing. Drive on, comrade.
+
+// Dialogue 3A (When Burlak diverts trucks - number are explained below)
+$ D3A-Pla-1
+- What the hell are you doing, Comrade Gorky!?
+$ D3A-Bur-1
+- Comrade major, we need material...
+$ D3A-Pla-2
+- And I told you it has been sent!
+$ D3A-Kuz-2
+- So where is it? Comrade Major talks bullshit. Material is not coming unless we take it. There will be no base!
+
+// Dialogue 3B 
+$ D3B-Pla-1
+- What the hell you are doing, comrade Gorky?
+$ D3B-Bur-1
+- I thought this was what you sent comrade Major.
+$ D3B-Pla-2
+- Use your eyes next time Comrade Gorky. Don't let it happen again.
+$ D3B-Kuz-2
+- So what do we do? Sit here and wait to b killed? This is the only way Burlak.
+
+// Dialogue 3C 
+$ D3C-Pla-1
+- This is enough Burlak! You will desist that is an order!
+$ D3C-Bur-1
+- Comrade Major we cannot defend the position without supplies.
+$ D3C-Pla-2
+- No member of the Russian army will steal from another whatever circumstance. Is that clear!?
+$ D3C-Bur-2
+- Yes comrade Major.
+$ D3C-Kuz-2
+- We must be more careful. His patience is at an end.
+
+// Dialogue 3D 
+$ D3D-Pla-1
+- Comrade Gorky, this is a flagrant breach of military conduct. If it is repeated you will be court-martialed.
+$ D3D-Bur-1
+- I am sorry, comrade major, I could see no other way, but our supplies are sufficient now.
+$ D3D-Pla-2
+- That is why I have recalled convoy that was coming to you. You will receive nothing more
+$ D3D-Kuz-2
+- Nothing would have come anyway.
+
+// Dialogue 3E 
+$ D3E-Pla-1
+- [RecklessAttack = True & BelkovFreed = False] Comrade Kurin complained of your reckless attack, comrade. You are under arrest.
+$ D3E-Pla-1a
+- [RecklessAttack = False & BelkovFreed = False] I had high hopes for you Comrade Gorky. But not now. You are under arrest.
+$ D3E-Pla-1b
+- [RecklessAttack = True & BelkovFreed = True] You have no respect for your commanders, comrade Gorky. This will not be tolerated. You are under arrest.
+$ D3E-Pla-1c
+- [RecklessAttack = False & BelkovFreed = True] My patience has its limits, comrade Gorky. You are under arrest.
+
+// Dialogue 4 (Russians completed withdrawal - when the player builds fortification or time-limit expires)
+$ D4-Pla-1
+- (over radio) Comrade Yuri Ivanovich Gorky, the enemy is on it's way. You must hold them until I give you orders to retreat. Our hopes are with you.
+$ D4-Bur-1
+- (into radio). They will not pass comrade major Platonov. No pasaran!
+$ D4-Kuz-1
+- We are left to die so those yellow bastards can run in safety.
+$ D4-Bel-1
+- [present] Talk like that and I will kill you myself. It is an honour to save our countrymen's lives.
+$ D4-Bur-2
+- [otherwise] Our orders are to stop the enemy, and that is what we must do.
+$ D4-Gny-2
+- [present] Comrade Kuzmov has a point. We have been left here to die.
+$ D4-Bur-3
+- [reply] No. We have been left here to kill as many US sons of bitches as we can.
+$ D4-Bur-3a
+- And if we win then we stay alive. We have to work together.
+$ D4-Bel-3
+- [present] I have faith in you, Burlak. You saved me twice before.
+$ D4-Kov-3
+- [otherwise, present] I have trust in comrade Gorky. We all should.
+
+// Dialogue 5 (Scholtze - research; when the lab is upgraded)
+$ D5-Sch-1
+- [present] I think we can develop guns that will blast them off the earth. I just need a little time and an assistant with half a brain.
+$ D5-Sci1-1
+- [otherwise] Comrade commander I have ideas for guns that would give us big advantage over American weapons.
+$ D5-Bur-1
+- Good, comrade. I'll tell you when to start.
+
+// Dialogue 6 (Workshop upgraded)
+$ D6-Bur-1
+- This is Lieutenant Gorky. Upgrade of the workshop is now complete.
+$ D6-Pla-1
+- Good, lad. Now you will produce vehicles that will be the pride of Russian. We must destroy the American dogs.
+
+! Extensions
+Extensions
+
+There will be hint...
+!
+
+// Dialogue 7 (Arabian attack starts; first Arabian vehicle appears - select 1-2 sentences depending on the characters present)
+$ D7-Bur-1
+- Here they come. Ready.
+$ D7-Bur-1a
+- This is going to be hot.
+$ D7-Bur-1b
+- We must hold.
+$ D7-Bel-1
+- Come here, dickheads! We'll show you what Russian soldiers can do!
+$ D7-Kuz-1
+- Meet your deaths you bastards.
+$ D7-Kov-1
+- Don't worry, Burlak, we'll clean up this shit.
+$ D7-Sch-1
+- [scientist] The medics are ready for action, comrade Burlak!
+$ D7-Sol1-1
+- For Russia, comrades!
+
+// Dialogue 7a (Arabian challenge)
+$ D7a-Hke-1
+- We are coming for you, losers! Surrender and we'll spare your lives!
+$ D7a-Bur-1
+- You are the ones about to die.
+
+// Dialogue 8 (Russian losses reach certain threshold)
+$ D8-Kuz-1
+- [alive] We can't survive much longer. If we don't retreat now we are dead!
+$ D8-Sol1-1
+- [otherwise] Comrade commander! We are taking heavy beating. We must retreat now.
+$ D8-Bur-1
+- Not until the order. Many lives depend on us. Every second counts.
+
+// Dialogue 9 (You must hold)
+$ D9-Pla-1
+- Comrade Gorky. We are leaving the area now but I cannot allow you to retreat. Comrade captain Timur Gaydar is heading towards you and has information that must survive.
+$ D9-Bur-1
+- As long we are alive we will give comrade Gaydar protection.
+$ D9-Pla-2
+- Thank you comrade Burlak. Your bravery is supreme. For now you report to comrade captain Sergey I. Popov.
+$ D9-Bur-2
+- I wish you well, comrade major.
+
+# M2 (+Gaydar)
+Add Main Gaydar
+- Wait for the arrival of captain T. Gaydar and ensure his safety.
+#
+
+// Dialogue 10 (Gaydar arrives)
+$ D10-Gay-1
+- This is Captain Timur M. Gaydar calling base. We are in need of assistance.
+$ D10-Bur-1
+- Comrade Gorky here. We see you, comrade captain and we're on our way.
+$ D10-Gay-2
+- Gorky? Who is your commander?
+$ D10-Pop-2
+- Comrade Gorky is in charge of your rescue operation, comrade Gaydar. He will get you out.
+$ D10-Gay-3
+- He better hurry.  It is death for us otherwise.
+
+// Dialogue 11 (Meeting with Gaydar)
+$ D11-Gay-1
+- What the hell kept you!? We could be dead!
+$ D11-Sol1-1
+- (whoever actually reached Gaydar's position) It wasn't easy, comrade captain.
+$ D11-Gay-2
+- [when he meets Burlak] This was hardly a professional job Comrade Gorky.
+$ D11-Bur-2
+- You are alive captain comrade...
+$ D11-Gay-3
+- Only because of my will to survive! Left to you the Arabs would have killed us!
+$ D11-Bur-3
+- What Arabs?
+$ D11-Gay-4
+- These mercenaries do not work for themselves, they were assembled by the governments of Arab nations.
+$ D11-Bur-4
+- This is news. So I wonder what is their purpose.
+
+// Dialogue 12 (Order to retreat)
+$ D12-Pop-1
+- Comrade Gorky, you are now authorised to retreat. Don't leave buildings or supplies for the enemy to use.
+$ D12-Bur-1
+- We shall destroy them before we leave comrade commander.
+$ D12-Pla-1
+- Do not allow the enemy to follow. Lose them in the forest before you come to the meeting point. (Area revealed on map) And take good care of captain Gaydar. He must survive.
+
+# M(-Build, -Defend, >Gaydar, +Retreat, +Destroy)
+Del Build
+Del Defend
+Chg Gaydar
+- Take captain Gaydar to meeting point.
+Add Main Retreat
+- Retreat to the meeting point. No enemy must be visible when you arrive.
+Add Secondary Destroy
+- Destroy your base so it cannot be used by the enemy.
+#
+
+// Query EndMission
+? QEndMission
+Not all of your men have reached the exit area. What do you want to do? (If you select "Continue", you can end the mission at any time through "Mission objectives" dialogue.)
+-1 End mission.
+-2 Continue mission.
+?
+
+^ Main
+Exit area reached, captain Gaydar is safe.
+
+| Burlak
+Burlak is dying.
+
+| Gaydar
+Captain Gaydar is dying.
+
+| Arrest
+You were arrested for the theft of socialist property. Don't be so greedy next time!
+
+| ArabBreakthrough
+Arabians broke through your defences.
+
+* Dismantle
++ Base dismantled before abandoning.
+- Enemy captured some of the buildings in your base.
+*
+
+* EnemyLosses
++ Great losses inflicted on the enemy.
+- Losses inflicted on the enemy were small.
+*
+
+* LittleLosses
++ Few casualties.
+- You lost more than two of your men.
+*

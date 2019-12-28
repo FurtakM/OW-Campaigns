@@ -1,0 +1,586 @@
+EXPORT CREATE_AR_PROTIOFENZIVU_LIST;
+EXPORT JEDNOTKY_BAZE_2_LIST;
+EXPORT JEDNOTKY_BAZE_3_LIST;
+EXPORT Ar_utok1_LIST;
+EXPORT Ar_utok2_LIST;
+EXPORT Ar_utok3_LIST;
+EXPORT Ar_utok4_LIST;
+
+// locationy
+
+EXPORT GARYL;
+EXPORT LISAL;
+EXPORT YAML;
+EXPORT FRANKL;
+EXPORT CORNELL;
+EXPORT BOBL;
+EXPORT CYRL;
+EXPORT DONL;
+EXPORT BROWNL;
+
+VAR ah,av;
+
+// prepare ze sailu
+function prepare_human(sex,clas,level,name);
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+end;
+
+// nacteni osoby ze savu z predesle mise
+EXPORT function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then result:=CreateCharacter(ident)
+                              else result:=0;
+end;
+
+// vytvoreni americanu na zacatku
+EXPORT function create_amici;
+VAR i;
+begin
+  uc_side=You;
+  uc_nation=nation_american;
+
+  vc_chassis:=us_medium_tracked;
+  vc_control=control_computer;
+  vc_engine=engine_solar;
+  vc_weapon=us_radar;
+  av=CreateVehicle;
+  Radar_enter:=av;
+  PlaceUnitXY(av,85,145,false);
+
+  for i in Amici_enter do PlaceUnitArea(i,AMEnter,false);
+end;
+
+// protiofenziva na 1. bazi
+EXPORT function create_ar_protiofenzivu;
+VAR pom;
+begin
+  pom=[];
+  uc_side:=Arabi;
+  uc_nation:=nation_arabian;
+  uc_direction:=3;
+
+  prepare_human(sex_male,class_mechanic,Ar_levely[difficulty],'Hasam El Azis');
+  ah=CreateHuman;
+
+  vc_chassis:=ar_half_tracked;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=ar_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  prepare_human(sex_female,class_mechanic,Ar_levely[difficulty]-2,'Kurt Kastlic');
+  ah=CreateHuman;
+
+  vc_chassis:=ar_light_trike;
+  vc_control:=control_manual;
+  vc_engine:=engine_solar;
+  vc_weapon:=ar_double_machine_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  if difficulty>1 then
+    begin
+      vc_chassis:=ar_medium_trike;
+      vc_control:=control_computer;
+      vc_engine:=engine_siberite;
+      vc_weapon:=ar_gun;
+      av=CreateVehicle;
+      pom=pom^av;
+    end;
+
+  if difficulty>2 then
+    begin
+      prepare_human(sex_female,class_mechanic,Ar_levely[difficulty],'Jakamoto Shiroko');
+      ah=CreateHuman;
+
+      vc_chassis:=ar_medium_trike;
+      vc_control:=control_manual;
+      vc_engine:=engine_siberite;
+      vc_weapon:=ar_gun;
+      av=CreateVehicle;
+      PlaceHumanInUnit(ah,av);
+      pom=pom^av;
+    end;
+  CREATE_AR_PROTIOFENZIVU_LIST:=pom;
+end;
+
+// pridani auta pro solopa
+EXPORT function create_auto_pro_solopa;
+begin
+  uc_side:=Arabi;
+  uc_nation:=nation_arabian;
+  uc_direction:=3;
+  vc_chassis:=ar_half_tracked;
+  vc_control:=control_manual;
+  vc_engine:=engine_siberite;
+  vc_weapon:=ar_gun;
+  av:=CreateVehicle;
+  result:=av;
+end;
+
+
+VAR pom3,pom4,pom5,pom6,pom1;
+// da arabskym vojakum odpovidajici skilly
+EXPORT function dodej_skily;
+VAR pom,i;
+begin
+  // base A2
+  uprav_cloveka(A2_mor3,class_mortar,Ar_levely[difficulty]);
+  uprav_cloveka(A2_zas1,class_soldier,Ar_levely[difficulty]);
+  uprav_cloveka(A2_zas2,class_soldier,Ar_levely[difficulty]);
+
+
+  // base A3
+  uprav_cloveka(A3_zas1,class_soldier,Ar_levely[difficulty]);
+  uprav_cloveka(A3_solop,class_engineer,Ar_levely[difficulty]);
+  pom=[A3_rme1,A3_rme2,A3_rme3];
+  for i in pom do uprav_cloveka(i,class_mechanic,Ar_levely[difficulty]+1);
+end;
+
+// set vsech skilu
+function set_skills(un,skills);
+begin
+  SetSkill(un,skill_combat,skills[1]);
+  SetSkill(un,skill_engineering,skills[2]);
+  SetSkill(un,skill_mechanical,skills[3]);
+  SetSkill(un,skill_scientistic,skills[4]);
+end;
+
+// pridani skilu clovekovi
+function uprav_cloveka(un,clas,lev);
+begin
+  prepare_human(sex_male,clas,lev,'');
+  ah=CreateHuman;
+  pom1=get_skills(ah);
+  set_skills(un,get_skills(ah));
+  DestroyUnit(ah);
+end;
+
+// vytvoreni opravaru navic
+EXPORT function vytvor_opravare;
+VAR pom;
+begin
+  uc_side:=Arabi;
+  uc_nation:=nation_arabian;
+  uc_direction:=3;
+
+  pom=[];
+  if difficulty<3 then
+    begin
+      prepare_human(sex_male,class_engineer,Ar_levely[difficulty]+1,'Gru Pakansu');
+      ah=CreateHuman;
+      PlaceUnitXY(ah,19,6,false);
+      pom=pom^ah;
+    end;
+  if difficulty<2 then
+    begin
+      prepare_human(get_sex,class_engineer,Ar_levely[difficulty]+2,'');
+      ah=CreateHuman;
+      PlaceUnitXY(ah,25,1,false);
+      pom=pom^ah;
+    end;
+  result:=pom;
+end;
+
+// vytvoreni vojclu pro 2. zakladnu
+EXPORT function vojcli_base_2;
+VAR pom;
+VAR i,j;
+begin
+  pom=[];
+
+  uc_side:=Arabi;
+  uc_nation:=nation_arabian;
+  uc_direction:=0;
+
+  // index 1..10 jsou vojcli !!
+  for i=1 to 10 do
+    begin
+      prepare_human(get_sex_uprava(1,i),class_soldier,Ar_levely[difficulty],get_name(1,i));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 11, 12 jsou vedci !!
+  for i=1 to 2 do
+    begin
+      prepare_human(get_sex,class_scientistic,Ar_levely[difficulty],'');
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 13, 14 jsou mortari !!
+  for i=1 to 2 do
+    begin
+      prepare_human(get_sex_uprava(1,i+12),class_mortar,Ar_levely[difficulty],get_name(1,i+12));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 15, 16 jsou inzenyri !!
+  for i=1 to 2 do
+    begin
+      prepare_human(get_sex_uprava(1,i+14),class_engineer,Ar_levely[difficulty],get_name(1,i+14));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 17..20  jsou mechanici !!
+  for i=1 to 4 do
+    begin
+      prepare_human(get_sex_uprava(1,i+16),class_mechanic,Ar_levely[difficulty],get_name(1,i+16));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 21..23  jsou mechanici do aut !!
+  for i=1 to 3 do
+    begin
+      prepare_human(get_sex_uprava(1,i+20),class_mechanic,Ar_levely[difficulty],get_name(1,i+20));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+  JEDNOTKY_BAZE_2_LIST=pom;
+end;
+
+// vytvoreni vojclu pro 2. zakladnu
+EXPORT function vojcli_base_3;
+VAR pom;
+VAR i,j;
+begin
+  pom=[];
+
+  uc_side:=Arabi;
+  uc_nation:=nation_arabian;
+  uc_direction:=0;
+
+  // index 1..7 jsou vojcli !!
+  for i=1 to 7 do
+    begin
+      prepare_human(get_sex_uprava(2,i),class_soldier,Ar_levely[difficulty],get_name(2,i));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 8..11 jsou mechanici !!
+  for i=1 to 4 do
+    begin
+      prepare_human(get_sex_uprava(2,i+7),class_mechanic,Ar_levely[difficulty],get_name(2,i+7));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 12,13 jsou vedci !!
+  for i=1 to 2 do
+    begin
+      prepare_human(get_sex,class_scientistic,Ar_levely[difficulty],'');
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 14,15 jsou mortari !!
+  for i=1 to 2 do
+    begin
+      prepare_human(get_sex_uprava(2,i+13),class_mortar,Ar_levely[difficulty],get_name(2,i+13));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  // index 16,17 jsou engineeri !!
+  for i=1 to 2 do
+    begin
+      prepare_human(get_sex_uprava(2,i+15),class_engineer,Ar_levely[difficulty],get_name(2,i+15));
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  JEDNOTKY_BAZE_3_LIST=pom;
+end;
+
+
+// nahodne vybere sex postavy (20% sance na zenskou)
+function get_sex;
+begin
+  if Prob(20) then result=sex_female
+              else result=sex_male;
+end;
+
+// uprava sexu pro zadavani uz jasnych jmen
+function get_sex_uprava(ser,cis);
+VAR a;
+begin
+  case ser of
+   1:if cis=1 then a=sex_female
+              else
+     if cis in [3,4,5,7,8,13,14,15,20,23]
+       then a=sex_male
+       else a=get_sex;
+   2:if cis in [5] then a=sex_female
+              else
+     if cis in [2,3,4,8,11,14,17]
+       then a=sex_male
+       else a=get_sex;
+  end;
+  result=a;
+end;
+
+// vraci jmeno zadne postavy
+function get_name(serie,cislo);
+VAR a;
+begin
+  a='';
+  case serie of
+   1:case cislo of
+      1:a='Petronela Fagan';
+      3:a='Jaryn Floryk';
+      4:a='Ira Smailer';
+      5:a='Soren Rafin';
+      7:a='Mark Kent';
+      8:a='Patrick Bull';
+      13:a='Muzhid Galabi';
+      14:a='Maxim Daigle';
+      15:a='Rick C. West';
+      20:a='Sinisa Mikhailovic';
+      23:a='Wayne Kettlewell';
+     end;
+   2:case cislo of
+      2:a='Danne Rydrgren';
+      3:a='Alfred Van der Poel';
+      4:a='Muhammad Ali';
+      5:a='Elena Grubina';
+      8:a='Oto Zimmerman';
+      11:a='Neil Hoss';
+      14:a='Cardi Nowitzke';
+      17:a='Leonard Van Horn';
+     end;
+  end;
+  result=a;
+end;
+
+// vyber vojaku na zacatku
+EXPORT function choose_vojaky;
+VAR pom,i;
+VAR ovyb;
+VAR poc;
+begin
+
+  SetClass(JMM,class_soldier);
+
+//  Powell=NewCharacter('Powell');
+//  Gary=nacti_osobu('Gary');
+
+  if Gary>0 then SetClass(Gary,class_soldier);
+
+//  Lisa=nacti_osobu('Lisa');
+
+  if Lisa>0 then SetClass(Lisa,class_soldier);
+
+//  Yamoko=nacti_osobu('Yamoko');
+
+  if Yamoko>0 then SetClass(Yamoko,class_soldier);
+
+//  Frank=nacti_osobu('Frank');
+
+  if Frank>0 then SetClass(Frank,class_soldier);
+
+//  Cornel=nacti_osobu('Cornel');
+  if Cornel>0 then SetClass(Cornel,class_soldier);
+
+//  Bobby=nacti_osobu('Bobby');
+  if Bobby>0 then SetClass(Bobby,class_soldier);
+
+//  Cyrus=nacti_osobu('Cyrus');
+  if Cyrus>0 then SetClass(Cyrus,class_soldier);
+
+//  Don=nacti_osobu('Donaldson');
+  if Don>0 then SetClass(Don,class_engineer);
+
+//  Brown=nacti_osobu('Brown');
+  if Brown>0 then SetClass(Brown,class_soldier);
+
+
+  // priprava dat pro character selection
+  ovyb=[sel_not_changeable,sel_hired,sel_dont_change_class,JMM];
+  ovyb=ovyb^[sel_not_hired,sel_changeable,sel_change_class];
+
+  poc=0;
+  if Gary<>0 and GARYL<>7 then begin
+                                 ovyb=ovyb^Gary;
+                                 poc=poc+1;
+                               end;
+  if Lisa<>0 and LISAL<>7 then begin
+                                 ovyb=ovyb^Lisa;
+                                 poc=poc+1;
+                               end;
+  if Cornel<>0 and CORNELL<>7 then begin
+                                     ovyb=ovyb^Cornel;
+                                     poc=poc+1;
+                                   end;
+  if Frank<>0 and FRANKL<>7 then begin
+                                   ovyb=ovyb^Frank;
+                                   poc=poc+1;
+                                 end;
+  if Yamoko<>0 and (Frank=0 or FRANKL=7)
+    then begin
+           ovyb=ovyb^Yamoko;
+           poc=poc+1;
+         end;
+  if Bobby<>0 and BOBL<>7 then begin
+                                 ovyb=ovyb^Bobby;
+                                 poc=poc+1;
+                               end;
+  if Cyrus<>0 and CYRL<>7 then begin
+                                 ovyb=ovyb^Cyrus;
+                                 poc=poc+1;
+                               end;
+  if Don<>0 and DONL<>7 then begin
+                               ovyb=ovyb^Don;
+                               poc=poc+1;
+                             end;
+  if Brown<>0 and BROWNL then begin
+                                ovyb=ovyb^Brown;
+                                poc=poc+1;
+                              end;
+
+  pom=uprav_lidi(lidi_other);
+  ovyb=ovyb^pom;
+  poc=poc+pom+0;
+
+  uc_side:=You;
+  uc_nation:=nation_american;
+  uc_direction:=0;
+
+  prepare_human(sex_male,class_engineer,6,'');
+  pom=CreateHuman;
+  ovyb=ovyb^pom;
+
+  prepare_human(sex_male,class_soldier,6,'');
+  pom=CreateHuman;
+  ovyb=ovyb^pom;
+  poc=poc+2;
+
+  if poc<20 then for i:=1 to 20-poc do
+                   begin
+                     if Rand(1,2)=1 then prepare_human(sex_male,class_engineer,6,'')
+                                    else prepare_human(sex_male,class_soldier,6,'');
+                     pom=CreateHuman;
+                     ovyb=ovyb^pom;
+                   end;
+
+  Amici_enter=CharacterSelection('Choose 11 people',
+                                 11,11,
+                                 ovyb,
+                                 [[class_engineer,1],
+                                 [class_soldier,3],
+                                 [class_mechanic,0]]);
+  Amici_enter=Amici_enter^JMM;
+end;
+
+// upraveni lidi - pryc vedci ... vsichni bud engineeri nebo vojaci
+function uprav_lidi(lidi);
+VAR pom,i;
+VAR sk;
+begin
+  pom=[];
+  for i in lidi do
+    begin
+      sk=get_skills(i);
+      if sk[4]>sk[1] and sk[4]>sk[2] and sk[4]>sk[3] then continue;
+      if sk[1]>sk[2] then SetClass(i,class_soldier)
+                     else SetClass(i,class_engineer);
+      pom=pom^i;
+    end;
+  result:=pom;
+end;
+
+//get vsech skilu pro jednotku
+function get_skills(un);
+VAR pom1,pom2,pom3,pom4;
+begin
+  pom1:=GetSkill(un,skill_combat);
+  pom2:=GetSkill(un,skill_engineering);
+  pom3:=GetSkill(un,skill_mechanical);
+  pom4:=GetSkill(un,skill_scientistic);
+  result:=[pom1,pom2,pom3,pom4]
+end;
+
+// vytvoreni arabskych utoku behem mise
+EXPORT function create_arabske_utoky_behem_mise;
+VAR pom;
+begin
+  uc_side=Arabi;
+  uc_nation=nation_arabian;
+
+  pom=[];
+  pom=get_human(get_sex,class_soldier,4,'');
+  pom=pom^get_human(get_sex,class_soldier,4,'');
+  pom=pom^get_human(get_sex,class_mortar,5,'');
+  if difficulty>1 then pom=pom^get_human(get_sex,class_mortar,5,'');
+  if difficulty>2 then pom=pom^get_human(get_sex,class_soldier,5,'');
+  Ar_utok1_LIST=pom;
+
+  // utok cislo 2
+  pom=[];
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_gun;
+  vc_control=control_apeman;
+  vc_engine=engine_siberite;
+  av=CreateVehicle;
+  pom=av;
+
+  ah=get_human(get_sex,class_mechanic,4,'');
+  vc_control=control_manual;
+  vc_weapon=ar_gatling_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  pom=pom^get_human(get_sex,class_soldier,4,'');
+  pom=pom^get_human(get_sex,class_soldier,4,'');
+
+  Ar_utok2_LIST=pom;
+
+  // 3. utok
+  pom=get_human(get_sex,class_soldier,4,'');
+  pom=pom^get_human(get_sex,class_soldier,4,'');
+  if difficulty>1 then
+    begin
+      pom=pom^get_human(get_sex,class_soldier,4,'');
+      pom=pom^get_human(get_sex,class_soldier,4,'');
+    end;
+  Ar_utok3_LIST=pom;
+
+  // 4. utok
+  pom=get_human(get_sex,class_soldier,6,'');
+  vc_chassis=ar_half_tracked;
+  vc_weapon=ar_gun;
+  vc_control=control_apeman;
+  vc_engine=engine_siberite;
+  av=CreateVehicle;
+  pom=pom^av;
+
+  av=CreateVehicle;
+  pom=pom^av;
+
+  av=CreateVehicle;
+  pom=pom^av;
+
+  Ar_utok4_LIST=pom;
+end;
+
+// vraci cislo creatnuteho humana
+function get_human(sex,clas,level,name);
+var pom;
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+  pom=CreateHuman;
+  result:=pom;
+end;
+
+

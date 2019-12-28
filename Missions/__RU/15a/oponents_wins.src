@@ -1,0 +1,68 @@
+
+// Dialogue WinAmericans (American build alaskite bomb)
+export function US_Wins;
+begin
+  DialogueOn;
+  //CenterOnUnits([Burlak,MacMillan]);
+  if camp=6 then
+    CenterOnUnits(Burlak)
+  else
+    CenterOnUnits(MacMillan);
+  wait(0$1);
+  interface_hidden:=true;
+
+  Say(Powell,'DWinAmericans-Pow-1');
+    case camp of
+  4: if IsOK(MacMillan) then
+       Say(MacMillan,'DWinAmericans-JMM-1')
+     else
+       Say(Burlak,'DWinAmericans-Bur-1');
+  6: if IsOK(Burlak) then
+       Say(Burlak,'DWinAmericans-Bur-1')
+     else
+       Say(MacMillan,'DWinAmericans-JMM-1');
+    end;
+
+  interface_hidden:=false;
+  DialogueOff;
+  Mission_failed(3);
+end;
+
+Export Function RU_Wins;
+     begin
+          if camp=6 then
+               CenterOnUnits(Burlak)
+          else
+               CenterOnUnits(MacMillan);
+
+          DialogueOn;
+          InGameOn;
+          //interface_hidden:=true;
+          wait(0$1);
+
+          SayRadio(Platonov,'DWinRussians-Pla-1');
+          case camp of
+               4: if IsOK(MacMillan) then
+                    Say(MacMillan,'DWinRussians-JMM-1')
+                  else
+                    Say(Burlak,'DWinRussians-Bur-1');
+               6: if IsOK(Burlak) then
+                    Say(Burlak,'DWinRussians-Bur-1')
+                  else
+                    Say(MacMillan,'DWinRussians-JMM-1');
+          end;
+
+          //interface_hidden:=false;
+          DialogueOff;
+          InGameOff;
+          Mission_failed(4);
+     end;
+
+// Dialogue WinRussians (Russian build alaskite bomb and drop it over Americans)
+on SiberiteRocketExploded(un, x, y) do
+begin
+  InGameOn;  //Including "ExclusiveOn" so "siberite_rocket_send" is actually not necessary and prevents reading out of bounds in the AI.
+  siberite_rocket_send:=true;
+  wait(0$7);
+  RU_Wins;
+end;

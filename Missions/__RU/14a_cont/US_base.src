@@ -1,0 +1,288 @@
+// Marked 2     - hlidka 1
+// Marked 3     - hlidka 2
+// Marked 4     - odpocet vybuchu
+// Marked 5     - varovani po vybuchu o odchodu americanu
+// Marked 6     - vstup do kontaminovane arei
+// Marked 7     - odchod americanu ze zakladny
+// Marked 8     - komentar ke znicene zemi o radiaci
+// Marked 9     - odebirani odchazejicich americkych jednotek
+// Marked 10    - odchod americanu ze zakladny
+
+export us_sol,us_sci,                         // list of americans forces
+       us_mech,                               // and one american mechanic
+       us_all_units;                          // pocet vsech americkych jednotek
+
+export us_patrol_1,us_patrol_2;               // americke hlidky v terenu
+
+export blast_countdown;                       // zda uz zacal odpovet vybuchu  // true when countdown to sib bomb exposion starts
+                           
+
+// patroling americkych hlidek  // AM patrols
+every 0$1 Marked 2 do
+var i,x,y,
+    cesta;
+begin
+  if difficulty<3 then
+    cesta:=[101,39, 124,31, 123,7, 158,21, 168,40, 168,65, 167,90, 146,83,
+            146,83, 167,90, 168,65, 168,40, 158,21, 123,7, 124,31, 101,39]
+  else
+    cesta:=[101,39, 124,31, 123,7, 135,7, 135,7, 123,7, 124,31, 101,39];
+
+  repeat
+    for i=1 to (cesta div 2) do
+      begin
+        x:=cesta[(i*2)-1];
+        y:=cesta[(i*2)];
+        ComAgressiveMove(us_patrol_1,x,y);
+        repeat
+          wait(0$3);
+          y:=true;
+          for x in us_patrol_1 do
+            if IsBusy(x) then
+              y:=false;
+        until y;
+      end;
+  until (not us_patrol_1) or (blast_countdown);
+  if us_patrol_1 then
+    begin
+      ComAgressiveMove(us_patrol_1,56,77);
+      us_sol:=us_sol ^ us_patrol_1;
+      us_patrol_1:=[];
+    end;
+end;
+
+every 0$1 Marked 3 do
+var i,x,y,
+    cesta;
+begin
+  cesta:=[135,7, 158,21, 168,40, 168,65, 167,90, 146,83,
+          146,83, 167,90, 168,65, 168,40, 158,21, 135,7];
+
+  repeat
+    for i=1 to (cesta div 2) do
+      begin
+        x:=cesta[(i*2)-1];
+        y:=cesta[(i*2)];
+        ComAgressiveMove(us_patrol_2,x,y);
+        repeat
+          wait(0$3);
+          y:=true;
+          for x in us_patrol_2 do
+            if IsBusy(x) then
+              y:=false;
+        until y;
+      end;
+  until (not us_patrol_2) or (blast_countdown);
+  if us_patrol_2 then
+    begin
+      ComAgressiveMove(us_patrol_2,56,77);
+      us_sol:=us_sol ^ us_patrol_2;
+      us_patrol_2:=[];
+    end;
+end;
+
+
+//-----  priprava americke strany / Preparation of AM side -----//
+function prepare_us_patrol;
+var i,un,done,
+    sol_lev;
+begin
+  done:=0;
+  sol_lev:=[4,5,8] [difficulty];
+
+  us_patrol_1:=[];
+  us_patrol_2:=[];
+
+  uc_nation:=nation_american;
+  uc_side:=americans;
+
+  for i=1 to (difficulty+1) do
+    begin
+      done:=done+1;
+      PrepareSoldier(0,sol_lev+Rand(0,2));
+      un:=CreateHuman;
+
+      if (difficulty=3) and (done>2) then
+        begin
+          us_patrol_2:=us_patrol_2^un;
+          PlaceUnitXYR(un,158,21,2,false);
+        end
+      else
+        begin
+          us_patrol_1:=us_patrol_1^un;
+          PlaceUnitXYR(un,101,39,2,false);
+        end;
+    end;
+
+  Enable(2);
+  if difficulty=3 then
+    Enable(3);
+end;
+
+function prepare_us_base;
+var i,un,
+    b_list;
+begin
+  us_sol:=[];
+  us_sci:=[];
+
+  uc_nation:=nation_american;
+  uc_side:=americans;
+
+  for i=1 to (difficulty+3) do
+    begin
+      PrepareSoldier(0,[3,6,9][difficulty]);
+      un:=CreateHuman;
+      us_sol:=us_sol^un;
+      PlaceUnitXYR(un,55,75,4,false);
+    end;
+
+  for i:=1 to 4 do
+    begin
+      PrepareScientist(sex_male,6+Rand(0,3));
+      un:=CreateHuman;
+      us_sci:=us_sci^un;
+      PlaceUnitArea(un,us_base,false);
+    end;
+
+  PrepareMechanic(0,[4,6,9][difficulty]);
+  us_mech:=CreateHuman;
+  PlaceUnitArea(us_mech,am_repair,false);
+  ComEnterUnit(us_mech,crane);
+
+  if Stevens then
+    begin
+      PlaceUnitArea(Stevens,us_base,false);
+      us_sci:=us_sci^Stevens;
+    end;
+
+  ComEnterUnit(us_sci,us_lab);
+
+  b_list:=FilterAllUnits([ [f_side,americans], [f_btype,b_bunker] ]);
+  for i=1 to b_list do
+    ComEnterUnit(us_sol[i],b_list[i]);
+
+  us_all_units:=FilterAllUnits([[f_side,americans],[f_type,unit_human]]);
+end;
+
+
+export function prepare_us_side;
+begin
+  prepare_us_base;
+  prepare_us_patrol;
+end;
+
+//-----  Chovani americke zakladny -----//
+// hon na Burlaka nebo MacMillana
+every 0$1 trigger IsInArea(truck1,half_line) or IsInArea(truck2,half_line) do
+begin
+  Enable(1);
+end;
+
+every 0$1 trigger FilterUnitsInArea(us_hunt,[ [f_side,you] ]) Marked 1 do
+var list;
+begin
+  list:=FilterUnitsInArea(us_hunt,[ [f_side,you] ]);
+
+  repeat
+    wait(0$1);
+  until not FilterUnitsInArea(us_hunt,[ [f_side,you] ]);
+
+  if list then
+    American_Hunt(list[1]);
+  if not query_started then
+    Enable;
+end;
+
+function American_Hunt(un);
+var i,
+    b_list;
+begin
+  ComExitBuilding(us_sol);
+  Wait(0$0.5);
+
+  repeat
+    ComAgressiveMove(us_sol,GetX(un),GetY(un));
+    wait(0$1);
+  until not See(americans,un) or query_started {and (GetAttitude(americans,you)<>att_neutral) } ;
+
+  b_list:=FilterAllUnits([ [f_side,americans], [f_btype,b_bunker] ]);
+  for i=1 to us_sol do
+    if i<=(0+b_list) then
+      ComEnterUnit(us_sol[i],b_list[i])
+    else
+      ComMoveToArea(us_sol[i],parking);
+
+  wait(0$5);
+end;
+
+
+//----- Odchod americanu ze zakladny -----//
+every 0$5 Marked 7 do
+var difficulty_time;
+begin
+  difficulty_time:=[25$0,15$0,10$0] [difficulty];
+  Wait(difficulty_time);
+  americans_leaving;
+end;
+
+every 0$1 Marked 10 do
+begin
+  americans_leaving;
+end;
+
+function americans_leaving;
+var un,list,i,max,
+    vehicles;
+begin
+  keep_base_finished:=true;
+  ComExitBuilding(us_sol);
+  ComExitBuilding(us_sci);
+  wait(0$1);
+  list:=FilterAllUnits([ [f_side,americans], [f_type,unit_human] ]);
+  ComMoveToArea(list,leave_area);
+
+  vehicles:=FilterUnitsInArea(us_base,[ [f_side,americans], [f_type,unit_vehicle], [f_not, [f_occupied]] ]);
+
+  if (0+vehicles)<list then
+    max:=0+vehicles
+  else
+    max:=0+list;
+
+  if vehicles and list then
+    for i=1 to max do
+      begin
+        ComEnterUnit(list[i],vehicles[i]);
+        AddComMoveToArea(list[i],leave_area);
+      end;
+
+  time_out:=true;
+  Enable(9);
+  repeat
+    list:=FilterAllUnits([ [f_side,americans], [f_type,unit_human], [f_placed], [f_ok] ]);
+    for un in list do
+      if not HasTask(un) then
+        ComMoveToArea(un,leave_area);
+    wait(0$1);
+  until not list;
+
+  if not query_started then
+    Mission_Failed(3);
+end;
+
+every 0$1 trigger FilterUnitsInArea(leave_area,[ [f_side,americans] ]) Marked 9 do
+var list,un,max;
+begin
+  list:=FilterUnitsInArea(leave_area,[ [f_side,americans] ]);
+  for un in list do
+    begin
+      if un in us_sci then
+        us_sci:=us_sci diff un;
+      max:=IsInUnit(un);
+      RemoveUnit(un);
+      if max then
+        RemoveUnit(max);
+    end;
+
+  enable;
+end;

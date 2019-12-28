@@ -1,0 +1,84 @@
+export you;
+
+export MacMillan,                          // promenna pro MacMillana
+       Burlak;                             // promenna pro Burlaka
+
+
+// Priprava jednotek
+function prepare_units;
+begin
+  MacMillan:=CreateCharacter('JMM');
+  Burlak:=CreateCharacter('Burlak');
+
+  SetClass(MacMillan,class_engineer);
+  SetClass(Burlak,class_mechanic);
+
+  SetSide([MacMillan, Burlak], you);
+
+  PlaceUnitArea(MacMillan,central,false);
+  PlaceUnitArea(Burlak,central,false);
+end;
+
+// Staveni baze
+function prepare_freedom;
+var building,un,
+    x,y,dir,weap,
+    Freedom;                 // promenna, do ktere se nacte cela struktura zakladny
+begin
+  uc_side:=7;
+  Freedom:=LoadVariable('Freedom',[]);
+
+  for building in freedom do
+    begin
+      weap:=false;
+      x:=building[1];
+      y:=building[2];
+      dir:=building[3];
+      bc_type:=building[4];
+      bc_level:=building[5];
+      uc_nation:=building[6];
+      if building>7 then
+        begin
+          bc_kind1:=building[7];
+          bc_kind2:=building[8];
+        end;
+      if (building+0)=7 then
+        weap:=building[7];
+      if bc_type in [b_oil_mine, b_siberite_mine] then
+        SetResourceVisibility(x,y,you);
+
+      un:=CreateAndPlaceBuildingXYD(x,y,dir);
+      if weap then
+        PlaceWeaponTurret(un,weap);
+    end;
+
+  building:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  for un in building do
+    begin
+      SetResourceType(GetBase(un),mat_cans,125);
+      SetResourceType(GetBase(un),mat_oil,38);
+      SetResourceType(GetBase(un),mat_siberit,12);
+    end;
+end;
+
+
+// Priprava stran
+function prepare_sides;
+begin
+  you:=7;
+
+  Disable(1);
+end;
+
+//-----------------------------//
+//-----  Startovaci blok  -----//
+starting
+begin
+  prepare_sides;
+  prepare_freedom;
+  prepare_units;
+
+  add_new_vehicles;
+
+  starting_scene;
+end;

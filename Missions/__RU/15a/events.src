@@ -1,0 +1,142 @@
+// odchytavani dialogu o vyzkumu alieni veze
+on ResearchComplete(tech,lab) do
+begin
+  if tech=tech_SibFiss then
+      case GetSide(lab) of
+    1: Enable(4);
+    3: Enable(5);
+      end;
+
+  wait(10);
+  if not IsBusy(lab) then
+    begin
+      labs_in_use:=labs_in_use diff lab;
+      Update_Artefact(lab);
+    end;
+end;
+
+on ResearchStarted(tech,lab) do
+var un,side;
+begin
+  labs_in_use:=labs_in_use ^ lab;
+  side:=GetSide(lab);
+
+  for un=0 to (artefact_number-1) do                                    // removing all artefact icons in labs
+    if lab in [GetTag(un*100+11),GetTag(un*100+side*10+15)] then
+      DeInit_Lab(side,un+1);
+end;
+
+on ResearchCancel(tech,lab) do
+begin
+  wait(10);
+  if not IsBusy(lab) then
+    begin
+      labs_in_use:=labs_in_use diff lab;
+      Update_Artefact(lab);
+    end;
+end;
+
+on UnitDestroyed (un) do
+begin
+  If un=MacMillan then
+    Mission_failed(1);
+  If un=Burlak then
+    Mission_failed(2);
+  Update_defend(un);
+end;
+
+
+on UnitGoesToRed(un) do
+begin
+  If (un=MacMillan) and not Doctors_available(MacMillan) then
+    Mission_failed(1);
+  If (un=Burlak) and not Doctors_available(Burlak) then
+    Mission_failed(2);
+  if (GetSide(un)=us) and (GetControl(un)=control_remote) then
+    begin
+      ComUnlink(un);
+      check_remote(0);
+    end;
+  if GetUnitMc(un) then
+    RemoveMcUnits(GetUnitMc(un),un);
+
+  Update_defend(un);
+end;
+
+
+// zjistovani moznosti zachrany umirajiciho Burlaka nebo MacMillana
+function Doctors_available(geroj);
+var list,un,
+    vysledek;
+begin
+  vysledek:=false;
+  list:=FilterAllUnits([ [f_side,you], [f_class,class_scientistic] ]);
+
+  if list then
+    vysledek:=true;
+
+  if (not vysledek) and
+     (IsInArea(geroj,ar_crates)) and
+     (FilterAllUnits([ [f_side,you], [f_type,unit_human] ])) and
+     (FilterAllUnits([ [f_side,you], [f_btype,b_lab] ])) then
+    vysledek:=true;
+
+  result:=vysledek;
+end;
+
+
+
+// cekani na prvni kontakt Omara s aliancni zakladnou
+on Contact(side1,side2) do
+begin
+  if (side1 in [ar_al,you]) and (side2 in [ar_al,you]) then
+    omar_in_contact:=true;
+end;
+
+
+
+// osetrovani spatnych moveprikazu
+on DestinationUnreachable(un) do
+begin
+  ComStop(un);
+  if (GetType(un)=unit_vehicle) and (GetWeapon(un) in [us_cargo_bay,ru_cargo_bay,ar_cargo_bay]) then
+    remove_bad_crates(GetSide(un));
+end;
+
+
+
+// registrace vyrobenych vozidel
+on VehicleConstructed(veh,fac) do
+var side,list,
+    tower;
+begin
+  side:=GetSide(fac);
+    case side of
+  1: begin
+       check_remote(veh);
+       list:=ready_forces[side] ^ veh;
+       ready_forces:=Replace(ready_forces,side,list);
+       tower:=FilterAllUnits([ [f_side,side], [f_btype,b_control_tower] ]);
+         AddComMoveToArea(veh,us_parking);
+       if GetWeapon(veh)=us_siberium_rocket then
+         US_Wins;
+     end;
+  2: ComMoveToArea(veh,ar_parking);
+  3: begin
+       If GetWeapon(veh)=ru_siberium_rocket then
+         begin
+              if us in cpu_list then
+                   send_sib_to_US(veh)
+              else
+                   RU_Wins;
+         end
+       else
+         begin
+           list:=ready_forces[side] ^ veh;
+           ready_forces:=Delete(ready_forces,side);
+           ready_forces:=Insert(ready_forces,side,list);
+           ComMoveToArea(veh,ru_parking);
+         end;
+     end;
+    end;
+end;

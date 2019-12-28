@@ -1,0 +1,370 @@
+// var ru , ru2 ; var platonov , gleb , burlak ; var tmp , tmp1 ; starting begin SA_OnMissionStart ;
+   0: CALL 661 0 0
+// ru = 3 ;
+   4: LD_ADDR_LOC 1
+   8: PUSH
+   9: LD_INT 3
+  11: ST_TO_ADDR
+// ru2 = 6 ;
+  12: LD_ADDR_LOC 2
+  16: PUSH
+  17: LD_INT 6
+  19: ST_TO_ADDR
+// uc_side = ru2 ;
+  20: LD_ADDR_OWVAR 20
+  24: PUSH
+  25: LD_LOC 2
+  29: ST_TO_ADDR
+// platonov = newcharacter ( Platonov ) ;
+  30: LD_ADDR_LOC 3
+  34: PUSH
+  35: LD_STRING Platonov
+  37: PPUSH
+  38: CALL_OW 25
+  42: ST_TO_ADDR
+// if not platonov then
+  43: LD_LOC 3
+  47: NOT
+  48: IFFALSE 57
+// msg ( neny Platonov ) ;
+  50: LD_STRING neny Platonov
+  52: PPUSH
+  53: CALL_OW 100
+// gleb = newcharacter ( Gleb ) ;
+  57: LD_ADDR_LOC 4
+  61: PUSH
+  62: LD_STRING Gleb
+  64: PPUSH
+  65: CALL_OW 25
+  69: ST_TO_ADDR
+// if not gleb then
+  70: LD_LOC 4
+  74: NOT
+  75: IFFALSE 84
+// msg ( neny Gleb ) ;
+  77: LD_STRING neny Gleb
+  79: PPUSH
+  80: CALL_OW 100
+// uc_side = ru ;
+  84: LD_ADDR_OWVAR 20
+  88: PUSH
+  89: LD_LOC 1
+  93: ST_TO_ADDR
+// burlak = 127 ;
+  94: LD_ADDR_LOC 5
+  98: PUSH
+  99: LD_INT 127
+ 101: ST_TO_ADDR
+// comhold ( [ platonov , gleb , burlak ] ) ;
+ 102: LD_LOC 3
+ 106: PUSH
+ 107: LD_LOC 4
+ 111: PUSH
+ 112: LD_LOC 5
+ 116: PUSH
+ 117: EMPTY
+ 118: LIST
+ 119: LIST
+ 120: LIST
+ 121: PPUSH
+ 122: CALL_OW 140
+// placeunitxy ( platonov , 31 , 23 , false ) ;
+ 126: LD_LOC 3
+ 130: PPUSH
+ 131: LD_INT 31
+ 133: PPUSH
+ 134: LD_INT 23
+ 136: PPUSH
+ 137: LD_INT 0
+ 139: PPUSH
+ 140: CALL_OW 48
+// placeunitxy ( gleb , 29 , 23 , false ) ;
+ 144: LD_LOC 4
+ 148: PPUSH
+ 149: LD_INT 29
+ 151: PPUSH
+ 152: LD_INT 23
+ 154: PPUSH
+ 155: LD_INT 0
+ 157: PPUSH
+ 158: CALL_OW 48
+// placeunitxy ( burlak , 34 , 29 , false ) ;
+ 162: LD_LOC 5
+ 166: PPUSH
+ 167: LD_INT 34
+ 169: PPUSH
+ 170: LD_INT 29
+ 172: PPUSH
+ 173: LD_INT 0
+ 175: PPUSH
+ 176: CALL_OW 48
+// addcomturnunit ( [ platonov , gleb ] , burlak ) ;
+ 180: LD_LOC 3
+ 184: PUSH
+ 185: LD_LOC 4
+ 189: PUSH
+ 190: EMPTY
+ 191: LIST
+ 192: LIST
+ 193: PPUSH
+ 194: LD_LOC 5
+ 198: PPUSH
+ 199: CALL_OW 179
+// addcomturnunit ( [ burlak ] , gleb ) ;
+ 203: LD_LOC 5
+ 207: PUSH
+ 208: EMPTY
+ 209: LIST
+ 210: PPUSH
+ 211: LD_LOC 4
+ 215: PPUSH
+ 216: CALL_OW 179
+// centernowonunits ( [ platonov , gleb , burlak ] ) ;
+ 220: LD_LOC 3
+ 224: PUSH
+ 225: LD_LOC 4
+ 229: PUSH
+ 230: LD_LOC 5
+ 234: PUSH
+ 235: EMPTY
+ 236: LIST
+ 237: LIST
+ 238: LIST
+ 239: PPUSH
+ 240: CALL_OW 87
+// uc_side = ru2 ;
+ 244: LD_ADDR_OWVAR 20
+ 248: PUSH
+ 249: LD_LOC 2
+ 253: ST_TO_ADDR
+// tmp1 = [ ] ;
+ 254: LD_ADDR_LOC 7
+ 258: PUSH
+ 259: EMPTY
+ 260: ST_TO_ADDR
+// uc_nation = nation_russian ;
+ 261: LD_ADDR_OWVAR 21
+ 265: PUSH
+ 266: LD_INT 3
+ 268: ST_TO_ADDR
+// preparesoldier ( sex_male , 8 ) ;
+ 269: LD_INT 1
+ 271: PPUSH
+ 272: LD_INT 8
+ 274: PPUSH
+ 275: CALL_OW 381
+// tmp = createhuman ;
+ 279: LD_ADDR_LOC 6
+ 283: PUSH
+ 284: CALL_OW 44
+ 288: ST_TO_ADDR
+// placeunitxy ( tmp , 27 , 27 , false ) ;
+ 289: LD_LOC 6
+ 293: PPUSH
+ 294: LD_INT 27
+ 296: PPUSH
+ 297: LD_INT 27
+ 299: PPUSH
+ 300: LD_INT 0
+ 302: PPUSH
+ 303: CALL_OW 48
+// tmp1 = tmp1 ^ [ tmp ] ;
+ 307: LD_ADDR_LOC 7
+ 311: PUSH
+ 312: LD_LOC 7
+ 316: PUSH
+ 317: LD_LOC 6
+ 321: PUSH
+ 322: EMPTY
+ 323: LIST
+ 324: ADD
+ 325: ST_TO_ADDR
+// preparesoldier ( sex_male , 8 ) ;
+ 326: LD_INT 1
+ 328: PPUSH
+ 329: LD_INT 8
+ 331: PPUSH
+ 332: CALL_OW 381
+// tmp = createhuman ;
+ 336: LD_ADDR_LOC 6
+ 340: PUSH
+ 341: CALL_OW 44
+ 345: ST_TO_ADDR
+// placeunitxy ( tmp , 28 , 29 , false ) ;
+ 346: LD_LOC 6
+ 350: PPUSH
+ 351: LD_INT 28
+ 353: PPUSH
+ 354: LD_INT 29
+ 356: PPUSH
+ 357: LD_INT 0
+ 359: PPUSH
+ 360: CALL_OW 48
+// tmp1 = tmp1 ^ [ tmp ] ;
+ 364: LD_ADDR_LOC 7
+ 368: PUSH
+ 369: LD_LOC 7
+ 373: PUSH
+ 374: LD_LOC 6
+ 378: PUSH
+ 379: EMPTY
+ 380: LIST
+ 381: ADD
+ 382: ST_TO_ADDR
+// preparesoldier ( sex_male , 8 ) ;
+ 383: LD_INT 1
+ 385: PPUSH
+ 386: LD_INT 8
+ 388: PPUSH
+ 389: CALL_OW 381
+// tmp = createhuman ;
+ 393: LD_ADDR_LOC 6
+ 397: PUSH
+ 398: CALL_OW 44
+ 402: ST_TO_ADDR
+// placeunitxy ( tmp , 29 , 31 , false ) ;
+ 403: LD_LOC 6
+ 407: PPUSH
+ 408: LD_INT 29
+ 410: PPUSH
+ 411: LD_INT 31
+ 413: PPUSH
+ 414: LD_INT 0
+ 416: PPUSH
+ 417: CALL_OW 48
+// tmp1 = tmp1 ^ [ tmp ] ;
+ 421: LD_ADDR_LOC 7
+ 425: PUSH
+ 426: LD_LOC 7
+ 430: PUSH
+ 431: LD_LOC 6
+ 435: PUSH
+ 436: EMPTY
+ 437: LIST
+ 438: ADD
+ 439: ST_TO_ADDR
+// preparesoldier ( sex_male , 8 ) ;
+ 440: LD_INT 1
+ 442: PPUSH
+ 443: LD_INT 8
+ 445: PPUSH
+ 446: CALL_OW 381
+// tmp = createhuman ;
+ 450: LD_ADDR_LOC 6
+ 454: PUSH
+ 455: CALL_OW 44
+ 459: ST_TO_ADDR
+// placeunitxy ( tmp , 30 , 33 , false ) ;
+ 460: LD_LOC 6
+ 464: PPUSH
+ 465: LD_INT 30
+ 467: PPUSH
+ 468: LD_INT 33
+ 470: PPUSH
+ 471: LD_INT 0
+ 473: PPUSH
+ 474: CALL_OW 48
+// tmp1 = tmp1 ^ [ tmp ] ;
+ 478: LD_ADDR_LOC 7
+ 482: PUSH
+ 483: LD_LOC 7
+ 487: PUSH
+ 488: LD_LOC 6
+ 492: PUSH
+ 493: EMPTY
+ 494: LIST
+ 495: ADD
+ 496: ST_TO_ADDR
+// comturnunit ( tmp1 , burlak ) ;
+ 497: LD_LOC 7
+ 501: PPUSH
+ 502: LD_LOC 5
+ 506: PPUSH
+ 507: CALL_OW 119
+// ingameon ;
+ 511: CALL_OW 8
+// wait ( 0 0$1 ) ;
+ 515: LD_INT 35
+ 517: PPUSH
+ 518: CALL_OW 67
+// say ( gleb , DExecution-Glb-1 ) ;
+ 522: LD_LOC 4
+ 526: PPUSH
+ 527: LD_STRING DExecution-Glb-1
+ 529: PPUSH
+ 530: CALL_OW 88
+// say ( platonov , DExecution-Pla-1 ) ;
+ 534: LD_LOC 3
+ 538: PPUSH
+ 539: LD_STRING DExecution-Pla-1
+ 541: PPUSH
+ 542: CALL_OW 88
+// say ( burlak , DExecution-Bur-1 ) ;
+ 546: LD_LOC 5
+ 550: PPUSH
+ 551: LD_STRING DExecution-Bur-1
+ 553: PPUSH
+ 554: CALL_OW 88
+// say ( platonov , DExecution-Pla-2 ) ;
+ 558: LD_LOC 3
+ 562: PPUSH
+ 563: LD_STRING DExecution-Pla-2
+ 565: PPUSH
+ 566: CALL_OW 88
+// comattackunit ( tmp1 , burlak ) ;
+ 570: LD_LOC 7
+ 574: PPUSH
+ 575: LD_LOC 5
+ 579: PPUSH
+ 580: CALL_OW 115
+// while getlives ( burlak ) > hranice_umirani do
+ 584: LD_LOC 5
+ 588: PPUSH
+ 589: CALL_OW 256
+ 593: PUSH
+ 594: LD_INT 250
+ 596: GREATER
+ 597: IFFALSE 608
+// wait ( 0 0$0.3 ) ;
+ 599: LD_INT 10
+ 601: PPUSH
+ 602: CALL_OW 67
+ 606: GO 584
+// comattackunit ( tmp1 , burlak ) ;
+ 608: LD_LOC 7
+ 612: PPUSH
+ 613: LD_LOC 5
+ 617: PPUSH
+ 618: CALL_OW 115
+// while islive ( burlak ) do
+ 622: LD_LOC 5
+ 626: PPUSH
+ 627: CALL_OW 300
+ 631: IFFALSE 642
+// wait ( 0 0$1 ) ;
+ 633: LD_INT 35
+ 635: PPUSH
+ 636: CALL_OW 67
+ 640: GO 622
+// wait ( 0 0$1 ) ;
+ 642: LD_INT 35
+ 644: PPUSH
+ 645: CALL_OW 67
+// youlost ( Fail ) ;
+ 649: LD_STRING Fail
+ 651: PPUSH
+ 652: CALL_OW 104
+// ingameoff ;
+ 656: CALL_OW 9
+// end ; end_of_file
+ 660: END
+// export function SA_OnMissionStart ; begin
+ 661: LD_INT 0
+ 663: PPUSH
+// SetAchievement ( ACH_PUR ) ;
+ 664: LD_STRING ACH_PUR
+ 666: PPUSH
+ 667: CALL_OW 543
+// end ;
+ 671: LD_VAR 0 1
+ 675: RET

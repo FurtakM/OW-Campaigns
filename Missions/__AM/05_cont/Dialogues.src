@@ -1,0 +1,358 @@
+
+
+VAR startx,starty,startd;
+
+export function Dialog1;
+var qr, i,mechs, sols;
+begin
+    InGameOn;   
+
+    startx:=27;
+    starty:=50;
+    startd:=5;
+
+    InitUc;
+    InitHc;
+    InitVc;
+    uc_side:=you;
+    uc_nation:=nation_american;
+
+    not_char:=used diff [JMM,Glad,Lisa,Frank];
+
+  //davam je na konec
+    not_char:=not_char diff [Cyrus, Bobby, Brown, Don];
+    if Brown in used then not_char:=not_char ^ [Brown];
+    if Don in used then not_char:=not_char ^ [Don];
+    if Cyrus in used then not_char:=not_char ^ [Cyrus];
+    if Bobby in used then not_char:=not_char ^ [Bobby];
+  //
+     mechs:=UnitFilter(used, [[f_class, class_mechanic]]);
+     sols:=UnitFilter(used, [[f_class, class_soldier]]);
+     used:=mechs^sols^(used diff (mechs^sols));
+
+     Wait(0$1.0);
+
+     PlaceHumanInUnit(used[1], Car1);
+     PlaceHumanInUnit(used[2], Car2);
+     PlaceHumanInUnit(used[3], Car3);
+     PlaceUnitXYR(Car1, startx, starty, startd, false);
+     PlaceUnitXYR(Car2, startx, starty, startd, false);
+     PlaceUnitXYR(Car3, startx, starty, startd, false);
+     for i:=4 to used do
+        PlaceUnitXYR(used[i], startx, starty, startd, false);
+
+     tvoji_lidi:=used;
+
+     Wait(0$1);
+     CenterNowOnXY(startx, starty);
+     Say(JMM, 'D1d-JMM-1a');
+     SayRadio(Har, 'D1d-Har-1');
+
+     InGameOff;
+     SaveForQuickRestart;
+     ChangeMissionObjectives('M1');
+     Wait(0$1.0);
+     TalkOn;
+     if Say(JMM, 'D2-JMM-1') then
+     if Say(Glad, 'D2-Glad-1') then
+     if Say(JMM, 'D2-JMM-2') then
+     if Say(Glad, 'D2-Glad-2') then
+        Say(JMM, 'D2-JMM-3');
+     TalkOff;
+end;
+
+// prijde Denis
+every 0$10 trigger denis_can_come and laboratore do
+var a, mytick;
+begin
+     mytick:=tick+0$55;
+     while mytick>tick and GetTechProgress(tech_ApePsych, you)<40 do
+       wait(0$1);
+
+     SetSide(Denis, you2);
+     PlaceUnitXYR(Denis, 20,35,5, false);
+     Wait(0$2);
+     Den:=Denis;
+     DialogueOn;
+     CenterOnUnits(Den);
+     if Say(Den, 'DD-Den-1') then
+     if Say(JMM, 'DD-JMM-1') then
+     Say(Den, 'DD-Den-2');
+     DialogueOff;
+     if laboratore then
+       a:=laboratore[1]
+     else
+       a:=budovy[1];
+
+     ComMoveUnit(Den, a);
+
+     Say(Den, 'DD-Den-2a');
+     mytick:=tick+0$20;
+     while GetDistUnits(den, a)>4 and IsLive(a) and mytick>tick do
+       wait(0$0.6);
+     SetSide(Den, you);
+     tvoji_lidi:=tvoji_lidi union Den;
+     if laboratore then begin
+       ComEnterUnit(Den, a);
+       AddComChangeProfession(Den, class_scientistic);
+       Wait(0$2);
+       Say(Den, 'DD-Den-2b');
+     end;
+end;
+
+on ResearchComplete(tech, lab) do
+var qr;
+begin
+  if (GetSide(lab)=you) then begin
+     wait(0$1);
+     if tech=tech_ApeLang then begin
+        zasilka_muze:=true;
+        if IsLive(Glad) then begin
+          Wait(0$1);
+          DialogueOn;
+          Say(Glad, 'D3-Glad-1');
+          Say(JMM, 'D3-JMM-1');
+          Say(Glad, 'D3-Glad-2');
+          Say(JMM, 'D3-JMM-2');
+          DialogueOff;
+        end;
+        MyHint('ApemenTaming');
+     end;
+     if tech=tech_ApePsych then begin
+        Wait(0$1);
+        while opic<=0 do wait(0$2);
+        DialogueOn;
+        if Frank then Say(Frank, 'D8a-Frank-1')
+                 else SayAny(not_char, 'D8a-Sol1-1', you, sex_male, 0, 0);
+          if Den then Say(Den, 'D8a-Den-1')
+                 else SayAny(not_char, 'D8a-Sci1-1', you, sex_male, class_scientistic, 0);
+                      Say(JMM, 'D8a-JMM-1');
+        DialogueOff;
+        MyHint('ApemenPsychology');
+     end;
+     if tech=tech_Radar then begin
+        ChangeMissionObjectives('M2a');
+        SetRestrict(b_ext_radar, you, state_enabled);
+        MyHint('Extensions');
+     end;
+  end;
+end;
+
+every 0$5 trigger FilterAllUnits([f_class,class_apeman_engineer])>=5 do
+begin
+     cil_mit_5_ape_eng_splnen:=true;
+     ChangeMissionObjectives('M1b');
+end;
+every 0$5 trigger FilterAllUnits([f_class,class_apeman_engineer]) do
+begin
+     cil_mit_1_ape_eng_splnen:=true;
+     ChangeMissionObjectives('M1a');
+end;
+
+every 0$3 trigger FilterAllUnits([f_weapon, us_radar]) or ma_radar do
+begin
+     ChangeMissionObjectives('M2b');
+     RadarBuild:=true;
+end;
+
+function ma_radar;
+var i;
+begin
+     result:=false;
+     for i in FilterAllUnits([f_type,unit_building]) do begin
+         if GetBWeapon(i)=us_radar then begin
+            result:=true;
+            break;
+         end;
+     end;
+end;
+
+
+every 7$0 do
+var hex, depot;
+begin
+    depot:=FilterAllUnits([f_or,[f_btype,b_depot],[[f_btype,b_warehouse]]]);
+    if depot then depot:=depot[1]
+             else depot:=JMM;
+    repeat
+       hex:=RandHex(false);
+    until GetDistUnitXY(depot, hex[1], hex[2])>10 and GetDistUnitXY(depot, hex[1], hex[2])<20 ;
+    CreateCratesXYR(5, hex[1], hex[2], 5, true);
+    mat_crates:=mat_crates+1;
+end;
+every 0$10 trigger zasilka_muze do
+var hex, depot;
+begin
+    wait(10$0);
+    depot:=FilterAllUnits([f_or,[f_btype,b_depot],[[f_btype,b_warehouse]]])[1];
+    if depot then depot:=depot[1]
+             else depot:=JMM;
+    repeat
+       hex:=RandHex(false);
+    until GetDistUnitXY(depot, hex[1], hex[2])>10 and GetDistUnitXY(depot, hex[1], hex[2])<20 ;
+    CreateCratesXYR(5, hex[1], hex[2], 5, true);
+    mat_crates:=mat_crates+1;
+end;
+
+every 0$1 trigger zasilka_muze and Den do
+var cekani, budova, x,y, mytick;
+begin
+    cekani:=[1$30, 1$50, 2$10, 2$30][rand(1,4)];
+
+    mytick:=tick+cekani;
+    while tick<mytick and GetTechProgress(tech_ApePsych,you)<70 do
+      Wait(0$1);
+
+    budova:=FilterAllUnits([f_btype, b_depot]);
+    if budova then begin
+       budova:=budova[1];
+       x:=GetX(budova);
+       y:=GetY(budova);
+    end
+    else begin
+       x:=41;
+       y:=24;
+    end;
+    CreateCratesXYR(5, x, y, 10, true);
+    mat_crates:=mat_crates+1;
+    Wait(0$6);
+    DialogueOn;
+       Say(JMM, 'D4-JMM-1');
+    if Say(Den, 'D4-Den-1') then
+    if Say(JMM, 'D4-JMM-2') then
+       Say(Den, 'D4-Den-2');
+    DialogueOff;
+    ChangeMissionObjectives('M2');
+
+    SetTech(tech_Radar, you, state_enabled);
+    SetRestrict(b_lab_half, you, state_enabled);
+    SetRestrict(b_lab_opto, you, state_enabled);
+    zasilka_landed:=true;
+    if difficulty<=2 then begin
+      wait(Rand(0$50, 1$30));
+      CreateCratesXYR(5, x, y, 10, true);
+      if difficulty<=1 then begin
+        wait(Rand(0$30, 1$0));
+        CreateCratesXYR(5, x, y, 10, true);
+      end;
+    end;
+end;
+
+
+// kdyz uvidi prvni araby
+every 0$3.0 trigger attacking and see_any(you, oma) do
+var dia1, kdo1, kdo2, kdo3, cvidi;
+begin
+
+     while cvidi<5 do begin
+       while see_any(you, oma) do begin
+         Wait(0$1);
+         cvidi:=cvidi+1;
+       end;
+       Wait(0$1);  //dopsal Martin
+     end;
+// dokud je uz 5 sec nezahlednou
+     for dia1:=1 to 5 do begin
+       while see_any(you, oma) do
+         Wait(0$1);
+       Wait(0$1);
+     end;
+     if IsLive(Lisa) then begin
+        kdo1:=WhoSayAny(not_char, you, sex_male, 0, 0);
+        DialogueOn;
+        if Say(kdo1, 'D5a-Sol1-1') then
+           Say(Lisa, 'D5a-Lisa-1');
+        if Say(kdo1, 'D5a-Sol1-2') then
+           Say(Lisa, 'D5a-Lisa-2');
+        if Say(kdo1, 'D5a-Sol1-3') then
+           Say(Lisa, 'D5a-Lisa-3');
+        DialogueOff;
+     end
+     else begin
+        DialogueOn;
+        kdo1:=WhoSayAny(not_char, you, sex_male, 0, 1);
+        kdo2:=WhoSayAny(not_char, you, sex_male, 0, 2);
+        kdo3:=WhoSayAny(not_char, you, sex_female, 0, 1);
+        if Say(kdo1, 'D5-Sol1-1') then
+        if not Say(kdo2, 'D5-Sol2-1') then
+               Say(kdo3, 'D5-FSol2-1');
+        if Say(kdo1, 'D5-Sol1-2') then
+        if not Say(kdo2, 'D5-Sol2-2') then
+               Say(kdo3, 'D5-FSol2-2');
+        if Say(kdo1, 'D5-Sol1-3') then
+        if not Say(kdo2, 'D5-Sol2-3') then
+               Say(kdo3, 'D5-FSol2-3');
+        if Say(kdo1, 'D5-Sol1-4') then
+        if not Say(kdo2, 'D5-Sol2-4') then
+               Say(kdo3, 'D5-FSol2-4');
+        if Say(kdo1, 'D5-Sol1-5') then
+        if not Say(kdo2, 'D5-Sol2-5') then
+               Say(kdo3, 'D5-FSol2-5');
+        DialogueOff;
+     end;
+    denis_can_come:=true;
+end;
+
+
+var den_uz_ochocil;
+on ApemanTamed(ktery, kym)  do
+begin
+  if (GetSide(kym)=you) then
+    begin
+      opic:=opic+1;
+
+      if kym=Den and not den_uz_ochocil then begin
+         TalkOn;
+         Say(Den, 'D7a-Den-1');
+         TalkOff;
+         den_uz_ochocil:=true;
+      end
+      else
+          if not first_ape then begin
+             if kym=Glad then begin
+               TalkOn;
+               Say(Glad, 'D7b-Glad-1');
+               TalkOff;
+             end
+             else begin
+                  if GetSex(kym)=sex_male then begin
+                     TalkOn;
+                     SayAny(not_char, 'D7c-Sci1-1', you, sex_male, class_scientistic, 0);
+                     TalkOff;
+                  end
+                  else begin
+                     TalkOn;
+                     SayAny(not_char, 'D7c-FSci1-1', you, sex_female, class_scientistic, 0);
+                     TalkOff;
+                  end;
+             end;
+          end;
+      if not first_ape then begin
+         first_ape:=true;
+         if kym<>Glad and IsLive(Glad) then begin
+            TalkOn;
+            Say(Glad, 'D7c-Glad-1');
+            TalkOff;
+         end;
+      end;
+    end;
+end;
+
+every 0$2 trigger not FilterAllUnits([[f_side,you],[f_see,arabians]]) and GetDistUnits(NearestUnitToUnit(UnitFilter(apemans, [f_side,you]), Lisa), Lisa)<6 do
+begin
+    TalkOn;
+    Say(Lisa, 'D8-Lisa-1');
+    TalkOff;
+end;
+
+every 0$10 trigger {not FilterAllUnits([[f_side,you],[f_see,arabians]]) and }cil_mit_1_ape_eng_splnen do
+var qr;
+begin
+     qr:=Query('Q2');
+     end_the_mission_allowed:=true;
+     if qr=1 then begin
+        Vyhra;
+     end;
+end;
+
+

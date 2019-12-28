@@ -1,0 +1,133 @@
+EXPORT A1_dobyta;
+EXPORT A2_dobyta;
+EXPORT A3_dobyta;
+EXPORT Pruzkumnik;
+
+VAR vysl;
+VAR pom,i;
+VAR uspech;
+
+// postavy
+EXPORT JMM;
+EXPORT Powell;
+EXPORT Gary;
+EXPORT Bobby;
+EXPORT Frank;
+EXPORT Lisa;
+EXPORT Cornel;
+EXPORT Yamoko;
+EXPORT Cyrus;
+EXPORT Don;
+EXPORT Brown;
+
+// enter vojaci
+EXPORT Amici_enter;
+EXPORT Radar_enter;
+
+
+// dialogy s 1. pruzkumnikem (Frank)
+EVERY 0$30 TRIGGER A1_dobyta DO
+begin
+  if IsOK(Frank) then
+    begin
+      wait(0$10);
+      vysl:=dialog_frank;
+      pom=Rand(1,100);
+      case vysl of
+       1:begin i=[50,30,20]; Pruzkumnik=true; end;
+       21:begin i=[80,15,5]; Pruzkumnik=true; end;
+       else uspech=0;
+      end;
+      if Pruzkumnik then
+        begin
+          jdi_na_pruzkum(Frank);
+          if pom<=i[1] then uspech=1
+                       else
+          if pom<=i[1]+i[2] then uspech=2
+                            else uspech=3;
+        end;
+      case uspech of
+       1:begin wait(3$0); navrat_z_pruzkumu(Frank,1); fuspech1; end;
+       2:begin wait(1$0); navrat_z_pruzkumu(Frank,2); fuspech2; end;
+       3:begin wait(5$0); fuspech3; end;
+      end;
+    end
+   else enable;
+end;
+
+// dialogy s 2. pruzkumnikem (Yamoko)
+EVERY 0$30 TRIGGER A1_dobyta DO
+begin
+  if IsOK(Yamoko) then
+    begin
+      wait(0$10);
+      vysl:=dialog_yamoko;
+      pom=Rand(1,100);
+      if vysl=1 then begin Pruzkumnik=true; i=[50,20,30]; end;
+      if Pruzkumnik then
+        begin
+          jdi_na_pruzkum(Yamoko);
+          if pom<=i[1] then uspech=1
+                       else
+          if pom<=i[1]+i[2] then uspech=2
+                            else uspech=3;
+        end;
+      case uspech of
+       1:begin wait(2$0); navrat_z_pruzkumu(Yamoko,1); yuspech1; end;
+       2:begin wait(1$0); navrat_z_pruzkumu(Yamoko,2); yuspech2; end;
+       3:begin wait(5$0); yuspech3; end;
+      end;
+    end
+   else enable;      
+end;
+
+// odchod pruzkumnika na pruzkum
+function jdi_na_pruzkum(pru);
+begin
+  ComStop(pru);
+  AddComExitBuilding(pru);
+  AddComExitVehicle(pru);
+  AddComStop(pru);
+  while IsInUnit(pru)<>0 do
+    begin
+      wait(0$0.5);
+      ComExitBuilding(pru);
+      wait(0$0.5);
+      AddComExitVehicle(pru);
+    end;
+  ComStop(pru);
+  SetSide(pru,You2);
+  SetClass(pru,class_soldier);
+  AddComMoveXY(pru,91,110);
+  AddComMoveXY(pru,59,103);
+  while not IsAt(pru,59,103) do
+    begin
+      wait(0$2);
+      AddComMoveXY(pru,59,103);
+    end;
+  ComMoveXY(pru,51,101);
+  while not IsInArea(pru,pru_out) do wait(0$1);
+  RemoveUnit(pru);
+end;
+
+// navrat pruzkumnika z pruzkumu
+function navrat_z_pruzkumu(pru,usp);
+begin
+  PlaceUnitArea(pru,pruarea,false);
+  if usp=1 then AddComMoveXY(pru,47,87);
+  AddComMoveXY(pru,68,106);
+  AddComMoveXY(pru,118,129);
+  SetLives(pru,500);
+  while not IsInArea(pru,Abase1) do wait(0$2);
+  ComMoveUnit(pru,JMM);
+  SetSide(pru,You);
+end;
+
+// zmena technologii v arabske pri zisku arabske zakladny
+EVERY 0$10 TRIGGER GetSide(A1_tov) or IsDead(A1_tov) DO
+begin
+  SetTech(tech_Flame,You,state_researched);
+  SetTech(tech_SibPow,You,state_researched);
+  SetTech(tech_SibEng,You,state_researched);
+  SetTech(tech_Mortar,You,state_researched);
+end;

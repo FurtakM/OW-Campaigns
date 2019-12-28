@@ -1,0 +1,86 @@
+
+// finalni dialog za nekterou ze dvou aliancnich stran
+export function lets_talking;
+begin
+  DialogueOn;
+  interface_hidden:=true;
+    case camp of
+  4: us_talking;
+  6: ru_talking;
+    end;
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+// RU kecy
+function ru_talking;
+begin
+  if IsOK(Burlak)      then begin  CenterOnUnits(Burlak);               Say(Burlak,'DEnd-Burlak-Bur-1');          end;
+  if IsOK(Petrosyan)   then begin  CenterOnUnits(Petrosyan);            Say(Petrosyan,'DEnd-Burlak-Pty-1');       end;
+  if IsOK(Belkov)      then begin  CenterOnUnits(Belkov);               Say(Belkov,'DEnd-Burlak-Bel-1');          end;
+  if IsOK(Kirilenkova) then begin  CenterOnUnits(Kirilenkova);          Say(Kirilenkova,'DEnd-Burlak-Kir-1');     end;
+  if IsOK(Gnyevko)     then begin  CenterOnUnits(Gnyevko);              Say(Gnyevko,'DEnd-Burlak-Gny-1');         end;
+  if IsOK(Gladkov)     then begin  CenterOnUnits(Gladkov);              Say(Gladkov,'DEnd-Burlak-Gla-1');         end;
+  if IsOK(Dolgov)      then begin  CenterOnUnits(Dolgov);               Say(Dolgov,'DEnd-Burlak-Dol-1');          end;
+  if IsOK(Kapitsova)   then begin  CenterOnUnits(Kapitsova);            Say(Kapitsova,'DEnd-Burlak-Kap-1');       end;
+  if IsOK(Gleb)        then begin  CenterOnUnits(Gleb);                 Say(Gleb,'DEnd-JMM-Glb-1');               end;
+  if IsOK(Kuzmov)      then begin  CenterOnUnits(Kuzmov);               Say(Kuzmov,'DEnd-Burlak-Kuz-1');          end;
+  if IsOK(Kovalyuk)    then begin  CenterOnUnits(Kovalyuk);             Say(Kovalyuk,'DEnd-Burlak-Kov-1');        end;
+  if IsOK(Scholtze)    then begin  CenterOnUnits(Scholtze);             Say(Scholtze,'DEnd-Burlak-Sch-1');        end;
+  if IsOK(Karamazov)   then begin  CenterOnUnits(Karamazov);            Say(Karamazov,'DEnd-Burlak-Kar-1');       end;
+  if IsOK(Titov)       then begin  CenterOnUnits(Titov);                Say(Titov,'DEnd-Burlak-Tit-1');           end;
+  if IsOK(Oblukov)     then begin  CenterOnUnits(Oblukov);              Say(Oblukov,'DEnd-Burlak-Obl-1');         end;
+  if IsOK(Kozlov)      then begin  CenterOnUnits(Kozlov);               Say(Kozlov,'DEnd-Burlak-Koz-1');          end;
+  if IsOK(Petrovova)   then begin  CenterOnUnits(Petrovova);            Say(Petrovova,'DEnd-Burlak-Ptr-1');       end;
+  if IsOK(Bystrov)     then begin  CenterOnUnits(Bystrov);              Say(Bystrov,'DEnd-Burlak-Bys-1');         end;
+  if IsOK(Lipshchin)   then begin  CenterOnUnits(Lipshchin);            Say(Lipshchin,'DEnd-Burlak-Lip-1');       end;
+  if IsOK(Fadeev)      then begin  CenterOnUnits(Fadeev);               Say(Fadeev,'DEnd-Burlak-Fad-1');          end;
+  if IsOK(MacMillan)   then begin  CenterOnUnits(MacMillan);            Say(MacMillan,'DEnd-Burlak-JMM-1');       end;
+  if IsOK(Lisa)        then begin  CenterOnUnits(Lisa);                 Say(Lisa,'DEnd-Burlak-Lisa-1');           end;
+  if IsOK(Joan)        then begin  CenterOnUnits(Joan);                 Say(Joan,'DEnd-Burlak-Joan-1');           end;
+  if IsOK(Frank)       then begin  CenterOnUnits(Frank);                Say(Frank,'DEnd-Burlak-Frank-1');         end;
+  if IsOK(Cyrus)       then begin  CenterOnUnits(Cyrus);                Say(Cyrus,'DEnd-Burlak-Cyrus-1');         end;
+  if IsOK(Donaldson)   then begin  CenterOnUnits(Donaldson);            Say(Donaldson,'DEnd-Burlak-Don-1');       end;
+  if IsOK(Bobby)       then begin  CenterOnUnits(Bobby);                Say(Bobby,'DEnd-Burlak-Bobby-1');         end;
+  if IsOK(Denis)       then begin  CenterOnUnits(Denis);                Say(Denis,'DEnd-Burlak-Den-1');           end;
+  if IsOK(Gladstone)   then begin  CenterOnUnits(Gladstone);            Say(Gladstone,'DEnd-Burlak-Glad-1');      end;
+  if IsOK(Yamoko)      then begin  CenterOnUnits(Yamoko);               Say(Yamoko,'DEnd-Burlak-Yam-1');          end;
+  if IsOK(Brown)       then begin  CenterOnUnits(Brown);                Say(Brown,'DEnd-Burlak-Brown-1');         end;
+  if IsOK(Roth)        then begin  CenterOnUnits(Roth);                 Say(Roth,'DEnd-Burlak-Roth-1');           end;
+end;
+
+
+// US kecy
+function us_talking;
+begin
+  if IsOK(MacMillan)   then begin  CenterOnUnits(MacMillan);            Say(MacMillan,'DEnd-JMM-JMM-1');          end;
+  if IsOK(Lisa)        then begin  CenterOnUnits(Lisa);                 Say(Lisa,'DEnd-JMM-Lisa-1');              end;
+  if IsOK(Joan)        then begin  CenterOnUnits(Joan);                 Say(Joan,'DEnd-JMM-Joan-1');              end;
+  if IsOK(Frank)       then begin  CenterOnUnits(Frank);                Say(Frank,'DEnd-JMM-Frank-1');            end;
+  if IsOK(Cyrus)       then begin  CenterOnUnits(Cyrus);                Say(Cyrus,'DEnd-JMM-Cyrus-1');            end;
+  if IsOK(Cornell)     then begin  CenterOnUnits(Cornell);              Say(Cornell,'DEnd-JMM-Corn-1');           end;
+  if IsOK(Donaldson)   then begin  CenterOnUnits(Donaldson);            Say(Donaldson,'DEnd-JMM-Don-1');          end;
+  if IsOK(Bobby)       then begin  CenterOnUnits(Bobby);                Say(Bobby,'DEnd-JMM-Bobby-1');            end;
+  if IsOK(Denis)       then begin  CenterOnUnits(Denis);                Say(Denis,'DEnd-JMM-Den-1');              end;
+  if IsOK(Gladstone)   then begin  CenterOnUnits(Gladstone);            Say(Gladstone,'DEnd-JMM-Glad-1');         end;
+  if IsOK(Yamoko)      then begin  CenterOnUnits(Yamoko);               Say(Yamoko,'DEnd-JMM-Yam-1');             end;
+  if IsOK(Brown)       then begin  CenterOnUnits(Brown);                Say(Brown,'DEnd-JMM-Brown-1');            end;
+  if IsOK(Roth)        then begin  CenterOnUnits(Roth);                 Say(Roth,'DEnd-JMM-Roth-1');              end;
+  if IsOK(Connie)      then begin  CenterOnUnits(Connie);               Say(Connie,'DEnd-JMM-Con-1');             end;
+  if IsOK(Gary)        then begin  CenterOnUnits(Gary);                 Say(Gary,'DEnd-JMM-Gary-1');              end;
+  if IsOK(Simms)       then begin  CenterOnUnits(Simms);                Say(Simms,'DEnd-JMM-Sim-1');              end;
+  if IsOK(VanHouten)   then begin  CenterOnUnits(VanHouten);            Say(VanHouten,'DEnd-JMM-VanH-1');         end;
+  if IsOK(Burlak)      then begin  CenterOnUnits(Burlak);               Say(Burlak,'DEnd-JMM-Bur-1');             end;
+  if IsOK(Belkov)      then begin  CenterOnUnits(Belkov);               Say(Belkov,'DEnd-JMM-Bel-1');             end;
+  if IsOK(Gnyevko)     then begin  CenterOnUnits(Gnyevko);              Say(Gnyevko,'DEnd-JMM-Gny-1');            end;
+  if IsOK(Dolgov)      then begin  CenterOnUnits(Dolgov);               Say(Dolgov,'DEnd-JMM-Dol-1');             end;
+  if IsOK(Kapitsova)   then begin  CenterOnUnits(Kapitsova);            Say(Kapitsova,'DEnd-JMM-Kap-1');          end;
+  if IsOK(Gleb)        then begin  CenterOnUnits(Gleb);                 Say(Gleb,'DEnd-JMM-Glb-1');               end;
+  if IsOK(Kovalyuk)    then begin  CenterOnUnits(Kovalyuk);             Say(Kovalyuk,'DEnd-JMM-Kov-1');           end;
+  if IsOK(Scholtze)    then begin  CenterOnUnits(Scholtze);             Say(Scholtze,'DEnd-JMM-Sch-1');           end;
+  if IsOK(Titov)       then begin  CenterOnUnits(Titov);                Say(Titov,'DEnd-JMM-Tit-1');              end;
+  if IsOK(Oblukov)     then begin  CenterOnUnits(Oblukov);              Say(Oblukov,'DEnd-JMM-Obl-1');            end;
+  if IsOK(Bystrov)     then begin  CenterOnUnits(Bystrov);              Say(Bystrov,'DEnd-JMM-Bys-1');            end;
+  if IsOK(Lipshchin)   then begin  CenterOnUnits(Lipshchin);            Say(Lipshchin,'DEnd-JMM-Lip-1');          end;
+end;

@@ -1,0 +1,7 @@
+export function zachranka(un);
+begin
+{  if not FilterAllUnits([[f_not,[f_side,aiA]],[f_dist,un, 24]]) then begin
+      ComHeal(UnitFilter(sci, [[f_side,Getside(un)],[f_dist,un,30]]), un);
+      AddComReturn(UnitFilter(sci, [[f_side,GetSide(un)],[f_dist,un,30]]));
+   end;}
+end;

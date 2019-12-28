@@ -1,0 +1,191 @@
+VAR You;
+VAR JMM;
+VAR Powell;
+VAR Joan;
+VAR auto;
+
+// nacteni osoby ze savu z predesle mise
+function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then result:=CreateCharacter(ident)
+                              else result:=0;
+end;
+
+// vytvoreni auta, ve kterem prijede JMM
+function create_auto_pro_JMM;
+VAr pom;
+begin
+  uc_side=You;
+  uc_nation=nation_american;
+  uc_direction=3;
+
+  vc_chassis=us_medium_tracked;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  vc_weapon=us_gatling_gun;
+
+  result:=CreateVehicle;
+end;
+
+starting
+begin
+  InitUc;
+  InitHc;
+  InitVc;
+
+  You=1;
+
+  // pojmenovani zakladen
+  SetBName(Am_dep,'alpha');
+
+  ComEnterUnit(Am_eng,Am_dep);
+  RevealFogArea(You,Prijezd);
+
+  InGameOn;
+  JMM=nacti_osobu('JMM');
+  SetClass(JMM,class_soldier);
+  Powell=nacti_osobu('Powell');
+  Joan=nacti_osobu('Joan');
+  PlaceUnitXY(Powell,48,41,false);
+  ComEnterUnit(Powell,Am_bar);
+
+  auto=create_auto_pro_JMM;
+  PlaceHumanInUnit(JMM,auto);
+  PlaceUnitXY(auto,69,34,false);
+  CenterOnUnits(Auto);
+  ComMoveXY(JMM,66,40);
+  AddComMoveXY(JMM,64,46);
+  AddComMoveXY(JMM,62,50);
+  AddComMoveXY(JMM,55,48);
+  AddComMoveXY(JMM,46,44);
+  AddComMoveXY(JMM,42,39);
+  AddComExitVehicle(JMM);
+end;
+
+// JMM vylezl z auta
+EVERY 0$1 TRIGGER not IsInUnit(JMM) DO
+begin
+
+  ComExitBuilding(Powell);
+  ComMoveUnit(Powell,JMM);
+  ComTurnUnit(Jmm,Powell);
+  CenterOnUnits(JMM);
+  Say(JMM,'D1-JMM-1');
+  Say(Powell,'D1-Pow-1');
+  Say(JMM,'D1-JMM-2');
+  Say(Powell,'D1-Pow-2');
+  tazeni1;
+  Say(JMM,'D1-JMM-3');
+  Say(Powell,'D1-Pow-3');
+  Say(JMM,'D1-JMM-4');
+  Say(Powell,'D1-Pow-4');
+  if Joan>0 then Say(Powell,'D1-Pow-4a');
+  auto1;
+  Say(Powell,'D1-Pow-4b');
+  Say(JMM,'D1-JMM-5');
+  bedny1;
+  Say(Powell,'D1-Pow-5');
+  Say(JMM,'D1-JMM-6');
+  auto2;
+  Say(Powell,'D1-Pow-6');
+  ZMENA1;
+  Say(JMM,'D1-JMM-7');
+  bedny2;
+  Say(Powell,'D1-Pow-7');
+  tazeni2;
+  Say(JMM,'D1-JMM-8');
+  wait(0$2);
+  ComEnterUnit(JMM,auto);
+  wait(0$1);
+  ChangeMap('1','%_cont');
+end;
+
+// center 2
+EVERY 0$1 TRIGGER FilterUnitsInArea(c2,[[f_side,You]])>0 DO
+begin
+  CenterOnXY(59,49);
+end;
+
+// postaveni elektrarny
+EVERY 0$5 DO
+begin
+  ComExitBuilding(Am_eng);
+  AddComBuild(Am_eng,b_oil_power,36,56,2);
+  ComMoveXY(Op1,33,55);
+  AddComEnterUnit(Am_eng,Am_dep);
+end;
+
+// stale vynalezani v labu1
+EVERY 0$10 TRIGGER GetTech(tech_Weap3,You) in [state_disabled,state_researched] DO
+begin
+  SetTech(tech_Weap3,You,state_enabled);
+  ComResearch(Am_lab1,tech_Weap3);
+end;
+
+// zacatek vybnalezani v labu1
+EVERY 0$10 DO
+begin
+  ComResearch(Am_lab1,tech_Weap3);
+end;
+
+// stale vynalezani v labu2
+EVERY 0$7 TRIGGER GetTech(tech_Tech3,You) in [state_disabled,state_researched] DO
+begin
+  SetTech(tech_Tech3,You,state_enabled);
+  ComResearch(Am_lab2,tech_Tech2);
+end;
+
+// zacatek vybnalezani labu2
+EVERY 0$5 DO
+begin
+  ComResearch(Am_lab2,tech_Tech3);
+end;
+
+// postaveni auta 1
+function auto1;
+begin
+  ComConstruct(Am_tov1,us_medium_wheeled,engine_combustion,control_manual,us_gatling_gun);
+end;
+
+// postaveni auta 2
+function auto2;
+begin
+  ComConstruct(Am_tov2,us_heavy_tracked,engine_combustion,control_manual,us_double_gun);
+end;
+
+// tazeni aut
+function tazeni1;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Alpha,[[f_control,control_remote]]);
+  McMove(1,pom,[[56,48],[64,46],[69,35],[79,10]],[mc_move_waitwp]);
+end;
+
+// spadnuti 1. beden
+function bedny1;
+begin
+  CreateCratesXYR(Rand(3,5),47,48,3,true);
+end;
+
+// spadnuti 2. beden
+function bedny2;
+begin
+  CreateCratesXYR(Rand(3,5),47,48,3,true);
+end;
+
+// tazeni aut
+function tazeni2;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Alpha,[[f_control,control_manual]]);
+  McMove(1,pom,[[36,37],[17,27],[15,11],[15,6],[27,7]],[mc_move_waitwp]);
+end;
+
+// zmena engineera na vojaka
+function zmena1;
+begin
+  ComMoveXY(Op1,44,46);
+  ComEnterUnit(Am_eng,Am_bar);
+  AddComChangeProfession(Am_eng,class_soldier);
+  AddComMoveXY(Am_eng,79,63);
+end;

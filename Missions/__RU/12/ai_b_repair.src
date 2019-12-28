@@ -1,0 +1,51 @@
+var opravit;
+
+export function inicializace_ai_b_repair;
+begin
+  opravit:=[[],[],[],[],[]];
+end;
+
+//hledani budov na opravu
+function HledejBudovyNaOpravy(opravit_index,budovy);
+var zivoty,i,opravit_tmp;
+begin
+    opravit_tmp:=[];
+    zivoty:=[];
+    for i in budovy do begin
+        if GetLives(i)<1000 then begin
+           opravit_tmp:=opravit_tmp ^ [i];
+           zivoty:=zivoty ^ [GetLives(i)];
+        end;
+    end;
+    if opravit_tmp then
+      opravit_tmp:=SortListByListAsc(opravit_tmp, zivoty);
+
+    opravit:=Replace(opravit, opravit_index, opravit_tmp);
+end;
+
+every 0$5 do
+var i;
+begin
+   for i:=1 to 5 do begin
+     if not under_attack[i] then begin
+       HledejBudovyNaOpravy(i,buildings[i]);
+       wait(0$0.6);
+     end;
+   end;
+
+   enable;
+end;
+
+//opravy budov
+every 0$5 do
+var i;
+begin
+  for i:=1 to 5 do begin
+    if opravit[i] then begin
+       ComRepairBuilding(UnitFilter(eng, [[f_not,[f_hastask]],[f_side,GetSide(opravit[i][1])],
+                                          [f_dist, opravit[i][1], (((1000 div 30)+5)-GetLives(opravit[i][1])div 30)]]), opravit[i][1]);
+    end;
+  end;
+
+  enable;
+end;

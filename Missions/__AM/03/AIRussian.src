@@ -1,0 +1,441 @@
+
+export function run_ru_guarding;
+begin
+  enable(1);
+end;
+
+every 0$1 Marked 1 do
+var i,
+    south_guard_way;
+begin
+  south_guard_way=[119,105, 102,88, 109,106];
+  South_russian_patrol:=[s_guard1,s_guard2,s_guard3,s_guard4] diff 0;
+
+  repeat
+    for i=1 to (south_guard_way div 2) do
+      begin
+        AddComAgressiveMove(South_russian_patrol,south_guard_way[(i*2)-1],south_guard_way[(i*2)]);
+        AddComWait(South_russian_patrol,0$2);
+      end;
+
+    repeat
+      wait(0$2);
+    until not (IsBusy(s_guard1) or IsBusy(s_guard2) or IsBusy(s_guard3) or IsBusy(s_guard4));
+  until not (IsOK(s_guard1) or IsOK(s_guard1) or IsOK(s_guard1) or IsOK(s_guard1));
+end;
+
+
+every 0$1 Marked 1 do
+var x,y,
+    truck_way,
+    patroll;
+begin
+  truck_way=[149,116, 148,110, 146,107, 141,102, 132,96, 127,91, 123,85, 122,80,
+             127,76, 130,68, 129,63, 124,55, 117,47, 116,36, 114,28, 0,
+             114,28, 116,36, 117,47, 124,55, 129,63, 130,68, 127,76, 122,80,
+             123,85, 127,91, 132,96, 141,102, 146,107, 148,110, -1];
+  patroll:=ru_trucks[8];
+  repeat
+    x:=-1;
+    for y in truck_way do
+        case y of
+   -1,0: AddComWait(patroll,0$5);
+    else if x=-1 then
+           x:=y
+         else
+           begin
+             AddComAgressiveMove(patroll,x,y);
+             x:=-1;
+           end;
+        end;
+
+    repeat
+      if See(you,patroll) and See(russians,MacMillan) then
+        repeat
+          If See(russians,MacMillan) then
+            ComAgressiveMove(patroll,GetX(MacMillan),GetY(MacMillan));
+          wait(0$1);
+        until not (See(russians,MacMillan) or See(russians,Bobby));
+      wait(0$1);
+    until not IsBusy(patroll);
+
+    if (atack=1 and GetSide(patroll)=russians) then
+      repeat
+        wait(0$2);
+      until atack=0;
+  until not IsOK(patroll);
+end;
+
+every 0$1 Marked 1 do
+var x,y,
+    forest_way1;
+begin
+  forest_way1=[27,45, -1, 38,49, 40,34, -1, -1, 38,49, 27,45, -1];
+  repeat
+    x:=-1;
+    for y in forest_way1 do
+        case y of
+     -1: AddComWait(forest_force1,0$2);
+    else if x=-1 then
+           x:=y
+         else
+           begin
+             AddComAgressiveMove(forest_force1,x,y);
+             x:=-1;
+           end;
+        end;
+
+    repeat
+      wait(0$2);
+    until not (IsBusy(forest11) or IsBusy(forest12));
+  until not (IsOK(forest11) or IsOK(forest12));
+end;
+
+every 0$1 Marked 1 do
+var x,y,
+    forest_way2;
+begin
+  forest_way2=[38,29, -1, 39,50, 53,57, 55,39, -1];
+  repeat
+    x:=-1;
+    for y in forest_way2 do
+        case y of
+     -1: AddComWait(forest_force2,0$2);
+    else if x=-1 then
+           x:=y
+         else
+           begin
+             AddComAgressiveMove(forest_force2,x,y);
+             x:=-1;
+           end;
+        end;
+
+    repeat
+      Wait(0$2);
+    until not (IsBusy(forest21) or IsBusy(forest22));
+  until not (IsOK(forest21) or IsOK(forest22));
+end;
+
+every 0$1 Marked 1 do
+var x,y,
+    grass_way1;
+begin
+  grass_force1=[grass_11,grass_12];
+  grass_way1=[77,67, -1, 83,56, -1, 65,49, -1];
+
+  repeat
+    x:=-1;
+    for y in grass_way1 do
+        case y of
+     -1: AddComWait(grass_force1,0$2);
+    else if x=-1 then
+           x:=y
+         else
+           begin
+             AddComAgressiveMove(grass_force1,x+Rand(-1,1),y+Rand(-1,1));
+             x:=-1;
+           end;
+        end;
+
+    repeat
+      Wait(0$2);
+    until not (IsBusy(grass_11) or IsBusy(grass_12));
+  until not (IsOK(grass_11) or IsOK(grass_12));
+end;
+
+every 0$1 Marked 1 do
+var x,y,
+    grass_way2;
+begin
+  grass_force2=[grass_21,grass_22];
+  grass_way2=[129,64, -1, 127,75, -1, 104,62, -1];
+
+  repeat
+    x:=-1;
+    for y in grass_way2 do
+        case y of
+     -1: AddComWait(grass_force2,0$2);
+    else if x=-1 then
+           x:=y
+         else
+           begin
+             AddComAgressiveMove(grass_force2,x+Rand(-1,1),y+Rand(-1,1));
+             x:=-1;
+           end;
+        end;
+
+    repeat
+      Wait(0$2);
+    until not (IsBusy(grass_21) or IsBusy(grass_22));
+  until not (IsOK(grass_21) or IsOK(grass_22));
+end;
+
+every 0$1 Marked 1 do
+var x,y,
+    grass_way3;
+begin
+  grass_force3=[grass_31,grass_32,grass_33];
+  grass_way3=[73,39, -1, 81,50, 88,37, -1];
+
+  repeat
+    x:=-1;
+    for y in grass_way3 do
+        case y of
+     -1: AddComWait(grass_force3,0$2);
+    else if x=-1 then
+           x:=y
+         else
+           begin
+             AddComMoveXY(grass_force3,x+Rand(-1,1),y+Rand(-1,1));
+             x:=-1;
+           end;
+        end;
+
+    repeat
+      Wait(0$2);
+    until not (IsBusy(grass_31) or IsBusy(grass_32) or IsBusy(grass_33));
+  until not (IsOK(grass_31) or IsOK(grass_32) or IsOK(grass_33));
+end;
+
+// transfer of rusians forces at the beginning of the atack
+export function attack_began;
+var i,
+    truck_in_battle,
+    russians_trucks,
+    vozidlo;
+begin
+  ComRemember(ru_trucks);
+  ComAgressiveMove(ru_trucks,118,3);
+
+  repeat
+    truck_in_battle:=FilterUnitsInArea(battlefield, [ [f_side, russians], [f_type, unit_vehicle] ]);
+    for vozidlo in truck_in_battle do
+      RemoveUnit(vozidlo);
+    wait(0$1);
+    i:=false;
+    for vozidlo in ru_trucks do
+      i:=i or IsOK(vozidlo);
+  until not i;
+
+  repeat
+    Wait(0$10);
+  until not atack;
+
+  repeat
+    for vozidlo in ru_trucks do
+      if not IsOK(vozidlo) then
+        PlaceUnitArea(vozidlo,battlefield,false);
+    ComReturn(ru_trucks);
+    wait(0$1);
+    i:=FilterAllUnits([ [f_side,russians], [f_type,unit_vehicle] ]);
+  until not (ru_trucks diff i);
+end;
+
+//every 11$0 trigger IsOK(patrol1) and IsOK(patrol2) do
+every 2$0 trigger IsInArea(MacMillan,Am_Base) or (TICK>[15$0, 10$0, 5$0][difficulty]) Marked 2 do
+var liv,ran,list,un,agresors,
+    min_time,max_time;
+begin
+  min_time:=[ 4$0, 2$0, 0$0 ][difficulty];
+  max_time:=[ 8$0, 4$0, 2$0 ][difficulty];
+  ran:=Rand(min_time,max_time);
+  Wait(ran);
+
+  ComAgressiveMove([patrol1,patrol2],130,68);
+  AddComAgressiveMove([patrol1,patrol2],124,102);
+  AddComAgressiveMove([patrol1,patrol2],66,100);
+  wait(0$15);
+
+  list:=FilterUnitsInArea(Meeting,[ [f_type,unit_human], [f_class,class_soldier], f_not, [f_side,russians] ]);
+  for un in list do
+    PriorityAttack(russians,un);
+
+  repeat
+    wait(15);
+    list:=FilterUnitsInArea(Meeting,[ [f_type,unit_human], f_not, [f_side,russians], f_not, [f_nation,nation_nature] ]);
+
+    agresors:=[];
+    if IsOK(patrol1) then
+      agresors:=agresors ^ patrol1;
+    if IsOK(patrol2) then
+      agresors:=agresors ^ patrol2;
+
+    if not agresors then
+      exit;
+
+    if list then
+      ComAgressiveMove(agresors,GetX(list[1]),GetY(list[1]))
+    else
+      begin
+        list:=FilterUnitsInArea(Meeting,[ [f_type,unit_building] ]);
+        for un in list do
+          PriorityAttack(russians,un);
+        if list then
+          ComAttackUnit(agresors,list[1])
+        else
+          begin
+            YouLost('2');
+            exit;
+          end;
+      end;
+  until (GetDistUnits(NearestUnitToUnit(list,patrol1),patrol1) < 9) or
+        (GetDistUnits(NearestUnitToUnit(list,patrol2),patrol2) < 9) or
+        (GetLives(patrol1)<1000) or (GetLives(patrol2)<1000);
+
+  CenterOnUnits([patrol1,patrol2]);
+
+  wait(200-(difficulty*45));
+
+  ComStop([patrol1,patrol2]);
+  AddComMoveXY([patrol1,patrol2],84,71);
+  AddComWait([patrol1,patrol2],[0$6,0$4,0$2][difficulty]);         // Maly oddych prchajici ruske hlidky
+  AddComMoveXY([patrol1,patrol2],80,67);
+  AddComMoveXY([patrol1,patrol2],45,22);
+
+  DialogueOn;
+//  interface_hidden:=true;
+  if IsOK(patrol1) then
+    Say(patrol1,'D8-Rus1-1')
+  else
+    Say(patrol2,'D8-Rus1-1');
+
+  Say(MacMillan,'D8-JMM-1');
+
+//  interface_hidden:=false;
+  DialogueOff;
+
+  ran:=false;
+
+  repeat
+    if (not ran) and
+       ((IsOK(patrol1) and (GetY(patrol1)<60)) or
+        (IsOK(patrol2) and (GetY(patrol2)<60))) then
+      begin
+        ran:=true;
+        talk_about_attack;
+      end;
+    Wait(0$1);
+  until (not (IsOK(patrol1) or IsOK(patrol2))) or
+        (IsInArea(patrol1,problemy) or IsInArea(patrol2,problemy));
+
+  Dialogue_wait:=true;
+  if IsInArea(patrol1,problemy) or IsInArea(patrol2,problemy) then
+    lets_destroy_americans
+  else
+    Say(MacMillan,'D8a-JMM-1');
+  Dialogue_wait:=false;
+end;
+
+function lets_destroy_americans;
+var i,attackers1,attackers2;
+begin
+  PriorityAttack(russians,sklad);
+  attackers1:=[];
+  attackers2:=[];
+  for i in ru_trucks do
+    if (0+attackers1)>(0+attackers2) then
+      attackers2:=attackers2 ^ i
+    else
+      attackers1:=attackers1 ^ i;
+
+  ComRemember(attackers1);
+  ComRemember(attackers2);
+  Attack_US_Base(attackers1,attackers2);
+
+  wait(0$4);
+  ComReturn(attackers1);
+  ComReturn(attackers2);
+end;
+
+// trigger na doplnovani paliva ruskym vozidlum
+every 0$15 do
+var un;
+begin
+  for un in ru_trucks do
+    if (GetFuel(un)<80) and (not FilterAllUnits([ [f_side,you],[f_type,unit_human],[f_dist,un,10] ])) then
+      SetFuel(un,100);
+  enable;
+end;
+
+
+function Attack_US_Base(forces,backup);
+var un,list,danger,time,
+    driver,
+    attack,         // units which is attacking US base
+    retreat,        // unit which is retreating
+    repair;         // units traing repair their vehicles
+begin
+
+  ComAgressiveMove(forces,97,69);
+  wait(0$15);
+
+  attack := forces;
+  driver := [];
+  repair := [];
+  danger := false;
+  time:=TICK;
+  repeat
+    ComAgressiveMove(attack,65,100);
+
+    for un in forces do
+      begin
+        if (GetLives(un)<600) and (un in attack) then
+          begin
+            attack:=attack diff un;
+            retreat:=retreat ^ un;
+            ComMoveToArea(un,ru_repair);
+          end;
+        if not IsLive(un) then
+          forces:=forces diff un;
+      end;
+
+    for un in retreat do
+      if IsInArea(un,ru_repair) then
+        begin
+          retreat:= retreat diff un;
+          repair := repair ^ un;
+        end
+      else
+        ComMoveToArea(un,ru_repair);
+
+    for un in repair do
+      if (GetLives(un)<1000) and IsDrivenBy(un) then
+          ComExitVehicle(un);
+
+    list   = FilterUnitsInArea(repair_around,[ [f_side,russians], [f_type,unit_vehicle], f_not, [f_lives,1000] ]);
+    driver = FilterUnitsInArea(repair_around,[ [f_side,russians], [f_type,unit_human], [f_class,class_mechanic] ]);
+    danger = FilterUnitsInArea(repair_around,[ [f_side,you], [f_ok] ]);
+
+    if list and not danger then
+      ComRepairVehicle(driver,list[1])
+    else
+      begin
+        list:=FilterUnitsInArea(repair_around,[ [f_side,russians], [f_type,unit_vehicle] ]);
+        for un=1 to driver do
+          if un<=list then
+            ComEnterUnit(driver[un],list[un]);
+        attack:=attack union repair;
+        repair:=[];
+      end;
+
+    if not repair then
+      begin
+        driver = FilterUnitsInArea(repair_around,[ [f_side,russians], [f_type,unit_human], [f_class,class_mechanic] ]);
+        if driver then
+          begin
+            list:=FilterUnitsInArea(repair_around,[ [f_side,russians], [f_type,unit_vehicle] ]);
+            for un=1 to driver do
+              if un<=list then
+                ComEnterUnit(driver[un],list[un]);
+          end;
+      end;
+
+    if (TICK>(time + 5$0)) and backup then
+      begin
+        attack:=backup;
+        backup:=false;
+      end;
+
+    wait(0$1);
+  until not forces;
+end;

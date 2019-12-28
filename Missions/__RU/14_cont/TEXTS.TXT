@@ -1,0 +1,263 @@
+@ Primary colours
+% The primary deposit has been located. Burlak is awaiting intelligence from scouts despatched to the area. When the reports are received the race to the motherlode will begin.
+
+// Dialogue Briefing 
+$ DBriefing-Bur-1
+- What have you discovered comrades?
+$ DBriefing-RSol1-1
+- A large Arabian base to the west of the motherlode. They call it New Samarkand. Seems pretty strong, we saw half a dozen sheikhs.
+$ DBriefing-RSol2-1
+- We observed increased American activity in the North.
+$ DBriefing-Bur-2
+- So, before we can take the site we need to secure the area. I'll take a group and do reconnaissance myself.
+
+// Dialogue Start 
+$ DStart-RSol1-1
+- We are close now, comrade. The motherlode is situated behind the Arabian base to the East.
+$ DStart-Bur-1
+- OK. Let's build our support base here.
+
+# MStart
+Add main Prep
+-Prepare attack on Arabian base New Samarkand.
+#
+
+// Dialogue AmAttack (some 5 minutes after the start of the mission)
+$ DAmAttack-Gla-1
+- (over radio) Burlak, Americans are attacking us!
+$ DAmAttack-Bur-1
+- (into radio) Do you need us to return?
+$ DAmAttack-Gla-2
+- (over radio) No, we can handle, but don't look to us for reinforcements we need all the men we've got.
+$ DAmAttack-Bur-2
+- (into radio) Understood.
+$ DAmAttack-Bur-2a
+- You hear that comrades. There is no back up on this mission. We win the battle on our own or we die.
+
+# MAttack
+Add main Att
+-Destroy New Samarkand base.
+Del Prep
+#
+
+// Dialogue LegionOfferHeike1 (if MercPaid = True and OmarKilled = True)
+$ DLegionOfferHeike1-Hke-1
+- (over radio) This is Heike Steyer, commander of Legion.
+$ DLegionOfferHeike1-Bur-1
+- (into radio) What do you want Steyer.
+$ DLegionOfferHeike1-Hke-2
+- (over radio) To help you. I will never forgive you for killing Omar, but I respect you as a commander. So, I am prepared to make you an offer.
+$ DLegionOfferHeike1-Hke-2a
+- (over radio) This is Heike Steyer, commander of Legion. Looks like we have a common enemy Burlak.
+$ DLegionOfferHeike1-Bur-2
+- (into radio) Everyone is our enemy here, including you.
+$ DLegionOfferHeike1-Hke-3
+- (over radio) Listen to me, comrade. I have and offer to make.
+
+// Dialogue LegionOfferHeikeCont (in any case)
+$ DLegionOfferHeikeCont-Hke-1
+- (over radio) We have our own scores to settle with sheikhs at New Samarkand. We will help you destroy it.  We have engineers and scientists, they can develop technologies, like mines. This would be useful I think.  All we ask in return are resources.
+
+// Query LegionHeike
+? QLegionHeike
+The Legion's commander, Heike Steyer, has offered help. How much help depends on the price you are willing to pay:
+-1 3 men - 50 crates, 10 crystals of Siberite
+-2 5 men - 75 crates, 15 crystals of Siberite
+-3 7 men - 100 crates, 20 crystals of Siberite
+-4 Reject offer
+?
+
+// Dialogue QrLegionHeike#1-2 
+$ DQrLegionHeike#1-2-Bur-1
+- (into radio) All right, Fraulein Steyer. Send in your men.
+
+// Dialogue QrLegionHeike#3 
+$ DQrLegionHeike#3-Bur-1
+- (into radio) We're not interested, Fraulein. Just keep out of the way.
+
+// Dialogue LegionOfferFarmer (if HeikeKilled = True)
+$ DLegionOfferFarmer-Frm-1
+- (over radio) Hello comrade, this is Robert Farmer from the Legion of Freelance Fighters. Seems you have problem. No back up and a hell of a big base to attack.
+$ DLegionOfferFarmer-Bur-1
+- (into radio) Go screw yourself Farmer.
+$ DLegionOfferFarmer-Frm-2
+- (over radio) No need to be so rude commander. We like to help you destroy New Samarkand. Our price is low and we do good work. Just speak to Yanks and Arabs for references!
+
+// Query LegionFarmer
+? QLegionFarmer
+Legion commander Robert Farmer is offering help. How much help depends on what you're prepared to pay:
+-1 3 men - 60 crates, 15 crystals of Siberite
+-2 5 men - 90 crates, 25 crystals of Siberite
+-3 7 men - 120 crates, 30 crystals of Siberite
+-4 Reject offer
+?
+
+// Dialogue QrLegionFarmer#1-3 
+$ DQrLegionFarmer#1-3-Bur-1
+- (into radio) All right, Mr. Farmer. Send in your men.
+
+// Dialogue QrLegionFarmer#4 
+$ DQrLegionFarmer#4-Bur-1
+- (into radio) Thanks for the offer but we can do without your kind of help Mr. Farmer.
+
+// Dialogue LegionFugit (if Legion help was refused)
+$ DLegionFugit-Brg-1
+- Commander, don't shoot.
+$ DLegionFugit-Bur-1
+- You got a good reason why I shouldn't!?
+$ DLegionFugit-Brg-2
+- Commander, we believe Legion is doomed. They are parasites without a host. You are great commander, comrade Gorky. We want to work for you.
+
+// Query LegionBergkamp
+? QLegionBergkamp
+Legion soldiers are deserting and want to join your ranks. Do you want to:
+-1 Accept them
+-2 Reject them
+?
+
+// Dialogue QrLegionBergkamp#1 
+$ DQrLegionBergkamp#1-Bur-1
+- All right, I will allow you into our ranks. But one wrong move and I will no show mercy.  Is that clear?
+$ DQrLegionBergkamp#1-Brg-1
+- You need have no doubts, comrade.
+
+// Dialogue QrLegionBergkamp#2 
+$ DQrLegionBergkamp#2-Bur-1
+- You think we want Legion's rejects in our Army? Get out of my sight before I kill you.
+
+// Dialogue LegionLeave (when the Arabian base is destroyed)
+$ DLegionLeave-Brg-1
+- [with Legion] So our job is over. It was a pleasure to work for you, comrade Gorky.
+$ DLegionLeave-Brg-1a
+- [deserter] Life in the Red Army is worse than in Legion!
+$ DLegionLeave-Bur-1
+- [reply] You don't like it then get out.
+$ DLegionLeave-Brg-2
+- [reply] Don't worry Gorky, I'm on my way. (turns colour)
+
+// Dialogue LegionSpy (when Legion leaves or after Ar. base is destroyed, if all Legion soldiers were killed)
+$ DLegionSpy-Sci1-1
+- Comrade Burlak! My notes concerning the motherlode are gone!
+$ DLegionSpy-Bur-1
+- Those bastards! Legion must have them! Now everyone will know! Quickly! We have to stop them.
+
+// Dialogue LegionChallengeHeike 
+$ DLegionChallengeHeike-Bur-1
+- (into radio) Steyer! This is Burlak. I know what you have done, you thieving bitch. Now I shall destroy you!
+$ DLegionChallengeHeike-Hke-1
+- You are the ones who will die Burlak. The Americans just tested a Siberite bomb. We shall buy our safety with these notes! But you are finished!
+$ DLegionChallengeHeike-Bur-2
+- You gutless bitch!
+$ DLegionChallengeHeike-Hke-2
+- [OmarKilled = True] Oh dear Burlak. Are we losing control? (tight-lipped) Nothing can bring Omar back now, but at least I can avenge his death! Enjoy hell commander!
+
+// Dialogue LegionChallengeFarmer 
+$ DLegionChallengeFarmer-Bur-1
+- (into radio) This is Yuri Gorky, calling Robert Farmer. You are a thieving bastard and you will die!
+$ DLegionChallengeFarmer-Frm-1
+- You didn't pay us a bonus so we took it ourselves Burlak! Not that we are selfish about it. We'll share what we have with our American friends.
+$ DLegionChallengeFarmer-Bur-2
+- You are scum...
+$ DLegionChallengeFarmer-Frm-2
+- Say what you want. We'll be alive and you won't. The Americans have developed a Siberite bomb and when we hand them these notes, maybe they'll let us watch when they drop it on you. Nice knowing you commander.
+$ DLegionChallengeFarmer-Bur-3
+- (desperate, losing it) You will pay you bastard! I swear it! I swear!
+
+# MLeg
+Add main Leg
+-Destroy Legion base before they can spread the news.
+#
+
+// Dialogue Contam (during game Arabians will try to contaminate one of the Russian alaskite mines)
+$ DContam-Sci1-1
+- Comrade major, this mine is giving off dangerous radiation. Anyone who goes near is burnt.
+$ DContam-Bur-1
+- So what's causing it?
+$ DContam-Sci1-2
+- We're trying to find out. But I think it must have been caused deliberately....
+$ DContam-Bur-2
+- The Arabian bastards! Still trying to destroy the Alaskite!
+
+// Dialogue SurrenderArabians (when Ar. base is destroyed)
+$ DSurrenderArabians-Abd-1
+- [alive] This is Abdul al'Haffiz, commander-in-chief of United Preservation Forces. I admit our defeat and offer unconditional surrender. I have failed my duty, I have failed the trust placed in me.
+$ DSurrenderArabians-ArSol1-1
+- [all sheikhs are dead] Comrade Gorky, we offer you unconditional surrender. We can't take any more.
+
+// Dialogue BehemothTechno (BehemothSeen = True)
+$ DBehemothTechno-Bur-1
+- You remember the vehicle Platonov tried to use? What do you think? Can we develop it here to use against the Arabs?
+$ DBehemothTechno-Pty-1
+- It's not a problem for Soviet scientists. We just need a weapon lab.
+$ DBehemothTechno-Sci-1
+- Provide us a weapon lab and we'll see what we can do.
+$ DBehemothTechno-FSci1-1
+- Provide us a weapon lab and we'll see what we can do.
+$ DBehemothTechno-Bur-2
+- Comrade scientists, we need new ideas for weapons we can use.
+$ DBehemothTechno-Sci-2
+- I've been thinking of a moving fortress. Imagine a vehicle as big as a house, rolling forward, unstoppable, crushing its enemies beneath it.
+$ DBehemothTechno-FSci1-2
+- I've been thinking of a moving fortress. Imagine a vehicle as big as a house, rolling forward, unstoppable, crushing its enemies beneath it.
+
+// Dialogue BehemothComplete 
+$ DBehemothComplete-Sci-1
+- Comrade Burlak, design of the moving fortress is complete. We call it Behemoth. Engineers must construct it outside factories.
+$ DBehemothComplete-Sci-1a
+- Because of the size it is very slow. We have 12 computers to control it, but still they can't deal with driving, so you have to navigate carefully.
+$ DBehemothComplete-Sci-1b
+- It can only deal with small slopes. But believe me, comrade Burlak, no weapon will stop it. If we can get it to that base we will see it flattened in moments!
+
+! Behemoth
+Behemoth
+
+There will be hint...
+!
+
+! LegionHelp
+Legion help
+
+The Legion will now send trucks near your depot. Make sure you have enough material to pay for the Legion soldiers. If not, the trucks will wait until you can satisfy them. After loading the the trucks with goods, Legion will send reinforcements.
+!
+
+# MBeh
+Add secondary Beh
+-Build one Behemoth vehicle
+#
+
+# MBehOut
+Out Beh
+#
+
+# MPrepOut
+Del Prep
+#
+
+# MAttOut
+Out Att
+#
+
+# MLegOut
+Out Leg
+#
+
+^ Main
+New Samarkand destroyed
+
+| Burlak
+Burlak is dying.
+
+* NoNonsense
++ No mercenaries hired
+- Mercenaries managed to fool you
+*
+
+* Behemoth
++ Behemoth built
+- You didn't build any Behemoths
+*
+
+* LittleLosses
++ Few casualties
+- You lost more than three men.
+*

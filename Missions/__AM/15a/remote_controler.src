@@ -1,0 +1,90 @@
+// Controling of Americans remote control vehicles
+
+// Funkce pro linkovani novych vozidel a kontrolu zda je na koho linkovat
+export function check_remote(veh);
+var un,towers,list,all_in,
+    veh_n,             // pocet remote vozidel
+    veh_l,             // seznam remote vozidel
+    mech;              // mechanici v control towerech
+begin
+  list:=[];
+  veh_l:=FilterAllUnits([ [f_side,us], [f_control,control_remote], [f_ok] ]) union veh diff 0;
+  towers:=FilterAllUnits([ [f_side,us], [f_btype,b_control_tower], [f_ok] ]);
+  if not towers then
+    exit;
+
+  towers:=towers[1];
+  // serazeni lidi podle mechanical skillu
+  all_in:=UnitsInside(towers);
+  mech:=all_in ^ (FilterAllUnits([ [f_side,us], [f_type,unit_human], [f_class,class_mechanic], [f_ok] ])
+                  diff reserved_people[us]);
+  for un in mech do
+    list:=list ^ FindMaxSkill(mech diff list,skill_mechanical);
+
+  // nalezeni potrebneho poctu mechaniku
+  mech:=[];
+  veh_n:=0+veh_l;
+  for un in list do
+    if (veh_n>0) or ((list diff mech)>6) then
+      begin
+        mech:=mech ^ un;
+        veh_n:=veh_n - GetSkill(un,skill_mechanical);
+      end;
+
+  // rezervovani potrebnych mechaniku
+  un:=reserved_people[us] ^ mech;
+  reserved_people:=Delete(reserved_people,us);
+  reserved_people:=Insert(reserved_people,us,un);
+
+  // odstraneni nepotrebnych lidi z rezervovanych lidi
+  list:=UnitsInside(towers) diff mech;
+  if list then
+    begin
+      un:=reserved_people[us] diff list;
+      reserved_people:=Delete(reserved_people,us);
+      reserved_people:=Insert(reserved_people,us,un);
+      ComExitBuilding(list);
+      un:=FilterAllUnits([ [f_side,us], [f_or, [f_btype,b_workshop], [f_btype,b_factory]] ]);
+      if un then
+        AddComMoveUnit(list,un[1]);
+    end;
+
+  // nahnani vsech potrebnych mechaniku do veze
+  repeat
+    ComMoveUnit(mech,towers);
+    all_in:=true;
+    for un in mech do
+      if not (IsInUnit(un) = towers) then
+        begin
+          all_in:=false;
+          break;
+        end;
+    wait(0$1);
+  until all_in;
+
+  // nalinkovani vozidel na jednotlive mechaniky ve vezi
+  ComLinkTo(veh_l,towers);
+
+  enable;
+end;
+
+
+every 0$10 do
+var list,
+    tower;
+begin
+  list:=FilterAllUnits([ [f_side,us], [f_ok], [f_control,control_remote], f_not, [f_linked] ]);
+  if list then
+    begin
+      tower:=FilterAllUnits([ [f_side,us], [f_btype,b_control_tower], [f_ok] ]);
+      if tower then
+        tower:=tower[1]
+      else
+        begin
+          enable;
+          exit;
+        end;
+      ComLinkTo(list,tower);
+    end;
+  enable;
+end;

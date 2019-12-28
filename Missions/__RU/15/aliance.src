@@ -1,0 +1,447 @@
+
+export function prepare_aliance;
+var tmp;
+begin
+  telep=[];
+  uc_side=al;
+  uc_nation=nation_american;
+//osadka bunkru
+  preparesoldier(sex_male,als0_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,151,49,1,false);
+  comenterunit(tmp,albunk00);
+  als0=tmp;
+  preparesoldier(sex_male,als1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,150,64,1,false);
+  comenterunit(tmp,albunk01);
+  als1=tmp;
+  preparesoldier(sex_male,als2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,153,77,1,false);
+  comenterunit(tmp,albunk02);
+  als2=tmp;
+  uc_nation=nation_russian;
+  preparesoldier(sex_male,als3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,163,89,1,false);
+  comenterunit(tmp,albunk03);
+  als3=tmp;
+  preparesoldier(sex_male,als4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,172,97,1,false);
+  comenterunit(tmp,albunk04);
+  als4=tmp;
+
+//osadka barracksu
+  uc_nation=nation_american;
+  preparesoldier(sex_male,als_1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,156,42,1,false);
+  comenterunit(tmp,albarr00);
+  als_1=tmp;
+  preparesoldier(sex_male,als_2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,156,42,1,false);
+  comenterunit(tmp,albarr00);
+  als_2=tmp;
+  preparehuman(sex_male,class_sniper,als_3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,156,42,1,false);
+  comenterunit(tmp,albarr00);
+  als_3=tmp;
+  preparehuman(sex_male,class_sniper,als_4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,156,42,1,false);
+  comenterunit(tmp,albarr00);
+  als_4=tmp;
+
+  uc_nation=nation_russian;
+  preparesoldier(sex_male,als__1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,185,101,1,false);
+  comenterunit(tmp,albarr01);
+  als__1=tmp;
+  preparesoldier(sex_male,als__2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,185,101,1,false);
+  comenterunit(tmp,albarr01);
+  als__2=tmp;
+  preparehuman(sex_male,class_bazooker,als__3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,185,101,1,false);
+  comenterunit(tmp,albarr01);
+  als__3=tmp;
+  preparehuman(sex_male,class_bazooker,als__4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,185,101,1,false);
+  comenterunit(tmp,albarr01);
+  als__4=tmp;
+
+//mechanik do control toweru
+  preparemechanic(sex_female,alm0_sk);
+  alm0=createhuman;
+  placeunitxyr(alm0,157,55,1,false);
+  comenterunit(alm0,alcttw00);
+
+//vozitka
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  uc_nation=nation_american;
+  vc_chassis=alv1_ch;
+  vc_weapon=alv1_wp;
+  alv1=createvehicle;
+  setdir(alv1,4);
+  placeunitxy(alv1,150,42,false);
+  preparemechanic(sex_male,alm1_sk);
+  alm1=createhuman;
+  placehumaninunit(alm1,alv1);
+
+  vc_chassis=alv2_ch;
+  vc_weapon=alv2_wp;
+  alv2=createvehicle;
+  setdir(alv2,4);
+  placeunitxy(alv2,152,68,false);
+  preparemechanic(sex_male,alm2_sk);
+  alm2=createhuman;
+  placehumaninunit(alm2,alv2);
+
+  uc_nation=nation_russian;
+  vc_chassis=alv3_ch;
+  vc_weapon=alv3_wp;
+  alv3=createvehicle;
+  setdir(alv3,5);
+  placeunitxy(alv3,154,75,false);
+  preparemechanic(sex_male,alm3_sk);
+  alm3=createhuman;
+  placehumaninunit(alm3,alv3);
+
+  vc_chassis=alv4_ch;        //tracked
+  vc_weapon=alv4_wp;
+  alv4=createvehicle;
+  setdir(alv4,3);
+  placeunitxy(alv4,165,89,false);
+  preparemechanic(sex_male,alm4_sk);
+  alm4=createhuman;
+  placehumaninunit(alm4,alv4);
+
+  uc_nation=nation_american;
+  vc_chassis=alv5_ch;       //tracked
+  vc_weapon=alv5_wp;
+  alv5=createvehicle;
+  setdir(alv5,4);
+  placeunitxy(alv5,168,93,false);
+  preparemechanic(sex_male,alm5_sk);
+  alm5=createhuman;
+  placehumaninunit(alm5,alv5);
+
+  vc_chassis=alv6_ch;       //tracked
+  vc_weapon=alv6_wp;
+  alv6=createvehicle;
+  setdir(alv6,3);
+  placeunitxy(alv6,191,108,false);
+  preparemechanic(sex_male,alm6_sk);
+  alm6=createhuman;
+  placehumaninunit(alm6,alv6);
+
+
+//snipers & bazookers
+  uc_nation=nation_russian;
+  preparehuman(sex_male,class_bazooker,alsn0_sk);
+  alsn0=createhuman;
+  placeunitxyr(alsn0,150,52,1,false);
+  comhold(alsn0);
+  uc_nation=nation_american;
+  preparehuman(sex_male,class_sniper,alsn1_sk);
+  alsn1=createhuman;
+  placeunitxyr(alsn1,154,77,1,false);
+  comhold(alsn1);
+  preparehuman(sex_male,class_sniper,alsn2_sk);
+  alsn2=createhuman;
+  placeunitxyr(alsn2,176,101,1,false);
+  comhold(alsn2);
+
+//engineer in depot
+  uc_nation=nation_russian;
+  prepareengineer(sex_female,9);
+  tmp=createhuman;
+  placeunitxyr(tmp,164,74,1,false);
+  comenterunit(tmp,alware00);
+
+//engineers
+  uc_nation=nation_russian;
+  prepareengineer(sex_male,ale0_sk);
+  ale0=createhuman;
+  placeunitxyr(ale0,151,47,1,false);
+  comhold(ale0);
+  prepareengineer(sex_male,ale1_sk);
+  ale1=createhuman;
+  placeunitxyr(ale1,151,60,1,false);
+  comhold(ale1);
+  prepareengineer(sex_male,ale2_sk);
+  ale2=createhuman;
+  placeunitxyr(ale2,160,86,1,false);
+  comhold(ale2);
+  prepareengineer(sex_male,ale3_sk);
+  ale3=createhuman;
+  placeunitxyr(ale3,173,97,1,false);
+  comhold(ale3);
+
+//init seznamu budov k oprave
+  inzinyri=[ale0,ale1,ale2,ale3];
+  comremember(inzinyri);
+  opravujte=[[albarr00,albunk00],[alturr00,albunk01],[albunk02,albunk03],[albunk04,alturr01,albarr01]];
+  //opravujese=[];
+
+//place teleport exit    
+  teleportexit(altelp00,7,5);
+
+  aliancnici=filterallunits([[f_side,al],[f_type,unit_human]]);
+  pocet_aliancniku=0+aliancnici;
+
+  utocnici=[];
+end;
+export pocet_aliancniku,aliancnici;
+
+var opravujte;
+//var opravujese;
+var inzinyri;
+every 0$3+2 do
+var tmp,tmp2,tmp3,oprav,buds,lives;
+begin
+  for tmp=1 to 0+opravujte do begin
+    buds=[];
+    lives=[];
+    for tmp2 in opravujte[tmp] do
+      if (getlives(tmp2)<hranice_zdravi) {and not (tmp2 in opravujese)} then begin
+        buds=buds^[tmp2];
+        lives=lives^[getlives(tmp2)];
+        //opravujese=opravujese^[tmp2];
+      end;
+    tmp2=sortlistbylistasc(buds,lives);
+    if tmp2 then begin
+      comrepairbuilding(inzinyri[tmp],tmp2[1]);
+      for tmp3=2 to 0+tmp2 do addcomrepairbuilding(inzinyri[tmp],tmp2[tmp3]);
+      addcomreturn(inzinyri[tmp]);
+      addcomhold(inzinyri[tmp]);
+    end;
+  end;
+  enable;
+end;
+
+
+every 0$1 marked 08 do  //odpaleni motherlode
+var zkseznam,tmp,tmp1;
+begin
+  wait(10$0);         //91 zkzdroju
+  if al_surr then exit;
+  if artef_gone then exit;
+  if debug then msg('al: armaggedon');
+  zkseznam=[
+    [64,17],[51,12],[58,24],[70,32],[45,19],
+    [55,35],[46,31],[61,41],[58,46],[51,40],
+    [55,47],[60,51],[64,53],[37,41],[38,59],
+    [45,50],[48,57],[47,48],[35,16],[38,51],
+    [55,61],[64,60],[60,63],[76,60],[74,71],
+    [71,73],[74,77],[54,65],[60,68],[57,69],
+    [62,71],[58,71],[61,73],[63,74],[66,75],
+    [60,74],[63,76],[62,76],[64,77],[65,77],
+    [46,65],[50,67],[53,68],[56,72],[56,74],
+    [47,69],[46,72],[46,78],[42,81],[50,83],
+    [55,85],[60,78],[59,79],[59,82],[63,81],
+    [67,79],[64,79],[67,82],[68,83],[66,83],
+    [71,84],[64,84],[70,87],[75,91],[68,90],
+    [58,93],[63,95],[67,94],[75,95],[62,99],
+    [68,105],[70,100],[73,98],[75,105],[84,82],
+    [81,89],[91,94],[77,114],[74,122],[81,100],
+    [81,106],[88,104],[91,120],[103,126],[89,132],
+    [103,133],[112,120],[115,130],[102,107],[62,77],
+    [65,78]
+  ];
+  for tmp in zkseznam do begin
+    contaminate(al,tmp[1],tmp[2]);
+    artcontamination(tmp[1],tmp[2],10);
+  end;
+//  placeseeing(63,77,ru,11);
+//  centernowonxy(63,77);
+//  wait(0$0.3);
+//  siberiteexplosion(63,77);
+  tmp=filterunitsinarea(mlsibdeps,[[f_type,unit_building],[f_side,ru]]);
+  if tmp then centernowonunits(tmp);
+  for tmp1 in tmp do setlives(tmp1,hranice_umirani-rand(1,hranice_umirani-2));
+  tmp=filterunitsinarea(mlsibdeps,[[f_type,unit_vehicle],[f_side,ru]]);
+  for tmp1 in tmp do setlives(tmp1,hranice_umirani-rand(1,hranice_umirani-2));
+
+  wait(0$1);
+  youlost('Alliance');
+end;
+
+
+//utok s vyuzitim teleportu
+var attida,attidb,utocnici,ridici,telep;
+every 0$10+10$0 do    //debugrem!!!
+var tmp,tmp1,tmp2;
+begin
+  if al_surr then exit;
+  al_att=al_att-1;
+  if not al_att then begin
+    if debug then msg('al: attack from two sides');
+//    if debug then begin msg('bacha je tu exit');exit;end;
+    uc_side=al;
+    uc_nation=nation_american;
+    vc_control=control_manual;
+    vc_engine=engine_siberite;
+
+    vc_chassis=[us_medium_tracked,us_morphling,us_heavy_tracked][difficulty];
+    vc_weapon=[us_double_gun,us_heavy_gun,us_heavy_gun][difficulty];
+    tmp=createvehicle;
+    setdir(tmp,3);
+    placeunitarea(tmp,alarriv,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+
+    vc_chassis=[us_medium_tracked,us_medium_tracked,us_morphling][difficulty];
+    vc_weapon=us_rocket_launcher;
+    tmp=createvehicle;
+    setdir(tmp,3);
+    placeunitarea(tmp,alarriv,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+
+    vc_chassis=[us_medium_tracked,us_medium_tracked,us_heavy_tracked][difficulty];
+    vc_weapon=us_laser;
+    tmp=createvehicle;
+    setdir(tmp,3);
+    placeunitarea(tmp,alarriv,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+
+    if difficulty>1 then begin
+      vc_chassis=[0,us_medium_tracked,us_morphling][difficulty];
+      vc_weapon=us_laser;
+      tmp=createvehicle;
+      setdir(tmp,3);
+      placeunitarea(tmp,alarriv,false);
+      preparemechanic(sex_male,al_def_skill);
+      placehumaninunit(createhuman,tmp);
+    end;
+
+    uc_nation=nation_russian;
+
+    vc_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+    vc_weapon=ru_gatling_gun;
+    tmp=createvehicle;
+    setdir(tmp,3);
+    placeunitarea(tmp,alarriv,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+
+    if difficulty>1 then begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+      tmp=createvehicle;
+      setdir(tmp,3);
+      placeunitarea(tmp,alarriv,false);
+      preparemechanic(sex_male,al_def_skill);
+      placehumaninunit(createhuman,tmp);
+    end;
+
+    vc_chassis=[ru_heavy_wheeled,ru_heavy_wheeled,ru_heavy_tracked][difficulty];
+    vc_weapon=ru_rocket;
+    tmp=createvehicle;
+    setdir(tmp,3);
+    placeunitarea(tmp,alarriv,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+
+    if difficulty>1 then begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_rocket;
+      tmp=createvehicle;
+      setdir(tmp,3);
+      placeunitarea(tmp,alarriv,false);
+      preparemechanic(sex_male,al_def_skill);
+      placehumaninunit(createhuman,tmp);
+    end;
+
+//albaseinner
+    tmp1=[];
+
+    vc_chassis=[ru_heavy_wheeled,ru_heavy_tracked,ru_heavy_tracked][difficulty];
+    vc_weapon=ru_rocket;
+    tmp=createvehicle;
+    placeunitarea(tmp,albaseinner,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+    tmp1=tmp1^[tmp];
+
+    vc_chassis=[ru_medium_wheeled,ru_medium_wheeled,ru_heavy_wheeled][difficulty];
+    vc_weapon=ru_gatling_gun;
+    tmp=createvehicle;
+    placeunitarea(tmp,albaseinner,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+    tmp1=tmp1^[tmp];
+
+    uc_nation=nation_american;
+
+    vc_chassis=[us_medium_tracked,us_medium_tracked,us_heavy_tracked][difficulty];
+    vc_weapon=us_rocket_launcher;
+    tmp=createvehicle;
+    placeunitarea(tmp,albaseinner,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+    tmp1=tmp1^[tmp];
+
+    vc_chassis=[us_medium_tracked,us_medium_tracked,us_heavy_tracked][difficulty];
+    vc_weapon=us_laser;
+    tmp=createvehicle;
+    placeunitarea(tmp,albaseinner,false);
+    preparemechanic(sex_male,al_def_skill);
+    placehumaninunit(createhuman,tmp);
+    tmp1=tmp1^[tmp];
+
+    commoveunit(tmp1,altelp00);
+
+    tmp=filterunitsinarea(alarriv,[[f_side,al],[f_type,unit_vehicle]]);
+    utocnici=tmp^tmp1;
+    ridici=[];
+    for tmp2 in utocnici do ridici=ridici^[isdrivenby(tmp2)];
+    telep=[];
+
+    if not regid then regid=mcregistry(al,[[mc_reg_area_to_guard,target],[mc_reg_refresh_time,11],mc_reg_ignore_fog]);
+    attida=mcattack(100,regid,tmp,[mc_no_stop{,[mc_area_dont_leave,target]}]);
+    while (0+(tmp1 diff filterunitsinarea(albaseinner,[[f_side,al],[f_type,unit_vehicle]])))<(0+tmp1) do wait(0$1);
+    //if debug then msg('let us kill them all');
+    attidb=mcattack(100,regid,tmp1,[mc_no_stop{,[mc_area_dont_leave,target]}]);
+
+
+    al_att=rand(al_att_min,al_att_max);
+  end;
+  {if not debug then} enable;
+end;
+
+
+on spontaneousteleported(un) do if un in utocnici then telep=telep^[un];
+
+every 0$5 trigger telep do
+var tmp,tmp1,tmp2;
+begin
+  wait(5);
+  tmp2=unitfilter(ridici,[[f_outside]]);
+  for tmp in telep do begin
+    tmp1=nearestunittounit(tmp2,tmp);
+    addcomrepairvehicle(tmp1,tmp);
+    addcomenterunit(tmp1,tmp);
+  end;
+  enable;
+end;
+
+
+
+
+
+
+
+

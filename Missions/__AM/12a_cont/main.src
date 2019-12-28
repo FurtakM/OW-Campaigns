@@ -1,0 +1,320 @@
+export am,al,oth;
+export ams00,ams01,ams02,ams03,ams04,ams05,ams06;
+export amv0_ch,amv0_wp,amv0_drv,amv1_ch,amv1_wp,amv1_drv,amv2_cl;
+export john_vychod;
+
+export debug,guard_out_,penalty,maxpenalty,penalties;
+var ambudovy,ambudovyt,ambudovyxy;
+function set_vars;
+var tmp,tmp1;
+begin
+//sides
+  am=1;
+  al=7;
+  oth=4;
+  takoviti=[];
+  moji=[];  //Never filled with anything...???
+  mojivip=[];
+  ostatnivip=[];
+  pocetmist=11;
+//          1       2        3         4         5        6        7        8       9      10      11
+//mista=[[54,51],[57,97],[104,112],[149,108],[165,96],[137,62],[122,38],[100,11],[75,3],[53,13],[24,22]];
+//areas=[area1_simms,area2_bobby,area3_cyrus,area4_lisa,area5_frank,area6_markc,area7_tim,area8_denis,area9_yamoko,area10_gary,area11_joan];
+  mista=[[57,97],[54,51],[24,22],[104,112],[53,13],[149,108],[165,96],[75,3],[137,62],[122,38],[100,11]];
+  areas=[area2_bobby,area1_simms,area11_joan,area3_cyrus,area10_gary,area4_lisa,area5_frank,area9_yamoko,area6_markc,area7_tim,area8_denis];
+  guard_out_=[[149,63],[150,65],[151,67],[152,69],[154,73],[153,71]];
+  penalty=0;
+  maxpenalty=25; 
+
+  penalties=[[b_depot,25]];
+  penalties=penalties^[[b_warehouse,25]];
+  penalties=penalties^[[b_factory,[10,8,6][difficulty]]];
+  penalties=penalties^[[b_barracks,[20,15,10][difficulty]]];
+  penalties=penalties^[[b_lab_full,[10,8,6][difficulty]]];
+  penalties=penalties^[[b_ext_track,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_ext_gun,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_ext_noncombat,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_ext_radar,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_ext_siberium,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_ext_computer,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_ext_laser,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_oil_power,[15,11,8][difficulty]]];
+  penalties=penalties^[[b_siberite_power,25]];
+  penalties=penalties^[[b_oil_mine,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_siberite_mine,[8,6,4][difficulty]]];
+  penalties=penalties^[[b_bunker,[10,8,6][difficulty]]];
+  penalties=penalties^[[b_turret,[10,8,6][difficulty]]];
+  penalties=penalties^[[b_control_tower,[10,8,6][difficulty]]];
+
+  ambudovy=filterallunits([[f_side,am],[f_type,unit_building]]);
+  ambudovyt=[];
+  ambudovyxy=[];
+  for tmp in ambudovy do begin
+    ambudovyt=ambudovyt^[getbtype(tmp)];
+    ambudovyxy=ambudovyxy^[[getx(tmp),gety(tmp)]];
+  end;
+
+  ams00=[4,6,8][difficulty];
+  ams01=[3,5,7][difficulty];
+  ams02=[4,6,8][difficulty];
+  ams03=[4,6,8][difficulty];
+  ams04=[4,6,8][difficulty];
+  ams05=[3,5,7][difficulty];
+  ams06=[4,6,8][difficulty];
+
+  amv0_ch=[us_medium_wheeled,us_medium_wheeled,us_medium_wheeled][difficulty];
+  amv0_wp=[us_gatling_gun,us_gatling_gun,us_gatling_gun][difficulty];
+  amv0_drv=[4,6,8][difficulty];
+  amv1_ch=[us_medium_wheeled,us_medium_wheeled,us_medium_wheeled][difficulty];
+  amv1_wp=[us_machine_gun,us_gatling_gun,us_machine_gun][difficulty];
+  amv1_drv=[4,6,8][difficulty];
+  amv2_cl=[4,7,8][difficulty];
+
+
+  if difficulty=3 then begin
+    tmp=filterallunits([[f_side,am],[f_or,[f_btype,b_bunker],[f_btype,b_turret]]]);
+    for tmp1 in tmp do setblevel([tmp1],getblevel(tmp1)+2);
+  end;
+
+end;
+
+export contacted,zabil; //,budovy;
+
+starting
+begin
+  debug=false;
+  setbname(amware0,'alpha');
+  set_vars;
+//  budovy=filterallunits([[f_side,am],[f_type,unit_building]]);
+  zustalo_malo=5;
+  john_vychod=false;
+  zabil=false;
+  disable(02);
+  disable(04);
+//  kill_them=false;
+  revealfogarea(al,celamapa);
+  revealfogarea(am,celamapa);
+  contacted=0;
+  prepare_americans;
+  if debug then msg('BACHA debug is ON!');
+end;
+
+export takoviti;
+on unitdestroyed(un) do
+var tmp,tmp1,tmp2;
+begin
+  if (un=john) and not debug then youlost('JMM');
+  if not(un in (moji^mojivip)) and (gettype(un)=unit_human) then zabil=true; //added 17.4. 2001
+  if un in takoviti then
+    for tmp=1 to pocetmist do
+      if un=takoviti[tmp] then begin
+        //disable(2+tmp);
+        settag(tmp,-1);
+        break;
+      end;
+  tmp1=0;
+  for tmp=1 to (0+ambudovy) do if ambudovy[tmp]=un then begin tmp1=tmp;break;end;
+  if tmp1 and (penalty<maxpenalty) then begin
+    for tmp in penalties do if tmp[1]=ambudovyt[tmp1] then begin tmp2=tmp[2];break;end;
+    penalty=penalty+tmp2;
+    if debug then msg('penalty: '&penalty);
+    if penalty>=maxpenalty then begin killx=ambudovyxy[tmp1][1];killy=ambudovyxy[tmp1][2];end
+  end;
+end;
+
+
+var zustalo_malo,zachraneni;
+every 0$0.51 marked 02 do
+var tmp,tmp2,chybi,chybiex;
+begin
+  if isinarea(john,vychod) and (not john_vychod) then begin
+    john_vychod=true;
+    repeat
+      wait(17);
+      chybi=false;
+      for tmp in (moji^mojivip) do
+        if (not isinarea(tmp,vychod)) and isok(tmp) then begin chybi=true;break;end;
+      chybiex=false;
+      if chybi then
+        for tmp in (moji^mojivip) do
+          if (not isinarea(tmp,vychodex)) and isok(tmp) then begin chybiex=true;break;end;
+    until not (chybi and not chybiex);  //nesnasim repeat
+    if chybi then
+      if query('Q1')=1 then enable
+      else begin
+        if filterunitsinarea(vychod,[[f_side,al]])<=zustalo_malo then say(john,'D5-JMM-1a')
+        else say(john,'D5-JMM-1');
+        zachraneni=filterunitsinarea(vychod,[[f_side,al]]) diff [john,roth];
+        tmp2=0+zachraneni;
+//        if lisamet=2 then begin contacted=contacted-1;tmp2=tmp2+1;end;
+        if lisamet=2 then tmp2=tmp2+1;
+        if frankmet then tmp2=tmp2-1;
+        if joanmet then tmp2=tmp2-1;
+
+        {if (contacted<(0+moji_backup)) and (tmp2=contacted) then addmedal('All',-1)
+        else addmedal('All',-2);}
+        if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
+
+        if lisa in zachraneni and joan in zachraneni then
+           SA_OnJoanAndLisaJoinedAlliance;
+
+        addmedal('Save',-1);
+        if zabil then addmedal('Friendship',-1)
+        else addmedal('Friendship',1);
+        givemedals('MAIN');
+//        rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]));
+        rewardpeople(zachraneni^[john]);
+        saveitall;
+        youwin;
+      end
+    else begin
+      zachraneni=filterunitsinarea(vychod,[[f_side,al]]) diff [john,roth];
+      tmp2=0+zachraneni;
+      if tmp2<=zustalo_malo then say(john,'D5-JMM-1a')
+      else say(john,'D5-JMM-1');
+//      if lisamet=2 then begin contacted=contacted-1;tmp2=tmp2+1;end;
+      if lisamet=2 then tmp2=tmp2+1;
+      if frankmet then tmp2=tmp2-1;
+      if joanmet then tmp2=tmp2-1;
+
+      {if contacted>tmp2 then addmedal('All',-2)
+      else if contacted<(0+moji_backup) then addmedal('All',-1)
+      else addmedal('All',1);}
+      if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
+
+      if lisa in zachraneni and joan in zachraneni then
+           SA_OnJoanAndLisaJoinedAlliance;
+
+      if tmp2<(0+moji_backup) then addmedal('Save',-1)
+      else addmedal('Save',1);
+      if zabil then addmedal('Friendship',-1)
+      else addmedal('Friendship',1);
+      givemedals('MAIN');
+//      rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]));
+      rewardpeople(zachraneni^[john]);
+      saveitall;
+      youwin;
+    end;
+  end
+  else if not isinarea(john,vychod) then begin john_vychod=false;enable;end
+  else begin
+    chybi=false;
+    for tmp in (moji^mojivip) do
+      if (not isinarea(tmp,vychod)) and isok(tmp) then begin chybi=true;break;end;
+    if not chybi then begin
+      zachraneni=filterunitsinarea(vychod,[[f_side,al]]) diff [john,roth];
+      tmp2=0+zachraneni;
+      if tmp2<=zustalo_malo then say(john,'D5-JMM-1a')
+      else say(john,'D5-JMM-1');
+//      if lisamet=2 then begin contacted=contacted-1;tmp2=tmp2+1;end;
+      if lisamet=2 then tmp2=tmp2+1;
+      if frankmet then tmp2=tmp2-1;
+      if joanmet then tmp2=tmp2-1;
+
+      {if contacted>tmp2 then addmedal('All',-2)
+      else if contacted<(0+moji_backup) then addmedal('All',-1)
+      else addmedal('All',1);}
+      if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
+
+      if lisa in zachraneni and joan in zachraneni then
+           SA_OnJoanAndLisaJoinedAlliance;
+
+      if tmp2<(0+moji_backup) then addmedal('Save',-1)
+      else addmedal('Save',1);
+      if zabil then addmedal('Friendship',-1)
+      else addmedal('Friendship',1);
+      givemedals('MAIN');
+//      rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]));
+      rewardpeople(zachraneni^[john]);
+      saveitall;
+      youwin;
+    end
+    else enable;
+  end;
+end;
+
+
+function saveitall;
+var tmp,vybrani,odpad;
+begin
+  savecharacters(john,'JMM');
+  if cyrus then begin
+    savecharacters(cyrus,'Cyrus');
+    if cyrus in zachraneni then savevariable(al,'cyrus_side')
+    else savevariable(am,'cyrus_side');
+  end;
+  if bobby then begin
+    savecharacters(bobby,'Bobby');
+    if bobby in zachraneni then savevariable(al,'bobby_side')
+    else savevariable(am,'bobby_side');
+  end;
+  if lisa then begin
+    savecharacters(lisa,'Lisa');
+    if lisa in zachraneni then savevariable(al,'lisa_side')
+    else savevariable(am,'lisa_side');
+  end;
+  if frank then begin
+    savecharacters(frank,'Frank');
+    if frank in zachraneni then savevariable(al,'frank_side')
+    else savevariable(am,'frank_side');
+  end;
+  if joan then begin
+    savecharacters(joan,'Joan');
+    if joan in zachraneni then savevariable(al,'joan_side')
+    else savevariable(am,'joan_side');
+  end;
+  if yamoko then begin
+    savecharacters(yamoko,'Yamoko');
+    if yamoko in zachraneni then savevariable(al,'yamoko_side')
+    else savevariable(am,'yamoko_side');
+  end;
+  if markc then begin
+    savecharacters(markc,'Cornell');
+    if markc in zachraneni then savevariable(al,'markc_side')
+    else savevariable(am,'markc_side');
+  end;
+  if brown then begin
+    savecharacters(brown,'Brown');
+    if brown in zachraneni then savevariable(al,'brown_side')
+    else savevariable(am,'brown_side');
+  end;
+  if lucy then begin
+    savecharacters(lucy,'Donaldson');
+    if lucy in zachraneni then savevariable(al,'lucy_side')
+    else savevariable(am,'lucy_side');
+  end;
+  if tim then begin
+    savecharacters(tim,'Gladstone');
+    if tim in zachraneni then savevariable(al,'tim_side')
+    else savevariable(am,'tim_side');
+  end;
+  if denis then begin
+    savecharacters(denis,'Denis');
+    if denis in zachraneni then savevariable(al,'denis_side')
+    else savevariable(am,'denis_side');
+    savevariable(getside(denis),'denis_side');
+  end;
+  if gary then begin
+    savecharacters(gary,'Gary');
+    if gary in zachraneni then savevariable(al,'gary_side')
+    else savevariable(am,'gary_side');
+  end;
+  if simms then begin
+    savecharacters(simms,'Simms');
+    if simms in zachraneni then savevariable(al,'simms_side')
+    else savevariable(am,'simms_side');
+  end;
+
+  vybrani=[];
+  odpad=[];
+  if testcharacters('otherwithJMM') then vybrani=createcharacterset('otherwithJMM')
+  else buildquery('neny otherwithJMM',['OK']);
+  if testcharacters('othernotJMM') then odpad=createcharacterset('othernotJMM')
+  else buildquery('neny othernotJMM',['OK']);
+
+//  tmp=filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]) diff [john,joan,bobby,cyrus,lisa,frank,markc,brown,lucy,tim,denis,yamoko,gary,simms];
+  tmp=zachraneni diff [john,joan,bobby,cyrus,lisa,frank,markc,brown,lucy,tim,denis,yamoko,gary,simms];
+  savecharacters(tmp,'otherwithJMM');
+  savecharacters((vybrani diff tmp) union odpad,'othernotJMM');
+
+end;

@@ -1,0 +1,152 @@
+every 0$1+0$0.1 do // Alliance base side change
+var filter,un;
+begin
+  if IsInArea(Burlak,SeeBaseArea) then
+  begin
+    filter:=FilterAllUnits([f_side,neutral]);
+    for un in filter do
+      setside(un,you);
+    disable;
+  end
+  else
+    enable;
+end;
+
+every 0$1+0$0.2 do // Alliance build base
+var filter,un,skill,inzenyr;
+begin
+  if IsInArea(Burlak,StartBuildArea) then
+  begin
+    DisableExclamations;
+    filter:=FilterAllUnits([f_side,neutral]);
+    skill:=0;
+    for un in filter do
+      if GetSkill(un,skill_engineering)>=skill then inzenyr:=un;
+    ComStop(inzenyr);
+    if GetClass(inzenyr)<>classtype_engineer then
+    begin
+      filter:=FilterAllUnits([[f_btype,b_warehouse],[f_side,neutral]]);
+      ComEnterUnit(inzenyr,filter[1]);
+      Wait(10);
+      AddComChangeProfession(inzenyr,classtype_engineer);
+      Wait(10);
+      AddComExitBuilding(inzenyr);
+    end;
+    Wait(10);
+    AddComBuild(inzenyr,b_oil_power,126,17,5);
+    EnableExclamations;
+    disable;
+  end
+  else
+    enable;
+end;
+
+every 0$10+0$0.3 marked 1 do // Creating Ru_Straz
+var i,bazukr;
+begin
+  if (0+straz)<3 then
+  begin
+    uc_side:=rus;
+    uc_nation:=nation_russian;
+    PrepareHuman(sex_male,class_bazooker,4);
+    hc_name:='';
+    bazukr:=CreateHuman;
+    straz:=straz^bazukr;
+    PlaceUnitArea(bazukr,EnterArea,false);
+    ComAgressiveMove(bazukr,66,48);
+  end;
+  enable;
+end;
+
+every 0$5+0$0.4 marked 2 do // Moving Ru_straz
+var un;
+begin
+  if (0+straz)<>0 then
+  begin
+    for un in straz do
+    begin
+      if NOT HasTask(un) then
+      begin
+        if GetY(un)>60 then
+          ComAgressiveMove(un,66,48)
+        else
+          ComAgressiveMove(un,65,83);
+      end;
+    end;    
+  end;
+  enable;
+end;
+
+every 0$1+0$0.5 do // Dialogues on alliance base etc.
+var filter,un;
+begin
+  if IsInArea(Burlak,BaseArea) then
+  begin
+    D_GosStart;
+    Wait(0$5);
+    D_Situation;
+    ChangeMissionObjectives('MHold');
+    disable;
+    enable(333);
+    enable(334);
+  end
+  else
+    enable;
+end;
+
+
+
+every 0$0.5 marked 3 do // Gossudarov guiding
+begin
+  if IsSelected(Gossudarov)=true then
+  begin
+    if WasSelected=false then
+    begin
+      QueryQGO;
+      WasSelected:=true;
+    end;
+  end
+  else
+    WasSelected:=false;
+  if NOT disabled3 then enable;
+end;
+
+EXPORT function QueryQGO;
+var res;
+begin
+  res:=Query('QGO');
+  if res=1 then
+  begin
+    disabled3:=true;
+    D_GO1;
+    ComMoveXY(Gossudarov,50,58);
+    repeat
+      Wait(0$1);
+    until NOT HasTask(Gossudarov);
+    SetSide(Gossudarov,you);
+    enable(4);
+  end;
+end;
+
+every 0$1+0$0.6 marked 4 do // Scientists in ExitArea
+begin
+  if IsInArea(Gossudarov,ExitArea) then
+  begin
+    D_SeeYou;
+    TheEnd;
+  end
+  else
+    enable;
+end;
+
+
+
+// **********************    EVENTS   ********************************
+
+on UnitDestroyed(human) do
+var un;
+begin
+  if human=Burlak then YouLost('Burlak');
+  for un in straz do
+    if human=un then straz:=straz diff human;
+end;

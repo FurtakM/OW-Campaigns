@@ -1,0 +1,127 @@
+export us_researched,              // ident, zda americane vynalezli svuj artefakt
+       ru_researched;              // ident, zda rusove vynalezli svuj artefakt
+
+export one_enabled;
+
+// Dialogue ArtefTechnologyAm    - vynalezeni artefaktu na cumeni do dalky
+every 0$1.1 do
+var un,sci;
+begin
+  exit;
+
+  un:=FilterAllUnits([ [f_side,you], [f_nation,nation_american], [f_sex,sex_male] ]);
+  un:=un diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    sci:=FindMaxSkill(un,skill_scientistic);
+
+  CenterOnUnits([MacMillan, Burlak]);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(sci,'DArtefTechnologyAm-Sci1-1');
+    case camp of
+  4: Say(MacMillan,'DArtefTechnologyAm-JMM-1');
+  6: Say(Burlak,'DArtefTechnologyAm-Bur-1');
+    end;
+  
+  interface_hidden:=false;
+  DialogueOff;
+  if not one_enabled then
+    begin
+      Enable(1);
+      one_enabled:=true;
+    end;
+  us_researched:=true;
+end;
+
+
+// Dialogue ArtefTechnologyRu    - vynalezeni artefaktu na niceni siberitovych jednotek
+every 0$1.3 do
+var un,sci;
+begin
+  exit;
+
+  un:=FilterAllUnits([ [f_side,you], [f_nation,nation_russian], [f_sex,sex_male] ]);
+  un:=un diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    sci:=FindMaxSkill(un,skill_scientistic);
+
+  CenterOnUnits([MacMillan,sci]);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(sci,'DArtefTechnologyRu-RSci1-1');
+    case camp of
+  4: Say(MacMillan,'DArtefTechnologyRu-JMM-1');
+  6: Say(Burlak,'DArtefTechnologyRu-Bur-1');
+    end;
+  Say(sci,'DArtefTechnologyRu-RSci1-2');
+
+  interface_hidden:=false;
+  DialogueOff;
+  if not one_enabled then
+    begin
+      Enable(1);
+      one_enabled:=true;
+    end;
+  ru_researched:=true;
+end;
+
+
+// Dialogue ArtefTechnologyArStart (when one of the "basic" artef. tech. is researched and Alien base is "captured")
+every 0$5.3 trigger (GetSide(al_tower)=you) and (GetTag(81) or GetTag(181)) Marked 1 do
+var un,sci;
+begin
+  un:=[];
+  if us_researched then
+    un:=un ^ FilterAllUnits([ [f_side,you], [f_nation,nation_american], [f_sex,sex_male] ]);
+  if ru_researched then
+    un:=un ^ FilterAllUnits([ [f_side,you], [f_nation,nation_russian], [f_sex,sex_male] ]);
+
+  un:=un diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    sci:=FindMaxSkill(un,skill_scientistic);
+
+  CenterOnUnits(sci);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(sci,'DArtefTechnologyArStart-Sci1-1');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+
+// Dialogue ArtefTechnologyAr
+every 0$3.9 trigger GetTag(281) do
+var un,sci;
+begin
+  un:=FilterAllUnits([ [f_side,you], [f_nation,nation_russian], [f_sex,sex_male] ]);
+  un:=un diff [MacMillan, Burlak, Roth, Gossudarov, 0];
+  if un then
+    sci:=FindMaxSkill(un,skill_scientistic)
+  else
+    exit;  //Don't play the dialogue then. The player was given a Hint when the tech was researched so the dialogue can be omitted.
+
+  CenterOnUnits([MacMillan, Burlak, sci]);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(sci,'DArtefTechnologyAr-RSci1-1');
+    case camp of
+  4: Say(MacMillan,'DArtefTechnologyAr-JMM-1');
+  6: Say(Burlak,'DArtefTechnologyAr-Bur-1');
+    end;
+  Say(sci,'DArtefTechnologyAr-RSci1-2');
+    case camp of
+  4: Say(MacMillan,'DArtefTechnologyAr-JMM-2');
+  6: Say(Burlak,'DArtefTechnologyAr-Bur-2');
+    end;
+  Say(sci,'DArtefTechnologyAr-RSci1-3');
+  Say(MacMillan,'DArtefTechnologyAr-JMM-3');
+  Say(sci,'DArtefTechnologyAr-RSci1-4');
+  Say(Burlak,'DArtefTechnologyAr-Bur-4');
+  Say(MacMillan,'DArtefTechnologyAr-JMM-4');
+
+  interface_hidden:=false;
+  DialogueOff;
+end;

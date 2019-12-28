@@ -1,0 +1,410 @@
+//defence of rubase1  (and also offence :)
+export ruv3,ruhsold8,ruhsold9,ruhmech4,ruhsolda,ruhsoldb,ruhsoldc,ruhsoldd,ruhsolde,ruhsoldf,ruhsoldg,ruhsoldh,ruhsoldi;
+export vracet_se;
+export ruhmech6,ruv5,ruhmech7,ruv6,ruhsoldm,ruhsoldn;
+
+{
+every 0$2+0$10 trigger vracet_se and not isinarea(ruhsold0,rubase0) do
+begin
+     comreturn(ruhsold0);
+end;
+
+every 0$2+0$10 trigger vracet_se and not isinarea(ruv1,rubase0) do
+begin
+     comreturn(ruv1);
+end;
+
+every 0$2+0$10 trigger vracet_se and not isinarea(ruv2,rubase0) do
+begin
+     comreturn(ruv2);
+end;
+}
+
+var pom,enemy;
+function enemies_rb1;
+begin                  
+  enemy=FilterUnitsInArea(rubase1rng,[[f_side,amer],[f_alive]]);
+  result=enemy;
+  if enemy then begin
+    pom=unitfilter(enemy,[[f_type,unit_vehicle]]);
+    if pom then enemy=pom;
+  end;
+end;
+
+//var attacking=false;
+every 0$1+0$20 trigger not rubase1_gone and not attacking and enemies_rb1 do
+begin
+//  buildquery('attaaaaaaaack',['OK']);
+  comfree(rusove2);
+//  comattackunit(rusove2,enemy[1]);
+  comagressivemove(rusove2,getx(enemy[1]),gety(enemy[1]));
+  if not isinunit(ruhengi1) then
+    commoveunit(ruhengi1,rubdepo0);
+  attacking=true;
+  enable;
+end;
+
+var rusaci_mimo_;
+function rusaci_mimo;
+begin
+  rusaci_mimo_=rusove2 diff filterunitsinarea(RuBase1rng,[[f_side,rus]]);
+  result=rusaci_mimo_;
+end;
+
+every 0$1.3+0$20.7 trigger attacking and rusaci_mimo do
+begin
+//  enemies_rb1;
+  comagressivemove(rusove2,44,53); //getx(enemy[1]),gety(enemy[1]));
+end;
+
+every 0$1+0$20.3 trigger attacking and not FilterUnitsInArea(rubase1rng,[[f_side,amer],[f_alive]]) do
+begin
+  comhold(rusove2);
+  comreturn(rusove2);
+  attacking=false;
+  if not rubase1_gone then enable;
+end;
+
+//todle se stara o omezeni poctu vozidel v jednom utoku
+function manage_prebytek(zaklad);
+var bz,bzz;
+begin
+  bzz=[];
+  for bz in rusove0 do
+    if gettype(bz)=unit_vehicle then begin
+      rusove0=rusove0 diff [bz];
+      bzz=bzz^[bz];
+    end;
+  for bz=1 to (0+bzz) do
+    if bz<=(mpora-zaklad) then rusove0=rusove0^[bzz[bz]]
+    else prebytek=prebytek^[bzz[bz]];
+end;
+
+
+//utok z obou zakladen; vezmu co zustalo z j,k,l
+var nppp;     //nova pitoma pomocna promena :)
+every 17$0 do
+begin
+  if retreat then exit;
+  disable(17);
+  case difficulty of
+    1:wait(1$0);
+    2:wait(0$30);
+  end;
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+//     hc_face_number=
+  case difficulty of
+    2:preparemechanic(sex_female,1);
+    3:preparemechanic(sex_female,2);
+    1:preparemechanic(sex_female,0);
+  end;
+//     hc_name='Nastya Baranov';
+  ruhmech6=createhuman;
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv5=createvehicle;
+  setdir(ruv5,0);
+  placeunitarea(ruv5,rusreinf1,false);
+  placehumaninunit(ruhmech6,ruv5);
+
+  case difficulty of
+    2:preparemechanic(sex_male,1);
+    3:preparemechanic(sex_male,2);
+    1:preparemechanic(sex_male,0);
+  end;
+//     hc_name='Filip Balei';
+  ruhmech7=createhuman;
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gun;
+    end;
+  end; //case
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv6=createvehicle;
+  setdir(ruv6,0);
+  placeunitarea(ruv6,rusreinf1,false);
+  placehumaninunit(ruhmech7,ruv6);
+  comfree([ruv5,ruv6]);
+  if filterunitsinarea(rubase1rng,[[f_side,amer],[f_alive]]) then comagressivemove([ruv5,ruv6],56,61)
+  else comagressivemove([ruv5,ruv6],47,45);
+  nppp=unitfilter([ruhsoldj,ruhsoldk,ruhsoldl],[[f_ok]]);
+  case difficulty of
+    1:preparesoldier(sex_female,2);
+    2:preparesoldier(sex_female,2);
+    3:preparesoldier(sex_female,3);
+  end;
+//     hc_name='Nina Chvojkov';
+  ruhsoldm=createhuman;
+  placeunitarea(ruhsoldm,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_male,1);
+    2:preparesoldier(sex_male,2);
+    3:preparesoldier(sex_male,2);
+  end;
+//     hc_name='Robert Bautin';
+  ruhsoldn=createhuman;
+  placeunitarea(ruhsoldn,rusreinf0,false);
+  nppp=nppp^[ruhsoldm,ruhsoldn];
+  comfree(nppp);
+  comagressivemove(nppp,78,46);
+  manage_prebytek(2);
+  rusove0=rusove0 union ([ruv5,ruv6] union nppp);
+  enable(17);
+end;
+
+every 0$1+17$10 trigger not([ruv5,ruv6] diff filterunitsinarea(wayarea2,[[f_side,rus],[f_type,unit_vehicle]])) marked 17 do
+begin
+  comagressivemove([ruv5,ruv6],47,25);
+end;
+
+every 0$1+17$10 trigger filterunitsinarea(wayarea1,[[f_side,rus],[f_type,unit_human]])>2 marked 17 do
+begin
+  comagressivemove(nppp,61,22);
+end;
+
+every 18$0 marked 17 do
+var tmp;
+begin
+  case difficulty of
+    1:wait(1$0);
+    2:wait(0$30);
+  end;
+  tmp=filterallunits([[f_side,amer],[f_btype,b_bunker],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_btype,b_breastwork],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_vehicle],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok]]);
+  if tmp then comattackunit(rusove0,tmp[1]);
+end;
+
+
+every 22$0 do //utok na americany
+begin 
+  if retreat then exit;
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+//     hc_face_number=
+  case difficulty of
+    2:preparemechanic(sex_male,1);
+    3:preparemechanic(sex_male,2);
+    1:preparemechanic(sex_male,0);
+  end;
+//     hc_name='Sergej Jakovlevov';
+  ruhmech4=createhuman;
+  case difficulty of
+    1:preparesoldier(sex_female,2);
+    2:preparesoldier(sex_female,3);
+    3:preparesoldier(sex_female,4);
+  end;
+  hc_class=class_soldier;
+//     hc_name='Anna Karenina';
+  ruhsold8=createhuman;
+  if difficulty=3 then placeunitarea(ruhsold8,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_female,2);
+    2:preparesoldier(sex_female,3);
+    3:preparesoldier(sex_female,4);
+  end;
+//     hc_name='Nina Repajova';
+  ruhsold9=createhuman;
+  placeunitarea(ruhsold9,rusreinf0,false);
+  case difficulty of
+    1:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_heavy_machine_gun;
+    end;
+    2:begin
+      vc_chassis=ru_medium_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+    3:begin
+      vc_chassis=ru_heavy_wheeled;
+      vc_weapon=ru_gatling_gun;
+    end;
+  end;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+  ruv3=createvehicle;
+  placeunitarea(ruv3,rusreinf0,false);
+  placehumaninunit(ruhmech4,ruv3);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,4);
+  end;
+//     hc_name='Ijla Sterpanov';
+  ruhsolda=createhuman;
+  placeunitarea(ruhsolda,rusreinf0,false);
+  manage_prebytek(1);
+  rusove0=rusove0 union [ruhsold8,ruhsold9,ruhsolda,ruv3];
+  comfree([ruhsold8,ruhsold9,ruhsolda,ruv3]);
+  comagressivemove(rusove0,66,66);
+end;
+
+every 0$1+22$09 trigger isinarea(ruhsold8,wayarea0) or isinarea(ruhsold9,wayarea0) or isinarea(ruhsolda,wayarea0) do
+begin
+  wait(1$0);
+  comagressivemove(rusove0,50,50);
+end;
+
+every 0$1+22$19 trigger isinarea(ruhsold8,wayarea2) or isinarea(ruhsold9,wayarea2) or isinarea(ruhsolda,wayarea2) do
+var tmp;
+begin
+  wait(0$30);
+  comagressivemove(rusove0,40,30);
+  wait(0$10);
+  tmp=filterunitsinarea(ambase,[[f_side,amer],[f_alive],[f_type,unit_human]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_btype,b_breastwork],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_vehicle],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok]]);
+  if tmp then comattackunit(rusove0,tmp[1]);
+end;
+
+every 28$40 do //zaverecny utok na americany
+begin
+  if retreat then exit;
+  vracet_se=false;
+//     hc_galery='Ru';
+  uc_nation=nation_russian;
+  uc_side=rus;
+//     hc_face_number=
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,4);
+  end;
+//     hc_name='Leonid Beznaremov';
+  ruhsoldb=createhuman;
+  placeunitarea(ruhsoldb,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,3);
+  end;
+//     hc_name='Kornelius Udalov'; //z Guslaru :)
+  ruhsoldc=createhuman;
+  placeunitarea(ruhsoldc,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,4);
+  end;
+//     hc_name='Kir Molodec';
+  ruhsoldd=createhuman;
+  placeunitarea(ruhsoldd,rusreinf0,false);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,3);
+  end;
+//     hc_name='Ivan Bukycov';
+  ruhsolde=createhuman;
+  placeunitarea(ruhsolde,rusreinf0,false);
+  comfree([ruhsoldb,ruhsoldc,ruhsoldd,ruhsolde]);
+  comagressivemove([ruhsoldb,ruhsoldc,ruhsoldd,ruhsolde],78,46); //wayarea1
+  rusove2=[];
+  if isok(ruv1) then rusove2=rusove2^[ruv1];
+  if isok(ruv2) then rusove2=rusove2^[ruv2];
+  manage_prebytek(0+rusove2);
+  if isok(ruhsold0) then rusove2=rusove2^[ruhsold0];
+  if isok(ruhsold6) then rusove2=rusove2^[ruhsold6];
+  if isok(ruhsold7) then rusove2=rusove2^[ruhsold7];
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,4);
+  end;
+//     hc_name='Timur Kuzniecenko';
+  ruhsoldf=createhuman;
+  placeunitarea(ruhsoldf,rusreinf1,false);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,3);
+  end;
+//     hc_name='Vasilij Senkievic';
+  ruhsoldg=createhuman;
+  if difficulty=3 then placeunitarea(ruhsoldg,rusreinf1,false);
+  case difficulty of
+    1:preparesoldier(sex_male,2);
+    2:preparesoldier(sex_male,3);
+    3:preparesoldier(sex_male,4);
+  end;
+//     hc_name='Tumor Goliasec';
+  ruhsoldh=createhuman;
+  placeunitarea(ruhsoldh,rusreinf1,false);
+  preparesoldier(sex_male,4);
+//     hc_name='Ivan Jaktusenko';
+  ruhsoldi=createhuman;
+  placeunitarea(ruhsoldi,rusreinf1,false);
+  rusove2=rusove2^[ruhsoldf,ruhsoldg,ruhsoldh,ruhsoldi];
+  comfree(rusove2);
+  rusove0=rusove0 union rusove2;
+  comagressivemove(rusove0,47,45);   //wayarea2
+end;
+
+every 0$1+28$49 trigger isinarea(ruhsoldb,wayarea1) or isinarea(ruhsoldc,wayarea1) or isinarea(ruhsoldd,wayarea1) or isinarea(ruhsolde,wayarea1) do
+var tmp;
+begin
+  comagressivemove([ruhsoldb,ruhsoldc,ruhsoldd,ruhsolde],53,13);
+  wait(0$7);
+  tmp=filterunitsinarea(ambase,[[f_side,amer],[f_alive],[f_type,unit_human]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_btype,b_breastwork],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_vehicle],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok]]);
+  if tmp then comattackunit([ruhsoldb,ruhsoldc,ruhsoldd,ruhsolde],tmp[1]);
+end;
+
+every 0$1+28$49 trigger isinarea(ruhsoldf,wayarea2) or isinarea(ruhsoldg,wayarea2) or isinarea(ruhsoldh,wayarea2) or isinarea(ruhsoldi,wayarea2) do
+var tmp;
+begin
+  if not filterunitsinarea(rubase1rng,[[f_side,rus],[f_btype,b_depot]]) then wait(1$30);
+  comagressivemove(rusove0,47,25);
+  wait(0$3);
+  tmp=filterunitsinarea(ambase,[[f_side,amer],[f_alive],[f_type,unit_human]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_btype,b_breastwork],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_vehicle],[f_occupied]]);
+  if not tmp then tmp=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok]]);
+  if tmp then comattackunit(rusove0,tmp[1]);
+end;
+
+
+var zivi_amerikani_;
+function zivi_amerikani;
+begin
+  zivi_amerikani_=filterunitsinarea(ambase,[[f_side,amer],[f_type,unit_human],[f_ok]]);
+  if not zivi_amerikani_ then zivi_amerikani_=filterallunits([[f_side,amer],[f_type,unit_human],[f_ok]]);
+  result=zivi_amerikani_;
+end;
+
+every 0$1+30$0 trigger zivi_amerikani do
+begin
+  if not retreat then comattackunit(rusove0,zivi_amerikani_[1]);
+end;
+

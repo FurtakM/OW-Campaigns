@@ -1,0 +1,52 @@
+EXPORT protiutok;
+EXPORT Ar_levely;
+EXPORT timelimit;
+EXPORT max_bedny;
+EXPORT lidi_other;
+EXPORT zivoty_prvni_baze;                
+EXPORT utok_2_doba;
+
+EXPORT medaile1;
+EXPORT medaile2;
+EXPORT Timecounter;
+
+// nastaveni obtiznosti
+EXPORT function SET_DIFFICULTY;
+VAR pom;
+begin
+  // doba 1. priotiutoku
+  protiutok=[10$0,7$30,5$30];
+  // doba 2. utoku
+  utok_2_doba=[10$0,8$0,6$0];
+  // levely arabskych vojaku
+  Ar_levely=[4,5,6];
+  // casovy limit
+  timelimit=[150$0,140$0,130$0];   
+  // cas pro dosazeni 1. medaile
+  medaile1=[120,100,90];
+  medaile2=[100,80,70];
+  // maximalni pocet beden spadlych
+  max_bedny=[55,40,30];
+  // pocet zivotu bunkru a pod v prvni bazi
+  zivoty_prvni_baze=[700,850,1000];
+
+  // pocitac casu
+  Timecounter=0;
+end;
+
+// hodiny
+EXPORT cas;
+EVERY 0$10 DO
+VAR pom;
+begin
+  if cas[3]+10=60 then cas=cas[1]+1^cas[2]^0
+                  else cas=cas[1]^cas[2]^cas[3]+10;
+  debug_strings=[cas];
+  enable;
+end;
+
+EVERY 1$0 DO
+begin
+  Timecounter=Timecounter+1;
+  enable;
+end;

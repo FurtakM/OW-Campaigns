@@ -1,0 +1,851 @@
+// They start with develop in laboratory
+
+EXPORT Function StartRussianBase;            // In Dialogues
+var i, Bunkers, Turrets, units_to_protect, Teleport1, Teleport2, R_Eng;
+ begin
+   // Create teleport exits
+   Teleport1= GetUnitNumber(165, 60);
+   Teleport2= GetUnitNumber(182, 87);
+   TeleportExit(Teleport1, 90, 71);
+   TeleportExit(Teleport2, 147, 109);
+
+
+   // Divide Scientists
+   for i= 3 to 4 do
+     ComEnterUnit(Russian_scientists[i], RusLab1);
+
+   for i= 5 to 6 do
+     ComEnterUnit(Russian_scientists[i], RusLab2);
+
+   // Divide Engineers
+{   for i= 1 to 2 do
+     begin
+       ComEnterUnit(Russian_engineers[i], RusLab1);
+       AddComChangeProfession(Russian_engineers[i], class_scientistic);
+     end;
+}
+   for i= 3 to Number_of_Russian_Engineers do
+     begin
+       ComEnterUnit(Russian_engineers[i], RusLab2);
+       AddComChangeProfession(Russian_engineers[i], class_scientistic);
+     end;
+
+   // RusLab1
+   ComResearch(RusLab1, tech_Comp1);
+   ComResearch(RusLab1, tech_Comp2);
+   AddComResearch(RusLab1, tech_Comp3);
+   AddComResearch(RusLab1, tech_ST1);
+   AddComResearch(RusLab1, tech_ST2);
+   AddComResearch(RusLab1, tech_ST3);
+
+
+   // RusLab2
+   ComResearch(RusLab2, tech_Weap1);
+   AddComResearch(RusLab2, tech_Weap2);
+   AddComResearch(RusLab2, tech_SibFiss);
+   AddComResearch(RusLab2, tech_Weap3);
+   AddComResearch(RusLab2, tech_Sib1);
+   AddComResearch(RusLab2, tech_Sib2);
+   AddComResearch(RusLab2, tech_Sib3);
+
+
+   // Divide Mechanics
+   for i= 1 to 3 do
+     ComEnterUnit(Russian_mechanics[i], GetUnitNumber(195, 84));
+
+   for i= 4 to 6 do
+     ComEnterUnit(Russian_mechanics[i], GetUnitNumber(170, 35));
+
+
+   // Divide Soldiers
+   Bunkers= FilterAllUnits([[f_side, russians], [f_type, unit_building], [f_btype, b_bunker]]);
+   if Bunkers <= Russian_soldiers then
+     begin
+       for i= 1 to Bunkers do
+         ComEnterUnit(Russian_soldiers[i], Bunkers[i]);
+
+       for i= Bunkers+1 to Russian_soldiers do
+         ComEnterUnit(Russian_soldiers[i], RusBarr1);
+     end
+
+   else
+     begin
+       for i= 1 to Russian_soldiers do
+         ComEnterUnit(Russian_soldiers[i], Bunkers[i]);
+     end;
+
+   /////////////////////////////////////////////////
+   /////////////   Start McDefend   ////////////////
+   /////////////////////////////////////////////////
+
+   Turrets= FilterAllUnits([[f_side, russians], [f_type, unit_building], [f_btype, b_turret]]);
+   units_to_protect= Bunkers ^ Turrets ^ RusBarr1 ^ RusBarr2;
+   Russian_reg_def_id= McRegistry(russians, [[mc_reg_area_to_guard, Rus_Base],
+                                           [mc_reg_area_to_protect, Rus_Base],
+                                           [mc_reg_units_to_protect, units_to_protect],
+                                           -mc_reg_only_important,
+                                           -mc_reg_ignore_fog]);
+
+   Russian_def_id= McDefend(100, Russian_reg_def_id, Russian_soldiers ^ units_to_protect,
+                                                    [[mc_area_dont_leave, Rus_Base],
+                                                     [mc_retreat_area_people,Rus_Heal],
+                                                     [mc_retreat_lives_people,550]]);
+
+   /////////////////////////////////////////////////
+   ///////////////   Start McBase   ////////////////
+   /////////////////////////////////////////////////
+
+   R_Eng= [];
+   for i= 3 to Russian_Engineers do
+     R_Eng= R_Eng ^ Russian_Engineers[i];
+
+   McBase(Russian_build_id, R_Eng,
+          Russian_Buildings, [], [], [mc_base_cont]); //options
+
+ end;
+
+EXPORT Function ChangeScientists(Uns);              // In Functions (when the technologies
+var Un, hex, InBarr1, InBarr2, eng, i;              // are developed)
+ begin
+
+   // Refuel Russian_engineers
+   eng= Uns isect Russian_engineers;
+   Uns= Uns diff (Uns isect Russian_engineers);
+   AddMcUnits(Russian_build_id, eng);
+
+   // Add two Rus_Doctors
+   for i= 1 to  2 do
+     if Uns <> 0 then
+       begin
+         Rus_Doctors= Rus_Doctors ^ Russian_engineers[1];
+         Uns= Uns diff Russian_engineers[1];
+       end;
+
+   // Send Rus_Doctors to Heal area
+   for Un in Rus_Doctors do
+     begin
+       hex= RandHexArea(Rus_Heal, true);
+       SetRememberedX(Un, hex[1]);
+       SetRememberedY(Un, hex[2]);
+     end;
+   ComReturn(Rus_Doctors);
+
+   // RusBarr1, RusBarr2
+   InBarr1= UnitsInside(RusBarr1);
+   InBarr2= UnitsInside(RusBarr2);
+   for Un in Uns do
+     begin
+       if InBarr1 < 6 then
+         begin
+           InBarr1= InBarr1+1;
+           Russian_soldiers= Russian_soldiers ^ Un;
+           AddMcUnits(Russian_def_id, Un); // Update McDefend
+           ComEnterUnit(Un, RusBarr1);
+         end
+       else if InBarr2 < 6 then
+         begin
+           InBarr2= InBarr2+1;
+           Russian_soldiers= Russian_soldiers ^ Un;
+           AddMcUnits(Russian_def_id, Un); // Update McDefend
+           ComEnterUnit(Un, RusBarr2);
+         end
+       else
+         begin
+           Russian_soldiers= Russian_soldiers ^ Un;
+           AddMcUnits(Russian_def_id, Un); // Update McDefend
+         end;
+     end;
+ end;
+
+
+// Doctors have to return to the Rus_Heal area
+EVERY 0$5 DO
+var Un;
+ begin
+   for Un in Rus_Doctors do
+     begin
+       if not(HasTask(Un)) then
+        if (GetClass(Un) <> class_scientistic) then
+          begin
+            ComEnterUnit(Un, RusLab2);
+            AddComChangeProfession(Un, class_scientistic);
+            AddComReturn(Un);
+          end
+        else if not(IsInArea(Un, Rus_Heal)) then ComReturn(Un);
+     end;
+ end;
+
+
+/////////////////////////////////////////////////////////////////////
+////////////////////   Russian Attack   /////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+Function GetRandomVehicle(time);
+var Rand_Veh, Selected, Credits, Probab, engine;
+ begin
+   Selected= false;
+
+   engine= engine_siberite;
+
+   repeat
+     Probab= Rand(1, 100);
+
+     case time of
+       1: Rand_Veh= [1, 2, 3, 4, 5, 6][Rand(1, 6)];
+       2: Rand_Veh= [3, 4, 5, 6, 7, 8][Rand(1, 6)];
+       3: Rand_Veh= [5, 6, 7, 8, 9, 10, 11, 12][Rand(1, 8)];
+     end;
+
+     case Rand_Veh of
+       ///////////////   1   ////////////
+       1: begin
+            if (time <= 1 and Probab < 60) or
+               (time <= 3 and Probab < 20) then
+              begin
+                Selected= true;
+                Credits= 3;
+                R_Attack_Group= R_Attack_Group ^  // Heavy machine gun
+                  [[ru_medium_tracked, engine, control_computer, ru_heavy_machine_gun]];
+              end;
+          end;
+
+       2: begin
+            if (time <= 1 and Probab < 80) or
+               (time <= 3 and Probab < 30) then
+              begin
+                Selected= true;
+                Credits= 4;
+                R_Attack_Group= R_Attack_Group ^  // Heavy machine gun / Heavy
+                  [[ru_heavy_tracked, engine, control_computer, ru_heavy_machine_gun]];
+              end;
+          end;
+
+
+       4: begin
+            if (time <= 1 and Probab < 100) or
+               (time <= 3 and Probab < 80) or
+               (time > 3 and Probab < 50) then
+              begin
+                Selected= true;
+                Credits= 5;
+                R_Attack_Group= R_Attack_Group ^  // Gattling
+                  [[ru_medium_tracked, engine, control_computer, ru_gatling_gun]];
+              end;
+          end;
+
+       3: begin
+            if (time <= 1 and Probab < 100) or
+               (time <= 3 and Probab < 40) then
+              begin
+                Selected= true;
+                Credits= 5;
+                R_Attack_Group= R_Attack_Group ^  // Gun
+                  [[ru_medium_tracked, engine, control_computer, ru_gun]];
+              end;
+          end;
+
+
+       5: begin
+              Selected= true;
+              Credits= 7;
+              R_Attack_Group= R_Attack_Group ^  // Gattling / Heavy
+                [[ru_heavy_tracked, engine, control_computer, ru_gatling_gun]];
+          end;
+
+       6: begin
+            if (time <= 1 and Probab < 100) or
+               (time <= 3 and Probab < 60) or
+               (time > 3 and Probab < 20) then
+              begin
+                Selected= true;
+                Credits= 7;
+                R_Attack_Group= R_Attack_Group ^  // Gun / Heavy
+                  [[ru_heavy_tracked, engine, control_computer, ru_gun]];
+              end;
+          end;
+
+       ////////////////    2   ///////////////
+       7: begin
+              Selected= true;
+              Credits= 9;
+              R_Attack_Group= R_Attack_Group ^  // Rocket Launcher
+                [[ru_medium_tracked, engine, control_computer, ru_rocket_launcher]];
+          end;
+
+      //////////////////   3   ///////////////////
+       8: begin
+              Selected= true;
+              Credits= 11;
+              R_Attack_Group= R_Attack_Group ^  // Rocket launcher / Heavy
+                [[ru_heavy_tracked, engine, control_computer, ru_rocket_launcher]];
+          end;
+
+      //////////////////   4   ///////////////////
+       9: begin
+              Selected= true;
+              Credits= 11;
+              R_Attack_Group= R_Attack_Group ^  // Heavy Gun
+                [[ru_heavy_tracked, engine, control_computer, ru_heavy_gun]];
+          end;
+
+      10, 11: begin
+              Selected= true;
+              Credits= 15;
+              R_Attack_Group= R_Attack_Group ^  // Rocket
+                [[ru_heavy_tracked, engine, control_computer, ru_rocket]];
+          end;
+
+      12: begin
+              Selected= true;
+              Credits= 4;
+              R_Attack_Group= R_Attack_Group ^  // Time Lapser
+                [[ru_heavy_tracked, engine, control_computer, ru_time_lapser]];
+          end;
+
+     end;
+
+   until Selected;
+
+   Result= Credits;
+ end;
+
+Function GenerateGroup(Credits, time);
+var Used_Credits, i;
+ begin
+   Used_Credits= 0;
+   // two siberite rockets in the case of siberite attack
+   if Russian_Siberite_Attack then
+     begin
+       // we chack if the siberite rocket can be constructed in any factory
+       if CanBeConstructed(GetUnitNumber(195, 84), ru_heavy_tracked, engine_siberite,
+                control_computer, ru_siberium_rocket) or
+          CanBeConstructed(GetUnitNumber(170, 35), ru_heavy_tracked, engine_siberite,
+                control_computer, ru_siberium_rocket) then
+         begin
+           for i= 1 to 2 do
+             R_Attack_Group= R_Attack_Group ^
+               [[ru_heavy_tracked, engine_siberite, control_computer, ru_siberium_rocket]];
+           // subtract halv of credits
+           // Used_Credits= Credits div 2;
+         end;
+     end;
+
+   repeat
+     Used_Credits= Used_Credits+ GetRandomVehicle(time);
+   until Credits < Used_Credits;
+   result= Used_Credits;
+ end;
+
+
+
+// The function generates units for attack and places it to R_Attack_Group
+Function GenerateAttackingGroup;   // Attack number
+var Power, Next_time, Number_of_units, Person, veh, i,
+    Used_Credits, Credits, Strength_of_attack;
+ begin
+   Power= Rand(1,3); // Low, medium, high
+   Number_of_units= Rand(1,2); // Low, high
+   R_Attack_Group= [];
+
+   if tick < Rus_Attack_Time+10$0 then
+     begin
+       case R_Attack_Counter of
+         1: begin
+              R_Attack_Group= R_Attack_Group; // Sib. rocket
+              for i= 1 to 3 do
+                begin
+                  R_Attack_Group= R_Attack_Group ^  // Gun
+                    [[ru_medium_tracked, engine_siberite, control_computer, ru_gun]];
+                end;
+
+            end;
+
+         else begin
+                Credits= 20;
+                Used_Credits= GenerateGroup(Credits+R_Attack_Overflow, 1); // Time = 1
+                R_Attack_Overflow= (Credits+R_Attack_Overflow)-Used_Credits;
+                R_attack_time= [5$0, 4$30, 4$0][Difficulty];
+              end;
+       end;
+     end
+
+   else if tick < Rus_Attack_Time+30$0 then
+     begin
+        Credits= 20;
+        Used_Credits= GenerateGroup(Credits+R_Attack_Overflow, 2);   // Time = 2
+        R_Attack_Overflow= (Credits+R_Attack_Overflow)-Used_Credits;
+        R_attack_time= [7$0, 6$30, 6$0][Difficulty];
+     end
+
+
+   else
+     begin
+        Strength_of_attack= Rand(1,7);
+        Credits= [6, 8, 10][Difficulty]*Strength_of_attack;
+        Used_Credits= GenerateGroup(Credits+R1_Attack_Overflow, 3);
+        R1_Attack_Overflow= (Credits+R1_Attack_Overflow)-Used_Credits;
+        R1_attack_time= [0$30, 0$25, 0$20][Difficulty]*Strength_of_attack;
+     end;
+
+ end;
+
+   //////////   Patrol Group  //////////
+Function GeneratePatrolingGroup;  // R_Attack_Counter
+var i;
+ begin
+   R_Patrol_group= []; //UnitFilter(R_Patrol_group, [f_alive]);
+
+   for i= 1 to 1-(R_Patrol_Group^[]) do
+     R_Patrol_Group= R_Patrol_Group ^
+       [[ru_medium_tracked, engine_siberite, control_computer, ru_heavy_machine_gun]];
+ end;
+
+
+// Build groups of vehicles in the factory
+// This function is called from "The main loop of R attack" (below) or
+// from the event "VehicleConstructed"
+EXPORT Function BuildGroups(Constructed_vehicle);
+var Un, i;
+ begin
+   // the event "construction complete" occures
+   if Constructed_vehicle <> 0 then
+     begin
+       if (GetWeapon(Constructed_vehicle) = ru_heavy_machine_gun) then
+         begin
+           R_Constructed_Patrol= R_Constructed_Patrol ^ Constructed_vehicle;
+           AddMcUnits(Russian_def_id, Constructed_vehicle)
+         end
+
+       else if (GetWeapon(Constructed_vehicle) = ru_siberium_rocket) then
+         begin
+           Russian_Siberite_rockets= Russian_Siberite_rockets ^ Constructed_vehicle;
+         end
+
+       else
+         begin
+           R_Constructed_Attack= R_Constructed_Attack ^ Constructed_vehicle;
+           AddMcUnits(Russian_def_id, Constructed_vehicle);
+         end
+     end;
+
+
+   // We remove the vehicles which can not be costructed
+   i=1;
+   while i <= R_Attack_Group do
+     begin
+       if not(CanBeConstructed(GetUnitNumber(195, 84),
+                R_Attack_Group[i][1], R_Attack_Group[i][2],
+                R_Attack_Group[i][3], R_Attack_Group[i][4])) and
+          not(CanBeConstructed(GetUnitNumber(170, 35),
+                R_Attack_Group[i][1], R_Attack_Group[i][2],
+                R_Attack_Group[i][3], R_Attack_Group[i][4])) then
+         R_Attack_Group= Delete(R_Attack_Group, i)
+       else i=i+1;
+     end;
+
+   i=1;
+   while i <= R_Patrol_Group do
+     begin
+       if not(CanBeConstructed(GetUnitNumber(195, 84),
+                R_Patrol_Group[i][1], R_Patrol_Group[i][2],
+                R_Patrol_Group[i][3], R_Patrol_Group[i][4])) and
+          not(CanBeConstructed(GetUnitNumber(170, 35),
+                R_Patrol_Group[i][1], R_Patrol_Group[i][2],
+                R_Patrol_Group[i][3], R_Patrol_Group[i][4])) then
+         R_Patrol_Group= Delete(R_Patrol_Group, i)
+       else i=i+1;
+     end;
+
+
+   // We start the construction if the queues are not empty
+   // The attack group
+   // The first factory
+   if (R_Attack_Group > 0) then
+     if not(BuildingStatus(GetUnitNumber(195, 84)) = bs_working) and
+        CanBeConstructed(GetUnitNumber(195, 84),
+        R_Attack_Group[1][1], R_Attack_Group[1][2],
+        R_Attack_Group[1][3], R_Attack_Group[1][4]) then
+         begin
+           ComConstruct(GetUnitNumber(195, 84),
+                        R_Attack_Group[1][1], R_Attack_Group[1][2],
+                        R_Attack_Group[1][3], R_Attack_Group[1][4]);
+           R_Attack_Group= Delete(R_Attack_Group, 1);
+           Wait(1);
+         end;
+
+   // The second factory
+   if (R_Attack_Group > 0) then
+     if not(BuildingStatus(GetUnitNumber(170, 35)) = bs_working) and
+        CanBeConstructed(GetUnitNumber(170, 35),
+        R_Attack_Group[1][1], R_Attack_Group[1][2],
+        R_Attack_Group[1][3], R_Attack_Group[1][4]) then
+         begin
+           ComConstruct(GetUnitNumber(170, 35),
+                        R_Attack_Group[1][1], R_Attack_Group[1][2],
+                        R_Attack_Group[1][3], R_Attack_Group[1][4]);
+           R_Attack_Group= Delete(R_Attack_Group, 1);
+           Wait(1);
+         end;
+
+
+   // The patrol group
+   // The first factory
+   if (R_Patrol_Group > 0) then
+     if not(BuildingStatus(GetUnitNumber(195, 84)) = bs_working) and
+        CanBeConstructed(GetUnitNumber(195, 84),
+        R_Patrol_Group[1][1], R_Patrol_Group[1][2],
+        R_Patrol_Group[1][3], R_Patrol_Group[1][4]) then
+         begin
+           ComConstruct(GetUnitNumber(195, 84),
+                       R_Patrol_Group[1][1], R_Patrol_Group[1][2],
+                       R_Patrol_Group[1][3], R_Patrol_Group[1][4]);
+           R_Patrol_Group= Delete(R_Patrol_Group, 1);
+           Wait(1);
+         end;
+
+   // The second factory
+   if (R_Patrol_Group > 0) then
+     if not(BuildingStatus(GetUnitNumber(170, 35)) = bs_working) and
+        CanBeConstructed(GetUnitNumber(170, 35),
+        R_Patrol_Group[1][1], R_Patrol_Group[1][2],
+        R_Patrol_Group[1][3], R_Patrol_Group[1][4]) then
+         begin
+           ComConstruct(GetUnitNumber(170, 35),
+                        R_Patrol_Group[1][1], R_Patrol_Group[1][2],
+                        R_Patrol_Group[1][3], R_Patrol_Group[1][4]);
+           R_Patrol_Group= Delete(R_Patrol_Group, 1);
+           Wait(1);
+         end;
+
+ end;
+
+
+   //////////    Select appropriate area   ////////////
+Function SetAttackArea;
+var Attack_Area;
+ begin
+   if FilterUnitsInArea(Plan4, [f_side, americans]) > 0 then
+       attack_area= Plan4                                 // the humans can go through wood
+   else if FilterUnitsInArea(Plan6, [[f_side, americans], f_not, [f_type, unit_human]]) > 0 then
+       attack_area= Plan6
+   else if FilterUnitsInArea(Am_Base, [f_side, americans]) > 0 then
+       attack_area= Am_Base
+   else if FilterUnitsInArea(JMM_Hill, [f_side, americans]) > 0 then
+       attack_area= JMM_Hill
+   else if FilterUnitsInArea(Plan3, [f_side, americans]) > 0 then
+       attack_area= Plan3
+   else if FilterUnitsInArea(Ar_Base, [f_side, americans]) > 0 then
+       attack_area= Ar_Base
+   else if FilterUnitsInArea(Plan5, [f_side, americans]) > 0 then
+       attack_area= Plan5
+   else if FilterUnitsInArea(Aliance_Base, [f_side, americans]) > 0 then
+       attack_area= Aliance_Base
+   else if FilterUnitsInArea(Plan1, [f_side, americans]) > 0 then
+       attack_area= Plan1
+   else if FilterUnitsInArea(Plan2, [f_side, americans]) > 0 then
+       attack_area= Plan2;
+
+   result= Attack_Area;
+ end;
+
+
+Function GoThroughTeleport(Attack_Area);
+var Teleport1, Teleport2;
+ begin
+   Teleport1= GetUnitNumber(165, 60);
+   Teleport2= GetUnitNumber(182, 87);
+
+   if Attack_Area in [Am_Base, JMM_Hill, Plan3, Ar_Base, Plan1] then
+     begin
+       if IsOk(Teleport1) then
+         ComEnterUnit(R_New_Attack ^ R_New_Patrol, Teleport1)
+       else if IsOk(Teleport2) then
+         ComEnterUnit(R_New_Attack ^ R_New_Patrol, Teleport2)
+     end
+   else // Attack through the second teleport
+     begin
+       if IsOk(Teleport2) then
+         ComEnterUnit(R_New_Attack ^ R_New_Patrol, Teleport2)
+       else if IsOk(Teleport1) then
+         ComEnterUnit(R_New_Attack ^ R_New_Patrol, Teleport1)
+     end;
+
+   WaitTask(R_New_Attack ^ R_New_Patrol, 1);
+ end;
+
+/////////////////////////////////////////////////////////////
+/////////////////   McRegistry, McAttack   //////////////////
+/////////////////////////////////////////////////////////////
+Function StartOfRusAttack(Attack_Area);
+var Un;
+ begin
+   // Siberite rockets go to attack
+   if Russian_Siberite_Attack then
+     for Un in Russian_Siberite_rockets do
+       RSiberiteAttack(Un);      // In Functions
+
+
+   /////////////   McRegistry for MCAttack   ////////////
+
+   if not(ExistMc(Russian_reg_id)) then
+     begin
+       Russian_reg_id= McRegistry(russians, [[mc_reg_refresh_time, 0$5],
+                                                [mc_reg_area_to_guard, attack_area],
+                                                 -mc_reg_only_important,
+                                                 mc_reg_ignore_fog,
+                                                 mc_reg_buildings]);
+     end
+
+   else // New area // if Area_changed then
+     begin
+       McRegistryChangeOptions(Russian_reg_id, [[mc_reg_area_to_guard, attack_area]]);
+     end;
+
+   //////////    McAttack   /////////
+
+   if not(ExistMc(Russian_att_id)) then
+     begin
+       Russian_att_id= McAttack(100, Russian_reg_id, Main_R_Attack_Group,
+                                               [[mc_retreat_area_vehicles, retreat1],
+                                                [mc_retreat_area_people, retreat1],
+                                                [mc_retreat_lives_vehicles, 600],
+                                                [mc_retreat_lives_people, 600],
+                                                 mc_no_stop]);
+     end
+   else
+     begin
+       AddMcUnits(Russian_att_id, R_New_Attack ^ R_New_Patrol);
+     end;
+
+   //////////////   McPatrol   ///////////////
+
+{   if not(ExistMc(Russian_patr_id)) then
+     begin
+       Russian_patr_id= McPatrol(100, Russian_reg_id, R_New_Patrol,
+                                    [mc_no_stop]);
+     end
+
+   else
+     begin  // Replenish
+       AddMcUnits(Russian_patr_id, R_New_Patrol);
+     end;}
+
+   RemoveMcUnits(Russian_def_id, R_New_Attack ^ R_New_Patrol);
+ end;
+
+
+
+
+// Go through the teleport and attack the americans
+EXPORT Function RusAttack;
+var Attack_Area;
+ begin
+   while(FilterUnitsInArea(R_base, [[f_side, americans], [f_ok]]) > 0) do
+     Wait(0$10);
+     Main_R_Attack_Group= Main_R_Attack_Group ^ R_New_Attack ^ R_New_Patrol;
+     Main_R_Attack_Group= UnitFilter(Main_R_Attack_Group, [f_ok]);
+     Attack_Area= SetAttackArea;
+     if (R_New_Attack ^ R_New_Patrol <> 0) then
+       GoThroughTeleport(Attack_Area);
+     StartOfRusAttack(Attack_Area); // It changes the Attack_Area in McRegistry
+ end;
+
+
+// The main loop of R attack
+// MARKED 10 - Game_continue
+EVERY 0$1 TRIGGER tick > Rus_Attack_Time MARKED 10 DO
+ begin
+   disable;
+
+   While true do
+     begin
+       if Main_R_Attack_Group < 40 then
+         begin
+           R_Attack_counter= R_Attack_counter+1;
+           GenerateAttackingGroup;
+           GeneratePatrolingGroup;
+           BuildGroups(0);   // 0 - no vehicle was constructed
+         end;
+//       else
+//         begin
+//           debug_strings=['Almost 40 units in R'];
+//         end;
+
+       while (R_Attack_Group <> 0) or (R_Patrol_Group <> 0) or
+             (BuildingStatus(GetUnitNumber(170, 35)) = bs_working) or
+             (BuildingStatus(GetUnitNumber(195, 84)) = bs_working) do
+         Wait(1$0);
+
+       // We have to wait because the new attack area will be computed
+       if (R_New_Attack ^ R_New_Patrol) = 0 then
+         Wait(0$15)
+       else
+         begin
+           while R_attack_time > 0$15 do
+             begin
+               R_attack_time= R_attack_time - 0$15;
+               RaiseSailEvent(Rus_Attack);  // The Attack_area can changes
+               Wait(0$15);
+             end;
+           Wait(R_attack_time);
+         end;
+
+       R_New_Attack= R_Constructed_Attack;
+       R_Constructed_Attack= [];
+       R_New_Patrol= R_Constructed_Patrol;
+       R_Constructed_Patrol= [];
+
+       // Now, the vehicles are constructed and the attack can begin
+       RaiseSailEvent(Rus_Attack);
+    end;
+
+ end;
+
+// We have to add the constructed siberite rockets to the attack
+EVERY 0$1 TRIGGER Russian_Siberite_Attack DO
+var Un;
+ begin
+   for Un in Russian_Siberite_rockets do
+     RSiberiteAttack(Un);      // In Functions
+ end;
+
+
+// Replanish resources in depots
+EVERY 0$30 DO
+var Dep1, Dep2, Dep3;
+ begin
+   Dep1= GetUnitNumber(175, 56);
+   Dep2= GetUnitNumber(175, 81);
+   Dep3= GetUnitNumber(213, 117);
+
+   if IsOk(Dep1) and GetSide(Dep1) = russians then
+     begin
+       SetResourceType(GetBase(Dep1), mat_siberit, rand(1500, 2000));
+       SetResourceType(GetBase(Dep1), mat_cans, rand(1500, 2000));
+     end;
+
+   if IsOk(Dep2) and GetSide(Dep2) = russians then
+     begin
+       SetResourceType(GetBase(Dep2), mat_siberit, rand(1500, 2000));
+       SetResourceType(GetBase(Dep2), mat_cans, rand(1500, 2000));
+     end;
+
+   if IsOk(Dep3) and GetSide(Dep3) = russians then
+     begin
+       SetResourceType(GetBase(Dep3), mat_siberit, rand(500, 600));
+       SetResourceType(GetBase(Dep3), mat_cans, rand(2000, 2200));
+     end;
+   enable;
+ end;
+
+// Try to build Behemots
+EXPORT Function BuildBehemots;
+var i, Un, New_Person;
+ begin
+   uc_side= russians;
+   uc_nation= nation_russian;
+
+   for i= 1 to Number_of_Behemots do
+     begin
+       PrepareMechanic(0, human_difficulty_skill);
+       New_Person= CreateHuman;
+       PlaceHumanInUnit(New_Person, GetUnitNumber(175, 81));
+       AddComExitBuilding(New_Person);
+       Behemot_Engineers= Behemot_Engineers ^ New_Person;
+       WaitTask(New_Person, 0.2);
+     end;
+   SetSkill(Behemot_Engineers, skill_engineering, Human_difficulty_skill);
+
+   i= 1;
+   for Un in Behemot_Engineers do
+     begin
+       ComBuildBehemoth(Un, b_behemoth, Behemot_Places[i][1], Behemot_Places[i][2], 5);
+       i= i+1;
+     end;
+ end;
+
+
+EXPORT Function BehemotsAttack;
+var i, Un;
+ begin
+   while tick < Behemot_attack_time do
+     Wait(0$2);
+
+   AddMcUnits(Russian_att_id, New_Behemots);
+   New_Behemots= [];
+
+   i= 1;
+   for Un in Behemot_Engineers do
+     begin
+       ComBuildBehemoth(Un, b_behemoth, Behemot_Places[i][1], Behemot_Places[i][2], 5);
+       i= i+1;
+     end;
+
+   // We have to repeat the start of building
+   i= 1;
+   for Un in Behemot_Engineers do
+     begin
+       while IsOk(Un) and not(GetBType(GetUnitNumber(Behemot_Places[i][1], Behemot_Places[i][2])) = b_behemoth) do
+         begin
+           ComBuildBehemoth(Un, b_behemoth, Behemot_Places[i][1], Behemot_Places[i][2], 5);
+           Wait(0$0.5);
+         end;
+       i= i+1;
+     end;
+ end;
+
+
+EVERY 0$2 TRIGGER Russian_Behemots <> 0 DO
+var Un;
+ begin
+   for Un in Russian_Behemots do
+     if See(americans, Un) then
+       begin
+         if IsInArea(Un, Plan6) then
+           begin
+             CenterOnUnits(Un);
+             Say(JMM, 'D17a-JMM-1');
+             exit;
+           end
+         else
+           begin
+             CenterOnUnits(Un);
+             Say(JMM, 'D17b-JMM-1');
+             exit;
+           end;
+       end;
+   enable;
+ end;
+
+// The last russian siberite action
+EVERY 0$10 TRIGGER 
+    (not(Russian_Siberite_Attack) or not(The_Last_Arabian_Attack_Begun)) DO     //tick > Behemots_broadcast  and
+var Teleport1, Teleport2, Un, i, hex, sib_r, rus_remaind;
+ begin
+   rus_remaind= UnitFilter(All_Russians, [f_ok]);
+
+   if (rus_remaind < 3) and not(The_Last_Arabian_Attack_Begun) then
+     begin
+       The_Last_Arabian_Attack_Begun= true;
+       TheLastArabianAttack;
+     end;
+
+   if (rus_remaind < 10) and not(Russian_Siberite_Attack) then
+     begin
+       if (FilterUnitsInArea(R_base, [[f_side, americans], [f_ok]]) <> 0) then
+         begin
+           // Russians try to do the sib. attack
+           sib_r= FilterAllUnits([[f_side, Russians], [f_ok], [f_weapon, ru_siberium_rocket]]);
+
+           if (sib_r <> 0) and not(Russian_Siberite_Attack) then
+             begin
+               Russian_Siberite_Attack= true;
+               for Un in sib_r do
+                 RSiberiteAttack(Un);
+             end;
+         end;
+     end;
+
+   if not(Russian_Siberite_Attack) or not(The_Last_Arabian_Attack_Begun) then
+     enable;
+ end;

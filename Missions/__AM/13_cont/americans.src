@@ -1,0 +1,402 @@
+export burlakutekl,seznamposil;
+
+//dialog 3 (o burlakovi)
+every 7$0 do
+var tmp;
+begin
+  dialogueon;
+  sayradio(powell,'D3-Pow-1');
+  say(john,'D3-JMM-1');
+  sayradio(powell,'D3-Pow-2');
+  say(john,'D3-JMM-2');
+  sayradio(powell,'D3-Pow-3');
+  say(john,'D3-JMM-3');
+  sayradio(powell,'D3-Pow-4');
+  say(john,'D3-JMM-4');
+  tmp=nearestunittounit(filterallunits([[f_side,am],[f_type,unit_human],[f_sex,sex_male],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john,john);
+  if tmp then say(tmp,'D3-Sol1-4');
+  dialogueoff;
+  changemissionobjectives('M2');
+end;
+
+every 9$0 do
+begin
+  setdir(2,burlakv);
+  placeunitarea(burlakv,cestasever,false);
+  placehumaninunit(burlak,burlakv);
+//  commovexy(burlakv,106,118);
+  comagressivemove(burlakv,106,118);
+  enable(10);
+end;
+
+every 0$0.5 trigger getlives(burlakv)<bur_hrn marked 10 do
+begin
+  commovexy(burlakv,106,118)
+end;
+
+on unitgoestored(un) do
+  if un=burlakv then begin wait(0$0.5);commovexy(burlak,106,118);end;
+
+every 0$1+9$0 do
+var tmp;
+begin
+  tmp=filterunitsinarea(cestajihout,[[f_side,rus]]);
+  if tmp then begin
+    destroyunit(tmp[1]);
+    burlakutekl=true;
+  end
+  else enable;
+end;
+
+//dialog 5 (burlak spoted)
+every 0$0.5+9$0 trigger see(am,burlakv) do
+var tmp;
+begin
+  tmp=nearestunittounit(filterallunits([[f_side,am],[f_or,[f_type,unit_human],[f_control,control_manual],[f_control,control_remote]],[f_not,[f_nation,nation_nature]]]) diff john,burlakv);
+  if gettype(tmp)=unit_vehicle then
+    case getcontrol(tmp) of
+      control_manual:
+        tmp=isdrivenby(tmp);
+      control_remote:
+        tmp=iscontroledby(tmp);
+    end;
+  dialogueon;
+  if getsex(tmp)=sex_male then say(tmp,'D5-Sol1-1')
+  else say(tmp,'D5-FSol1-1');
+  say(john,'D5-JMM-1');
+  dialogueoff;
+  bspoted=true;
+end;
+
+every 0$0.51+9$0 trigger bspoted and (not isplaced(burlak)) do
+var tmp;
+begin
+  tmp=filterallunits([[f_side,am],[f_type,unit_human],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john;
+  if burlakutekl then begin
+    dialogueon;
+    say(john,'D5a-JMM-1');
+    if tmp then say(tmp[1],'D5a-Sol1-1');
+    dialogueoff;
+    changemissionobjectives('M2b');
+  end
+  else begin
+    dialogueon;
+    say(john,'D5b-JMM-1');
+    if tmp then say(tmp[1],'D5b-Sol1-1');
+    dialogueoff;
+    SA_OnBurlakKilled;
+    changemissionobjectives('M2a');
+  end;
+end;
+
+
+on unitdestroyed(un) do
+var tmp;
+  if un=huck then begin
+    tmp=filterallunits([[f_side,am],[f_type,unit_human],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john;
+    dialogueon;
+    say(john,'D6-JMM-1');
+    if tmp then
+      if getsex(tmp[1])=sex_male then say(tmp[1],'D6-Sol1-1')
+       else say(tmp[1],'D6-FSol1-1');
+    say(john,'D6-JMM-2');
+    dialogueoff;
+    changemissionobjectives('M1a');
+  end
+  else if un=john then youlost('JMM')
+  else if un=arabsci then arsci_cipl=true;
+
+on humandestroyed(un,side,nation,x,y,direction,sex,class) do
+ if (not un=john) and (not un=huck) then
+   if class=class_scientistic and inarea(x,y,target) then enable(06);
+
+
+//dialog 6 
+on researchcomplete(tech,lab) do
+var tmp,tmp1,tmp2;
+  if tech=tech_sibfiss then begin
+    dialogueon;
+    if isok(huck) then say(huck,'D6-Huck-2')
+    else begin
+      tmp=filterallunits([[f_side,am],[f_class,class_scientistic],[f_ok]]) diff john;
+      if not tmp then begin
+        tmp=filterallunits([[f_side,am],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john;
+        tmp1=[];
+        for tmp2 in tmp do tmp1=tmp1^[getskill(tmp2,skill_scientistic)];
+        tmp=bestfromlistbylist(tmp,tmp1);
+      end
+      else tmp=tmp[1];
+      if tmp then
+        if getsex(tmp)=sex_male then say(tmp,'D6-Sci1-2')
+        else say(tmp,'D6-FSci1-2');
+    end;
+    dialogueoff;
+  end;
+
+export posily;
+
+//dialog 6a
+on vehicleconstructionstarted(fact,chass,eng,cntrl,weap) do
+  if weap=us_siberium_rocket then begin
+    dialogueon;
+    say(john,'D6a-JMM-1');
+    sayradio(powell,'D6a-Pow-1');
+    dialogueoff;
+    posily=true;
+    disable;
+  end;
+
+
+every 0$1 trigger posily do
+var tmp;
+begin
+  wait(1$0);
+  uc_side=am;
+  uc_nation=nation_american;
+  vc_chassis=amreinfv0_ch;
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_weapon=amreinfv0_wp;
+  tmp=createvehicle;
+  setdir(tmp,1);
+  placeunitxyr(tmp,34,62,6,false);
+  preparemechanic(sex_male,amreinf0);
+  seznamposil:=[CreateHuman];
+  placehumaninunit(seznamposil[1],tmp);
+  vc_chassis=amreinfv1_ch;
+  vc_weapon=amreinfv1_wp;
+  tmp=createvehicle;
+  setdir(tmp,1);
+  placeunitxyr(tmp,34,62,6,false);
+  preparemechanic(sex_male,amreinf1);
+  seznamposil:=seznamposil^[CreateHuman];
+  placehumaninunit(seznamposil[2],tmp);
+  preparesoldier(sex_male,amreinf2);
+  seznamposil:=seznamposil^[CreateHuman];
+  placeunitxyr(seznamposil[3],34,62,5,false);
+  preparesoldier(sex_male,amreinf3);
+  seznamposil:=seznamposil^[CreateHuman];
+  placeunitxyr(seznamposil[4],34,62,5,false);
+end;
+
+
+//dialog 6b
+on vehicleconstructed(veh,fact) marked 13 do
+  if getweapon(veh)=us_siberium_rocket then begin
+    dialogueon;
+    say(john,'D6b-JMM-1');
+    sayradio(powell,'D6b-Pow-1');
+    dialogueoff;
+    changemissionobjectives('M3');
+    setareamapshow(target,1);
+    disable(13);
+    enable(04);
+  end;
+
+on weaponplaced(bld,fact) marked 13 do
+  if getbweapon(bld)=us_siberium_rocket then begin
+    dialogueon;
+    say(john,'D6b-JMM-1');
+    sayradio(powell,'D6b-Pow-1');
+    dialogueoff;
+    changemissionobjectives('M3');
+    setareamapshow(target,1);
+    disable(13);
+    enable(04);
+  end;
+
+every 0$2 marked 04 do
+var tmp,tmp1,warehouseok,barracksok,turretok,vehok;
+begin
+  warehouseok=false;
+  barracksok=false;
+  turretok=false;
+  vehok=false;
+  tmp=filterunitsinarea(target,[[f_side,am],[f_type,unit_building],f_not,[f_constructed]]);
+  for tmp1 in tmp do
+    case getbtype(tmp1) of
+      b_warehouse:warehouseok=true;
+      b_barracks:barracksok=true;
+      b_turret:turretok=true;
+    end;                                   
+  tmp=filterunitsinarea(target,[[f_side,am],[f_or,[f_control,control_computer],[f_control,control_remote]]]);
+  for tmp1 in tmp do
+    case getchassis(tmp1) of
+//      us_medium_wheeled:vehok=true;
+      us_heavy_tracked:vehok=true;
+      us_morphling:vehok=true;
+    end;
+  if warehouseok and barracksok {and turretok and vehok} then begin
+    dialogueon;                                   //vozidlo vyremoval Martin
+    say(john,'D7-JMM-1');
+    dialogueoff;
+    changemissionobjectives('M4');
+    setareamapshow(radar_post,1);
+    //enable(09);
+    marked_09_substitute = true;
+  end
+  else enable;
+end;
+
+{on siberiterocketexploded(un,x,y) marked 09 do
+ if inarea(x,y,target) then begin enable(05);disable;end;}
+on siberiterocketexploded(un,x,y) do
+     begin
+          SA_OnSiberiteRocketExploded(un,x,y);
+
+          if marked_09_substitute and InArea(x,y,target) then
+               begin
+                    enable(05);
+                    marked_09_substitute = false;
+               end;
+     end;
+
+var observed;
+
+//dialog 8
+every 0$0.5 marked 05 do      
+var tmp,tmp1,tmp2;
+begin
+  if debug then msg('siberitovka dopadla kam mela');
+  setareamapshow(target,0);
+  setareamapshow(radar_post,0);
+  {if seearea(am,target)}
+  if filterunitsinarea(radar_post,[[f_weapon,us_radar]]) then begin
+    observed=true;
+    changemissionobjectives('M3a');
+  end
+  else begin
+    observed=false;
+    changemissionobjectives('M3b');
+  end;
+  wait(0$5);
+  dialogueon;
+  if isok(huck) then begin
+    say(huck,'D8-Huck-1');
+    say(john,'D8-JMM-1');
+    say(huck,'D8-Huck-2');
+    say(john,'D8-JMM-2');
+    say(huck,'D8-Huck-3');
+    say(john,'D8-JMM-3');
+    say(huck,'D8-Huck-4');
+  end
+  else begin
+    tmp=filterallunits([[f_side,am],[f_class,class_scientistic]]) diff john;
+    if not tmp then begin
+      tmp=filterallunits([[f_side,am],[f_ok],[f_not,[f_nation,nation_nature]]]) diff john;
+      tmp1=[];
+      for tmp2 in tmp do tmp1=tmp1^[getskill(tmp2,skill_scientistic)];
+      tmp=bestfromlistbylist(tmp,tmp1);
+    end
+    else tmp=tmp[1];
+    if tmp and getsex(tmp)=sex_male then begin
+      say(tmp,'D8-Sci1-2');
+      say(john,'D8-JMM-2');
+      say(tmp,'D8-Sci1-3');
+      say(john,'D8-JMM-3');
+      say(tmp,'D8-Sci1-4');
+    end
+    else begin
+      say(tmp,'D8-FSci1-2');
+      say(john,'D8-JMM-2');
+      say(tmp,'D8-FSci1-3');
+      say(john,'D8-JMM-3');
+      say(tmp,'D8-FSci1-4');
+    end;
+  end;
+  dialogueoff;
+  setareamapshow(measure,1);
+  centernowonxy(118,12);
+  changemissionobjectives('M5');
+  vedecmeri_=[];
+  labs=[];
+  tmp=filterallunits([[f_side,am],[f_or,[f_btype,b_lab_half],[f_btype,b_lab_full]]]);
+  for tmp1 in tmp do
+    if (getlabkind(tmp1,1)=b_lab_siberium) or (getlabkind(tmp1,2)=b_lab_siberium) then labs=labs^[tmp1];
+  enable(07);
+  enable(14);
+end;
+
+//dialog 9a
+every 0$0.51 marked 06 do
+begin
+  dialogueon;
+  say(john,'D9a-JMM-1');
+  dialogueoff;
+end;
+
+
+//dialog 9b
+var vedecmeri_;
+function vedecmeri;
+begin
+  vedecmeri_=unitfilter(vedecmeri_,[[f_alive],[f_class,class_scientistic]]) union filterunitsinarea(measure,[[f_side,am],[f_class,class_scientistic]]);
+  if not vedecmeri_ then setareamapshow(measure,1)
+  else setareamapshow(measure,0);
+  result=vedecmeri_;
+end;
+
+{
+every 0$0.9 marked 07 do
+begin
+  vedecmeri_=vedecmeri_ union filterunitsinarea(measure,[[f_side,am],[f_class,class_scientistic]]);
+  enable;
+end;
+}
+
+var labs;
+on upgradecomplete(un) marked 14 do
+  if (getside(un)=am) and (getbtype(un) in [b_lab_half,b_lab_full]) and ((getlabkind(un,1)=b_lab_siberium) or (getlabkind(un,2)=b_lab_siberium)) then
+    labs=labs^[un];
+
+function isinunitex(lst);
+var tmp,tmp1,tmp2;
+begin
+  tmp2=[];
+  for tmp in lst do begin
+    tmp1=isinunit(tmp);
+    if tmp1 then tmp2=tmp2^[tmp1];
+  end;
+  result=tmp2;
+end;
+
+every 0$0.6 trigger vedecmeri marked 07 do
+var tmp,tmp1,tmp2{,ok};
+begin
+//  vedecmeri_=vedecmeri_[1];
+  wait(0$1);
+  setareamapshow(measure,0);
+  while not (isinunitex(vedecmeri) isect labs) do wait(0$1);
+
+{  ok:=false;
+  repeat
+    tmp=filterallunits([[f_side,am],[f_or,[f_btype,b_lab_half],[f_btype,b_lab_full]]]);
+    tmp2=[];
+    for tmp1 in tmp do
+      if (getlabkind(tmp1,1)=b_lab_siberium) or (getlabkind(tmp1,2)=b_lab_siberium) then
+        tmp2=tmp2^[tmp1];
+    for tmp1 in vedecmeri_ do
+      if isinunit(tmp1) in tmp2 then
+        ok:=true;
+    wait(0$1);
+  until ok;
+}
+  dialogueon;
+  say(john,'D9b-JMM-1');
+  sayradio(powell,'D9b-Pow-1');
+  say(john,'D9b-JMM-2');
+  sayradio(powell,'D9b-Pow-2');
+  say(john,'D9b-JMM-3');
+  sayradio(powell,'D9b-Pow-3');
+  dialogueoff;
+  if burlakutekl then addmedal('Burlak',-1)
+  else addmedal('Burlak',1);
+  if isdead(huck) then addmedal('Stevens',-1)
+  else addmedal('Stevens',1);
+  if observed then addmedal('Observation',1)
+  else addmedal('Observation',-1);
+  givemedals('MAIN');
+  rewardpeople(filterallunits([[f_alive],[f_side,am],[f_type,unit_human],[f_not,[f_nation,nation_nature]]]) diff seznamposil);
+  saveitall;
+  youwin;
+end;

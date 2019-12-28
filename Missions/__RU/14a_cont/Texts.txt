@@ -1,0 +1,176 @@
+@ Think Tank
+% Alliance established its first base, called Freedom, in hitherto unclaimed territory and managed to destroy the main Arabian base, albeit weakened by the departure of mercenaries forming so called Legion, in the process. It also gained the parts of Artefacts that were within base.
+& Freedom Base, March 10, ERA + 2
+
+// Dialogue 1 (in Freedom)
+$ D1-JMM-1
+- Now that we have the Arabian artefact, we can start with the proper research of these fascinating stuff. But what happened to the pieces that used to be in the Russian camp?
+$ D1-Bur-1
+- I managed to load it on the truck, drive away and hide it. Then I returned for my Masha and headed for here.
+$ D1-JMM-2
+- So your Artefact is still hidden somewhere? Why don't we go there and pick it up?
+$ D1-Bur-2
+- All right, Macmillan. I think that two of us are enough for this mission.
+
+# M1
+Add Main ArtPickup
+-Retrieve the Artefact
+Add Main Burlak
+-Burlak must survive
+#
+
+// Dialogue 2 (after map reloads)
+$ D2-Bur-1
+- So that looks like the place. I think I hid it just a little way west from here. I've chose this area because it's so barren and empty, nobody will come here.
+
+// Dialogue 3 (first American patrol is spotted, killed or driven away)
+$ D3-Bur-1
+- I'll be damned. Bloody Americans! How did the bastards get here? Oh, sorry, Macmillan.
+$ D3-JMM-1
+- Never mind. I'm just as surprised. When I was leaving, there were no plans to move into this area.
+
+// Dialogue 4 (when they pick up the Artefact & Dialogue 5 didn't take place)
+$ D4-JMM-1
+- All right, now all we have to do is to take it back to base.
+$ D4-Bur-1
+- Yeah, it's a piece of cake.
+
+# M2
+Out Main ArtPickup
+Add Main ArtReturn
+-Take the Artefact back to the base
+#
+
+// Dialogue 5 (after they pick up Artefact or when the reach western half of the map. It's necessary that this dialogue takes place before they can see the American base along the western edge of map)
+$ D5-Joan-1
+- [alive] John? Do you read me? We've overheard an important conversation of the Americans. I'll transmit you the recording:
+$ D5-ASci1-1
+- [otherwise] Freedom base calling Colonel Macmillan and Major Burlak. Overheard an important American broadcast. Listen to this:
+$ D5-Huck-1
+- (OR, noisy signal) General, I think we are in the area now. As per your instructions, we constructed the observation base and now we are about to set up the explosion.
+$ D5-Pow-1
+- (OR, noisy) Be careful, Hugh, you know how stretched thin we are now, that the traitors left. But it is essential that you gain as much information as possible about the blast. You have to carry out visual observation of the blast.
+$ D5-Huck-2
+- (OR, noisy) But general, surely this is too dangerous. I'm sure our automatic observation posts can take the appropriate measurements just as well.
+$ D5-Pow-2
+- (OR, noisy) Just don't argue with me, Huckleberg. This is an order!
+$ D5-Huck-3
+- (OR, noisy) OK. Practice targets are ready. Everybody leave the target area, repeat everybody leave the target area. Wait for my signal, I'm going to personally take up the visual observation of the blast.
+$ D5-JMM-3
+- This is crazy! They really managed to build the bomb!
+$ D5-Bur-3
+- Now hearing that Powell of yours, I understand why so many of you decided to go...
+$ D5-Joan-3
+- [alive] John, I'm afraid Hugh is now just west from you. Move quickly, please, before they set it off.
+$ D5-ASci1-3
+- [otherwise] Source of this broadcast is located west from your present position. I think you should head west. It can blast any time now.
+
+// Dialogue 6a (after the blast, if the player could see some of it)
+$ D6a-JMM-1
+- Oh, God. I've never seen something like this.
+$ D6a-Bur-1
+- Holy Virgin, Mother-of-God, have mercy on us.
+
+// Dialogue 6b (when they first reach the area influenced by the blast)
+$ D6b-JMM-1
+- This is terrible. The scorched earth.... I'd bet this area is contaminated now. If somebody gets there, he would be poisoned by siberite radiation. It looks like something from post-holocaust movie.
+$ D6b-Bur-1
+- It's only going to look like this if we don't do anything about it. Maybe the Arabians weren't so crazy when they wanted to destroy siberite completely.
+
+// Dialogue 6c (immediately after 6a or 6b, whichever occurs sooner)
+$ D6c-JMM-1
+- We can't just leave this terrible knowledge in Powell's hands. We have to get their results as well.
+$ D6c-Bur-1
+- I don't think Powell is going to give us the recipe for the bomb, even if we say 'please'.
+$ D6c-JMM-2
+- You've heard the broadcast. There must be some scientific base nearby where they are analysing the data. I think it wouldn't be too well protected, because Powell wouldn't expect anybody to be here. If we move fast, we could capture it and take the data with us.
+
+# M3
+Add Main Base
+-Capture the data located in siberite lab in American base
+#
+
+// Dialogue 7 (when somebody enters the contaminated area)
+$ D7-JMM-1
+- [$he entered the area] Arrgh. Just as I said, it's full of radiation. If I don't get out quickly, you won't have to burry me. (He loses hit points.)
+$ D7-Bur-1
+- [$he entered the area] Ouch. You were right, the radiation is killing everything here. I don't know if I am going to make it back. (He loses hit points.)
+
+// Dialogue 8 (some 5 minutes after the explosion)
+$ D8-JMM-1
+- We should move fast, they aren't going to stay in this area forever.
+
+// Dialogue 9 (when they spot the base by the oil mine)
+$ D9-Bur-1
+- Isn't it a trap? It looks as if that base is empty.
+$ D9-JMM-1
+- That's Huckleberg at his best. He builds a base here and puts no one on guard. I'll bet no one is guarding the depot in the main base as well.
+
+// Query Kill (if either John or Burlak captured the depot in main base or the siberite lab went red)
+? QKill
+Your position seems to be strong but there is little glory to be gained from killing harmless scientists. Maybe they give you their findings in return for right of free passage.
+-1 Try to negotiate.
+-2 Take findings by force.
+?
+
+// Dialogue 10a (if QKill-1 was selected)
+$ D10a-JMM-1
+- Stop fighting. This is colonel Macmillan speaking. There is none of you that doesn't know me. The other guy is major Gorki-
+$ D10a-Bur-1
+- Burlak, John. Please, call me Burlak.
+$ D10a-JMM-2
+- -you know as Burlak. Your situation is hopeless, this base is now indefensible if indeed it ever was. However, most of you used to be my friends and colleagues. And I haven't joined the Alliance in order to be able to kill unarmed scientists. In fact, in Alliance we hold scientists in highest esteem. So I propose that you give us the blueprints for the siberite weapon and other results of your research and I'll grant you a right of free passage back to Alpha.
+$ D10a-Huck-2
+- [alive] This is what they call 'an offer you cannot refuse'. I hate to admit it, but we don't have a choice. You are a traitor, colonel, and a coward, and I would rather die than give you our results but I cannot ask the others to do the same. (Walks toward John) Here are our findings; I hope you'll choke on them.
+$ D10a-JMM-3
+- [Joan alive: reply] There is probably nothing there Joan and her colleagues wouldn't be able to find out in couple of days, but thanks anyway, Hugh.
+$ D10a-Huck-3
+- [reply] (grunts)
+$ D10a-ASci1-3
+- [Hucklebert dead] I don't think we have a choice colonel. You were always our best soldier and Powell lost more in you than he's willing to admit. (Walks toward John) Here are our results.
+$ D10a-JMM-4
+- Thank you. After this war is over, we might meet again.
+
+// Dialogue 10b (if QKill-2 was selected)
+$ D10b-JMM-1
+- We have to capture that siberite lab. Their results will be there.
+$ D10b-Bur-1
+- But we have to capture the depot first.
+
+// Dialogue 11 (QKill-2 was selected, siberite lab is captured; or QKill-1 was selected)
+$ D11-Bur-1
+- So now we have the data. All we have to do now is to return to our base.
+
+# M4
+Out Main Base
+#
+
+| JMM
+John Macmillan is dying.
+
+| Burlak
+Burlak is dying.
+
+| Artefact
+The artefact you came for was destroyed by the siberite blast.
+
+| Time
+The American scientists have already left their base. You cannot capture their secrets now.
+
+^ Main
+You brought home the Artefact and the blueprints for siberite bomb.
+
+* Explosion
++Siberite explosion seen
+-You didn't see the siberite explosion with your own eyes.
+*
+
+* BioHazard
++Explored contaminated area
+-You didn't gather any data on contaminated area first hand.
+*
+
+* Speed
++American base taken over quickly
+-It took you too long to take over the American base.
+*

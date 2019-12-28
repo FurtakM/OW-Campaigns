@@ -1,0 +1,487 @@
+VAR i;                                
+VAR pom,pom1,pom2,pom3,pom4,pom5;
+VAR asol;
+
+VAR cor_dial1,cor_dial2;
+
+VAR disable_kecy1;  
+VAR disable_kecy2;
+
+EXPORT Dial;
+EXPORT dialog_u_zakladny_probehl;
+
+VAR test_ukonceni_allowed;
+
+// disable triggeru
+EVERY 0$0.1 DO
+begin
+  disable_kecy1=false;
+  disable_kecy2=false;
+  dialog_u_zakladny_probehl=false;
+  test_ukonceni_allowed=false;
+  cor_dial1=false;
+  cor_dial2=false;
+  for i:=1 to 8 do disable(100+i);
+end;
+
+EVERY 0$1 DO
+begin
+  Say(Gary,'D2-Gary-1');
+  Say(JMM,'D2-JMM-1');
+  Say(Gary,'D2-Gary-2');
+  SaveForQuickRestart;
+  wait(0$1);
+  ingame_video=false;
+  ChangeMissionObjectives('M1');
+end;
+
+// base dostavena
+EVERY 0$1 TRIGGER Dial>=1 DO
+begin
+  ChangeMissionObjectives('M1a');
+
+  wait(10$0);
+  enable(104);
+end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, You], [f_btype, b_depot]]) > 0 do
+var i, x, y;
+begin
+
+   repeat
+
+   wait(0$1);
+     x = GetX(JMM);
+     y = GetY(JMM);
+
+     for i in FilterAllUnits([f_side, 4]) do
+     begin
+       ComMoveXY(i, x, y);
+     end;
+
+   until GetDistUnits(Simms, JMM) < 8;
+
+end;
+
+// uvodni rozhovor, kdy potka Simmsovou
+EVERY 0$4 TRIGGER FilterUnitsInArea(Base,[[f_side,You]])>0 OR GetDistUnits(Simms, JMM) < 8 DO
+begin
+  pom1=0;
+  pom=FilterUnitsInArea(Base,[[f_side,You]]);
+
+  for i in pom do
+    begin
+      if GetType(i) then if JMM=IsDrivenBy(i) then pom1=1;
+      if IsInArea(JMM,Base) OR GetDistUnits(Simms, JMM) < 8 then pom1=1;
+    end;
+
+  if pom1=1
+    then
+      begin
+        InGameOn;
+        while not IsOK(JMM) do wait(0$1);
+        ComMoveUnit(JMM,Simms);
+        ComMoveUnit(Simms,JMM);
+        wait(0$1);
+        CenterOnUnits([JMM,Simms]);
+        Say(Simms,'D2a-Sim-1');
+        Say(JMM,'D2a-JMM-1');
+        CenterOnUnits([JMM,Simms]);
+        if IsOK(Joan_F) then
+          begin
+            Say(Joan_F,'D2b-Joan-1');
+            Say(JMM,'D2b-JMM-1');
+            Say(Joan_F,'D2b-Joan-2');
+            if IsOK(Denis) then Say(Denis,'D2c-Den-1');
+            if IsOK(Khattam) then
+              begin
+                Say(JMM,'D2c-JMM-1');
+                Say(Khattam,'D2c-Khat-1');
+              end;
+          end;
+        CenterOnUnits([JMM,Simms]);
+        ComMoveXY(Simms,110,35); 
+        InGameOff;
+        dialog_u_zakladny_probehl=true;
+        pom=FilterAllUnits([[f_side,You2]]);
+        for i in pom do SetSide(i,You);
+      end
+    else enable;
+end;
+
+// lab dostavena
+EVERY 0$3 TRIGGER Dial>=3 DO
+begin
+  testfight;
+  Res:=1;         // nepocita se uz siberit a skonceni kvuli nedostatku siberitu
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_btype,b_solar_power],[f_btype,b_oil_power],[f_btype,b_siberite_power]]]);
+  if pom>0
+    then
+      begin
+        while IsConstructed(pom[1])<>0 do wait(0$1);
+        DialogueOn;
+        while not IsOK(JMM) do wait(0$1);
+        pom=GetPeople(sex_male,class_scientistic,[Gary,JMM,Cyrus,Denis]);
+        if pom=0
+          then Say(JMM,'D3-JMM-3')
+          else
+            begin
+              Say(pom[1],'D3-Sci1-1');
+              if IsOK(Gary)
+                then Say(Gary,'D3-Gary-1')
+                else begin
+                       pom4=GetPeople(sex_male,class_soldier,[JMM,GARY,pom[1]]);
+                       if pom4>0 then Say(pom4[1],'D3-Sol1-1')
+                                 else if pom>1 then Say(pom[2],'D3-Sol1-1')
+                                               else Say(JMM,'D3-Sol1-1');
+                     end;
+              Say(pom[1],'D3-Sci1-2');
+              Say(JMM,'D3-JMM-2');
+              Say(pom[1],'D3-Sci1-3');
+              Say(JMM,'D3-JMM-3');
+              Say(pom[1],'D3-Sci1-4');
+              ChangeMissionObjectives('M2');
+              enable(104);
+              DialogueOff;
+            end;
+      end
+   else enable;
+end;
+
+EVERY 0$5 DO
+VAR pom;
+begin
+  if GetTech(tech_SibPow,You)=state_researched and
+     GetTech(tech_Sib1,You)=state_researched and
+     GetTech(tech_Sib2,You)=state_researched
+   then 
+     begin
+       if GetTech(tech_AI,You)=state_researched and
+          GetTech(tech_LasSight,You)=state_researched
+         then Mission_end('ukonceni - dialogues 133')
+         else begin
+                ChangeMissionObjectives('M2a');
+                pom=Query('QEndMission');
+                EMR=true;
+                if pom=2 then Mission_end('po odklepnuti ze konci - dialogues 138')
+                         else begin
+                                end_the_mission_allowed=true;
+                                test_ukonceni_allowed=true;
+                              end;
+                disable(104);
+             end;
+     end
+   else enable;
+end;
+
+on ResearchComplete(tech,lab) do
+begin
+  if tech=tech_LasSight then ChangeMissionObjectives('M2b');
+  if tech=tech_AI then ChangeMissionObjectives('M2c');
+end;
+
+// dialog 3a
+EVERY 2$30 marked 104 DO
+begin
+  testfight;
+  if IsOK(Simms) and IsInArea(Simms,Base2) and (not disable_kecy1)
+    then
+      begin
+        DialogueOn;
+        pom=GetPeople(sex_male,class_scientistic,[JMM]);
+        Say(Simms,'D3a-Sim-1');
+        if pom>0 then pom1=pom[1]
+                 else pom1=JMM;
+        Say(pom1,'D3a-Sci1-1');
+        Say(Simms,'D3a-Sim-2');
+        Say(pom1,'D3a-Sci1-2');
+        Say(Simms,'D3a-Sim-3');
+        Say(pom1,'D3a-Sci1-3');
+        if IsLive(Joan_F) then Say(Simms,'D3a-Sim-4')
+                          else Say(Simms,'D3a-Sim-4a');
+        Say(pom1,'D3a-Sci1-4');
+        Say(Simms,'D3a-Sim-5');
+        Say(pom1,'D3a-Sci1-5');
+        Say(Simms,'D3a-Sim-6');
+        DialogueOff;
+        disable_kecy1=true;
+        enable(105);
+      end
+    else enable;
+end;
+
+// pomlouvani Khattama
+EVERY 0$30 marked 105 DO
+VAR pomkecy;
+begin
+  wait(Rand(0$5,1$0));
+  testfight;
+  pomkecy=FilterAllUnits([[f_side,Arabi],[f_type,unit_human],[f_sex,sex_male]]);
+  pomkecy=pomkecy diff Dietrich;
+  if IsOK(Dietrich) and IsOK(Khattam) and (not disable_kecy2) then
+    begin
+      if pomkecy>0 then pom=pomkecy[1]
+                   else exit;
+      Say(pom,'D5-Ar1-1');
+      Say(Dietrich,'D5-Diet-1');
+      Say(pom,'D5-Ar1-2');
+      Say(Dietrich,'D5-Diet-2');
+      disable_kecy2=true;
+    end;
+  enable(106);
+end;
+
+// dialog 6
+EVERY 0$30 marked 106 DO
+begin
+  testfight;
+  DialogueOn;
+  pom=GetPeople(sex_male,class_scientistic,[JMM,Khattam]);
+  if pom>0 then
+    begin
+      while not IsOK(JMM) do wait(0$1);
+      Say(JMM,'D6-JMM-1');
+      Say(pom[1],'D6-Sci1-1');
+      Say(JMM,'D6-JMM-2');
+      Say(pom[1],'D6-Sci1-2');
+      Say(JMM,'D6-JMM-3');
+      Say(pom[1],'D6-Sci1-3');
+      Say(JMM,'D6-JMM-4');
+      Say(pom[1],'D6-Sci1-4');
+      DialogueOff;
+    end;
+  COR_GO=1;
+  enable(108);
+end;
+
+// zahledl rusky konvoj
+EVERY 4$0 DO
+VAR npom;
+begin
+  wait(timerusi[difficulty]);
+  npom=create_kecal;
+  wait(0$2);
+  SayRadio(npom,'D4-FSol1-1');
+  wait(0$5);
+  ChangeMissionObjectives('M3');
+  case nah of
+   1,2:RevealFogArea(You,Seekon2);
+   3,4:RevealFogArea(You,Seekon1);
+  end;
+  KillUnit(npom);
+end;
+
+// prebarveni cornela     
+EVERY 0$0.1 TRIGGER COR_GO=2 marked 108 DO
+begin
+  if See(You,Cornel) then
+    begin
+      if cor_dial1 then exit;
+      while not IsOK(JMM) do wait(0$1);
+      SetSide(Cornel,You);
+      CenterOnUnits(Cornel);
+      InGameOn;
+      pom=GetPeople(sex_female,class_soldier,[]);
+      SetLives(Cornel,300);
+      RevealFogArea(You,Corsee);
+      cor_dial1=true;                            // probehl prvni rozhovor
+      Say(Cornel,'D7-Corn-1');
+      if pom>0 then Say(pom[1],'D7-FSol1-1');
+      Say(Cornel,'D7-Corn-2');
+      Say(JMM,'D7-JMM-2');
+      Say(Cornel,'D7-Corn-3');
+      ComCrawl(Cornel);
+      SetLives(Cornel,200);
+      Say(JMM,'D7-JMM-3');
+      InGameOff;
+      enable(107);
+    end
+  else enable;
+end;
+
+// cornel 2. kecy
+EVERY 0$5 marked 107 do
+begin
+  testfight;
+  if IsOK(Cornel) and IsInArea(JMM,Base2) then
+    begin
+      if cor_dial2 then exit;
+      wait(0$10);
+      DialogueOn;
+      while not IsOK(JMM) do wait(0$1);
+      cor_dial2=true;
+      Say(JMM,'D7a-JMM-1');
+      Say(Cornel,'D7a-Corn-1');
+      Say(JMM,'D7a-JMM-2');
+      Say(Cornel,'D7a-Corn-2');
+      Say(JMM,'D7a-JMM-3');
+      Say(Cornel,'D7a-Corn-3');
+      Say(JMM,'D7a-JMM-4');
+      Say(Cornel,'D7a-Corn-4');
+      Say(JMM,'D7a-JMM-5');
+      Say(Cornel,'D7a-Corn-5');
+      Say(JMM,'D7a-JMM-6');
+      if VIDEL_MIKHAILA then Say(Cornel,'D7a-Corn-6')
+                        else Say(Cornel,'D7a-Corn-6a');
+      Say(JMM,'D7a-JMM-7');
+      Say(Cornel,'D7a-Corn-7');
+      Say(JMM,'D7a-JMM-8');
+      DialogueOff;
+    end
+  else enable;
+end;
+
+// time naboje
+Every 0$1 trigger bazookaDialog = 1 do
+begin
+
+        wait(0$3);
+        DialogueOn;
+        while not IsOK(JMM) do wait(0$1);
+        pom=GetPeople(sex_male,class_soldier,[JMM]);
+        if IsOK(Cyrus) then if VI_O_GRANATECH then begin
+                                                     Say(Cyrus,'D9a-Cyrus-1');
+                                                     Say(JMM,'D9a-JMM-1');
+                                                   end
+                                              else Say(Cyrus,'D9b-Cyrus-1')
+                       else
+        if pom>0 then if VI_O_GRANATECH then begin
+                                               Say(pom,'D9a-Sol1-1');
+                                               Say(JMM,'D9a-JMM-1');
+                                             end
+                                        else Say(pom,'D9b-Sol1-1');
+       if GetTech(tech_LasSight,You)=state_researched then Say(JMM,'D9c-JMM-1a')
+                                                      else Say(JMM,'D9c-JMM-1');
+       DialogueOff;
+
+       bazookaDialog = 0;
+END;
+
+// kecy Powella, kdyz zautoci na araby predtim nez zautoci oni
+EXPORT function powell_kecy;
+begin
+  DialogueOn;
+  SayRadio(Powell,'D6b-Pow-1');
+  Wait(0$5);
+  DialogueOff;
+end;
+
+// dialog pri utoku arabu
+EVERY 0$3 TRIGGER Dial>=5 DO
+VAR arm;
+begin
+  DialogueOn;
+  while not IsOK(JMM) do wait(0$1);
+  pom=GetPeople(sex_male,class_soldier,[JMM]);
+  arm=FilterAllUnits([[f_side,Arabi],[f_or,[f_btype,b_barracks],[f_btype,b_armoury]]]);
+  if pom>1 and arm>0 then
+    begin
+      Say(pom[1],'D8-Sol1-1');
+      pom1=GetPeople(sex_male,class_scientistic,[JMM,pom[1]]);
+      if pom1=0 then Say(pom[1],'D8-Sci1-1')
+                else Say(pom1[1],'D8-Sci1-1');
+    end;
+  Say(JMM,'D8-JMM-1');
+  DialogueOff;
+  ChangeMissionObjectives('M4');
+  wait(0$10);
+  if IsOK(Gary) then Say(Gary,'D8a-Gary-1');
+  Dial:=6;
+end;
+
+// po utoku arabu
+EVERY 0$5 TRIGGER Dial>=6 DO
+begin
+  testfight;
+  pom1=false;
+  for i in Am_units do
+    begin
+      pom=Attacks(i);
+      if pom<>0 then if Getside(pom)=Arabi then pom1=true;
+    end;
+  if pom1 then enable
+          else if IsOK(Khattam) then
+                 begin
+                    DialogueOn;
+                    pom=FilterAllUnits([[f_side,You],[f_and],[f_type,unit_human]]);
+                    pom=pom diff UnitFilter(pom,[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_kamikaze],[f_class,class_apeman_soldier]]);
+                    if pom<2 then exit;
+                    if pom[1]=Khattam then pom=pom[2]
+                                      else pom=pom[1];
+                    if GetSex(pom)=sex_male then Say(pom,'D8b-Sol1-1')
+                                            else Say(pom,'D8b-FSol1-1');
+                    Say(Khattam,'D8b-Khat-1');
+                    if GetSex(pom)=sex_male then Say(pom,'D8b-Sol1-2')
+                                            else Say(pom,'D8b-FSol1-2');
+                    Say(Khattam,'D8b-Khat-2');
+                    if GetSex(pom)=sex_male then Say(pom,'D8b-Sol1-3')
+                                            else Say(pom,'D8b-FSol1-3');
+                    Say(Khattam,'D8b-Khat-3');
+                    if GetSex(pom)=sex_male then Say(pom,'D8b-Sol1-4')
+                                            else Say(pom,'D8b-FSol1-4');
+                    DialogueOff;
+                    KHATTAM_PADA=true;
+                 end;
+end;
+
+// jestli muze kecat, nebo se prave bojuje
+function testfight;
+begin
+  while InBattle([You,Rusi]) do wait(0$0.5);
+end;
+
+// ziskavani lidi podle povolani
+function GetPeople(sex,povolani,diffseznam);
+VAR pom5;
+begin
+  pom1=FilterAllUnits([[f_side,You],[f_class,class_scientistic],[f_sex,sex]]);
+  pom2=FilterAllUnits([[f_side,You],[f_class,class_mechanic],[f_sex,sex]]);
+  pom3=FilterAllUnits([[f_side,You],[f_class,class_engineer],[f_sex,sex]]);
+  pom4=FilterAllUnits([[f_side,You],[f_class,class_soldier],[f_sex,sex]]);
+  pom5=FilterAllUnits([[f_side,You],[f_class,class_sniper],[f_sex,sex]]);
+
+  case povolani of
+   class_scientistic:pom=pom1;
+   class_mechanic:pom=pom2;
+   class_engineer:pom=pom3;
+   class_soldier:pom=pom4;
+  end;
+
+  if povolani<>class_scientistic then pom=pom^pom1;
+  if povolani<>class_mechanic then pom=pom^pom2;
+  if povolani<>class_engineer then pom=pom^pom3;
+  if povolani<>class_soldier then pom=pom^pom4;
+  if povolani<>class_scientistic then pom=pom^pom5;
+
+  result:= pom diff diffseznam;
+end;
+
+// uvideli spontalni teleportaci
+EXPORT function uvidel_spontalni_teleportaci;
+begin
+  while not IsOK(JMM) do wait(0$1);
+  DialogueOn;
+  if IsOK(Cyrus) then Say(Cyrus,'D10-Cyrus-1');
+  Say(JMM,'D10-JMM-1');
+  DialogueOff;
+end;
+
+// odskrtnuti MO kdyz arabsti zradci utikaji
+EVERY 0$6 TRIGGER Arabi_utoci DO
+VAR i;
+VAR cont;
+begin
+  cont=false;
+  for i in arabsti_zradci_LIST do
+    if IsLive(i) then cont=true;
+  if cont then enable
+          else if UTEKLI_ARABI=0 then ChangeMissionObjectives('M4a');
+end;
+
+// testovani, jestli uz probehly kecy ohledne
+EVERY 0$6 TRIGGER test_ukonceni_allowed DO
+begin
+  if GetTech(tech_AI,You)=state_researched and
+     GetTech(tech_LasSight,You)=state_researched then Mission_end('Ukonceni kdyz ma vynalezeno - dialogues 458');
+  enable;
+end;

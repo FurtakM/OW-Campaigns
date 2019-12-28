@@ -1,0 +1,189 @@
+var objevovani_zasilek;
+
+every 0$0.1 do
+begin
+     objevovani_zasilek:=[[4,3,7,2,0,2,5,3,1,1],
+                          [4,4,8,2,0,2,5,4,2,1],
+                          [4,3,8,1,0,2,6,5,3,1]][difficulty];
+     Randomize;
+end;
+every 0$10 do
+begin
+     Randomize;
+     enable;
+end;
+
+// first crate
+every 0$1 trigger start_game do
+begin
+     Wait(Rand(0$10,0$25));
+     CreateCratesArea(5, first_crate, true);
+     wait(0$5);
+     DialogR0;
+end;
+//prvnich 5 minut
+every 0$15 do
+begin
+  bum_bedny;
+end;
+//kazdych dalsich 5 minut
+every 5$0 + 0$20 marked 567 do
+begin
+  enable;
+  bum_bedny;
+end;
+
+function bum_bedny;
+var x, w, i, hex, cek, cek2, last, min5;
+begin
+     min5:=(tick div 5$0)+1;
+     cek:=[];
+     cek2:=[];
+     last:=0;
+     x:=objevovani_zasilek[min5];
+     for i:=1 to x*2 do
+         cek:=cek ^ Rand(0$15, 5$0);
+     cek:=SortListByListAsc(cek, cek);
+     for i in cek do begin
+         cek2:=cek2 ^ i-last;
+         last:=i;
+     end;
+     for i:=1 to x do begin
+         hex:=RandHexArea(bottom_bigger, false);
+         crates:=crates ^ [hex];
+         CreateCratesXY(5, hex[1], hex[2], true);
+         Wait(cek2[i*2-1]);
+
+         hex:=RandHexArea(top_bigger, false);
+         if more_scouting then
+            crates:=crates ^ [hex];
+         CreateCratesXY(5, hex[1], hex[2], true);
+         if not was_dialogR0 and GetDistUnitXY(JMM, hex[1], hex[2])>30 then begin
+            wait(0$6);
+            DialogR0;
+         end;
+         Wait(cek2[i*2]);
+     end;
+     if min5=(objevovani_zasilek+0) then disable(567);
+end;
+
+
+// materialisation of lidi
+every 5$0 + 5$20 trigger start_game do
+var a, un,counter,h;
+begin
+     a:= prilet_rusaci union prilet_tvoji;
+     if a then begin
+       un:=a[Rand(1,(a+0))];
+       if prilet_tvoji=2 and Getside(un)=you then begin
+          PlaceUnitArea(un,lidi_base, true);
+       end
+       else begin
+         if Rand(1,2)=1 then begin
+            counter:=0;
+            repeat
+              repeat
+                h:=RandHexArea(lidi_bottom, false);
+                counter:=counter+1;
+              until Getside(un)=russians or counter>200 or not SeeXY(russians,h[1],h[2]) ;
+            until PlaceUnitXY(un,h[1],h[2],true) or counter>200;
+            if counter>200 then
+              un:=0;
+         end
+         else begin
+            counter:=0;
+            repeat
+              repeat
+                h:=RandHexArea(lidi_top, false);
+                counter:=counter+1;
+              until Getside(un)=russians or counter>200 or not SeeXY(russians,h[1],h[2]);
+            until PlaceUnitXY(un,h[1],h[2],true) or counter>200 ;
+            if counter>200 then
+              un:=0;
+         end;
+       end;
+       Wait(0$4);
+       if un in prilet_rusaci then begin
+          prilet_rusaci:=prilet_rusaci diff un;
+          ComWait(un, 0$3);
+          AddComMoveXY(un, 122, 84);
+          case GetClass(un) of
+               class_soldier: sol:=sol ^ un;
+               class_engineer: eng:=eng ^ un;
+               class_scientistic: sci:=sci ^ un;
+               class_mechanic: mec:=mec ^ un;
+          end;
+       end;
+       if un in prilet_tvoji then begin
+          prilet_tvoji:=prilet_tvoji diff un;
+          if IsInArea(un, base) then begin
+             if GetSex(un)=sex_male then
+                if not WasD11aa then Dialog11aa(un)
+             else
+                if not WasD11ab then Dialog11ab(un);
+          end
+          else begin
+             if GetSex(un)=sex_female then begin
+                if not WasD11c then Dialog11c(un)
+                else
+                   if not WasD11e then Dialog11e(un);
+             end
+             else begin
+                if not WasD11b then Dialog11b(un)
+                else
+                   if not WasD11d then Dialog11d(un)
+                   else
+                      if not WasD11f then Dialog11f(un);
+             end;
+          end;
+       end;
+       enable;
+     end;
+end;
+
+
+// materialisation of pribehove postavy
+every 10$0 + 2$30 trigger start_game do
+//every 0$1 trigger start_game do
+var a4, b4, b5, c4, d4, ia4, max4, h;
+begin
+     ne_v_boji;
+     repeat
+        wait(0$3);
+        b4:=FilterAllUnits([[f_side, you],[f_nation,nation_american],[f_type, unit_human],[f_ok],[f_outside]]) diff [JMM, Joan];
+     until b4 and not FilterAllUnits([[f_side,russians], [f_or, [f_type, unit_human], [f_type, unit_vehicle], [f_type, unit_building], [f_occupied]], [f_dist,JMM,40]]);
+
+     max4:=1000;
+     if Rand(1,5)<=4 then begin
+        for ia4 in b4 do begin
+            d4:=GetDistUnits(JMM, ia4);
+            if d4>5 and d4<max4 then begin
+               max4:=d4;
+               c4:=ia4;
+            end;
+        end;
+     end;
+
+     if max4>11 then
+        c4:=JMM;
+
+     a4:=0;
+
+     if not Kurt_P and not Joan_P then
+        a4:=Rand(1,2);
+     if (not Kurt_P and a4=0) or a4=1 then begin
+        SetAttitude(arabians,you,att_friend,true);
+        if PlaceUnitXYR(Kurt, Getx(c4), Gety(c4),8, true) then begin
+          Kurt_P:=true;
+          DialogKurt(c4);
+        end;
+     end;
+     if (not Joan_P and a4=0) or a4=2 then begin
+        if PlaceUnitXYR(Joan, Getx(c4), Gety(c4),8, true) then begin
+          Joan_P:=true;
+          DialogJoan(c4);
+        end;
+     end;
+     if not Kurt_P or not Joan_P then
+        enable;
+end;

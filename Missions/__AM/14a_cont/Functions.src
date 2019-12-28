@@ -1,0 +1,18 @@
+// Waits until no of units from list_of_units has a task
+EXPORT Function WaitTask(list_of_units, reaction);
+var i, busy;
+ begin
+  wait(2);
+  repeat
+   busy= false;
+   for i in list_of_units do
+    if IsOk(i) then
+     if HasTask(i) then
+       begin
+         busy= true;
+//         debug_strings= [['Has task'], [GetTaskList(i)]];
+       end;
+   if busy then wait(0$1*reaction);
+  until not(busy);
+//  debug_strings= [['Free'], GetTaskList(i)];
+ end;

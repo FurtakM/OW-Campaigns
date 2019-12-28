@@ -1,0 +1,43 @@
+// Sloûitost.
+
+
+Export dif_CekaniBednyRus, dif_PoctyBednyRus;
+Export dif_PoctyBednyStart, dif_PoctyBednyExtra;
+Export dif_LegionRidici, dif_AraboveRidici;
+Export dif_UtokSkupina, dif_CasovacUtoku, dif_PrvniUtok;
+Export dif_PstZbrane;
+Export dif_MaxOpice, dif_ZpozdeniOpice, dif_PstOpiceRus;
+Export dif_OpiceLimit, dif_OpiceNajednouPocet;
+Export dif_ArabiLidiVzdajSe;
+Export dif_LegionTimeout;
+
+
+Export Function init_difficulty;
+Begin
+  // Jak dlouho se bude Ëekat mezi bednami, co bude dost·vat Rus (+3min)?
+  dif_CekaniBednyRus = [[0$1, 0$25], [0$30, 1$05], [0$50, 1$15]];
+  dif_PoctyBednyRus = [[5, 5], [4, 5], [3, 5]];
+  dif_PoctyBednyStart = [5, 3, 1];       // * 20
+  dif_PoctyBednyExtra = [10, 5, 0];      // * 40
+  // PoËty auù·k˘ nep¯·tel.
+  dif_LegionRidici = [2, 3, 4];
+  dif_AraboveRidici = [3, 5, 7];
+  // »as do arabskÈho ˙toku.
+  dif_PrvniUtok = [[6, 10], [4, 6], [4, 6]];
+  dif_CasovacUtoku = [[2, 5, 6], [2, 4], [2, 3]];
+  dif_UtokSkupina = [4, 6, 8];
+  // PravdÏpodobnosti pro zbranÏ - po¯adÌ FLAME, GUN, DOUBLE_MACHINE_GUN, ROCKET_LAUNCHER
+  dif_PstZbrane = [[20, 40, 80, 100], [25, 50, 75, 100], [30, 60, 55, 100]];
+  // Opice.
+  dif_MaxOpice = [5, 8, 11];
+  dif_ZpozdeniOpice = [[2$0, 3$4], [1$0, 2$0], [0, 1$0]];
+  dif_PstOpiceRus = [60, 40, 15];
+  dif_OpiceLimit = [10, 25, -1];
+  dif_OpiceNajednouPocet = [1, 2, 4];
+  // Kdy se vzdaj ArabovÈ.
+  dif_ArabiLidiVzdajSe = [6, 4, 2];
+  // Timeout n·klaÔ·k˘.
+  dif_LegionTimeout = [30$0, 25$0, 15$0];
+End;
+
+

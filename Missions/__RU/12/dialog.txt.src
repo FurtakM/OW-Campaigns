@@ -1,0 +1,261 @@
+@ October Revolution
+% Having accepted the bid for power from Gladkov's group, Burlak must now rid the world of comrade general Platonov, for ever.
+
+// Dialogue
+
+// Dialogue Start (Burlak and Gladkov standing in the open, with couple of other characters nearby)
+$ DStart-Bur-1
+- So where is everyone?
+$ DStart-Gla-1
+- They are all here.
+$ DStart-Bur-2
+- This is it!? You said there were many who supported you.
+$ DStart-Gla-2
+- They do, but they are too afraid to show themselves.
+$ DStart-Bur-3
+- (sarcastic) Brilliant!
+$ DStart-Gla-3
+- But knowing our supporters are there, means once we have demonstrated our strength the battle will be won quickly. I believe four bases under our command would be enough for victory.
+$ DStart-Bur-4
+- Do you have a list of the targets comrade Gladkov?
+$ DStart-Gla-4
+- There is A. I. Yegorov base in South West, commanded by colonel Tsarytsyn. He is a hard-line communist but if we can persuade him our cause is for the people he may join us.
+$ DStart-Gla-4a
+- To the South East there is M. N. Ryutin base, under command of colonel Davidov. He's a little mad, spends too much time in the lab with scientists.
+$ DStart-Gla-4b
+- In East there is Y. E. Yakir base, commanded by colonel Eisenstein. He's a bully but can be bullied as well!
+$ DStart-Gla-4c
+- There is M. A. Budonny base in the North, it's commanded by colonel Borodin. He is weak man out for himself, he will go with the one who has the upper hand.
+$ DStart-Gla-4d
+- There is V. K. Bluekher base in North West (camera pans). Obviously this is commanded by Platonov, so we can only use force here.
+$ DStart-Gla-4e
+- Of course, if we just went straight for Platonov and defeated him the rest would follow then. This could prevent many casualties. But the decision is yours comrade. We follow your command.
+
+# MStart
+Add main Capture
+- Capture at least 4 bases in the area.
+Add alternative main Kill
+- Kill general Platonov.
+#
+
+// Dialogue Gossudarov (some time after the start of mission, Russian scientists headed by Gossudarov will start to leave base and head Eastward)
+$ DGossudarov-Fad-1
+- Look, major. The scientists are leaving Blukher base. What's going on?
+$ DGossudarov-Bur-1
+- (loudly) Professor!? Why the hurry?
+$ DGossudarov-Gos-1
+- You know where we are going, Burlak. I'm only sorry you won't be with us. Defeating Platonov will change nothing.
+$ DGossudarov-Bur-2
+- Leave the Artefact professor. Like you, it is going nowhere.
+$ DGossudarov-Gos-2
+- Comrade...
+$ DGossudarov-Bur-3
+- You spoke about responsibility, professor and you were right, I am responsible to my country which trusted me to preserve it's future. It trusted you also. You will not leave here alive.
+$ DGossudarov-Gos-3
+- Then kill us Burlak. We will die free men, and you will live a prisoner of the party and it's propaganda.
+
+# MGoss
+Add main Arte
+- Protect the Artefact
+Add secondary Sci
+- Stop scientists from joining the Alliance.
+#
+
+// Dialogue A-BaseContact
+$ DA-BaseContact-Pla-1
+- Gorky, you are treacherous scum! I will wipe every trace of you from the face of the earth.
+$ DA-BaseContact-Bur-1
+- I am not a traitor, I only do this to ensure success of our mission. You are an obstacle Platonov. You must leave of your own accord or be removed.
+
+// Dialogue A-BaseReguse
+$ DA-BaseReguse-Pla-1
+- Your death approaches, Gorky!
+
+// Dialogue A-BaseAccept (Platonov runs away - he uses the teleport)
+$ DA-BaseAccept-Pla-1
+- You have tricked me, Gorky. But this is not the end. I will defeat you. I swear it!
+
+// Dialogue Behemoth (when Behemoth spotted)
+$ DBehemoth-Rsol1-1
+- Saint Trofimov. It's a moving fortress!
+$ DBehemoth-Pla-1
+- Burlak! The time has come to meet your maker! You will be crushed like a beetle under my treads!
+$ DBehemoth-Bur-1
+- Comrades! It's just a tank. A big mother of a tank I admit! But nothing we can't handle. Come on!
+
+// Dialogue B-BaseContact (use only if commander wants to refuse)
+$ DB-BaseContact-Bor-1
+- We've heard about your mutiny, comrade. Your band of traitors will never win the support of Red Army troops.
+
+// Dialogue B-BaseRefuse (this dialogue is repeated always when the commander wants to refuse)
+$ DB-BaseRefuse-Bor-1
+- Your force is no threat to us. Leave while you still can, comrade.
+
+// Dialogue B-BaseAccept
+$ DB-BaseAccept-Bor-1
+- You are a mighty commander, comrade Gorki. I believe you can lead us to victory.
+$ DB-BaseAccept-Bor-1a
+- [first base] Take our base and all my men.
+$ DB-BaseAccept-Bor-1b
+- [otherwise] I need some men to defend this base against the enemy. But others I can put under your command.
+
+// Dialogue C-BaseContact
+$ DC-BaseContact-Tsr-1
+- Comrade, I am not with you unless you are for the people. I am communist but what we saw in our country wasn't communism, it was defacement of it's principles.
+
+// Dialogue C-BaseQuestion
+$ DC-BaseQuestion-Tsr-1
+- If you can prove to me that you are well-versed in true Marxism-Leninism, comrade, I'll go with you.
+
+// Query ML1 (in following queries, the option Ask Gleb is only available if Gleb is alive)
+? QML1
+The seminal Marxist work "Das Kapital" (The Capital) was written by:
+-1 Marx brothers
+-2 Karl Marx
+-3 St. Paul
+-4 Ask Gleb
+?
+
+// Query ML2
+? QML2
+The middle name of V. I. Lenin is:
+-1 Ilyich
+-2 Ivan
+-3 Ignatius
+-4 Ask Gleb
+?
+
+// Query ML3
+? QML3
+The famous "Communist Manifesto" by K. Marx and B. Engels was first published in:
+-38 BC
+-1838
+-2038
+-4 Ask Gleb
+?
+
+// Query ML4
+? QML4
+The acronym USSR stands for:
+-1 Union of Sanctity, Serenity and Radiation
+-2 Union of Shoplifters, Sycophants and Robbers
+-3 Union of Soviet Socialist Republics
+-4 Ask Gleb
+?
+
+// Query ML5
+? QML5
+The Great October Socialist Revolution of 1917 that deposed the Tsar and created the first state of workers and peasants took place on:
+-1 1st May
+-2 7th November
+-3 4th July
+-4 Ask Gleb
+?
+
+// Dialogue QrML#Right
+$ DQrML#Right-Tsr-1
+- Good. I see you are a true communist, comrade Gorky. Platonov was lax on ideology. It will be pleasure to work with you.
+$ DQrML#Right-Tsr-1a
+- [first base] I'll now go to depot to immerse myself in study of fundamental Lenin's work "Several Remarks on Growing Corn in Southern Kamchatka". Meanwhile, you can take command of my base and my men.
+$ DQrML#Right-Tsr-1b
+- [otherwise] I need some men to run this base, comrade, but you can take three with you.
+
+// Dialogue QrML#Wrong
+$ DQrML#Wrong-Tsr-1
+- No, this is not good. You are just like Platonov, ready to kill for things you know nothing about.
+
+// Dialogue QrML#Gleb (depending on the query select one line and redisplay query)
+$ DQrML#Gleb-Glb-1
+- (certain) It definitely isn't the first option. (uncertain) I think.
+$ DQrML#Gleb-Glb-1a
+- (certain) It definitely isn't the second option. (uncertain) I think.
+$ DQrML#Gleb-Glb-1b
+- (certain) It definitely isn't the third option. (uncertain) I think.
+
+// Dialogue D-BaseContact
+$ DD-BaseContact-Dav-1
+- I know about you, major Gorky, including your dealings with professor Gossudarov. I appreciate that you stayed with us. My concern is the Artefact. I believe it holds very powerful secrets.
+$ DD-BaseContact-Bur-1
+- Maybe we can help you with Artefact research more than comrade Platonov.
+
+// Dialogue D-BaseRefuse
+$ DD-BaseRefuse-Dav-1
+- If you can secure the Artefact, it will prove to me that you're serious about science. Then I will support you.
+
+// Dialogue D-BaseAccept (if the player brings Artefact)
+$ DD-BaseAccept-Dav-1
+- Wonderful, comrade. By this one act you have done more for our cause than all the empty-headed generals put together.
+$ DD-BaseAccept-Dav-1a
+- [first base] I and three of my most senior scientists will begin work in the lab. The rest of the base is yours.
+$ DD-BaseAccept-Dav-1b
+- [otherwise] I need men to run the base and do the research, but the rest can go with you.
+
+// Dialogue E-BaseContact
+$ DE-BaseContact-Eis-1
+- We know about your mutiny, commander. I have never heard of such a deplorable act of insubordination!
+$ DE-BaseContact-Bur-1
+- Platonov is a poor commander, you must know that. While he is in control we will never defeat our enemies. Which do you prefer!?
+
+// Dialogue E-BaseRefuse (he has a stasis researched)
+$ DE-BaseRefuse-Eis-1
+- I don't know if you are a good commander comrade Gorky. Attack my base and I will see.
+
+// Dialogue E-BaseAccept (when losses reach certain treshold)
+$ DE-BaseAccept-Eis-1
+- Enough comrade Gorky! I see you are strong.
+$ DE-BaseAccept-Eis-1a
+- [first base] My men and my base are now at your service.
+$ DE-BaseAccept-Eis-1b
+- [otherwise] I need some men to defend this base, but you can take rest with you.
+
+// Dialogue XbaseSurrender (when commander is killed)
+$ DXbaseSurrender-Rsol1-1
+- Comrade Gorky, I speak for all comrades in this base. We recognise your strength and we support you. Take our base, we follow you now.
+
+// Dialogue Rocket (Weapon lab built)
+$ DRocket-RSci1-1
+- Comrade commander. I've been thinking, attack from longer range would reduce casualties. If you want me to look into missile design I can do this.
+
+// Query End
+? QEnd
+You now have the support of four commanders in this area. You can end the mission or play on. Will you:
+-1 Continue
+-2 End the mission.
+?
+
+// Dialogue End (if Gladkov is not alive, some other character will take up his role)
+$ DEnd-Bur-1
+- Now we have the support of our own troops we can concentrate on fighting the enemy!
+$ DEnd-Gla-1
+- Congratulations, Burlak. This was a great achievement.
+$ DEnd-Bur-2
+- Not for me, for all of us. I have learnt from this campaign that words can be as powerful as tanks.
+$ DEnd-Bur-2a
+- We need a capable administrator who will take care of day-to-day running of the army. I'm prepared to conduct military operations. But for now we have to go to winter quarters anyway.
+
+^ Main
+Bases captured
+
+^ Platon
+Platonov killed
+
+| Burlak
+Burlak is dying.
+
+| Arte
+Artefact was taken away.
+
+* All
++ All bases captured
+- You ignored one base
+*
+
+* Diplomacy
++ No unnecessary fighting
+- Some bases could have been taken without fighting
+*
+
+* Goss
++ Scientists stopped
+- You allowed your scientists to join the Alliance.
+*

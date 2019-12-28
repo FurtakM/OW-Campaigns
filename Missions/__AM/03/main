@@ -1,0 +1,136 @@
+export you,russians;
+export Bobby,Cyrus,Lisa,MacMillan;
+export rusboth,rusforce1,rusforce2;
+export difficulty,vehicle_can_go,can_see_tracks,hunting,am1faze,am1reaction;
+
+function prepare_units;
+  begin
+// initializes unit, human and vehicle creating
+    InitUc;
+    InitHc;
+    InitVc;
+
+// prepares human unit  MacMillan
+    uc_direction=(0,5);
+    uc_nation=nation_americans;
+    uc_side=you;
+
+    hc_sex=sex_male;
+    hc_class=class_soldier;
+    hc_skills=[3,0,1,1];
+    hc_name='MacMillan';
+    hc_attr=[10,12];
+    hc_gallery='US';
+    hc_face_number=1;
+
+// creates unit and give him ident
+    MacMillan:=CreateHuman;
+
+// prepares human unit  Lisa
+    uc_direction=rand(0,5);
+    uc_nation=nation_americans;
+    uc_side=you;
+
+    hc_sex=sex_female;
+    hc_class=class_soldier;
+    hc_skills=[3,0,1,1];
+    hc_name='Lisa';
+    hc_attr=[10,12];
+    hc_gallery='US';
+    hc_face_number=2;
+
+// creates unit and give him ident
+    Lisa:=CreateHuman;
+
+// prepares human unit  Bobby
+    uc_direction=rand(0,5);
+    uc_nation=nation_americans;
+    uc_side=you;
+
+    hc_sex=sex_male;
+    hc_class=class_soldier;
+    hc_skills=[3,0,1,1];
+    hc_name='Bobby';
+    hc_attr=[10,12];
+    hc_gallery='US';
+    hc_face_number=3;
+
+// creates unit and give him ident
+    Bobby:=CreateHuman;
+
+// prepares human unit  Cyrus
+    uc_direction=rand (0,5);
+    uc_nation=nation_americans;
+    uc_side=you;
+
+    hc_sex=sex_male;
+    hc_class=class_soldier;
+    hc_skills=[3,0,1,1];
+    hc_name='Cyrus';
+    hc_attr=[10,12];
+    hc_gallery='US';
+    hc_face_number=1;
+
+// creates unit and give him ident
+    Cyrus:=CreateHuman;
+
+// some starting settings of free/hold mode
+    ComFree([am1,am2,am3,am4,am5]);
+    ComFree(MacMillan,Lisa,Bobby,Cyrus);
+  end;
+
+function prepare_sides;
+  begin
+// who is who in this mission
+    you=1;
+    russians=3;
+
+    PlaceHumanInUnit(driver1,truck1);
+    PlaceHumanInUnit(driver2,truck2);
+    PlaceHumanInUnit(driver3,truck3);
+    PlaceHumanInUnit(driver4,truck4);
+    PlaceHumanInUnit(driver5,truck5);
+    PlaceHumanInUnit(driver6,truck6);
+    PlaceHumanInUnit(driver7,truck7);
+    PlaceHumanInUnit(driver8,truck8);
+
+// starting setting of attitiudes (you remain neutral with anyone as long as you attack him or he attack you)
+    SetAttitude(russians,you,att_enemy,true);
+  end;
+
+
+//------------------------------------------------------------------------------------------------------
+//-------- Main Starting Block -------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+starting
+  begin
+    difficulty:=QueryDifficulty;
+
+    prepare_sides;
+    prepare_units;
+
+  end;
+
+
+// ending conditions
+// three times per second tests if reach exit area (top border of map)
+every 0$0.3 trigger IsOK(MacMillan) and IsInArea(MacMillan,TopBorder) do
+  begin
+//    if IsOK(Olaf) then
+//      begin
+// say goodbye to Olaf
+        stop_action:=true;
+        CenterOnUnits(MacMillan);
+//        Say(,'D11O1');
+//        Say(,'D11H1');
+//      end;
+    end_of_mission:=1; // you win!
+  end;
+
+
+
+
+
+
+

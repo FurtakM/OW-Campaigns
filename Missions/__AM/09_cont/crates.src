@@ -1,0 +1,56 @@
+var objevovani_zasilek;
+every 0$0.1 do
+begin
+     objevovani_zasilek:=[1,0,2,0,1,0,0,1,0,0];
+     Randomize;
+end;
+every 0$10 do
+begin
+     Randomize;
+     enable;
+end;
+
+//prvnich 5 minut
+every 0$15 do
+var x, w, i, hex, cek, cek2, last, min5;
+begin
+     min5:=1;
+     cek:=[];
+     cek2:=[];
+     last:=0;
+     x:=objevovani_zasilek[min5];
+     for i:=1 to x do
+         cek:=cek ^ Rand(0$15, 5$0);
+     cek:=SortListByListAsc(cek, cek);
+     for i in cek do begin
+         cek2:=cek2 ^ i-last;
+         last:=i;
+     end;
+     for i:=1 to x do begin
+         CreateCratesAnywhere(5, true);
+         Wait(cek2[i]);
+     end;
+end;
+//kazdych dalsich 5 minut
+every 5$0 + 0$15 do
+var x, w, i, hex, cek, cek2, last, min5;
+begin
+     min5:=tick div 5$0;
+     cek:=[];
+     cek2:=[];
+     last:=0;
+     x:=objevovani_zasilek[min5];
+     for i:=1 to x do
+         cek:=cek ^ Rand(0$15, 5$0);
+     cek:=SortListByListAsc(cek, cek);
+     for i in cek do begin
+         cek2:=cek2 ^ i-last;
+         last:=i;
+     end;
+     for i:=1 to x do begin
+         CreateCratesAnywhere(5, true);
+         Wait(cek2[i]);
+     end;
+     if min5<10 then enable;
+end;
+

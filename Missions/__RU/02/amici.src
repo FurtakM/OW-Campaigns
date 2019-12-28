@@ -1,0 +1,242 @@
+EXPORT Amici_past;
+EXPORT Amici_baze;
+EXPORT BWW_1,BWW_2;
+EXPORT ABW1,ABW2;
+
+VAR opravy;
+VAR Am_opravari;
+                                            
+// uvodni nastaveni hodnot
+EVERY 0$0.1 DO
+begin
+  opravy=false;                                     
+end;
+                                           
+// holdnuti amiku pro past
+EXPORT function placni_amiky_past;
+VAR i;
+begin
+  for i in AMICI_PAST_LIST do
+    PlaceUnitArea(i,Am_past,false);
+  Amici_past=AMICI_PAST_LIST;
+  AddComCrawl(AMICI_PAST_LIST);
+
+  for i = 1 to 3 do
+       begin
+            if i > AMICI_PAST_LIST then
+                 break;
+
+            AddComMoveXY(AMICI_PAST_LIST[i],60,28);
+       end;
+
+  for i = 4 to AMICI_PAST_LIST+0 do
+       AddComMoveXY(AMICI_PAST_LIST[i],73,21);
+end;
+
+// staveni 2. baze amiku
+EXPORT function stavba_am_baze;
+VAR i;
+VAR pom;
+begin
+  Amici_baze=AMICI_STAVENI_BASE_LIST;
+  for i in AMICI_STAVENI_BASE_LIST DO PlaceUnitArea(i,Amici_enter,false);
+  ComMoveXY(Amici_baze,53,55);
+{  for i in Amici_baze do if GetClass(i)=class_engineer then pom=i;
+  AddComBuild(pom,b_depot,52,48,2);}
+  uc_nation:=nation_american;
+  uc_side:=amici;
+  bc_type:=b_depot;
+  bc_level:=0;
+  CreateAndPlaceBuildingXYD(52,48,2);
+end;
+
+// postaveni 1. breastworku
+EVERY 0$5 TRIGGER FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_depot]])>0 Do
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_depot]]);
+  while IsConstructed(pom[1])<>0 do wait(0$2);
+  AddResourceType(GetBase(pom[1]),mat_cans,40);
+  for i in Amici_baze do if GetClass(i)=class_engineer then pom=i;
+  AddComBuild(pom,b_breastwork,61,52,4);
+end;
+
+// postaveni 2. breastworku
+EVERY 0$5 TRIGGER FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]])>0 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]]);
+  while IsConstructed(pom[1])<>0 do wait(0$2);
+  for i in Amici_baze do if GetClass(i)=class_engineer then pom=i;
+  AddComBuild(pom,b_breastwork,62,56,4);
+end;
+
+// nalezeni do breastworku
+EVERY 0$5 TRIGGER FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]])>1 DO
+VAR pom,i,pom1;
+begin
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]]);
+  pom1=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_class,class_soldier]]);
+  while IsConstructed(pom[1]) or IsConstructed(pom[2])<>0 do wait(0$1);
+  ComEnterUnit(pom1[1],pom[1]);
+  ComEnterUnit(pom1[2],pom[2]);
+  SetBLevel(pom,levely_bw_na_zapade[difficulty]);
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_depot]]);
+  pom1=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_class,class_engineer]]);
+  ComEnterUnit(pom1,pom[1]);
+  nastav_levely_budov;
+end;
+
+// zabrani ruskeho vozidla a presunuti do bojove pozice
+EXPORT function amici_boj;
+VAR mech;
+VAR auto;
+VAR i;
+VAR AP;
+begin
+  ComMoveXY(Amici_past,64,16);
+  mech=vyber_cloveka(Amici_past,class_mechanic);
+  if mech=0 or (not IsOK(mech)) then mech=UnitFilter(Amici_past,[[f_ok]])[1];
+  auto=FilterAllUnits([[f_side,You2],[f_type,unit_vehicle]]);
+  if auto>0 then auto=auto[1];
+  //ComRepairVehicle(mech,auto);
+  if mech=0 then mech=Amici_past[1];
+  ComEnterUnit(mech,auto);
+  AddComMoveXY(Amici_past,69,18);
+  AddComMoveXY(auto,72,21);
+  wait(0$3);
+  zaber_to_auto;
+  while FilterAllUnits([[f_side,Amici],[f_type,unit_vehicle]])=0 do
+    begin
+      for i in Amici_past do if IsOK(i) then begin
+                                               AP=i;
+                                               break;
+                                             end;
+      ComEnterUnit(AP,Auto_belkov);
+      AddComMoveXY(AP,73,22);
+      wait(0$2);
+    end;
+end;
+
+// amici zautoci na belkova a sejmou ho
+EXPORT function amici_attack_belkov;
+VAR i;
+begin
+  if GetSide(bel)<>You then
+    begin
+      for i in AMICI_UTOK_BELKOV_LIST do PlaceUnitArea(i,Zpet_bel,false);
+      McMove(1,AMICI_UTOK_BELKOV_LIST,[[44,6],[36,5],[36,10],[GetX(bel),GetY(bel)],[52,2]],[mc_move_agressive]);
+    end;
+end;
+
+// amici se po utoku na belkova stahnou z mapy
+EXPORT function amici_retreat;
+VAR
+  i,
+  Amici_All;
+begin
+  Amici_All:=AMICI_UTOK_BELKOV_LIST union AMICI_PAST_LIST ^ auto_belkov;
+  repeat
+    ComMoveToArea(Amici_All,Zpet_bel);
+    wait(0$1);
+    for i in Amici_All do
+      begin
+        if not(IsOK(i)) then
+          Amici_All:=Amici_All diff i;
+        if IsInArea(i,Zpet_bel) then
+          begin
+            Amici_All:=Amici_All diff i;
+            RemoveUnit(i);
+          end;
+      end;
+  until Amici_All=[];
+end;
+
+
+// zacatek oprav bw na zapade
+EVERY 0$2 TRIGGER FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]])=2 DO
+begin
+  Am_opravari=UnitFilter(Amici_baze,[[f_class,class_engineer]]);
+  opravy=true;
+end;
+
+// opravovani BW na zapade
+EVERY 0$4 TRIGGER opravy DO
+VAR pom,i;
+VAR pom1,pom2;
+begin
+  pom1=[];
+  pom=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_breastwork]]);
+  for i in pom do if GetLives(i)<1000 then pom1=pom1^i;
+  case pom1+0 of
+   1:begin               
+       ComExitBuilding(Am_opravari);
+       AddComRepairBuilding(Am_opravari,pom1[1]);
+       pom2=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_depot]]);
+       if pom2>0 then AddComEnterUnit(Am_opravari,pom2[1]);
+       wait(0$5);
+     end;
+   2:begin
+       if Am_opravari+0=2 then begin
+                                 ComExitBuilding(Am_opravari);
+                                 AddComRepairBuilding(Am_opravari[2],pom1[1]);
+                                 AddComRepairBuilding(Am_opravari[1],pom1[1]);
+                                 pom2=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_depot]]);
+                                 if pom2>0 then AddComEnterUnit(Am_opravari,pom2[1]);
+                               end
+                          else begin
+                                 ComExitBuilding(Am_opravari);
+                                 AddComRepairBuilding(Am_opravari,pom1[1]);
+                                 pom2=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_btype,b_depot]]);
+                                 if pom2>0 then AddComEnterUnit(Am_opravari,pom2[1]);
+                               end;
+       wait(0$5);
+     end;
+  end;
+  enable;
+end;
+
+//pripadny odepis opravaru
+EVERY 0$1 TRIGGER opravy DO
+VAR pom,i;
+begin
+  pom=[];
+  for i in Am_opravari do if IsOK(i) then pom=pom^i;
+  Am_opravari=pom;
+end;
+
+// managovani amiku po kecech okolo belkova
+EXPORT function amici_po_kecech;
+VAR i,j;
+VAR pom;
+begin
+  i=1;
+  if GetSide(auto_belkov)<>Amici then
+    begin
+      for i in Amici_past do if IsOK(i) then pom=i;
+      ComEnterUnit(pom,auto_belkov);
+      AddComMoveXY(pom,74,22);
+      i=i+1;
+    end;
+  for i in Amici_past do if IsOK(i) then ComMoveXY(i,72,25);
+end;
+
+// zabrani auta
+function zaber_to_auto;
+VAR i,pom;
+begin
+  while (FilterAllUnits([[f_side,Amici],[f_type,unit_vehicle]])=0) and IsOK(auto_belkov) do
+    begin
+      for i in Amici_past do if IsOK(i) then pom=i;
+      ComEnterUnit(pom,auto_belkov);
+      AddComMoveXY(pom,72,20);
+      wait(0$2);
+    end;
+end;
+
+// nastaveni levelu breastworku
+function nastav_levely_budov;
+begin
+ SetBLevel([Am_bre1,Am_bre2],levely_bw_na_vychode);
+ SetBLevel([BWW_1,BWW_2],levely_bw_na_vychode);
+end;

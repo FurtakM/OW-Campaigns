@@ -1,0 +1,38 @@
+
+var h_workshop,
+    h_lab;
+
+export function init_hints;
+begin
+  h_workshop:=true;
+  h_lab:=true;
+end;
+
+
+on BuildingComplete(un) do
+begin
+  if (GetBType(un)=b_workshop) and (h_workshop) then
+    begin
+      h_workshop:=false;
+      if GetTech(tech_SolEng,you)=state_researched then
+        begin
+          Hint('Workshop2');
+          Hint('BuildingVehicles');
+        end
+      else
+        Hint('Workshop1');
+    end;
+
+  if (GetBType(un)=b_lab) and (h_lab) then
+    begin
+      h_lab:=false;
+      Hint('Laboratory');
+    end;
+end;
+
+
+on Contact(side1,side2) Marked 11 do
+begin
+  Hint('Shift');
+  Disable(11);
+end;

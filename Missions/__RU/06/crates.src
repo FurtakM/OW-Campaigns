@@ -1,0 +1,47 @@
+var padlo;
+
+function buch_crate; //bedny padaji do areii nejlepe blizko Burlaka
+var a, h, c;
+begin
+  a:=IsInUnit(Burlak);
+  if not a then
+    a:=Burlak;
+
+  repeat
+    c:=c+1;
+    h:=RandHexArea(bedny, false);
+  until c>100 or GetDistUnitXY(Burlak, h[1], h[2])<25 or GetDistUnitArea(Burlak, bedny)>15;
+  CreateCratesXY(5, h[1],h[2],true);
+  padlo:=padlo+1;
+end;
+
+every 0$53 do
+begin
+// mezitim mohla spadnout bedna proto je tu test 
+  if [(padlo<4),(padlo<4),(padlo<3)][difficulty] then
+    case (tick div 1$0) of
+      0: buch_crate;
+      3: buch_crate;
+      7: buch_crate;
+      12: buch_crate;
+    end;
+// mezitim muze spadnout bedna proto je tu test znovu
+  if [(padlo<4),(padlo<4),(padlo<3)][difficulty] then
+    enable;
+end;
+
+every 0$5 do
+begin
+// mezitim mohla spadnout bedna proto je tu test
+  if [(padlo<4),(padlo<4),(padlo<3)][difficulty] then
+    case true of
+      //nutno zachovat opacne poradi
+      GetTechProgress(tech_MatPred, you)>95 : buch_crate;
+      GetTechProgress(tech_MatPred, you)>70 : buch_crate;
+      GetTechProgress(tech_MatPred, you)>40 : buch_crate;
+      GetTechProgress(tech_MatPred, you)>1 : buch_crate;
+    end;
+// mezitim muze spadnout bedna proto je tu test znovu
+  if [(padlo<4),(padlo<4),(padlo<3)][difficulty] then
+    enable;
+end;

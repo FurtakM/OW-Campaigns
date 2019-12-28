@@ -1,0 +1,389 @@
+// Dialogues
+var Sold1, Fsold1;    
+
+// Selects a random male soldier from the list "units". Unnamed units are prefered.
+Function GetRandomSold1(units, named);
+var possible_sold, unnamed_sold;
+ begin
+   possible_sold= FilterAllUnits([[f_side, americans], [f_sex, sex_male]]);
+   possible_sold= possible_sold isect units;
+   if possible_sold <> 0 then
+     begin
+       unnamed_sold= possible_sold isect [new_americans];
+       if unnamed_sold <> 0 then
+         result= possible_sold[rand(1, unnamed_sold)]
+       else if named = true then
+         result= possible_sold[rand(1, possible_sold)];
+     end
+   else result= 0;
+ end;
+
+// Selects a random male soldier from the list "units". Unnamed units are prefered.
+Function GetRandomFSold1(units, named);
+var possible_sold, unnamed_sold;
+ begin
+   possible_sold= FilterAllUnits([[f_side, americans], [f_sex, sex_female]]);
+   possible_sold= possible_sold isect units;
+   if possible_sold <> 0 then
+     begin
+       unnamed_sold= possible_sold isect [new_americans];
+       if unnamed_sold <> 0 then
+         result= possible_sold[rand(1, unnamed_sold)]
+       else if named = true then
+         result= possible_sold[rand(1, possible_sold)];
+     end
+   else result= 0;
+ end;
+
+
+// At start
+EVERY 0$1 DO
+ begin
+ wait(0$3);
+ SaveForQuickRestart;
+ ChangeMissionObjectives('M1');
+ wait(0$5);
+ Say(Harrison, 'D2-Har-1');
+ end;
+
+// Frank see a americans unit
+Function Scout_see;
+var are_seen, scout, see_opofrank;
+ begin
+   if Frank then scout= Frank
+   else scout = Yamoko;
+   are_seen= UnitFilter(selected_americans^[am_veh1, am_veh2, am_veh3, am_veh4], [f_see, americans1]);
+   see_opofrank= SeeXY(americans, 45, 86);
+   if are_seen <> 0 and see_opofrank then result= true
+   else result= false;
+ end;
+
+
+// Meeting with Frank
+EVERY 0$1 TRIGGER Scout_see DO
+var pom, Uns;
+ begin
+  pom= tick;
+  stop_action= true;
+  Uns= UnitFilter(selected_americans^[am_veh1, am_veh2, am_veh3, am_veh4], [f_see, americans1]);
+
+  if Frank then
+    begin
+      CenterOnUnits([Frank]);
+      ComTurnUnit(Frank, Uns[1]);
+      ComMoveXY(Yamoko, 46, 81);
+
+      Say(Frank,'D3a-Frank-1');
+      if IsOk(Lisa) then if GetDistUnits(Frank, Lisa) < 20 then
+        Say(Lisa, 'D3a-Lisa-1');
+      if IsOk(JMM) then if GetDistUnits(Frank, JMM) < 30 then
+        Say(JMM, 'D3a-JMM-1');
+      If IsOk(Cyrus) then if GetDistUnits(Frank, Cyrus) < 20 then
+        Say(Cyrus, 'D3a-Cyrus-1');
+
+      Sold1= GetRandomSold1(FilterAllUnits([f_dist, Frank, 20]) diff [JMM], false);  // false - no named sold.
+      if Sold1 then
+        Say(Sold1, 'D3a-Sol1-1');
+
+      FSold1= GetRandomFSold1(FilterAllUnits([f_dist, Frank, 20]) diff [JMM], false);
+      if FSold1 then
+        Say(Fsold1, 'D3a-FSol1-1');
+
+      if IsOk(Gladstone) then if GetDistUnits(Frank, Gladstone) < 20 then
+        Say(Gladstone, 'D3a-Glad-1');
+      ComMoveXY(opofrank, 111, 29);
+      Say(Frank, 'D3a-Frank-2');
+      Say(JMM, 'D3a-JMM-2');
+      enable(Review_the_map);  // Some centers on the map...
+      RevealFogArea(americans, Fort);
+      Say(Frank, 'D3a-Frank-3');
+      Say(JMM, 'D3a-JMM-3');
+      Say(Frank, 'D3a-Frank-4');
+      if IsOk(Lisa) then if GetDistUnits(Frank, Lisa) < 20 then
+        Say(Lisa, 'D3a-Lisa-4');
+      Say(JMM, 'D3a-JMM-4');
+      Say(Frank, 'D3a-Frank-5');
+      Say(JMM, 'D3a-JMM-5');
+      Say(Frank, 'D3a-Frank-6');
+      Say(JMM, 'D3a-JMM-6');
+      Say(Frank, 'D3a-Frank-7');
+      SetSide(Frank, americans);
+      selected_americans= selected_americans ^ [Frank];
+      all_americans= all_americans ^ [Frank];
+    end
+  else  // Yamoko
+    begin
+      CenterOnUnits([Yamoko]);
+      ComTurnUnit(Yamoko, Uns[1]);
+      ComMoveXY(Yamoko, 46, 81);
+      PlaceUnitXY(Yamoko, 42, 78, false);
+      Say(Yamoko, 'D3b-Yam-1');
+      Say(JMM, 'D3b-JMM-1');
+      enable(Review_the_map);
+      RevealFogArea(americans, Fort);
+      Say(Yamoko, 'D3b-Yam-2');
+      Say(JMM, 'D3b-JMM-2');
+      Say(Yamoko, 'D3b-Yam-3');
+      if RemoteDeveloped then
+        Say(JMM, 'D3b-JMM-3')
+      else
+        Say(JMM, 'D3b-JMM-3a');
+      SetSide(Yamoko, americans);
+      selected_americans= selected_americans ^ [Yamoko];
+      all_americans= all_americans ^ [Yamoko];
+    end;
+
+  enable(after_talk);
+  stop_action= false;
+  tick= pom;
+ end;
+
+Function FindNearestUnit(Un, side, without);
+var Uns, dist, i, Selected_Un;
+ begin
+   Uns= FilterAllUnits([[f_side, side]]) diff [without, Un];
+   if Uns <> 0 then
+     begin
+       dist= 1000;
+       for i in Uns do
+         if GetDistUnits(Un, i) < dist then
+           begin
+             dist= GetDistUnits(Un, i);
+             Selected_Un= i;
+           end;
+       result= Selected_Un;
+     end
+   else result = 0;
+ end;
+
+// Russians run southward
+EXPORT Function Run_Southward_dial(rus_sold);
+var Nearest;
+ begin
+  if (First_run_of_soldier = false) then
+    begin
+      First_run_of_soldier= true;
+      Nearest= FindNearestUnit(rus_sold, americans, JMM);
+      if GetSex(Nearest) = sex_male then Say(Nearest, 'D2a-Sol1-1')
+                                    else Say(Nearest, 'D2a-FSol1-1');
+    end;
+ end;
+
+// MARKED 1 - Review_the_map
+EVERY 0$0.1 MARKED 1 DO
+ begin
+  CenterOnXY(80, 126);
+  Wait(0$2);
+  CenterOnXY(90, 108);
+  Wait(0$2);
+  CenterNowOnXY(113, 75);
+  Wait(0$2);
+  CenterOnXY(129, 96);
+  Wait(0$2);
+  CenterOnXY(156, 130);
+  Wait(0$2);
+  if Frank then CenterNowOnUnits([Frank])
+  else CenterNowOnUnits([Yamoko]);
+ end;
+
+// The characters don't wont to leave it's "work"
+Function Say_no_return(person);
+ begin
+   if person = Lisa then
+     begin
+       If IsOk(Lisa) then Say(Lisa, 'D3b-Lisa-1');
+     end
+   else if person = Bobby then
+     begin
+       if IsOk(Bobby) then Say(Bobby, 'D3b-Bobby-1');
+     end
+   else if person = Cyrus then
+     begin
+       if IsOk(Cyrus) then Say(Cyrus, 'D3b-Cyrus-1');
+     end
+   else if person = Frank then
+     begin
+       if IsOk(Frank) then Say(Frank, 'D3b-Frank-1');
+     end
+   else if person = Khatam then
+     begin
+       if IsOk(Khatam) then Say(Khatam, 'D3b-Khat-1');
+     end
+   else if person = Yamoko then
+     begin
+       if IsOk(Yamoko) then Say(Yamoko, 'D3b-Yam-1');
+     end;
+ end;
+
+// order to return (see prepare_difficulty)
+EVERY 0$1 TRIGGER tick > time_of_first_warning[Difficulty] DO
+var presented_in_mission, r1, r2;
+ begin
+  r1=0; r2=0;                              
+
+  if IsOk(dep1) then
+    Say(Harrison, 'D3a-Har-1')
+  else Say(Harrison, 'D3b-Har-1');
+
+  Wait(0$0.5);
+  ChangeMissionObjectives('M2');
+
+  Wait(0$0.5);
+  presented_in_mission= UnitFilter(selected_americans isect
+                        [Lisa, Bobby, Cyrus, Frank, Khatam, Yamoko],
+                        [f_ok]);
+  if presented_in_mission > 1 then // we select two persons randomly...
+    begin
+     r1= Rand(1, presented_in_mission);
+     repeat r2= Rand(1, presented_in_mission) until r1 <> r2;
+     Say_no_return(presented_in_mission[r1]);
+     Say_no_return(presented_in_mission[r2]);
+    end
+  else if presented_in_mission = 1 then Say_no_return(presented_in_mission[1]);
+
+  enable(Return_as_objective);
+ end;
+
+// The last chance to return (after 25 min)
+EVERY 0$1 TRIGGER tick > time_of_last_warning[Difficulty] DO
+ begin
+   Say(Harrison, 'D4-Har-1');
+   ChangeMissionObjectives('M3');
+   if IsOk(dep1) then enable(Lose1); // if the warehouse stands then player Lose the mission.
+ end;
+
+// Time Out - lose the mission.
+EVERY 0$1 TRIGGER tick > time_of_last_warning[Difficulty] + 3$0 DO
+ begin
+   enable(Lose2);
+ end;
+
+Function Turets_attack;
+var i, att;
+ begin
+   att=false;
+   for i in russ_turets do
+    if Attacks(i) and (Attacks(i) <> am_veh4) then
+      begin
+       att= true;
+       break;
+      end;
+   result= att;
+ end;
+
+// Too much turets
+// MARKED 8 - After_talk
+EVERY 0$1 TRIGGER Turets_attack MARKED 8 DO
+var Sold1;
+ begin
+   Wait(0$3);
+   if FilterUnitsInArea(BeforeBase, [f_side, americans]) <> 0 then
+     begin
+       DialogueOn;
+       if IsOk(Lisa) then Say(Lisa, 'D5-Lisa-1');
+       Say(JMM, 'D5-JMM-1');
+       Say(JMM, 'D5-JMM-1a');
+       enable(After_first_attack);
+       DialogueOff;
+     end;                                         
+ end;
+
+// A power plant spoted
+// MARKED 9 - After_first_attack
+EVERY 0$1 TRIGGER UnitFilter([PowerWL1, PowerWL2, PowerWL3, PowerWR1, PowerWR2, PowerWR3, PowerE1, PowerE2,
+                              PowerE3, PowerE4], [f_see, americans]) <> 0 MARKED 9 DO
+var Sold1, Fsold1, units, Power_Plant, cont;
+ begin
+   DialogueOn;
+   cont= true;
+
+   Power_Plant= UnitFilter([PowerWL1, PowerWL2, PowerWL3, PowerWR1, PowerWR2, PowerWR3, PowerE1, PowerE2,
+                            PowerE3, PowerE4], [f_see, americans]);
+   units= FilterAllUnits([[f_dist, Power_Plant[1], 30]]) diff [JMM];
+
+   if IsOk(Frank) then Say(Frank, 'D5a-Frank-1')
+   else if IsOk(Yamoko) then Say(Yamoko, 'D5a-Yam-1')
+   else
+     begin
+       Sold1= 0;
+       Sold1= GetRandomSold1(units, false);
+       if Sold1 <> 0 then Say(Sold1, 'D5a-Sol1-1')
+       else cont= false;
+     end;
+
+   if cont then
+     begin
+       Say(JMM, 'D5a-JMM-1');
+       if IsOk(Cyrus) then Say(Cyrus, 'D5a-Cyrus-1');
+     end;
+   DialogueOff;
+ end;
+
+// Some power plant are destroyed
+// MARKED 8 - After_talk
+EVERY 0$5 MARKED 8 DO
+var PowerW, PowerE, TuretsW, TuretsE;
+ begin
+   PowerW= UnitFilter([PowerWL1, PowerWL2, PowerWL3, PowerWR1, PowerWR2, PowerWR3, PowerE1, PowerE2, PowerE3, PowerE4], [f_Ok]);
+   TuretsW= UnitFilter([TuretWL1, TuretWL2, TuretWL3, TuretWL4, TuretWR1, TuretWR2, TuretWR3, TuretWR4, TuretWR5], [f_Ok]);
+   PowerE= UnitFilter([PowerE1, PowerE2, PowerE3, PowerE4, PowerE5], [f_Ok]);
+   TuretsE= UnitFilter([TuretE1, TuretE2, TuretE3, TuretE4, TuretE5, TuretE6], [f_Ok]);
+
+   if (TuretsW/PowerW >= 2) or (TuretsE/PowerE) >= 2 then Say(JMM, 'D5b-JMM-1')
+   else enable;
+ end;
+
+Function Return_cond;                  
+var too_far;
+ begin
+   too_far= UnitFilter(selected_americans,
+                       [[f_side, americans], f_not, [f_dist, JMM, 30]]);
+   if IsInArea(JMM, destination) and (too_far > 0) and
+      not(IsOk(dep1)) then result= true
+   else result= false;
+ end;
+                   
+// Would you return without some characters?
+// MARKED 3 - Return_as_objective
+EVERY 0$5 TRIGGER Return_cond MARKED 3 DO
+ begin
+   disable(Depot_destroyed);
+   Return_no_complete= Query('Q1');       
+   if Return_no_complete then Last_words;
+ end;
+
+// MARKED 2 - Last_words
+Function Last_words;
+ begin
+   Time_of_game= tick;
+   DialogueOn;
+   Say(JMM, 'D6-JMM-1');
+   Say(Harrison, 'D6-Har-1');
+   Say(JMM, 'D6-JMM-2');
+   Say(Harrison, 'D6-Har-2');
+   Say(JMM, 'D6-JMM-3');
+   Say(Harrison, 'D6-Har-3');
+   Say(JMM, 'D6-JMM-4');
+   Say(Harrison, 'D6-Har-4');
+   Say(JMM, 'D6-JMM-5');
+   enable(End_of_m);
+   DialogueOff;
+ end;
+
+// If the russians warehouse is destroyed
+EVERY 0$1 TRIGGER IsDead(Dep1) DO
+ begin
+   ChangeMissionObjectives('M1a');
+   enable(Depot_destroyed);
+ end;
+
+//End Of Mission
+// Marked 4 - Depot_destroyed
+EVERY 0$3 TRIGGER FilterUnitsExceptArea(destination, [f_side, americans]) = 0 MARKED 4 DO
+ begin
+   disable(Return_as_objective);
+   otherUnplaced= FilterUnitsExceptArea(destination, [f_side, americans])
+                  diff [JMM, Cyrus, Bobby, Lisa, Frank, Donaldson, Brown,
+                  Denis, Joan, Gladstone, Yamoko];
+   Last_words;
+ end;

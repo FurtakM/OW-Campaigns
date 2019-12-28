@@ -1,0 +1,458 @@
+//        LEGIE
+// Defense of the arabians base
+
+EXPORT Function StartArabianBase;
+var units_to_protect;
+ begin
+
+   //////////////////////////////////////////////////////////////////
+   /////////////////////   McDefend  ////////////////////////////////
+   //////////////////////////////////////////////////////////////////
+
+   units_to_protect= FilterAllUnits([[f_side, arabians], [f_type, unit_building]]);
+   Arabian_reg_id= McRegistry(arabians, [[mc_reg_area_to_guard, Arabians_Base],
+                                           [mc_reg_area_to_protect, Arabians_Base],
+                                           [mc_reg_units_to_protect, units_to_protect],
+                                           -mc_reg_only_important,
+                                           -mc_reg_ignore_fog]);
+
+   Arabian_def_id= McDefend(100, Arabian_reg_id, Arabian_soldiers ^ units_to_protect,
+                                                    [[mc_area_dont_leave, Ar_Base],
+                                                     [mc_retreat_area_people,Ar_Heal],
+                                                     [mc_retreat_lives_people,550]]);
+
+   ////////////////////////////////////////////////////////////////////
+   ///////////////////////   McBase   /////////////////////////////////
+   ////////////////////////////////////////////////////////////////////
+
+   Arabian_build_id= McBase(50, Arabian_Engineers, Arabian_Buildings, [], [], [mc_base_cont]); //options
+ end;
+
+
+EXPORT Function SendArabianBack(Un);
+var Hex, New_Hex, i;
+ begin
+   if GetClass(Un) = class_scientistic then Hex= RandHexArea(Ar_Heal, false)
+   else Hex= RandHexArea(Ar_Base, false);
+   for i= 1 to 10 do
+     begin
+       if GetClass(Un) = class_scientistic then New_Hex= RandHexArea(Ar_Heal, false)
+       else New_Hex= RandHexArea(Ar_Base, false);
+
+       if GetDistUnitXY(Un, New_Hex[1], New_Hex[2]) <
+          GetDistUnitXY(Un, Hex[1], Hex[2]) then
+            Hex= New_Hex;
+     end;
+   if GetUnitMc(Un) = Arabian_def_id then
+     begin
+       RemoveMcUnits(Arabian_def_id, Un);
+       ComMoveXY(Un, Hex[1], Hex[2]);
+       WaitTask(Un, 1);
+       AddMcUnits(Arabian_def_id, Un);
+     end
+   else
+     begin
+       ComMoveXY(Un, Hex[1], Hex[2]);
+       WaitTask(Un, 1);
+     end;
+ end;
+
+// All Arabian units are tested for staing at the Ar_base area
+EVERY 0$10 TRIGGER not(Friend_has_come) DO
+var Un;
+ begin
+   for Un in All_Arabians do
+    begin
+      if ((GetClass(Un) = class_scientistic) and not(IsInArea(Un, Ar_Heal)) or
+          (GetClass(Un) <> class_scientistic) and not(IsInArea(Un, Ar_Base))) then
+        begin
+          Arabian_Outside= Un;
+          RaiseSailEvent(Send_Arabian_Back);
+          Wait(1);
+        end
+    end;
+   enable;
+ end;
+                       
+EXPORT Function RepairArabExtensions;
+ begin
+   // Set buildings parameters
+   uc_nation= nation_russian;
+   uc_side= arabians;
+
+   if not(IsDead(ArRuSibExt)) and GetLives(ArRuSibExt) < 1000 then
+     SetLives(ArRuSibExt, 1000);
+
+   if not(IsDead(ArRuRoExt)) and GetLives(ArRuRoExt) < 1000 then
+     SetLives(ArRuRoExt, 1000);
+
+   if not (IsDead(ArRuTrackExt)) and GetLives(ArRuTrackExt) < 1000 then
+     SetLives(ArRuTrackExt, 1000);
+
+   if not (IsDead(ArRuCompExt)) and GetLives(ArRuTrackExt) < 1000 then
+     SetLives(ArRuTrackExt, 1000);
+
+ end;
+
+
+// Kozlov starts to repair the factory and to construct the siberite rocket.
+// MARKED 9 - Ingame_Run_over
+EVERY 0$1 MARKED 9 DO
+//EVERY 0$1 DO
+ begin
+   disable;
+   // Set material for the new factory
+   SetResourceType(GetBase(GetUnitNumber(84, 4)), mat_cans, 200);
+
+   // Kozlov appears
+   PlaceUnitArea(Kozlov, Ar_Base, false);
+   Wait(1);
+   ComEnterUnit(Kozlov, ArDep1);
+   AddComChangeProfession(Kozlov, class_engineer);
+   AddComExitBuilding(Kozlov);
+   AddComBuild(Kozlov, b_workshop, 78, 12, 3);
+
+   While GetBType(GetUnitNumber(78, 12)) <> b_workshop do
+     begin
+//       debug_strings= [['Kozlov - tasks'], [GetTaskList(Kozlov)]];
+       Wait(0$1);
+     end;
+
+   // Arabian_Engineers help to build it
+   RemoveMcUnits(Arabian_build_id, Arabian_Engineers);
+   ComRepairBuilding(Arabian_Engineers, GetUnitNumber(78, 12));
+
+   WaitTask(Kozlov, 1);
+
+   // Upgarade of the new factory
+   ComUpgrade(GetUnitNumber(78, 12));
+   repeat
+     Wait(1);
+   until GetBType(GetUnitNumber(78, 12))=b_factory;
+   ComRepairBuilding(Kozlov ^ Arabian_Engineers, GetUnitNumber(78, 12));
+
+   WaitTask(Kozlov, 1);
+
+   If IsDead(ArRuSibExt) then
+     begin
+       SetResourceType(GetBase(GetUnitNumber(84, 4)), mat_siberit, 200);
+       SetResourceType(GetBase(GetUnitNumber(84, 4)), mat_cans, 200);
+       while GetBType(GetUnitNumber(74, 12)) <> b_ext_siberium do
+         begin
+           ComBuild(Kozlov, b_ext_siberium, 74, 12, 1);
+           Wait(0.5);
+         end;
+       ComRepairBuilding(Arabian_Engineers, GetUnitNumber(74, 12));
+     end;
+
+   repeat
+     Wait(2);
+//     debug_strings=[GetTaskList(Kozlov)];
+   until not(HasTask(Kozlov));
+
+   WaitTask(Kozlov, 1);
+
+   If IsDead(ArRuTrackExt) then
+     begin
+       SetResourceType(GetBase(GetUnitNumber(84, 4)), mat_siberit, 200);
+       SetResourceType(GetBase(GetUnitNumber(84, 4)), mat_cans, 200);
+       while GetBType(GetUnitNumber(81, 12)) <> b_ext_track do
+         begin
+           ComBuild(Kozlov, b_ext_track, 81, 12, 4);
+           Wait(0.5);
+         end;
+       ComRepairBuilding(Arabian_Engineers, GetUnitNumber(81, 12));
+     end;
+   repeat
+     Wait(2);
+//     debug_strings=[GetTaskList(Kozlov)];
+   until not(HasTask(Kozlov));
+   WaitTask(Kozlov, 1);
+
+   // The first siberium rocket
+   SetResourceType(GetBase(GetUnitNumber(78, 12)), mat_siberit, 200);
+   SetResourceType(GetBase(GetUnitNumber(78, 12)), mat_cans, 200);
+   ComEnterUnit(Kozlov, GetUnitNumber(78, 12));
+   AddComChangeProfession(Kozlov, class_mechanic);
+   AddComConstruct(GetUnitNumber(78, 12),
+         ru_heavy_tracked, engine_siberite, control_computer, ru_siberium_rocket);
+
+   AddMcUnits(Arabian_build_id, Arabian_Engineers);
+
+   Wait(0$10);
+   Starting_Construction_Time= tick;
+   Construction_of_Arabian_rocket= true;
+ end;
+
+//  Control of siberite rocket construction
+Every 0$1 TRIGGER Construction_of_Arabian_rocket and IsOk(GetUnitNumber(78, 12)) MARKED 10 DO
+var progress;
+ begin
+   if (tick < Arabian_siberite_attack_time) and (Number_of_Arabian_rocket = 1) and
+      IsOk(GetUnitNumber(78, 12)) and GetSide(GetUnitNumber(78, 12)) = arabians then
+     begin
+       progress= 100*(tick-Starting_Construction_Time)/
+       (Arabian_siberite_attack_time-Starting_Construction_Time) div 1;
+       if progress >0 then
+         progress= progress-1;
+       SetWorkingProgress(GetUnitNumber(78, 12), progress);
+       enable;
+     end
+   else if (tick >= Arabian_siberite_attack_time) and (Number_of_Arabian_rocket = 1) and
+   IsOk(GetUnitNumber(78, 12)) then
+     begin
+       SetWorkingProgress(GetUnitNumber(78, 12), 99);
+     end;
+ end;
+
+
+
+Function SiberiteRocketAttack(rocket, X, Y, Num_of_rocket);
+var RocketDriver;
+ begin
+   ComAttackPlace(rocket, X, Y);
+   case Num_of_rocket of
+     1: Say(Kurt, 'D12-Kurt-1');
+     2: begin
+          Say(Kurt, 'D12a-Kurt-1');
+          Say(Roth, 'D12a-Roth-1');
+        end;
+   end;
+ end;
+
+
+// Friend is comming
+Function FriendComing;
+var list_of_q, selection;
+  begin
+     if Add_Legion_Objectives then
+       begin
+         Add_Legion_Objectives= false;
+         if Number_of_Arabian_rocket = 1 then
+           ChangeMissionObjectives('MlegionOut')
+         else ChangeMissionObjectives('MlegionDel');
+       end;
+
+     Friend_has_come= true;
+     KillMc(Arabian_reg_id);
+     KillMc(Arabian_def_id);
+     KillMc(Arabian_build_id);
+
+     if SeeXY(americans, 31, 4) and not(GetUnitNumber(31, 4) > 0) then
+       PlaceUnitXY(Friend, 31, 4, false)
+     else if SeeXY(americans, 88, 7) and not(GetUnitNumber(88, 7) > 0) then
+       PlaceUnitXY(Friend, 88, 7, false)
+     else if SeeXY(americans, 101, 23) and not(GetUnitNumber(101, 23) > 0) then
+       PlaceUnitXY(Friend, 101, 23, false)
+     else
+       PlaceUnitXYR(Friend, 6, 4, 3, false);
+
+
+     // Friend goes
+     ComMoveUnit(Friend, JMM);
+     SetAttitude(americans, arabians, att_friend, true);
+     All_Americans= FilterAllUnits([[f_side, americans], [f_type, unit_human]]);
+     Repeat
+       Wait(0$1);
+     until UnitFilter(All_Americans, [f_dist, Friend, 4]) > 0;
+     ComHold(Friend);
+     CenterNowOnUnits(Friend);
+     Wait(0$0.5);
+
+     // Dialogue
+     DialogueON;
+     Say(JMM, 'D14-JMM-1');
+     Say(Friend, 'D14-Friend-1');
+     Say(JMM, 'D14-JMM-2');
+     Say(Friend, 'D14-Friend-2');
+     Say(JMM, 'D14-JMM-3');
+     Say(Friend, 'D14-Friend-3');
+     list_of_q= [1, 2, 3];
+     selection= SelectiveQuery('Q14', list_of_q);
+
+     case selection of
+       1: begin
+            Say(JMM, 'D14a-JMM-1');
+            SetSide(Friend, americans);
+            All_americans= All_americans ^ [Friend];
+            Friend_Accepted= true;
+          end;
+
+       2: begin
+            Say(JMM, 'D14b-JMM-1');
+            Wait(0$1);
+          end;
+
+       3: begin
+            Say(JMM, 'D14c-JMM-1');
+            Say(Friend, 'D14c-Friend-1');
+            Say(JMM, 'D14c-JMM-2');
+            SetAttitude(americans, arabians, att_enemy, true);
+          end;
+     end;
+     DialogueOFF;
+
+     if GetSide(Friend) = arabians then
+       begin
+          ComMoveXY(Friend, 4, 3);
+          AddComHold(Friend);
+          WaitTask(Friend, 1);
+          DestroyUnit(Friend);
+       end;
+  end;
+
+
+EXPORT Function ArabianPersonIsDead;
+var unit_lives, Un, Unit_with_max_lives,
+    X, Y, dir, cl, InUn, Units_to_stop,
+    Mech_in_fact, ar_units;
+ begin
+   ar_units= FilterAllUnits([[f_side, arabians], [f_type, unit_human], [f_alive],
+                              f_not, [f_nation, nation_nature]]) diff [Kozlov, Friend, Kurt];
+
+   // Friend
+   if FilterAllUnits([[f_side, arabians], [f_type, unit_human], [f_alive]]) = 0 and
+      not(Friend_has_come) then
+     FriendComing;
+
+   // Add mchanics to McDef
+   if ar_units = 8 then
+     begin
+       Mech_in_fact= UnitsInside(ArFact);
+       ComExitBuilding(Mech_in_fact);
+       AddMcUnits(Arabian_def_id, Mech_in_fact);
+       Wait(0$2);
+       SetLives(UnitFilter([GetUnitNumber(89, 21), //ArFact
+                 GetUnitNumber(93, 21), //ArRoE,
+                 GetUnitNumber(89, 18), //ArRaE,
+                 GetUnitNumber(92, 24), //ArGE,
+                 GetUnitNumber(44, 3),  //ArP2,
+//                 GetUnitNumber(42, 5),  //ArP1,
+                 ], [f_side, arabians]), 0);
+     end;
+
+
+   // Would you surround?
+   if ar_units = 4 then
+     begin
+       SetAttitude(arabians, russians, att_friend, true);
+       Units_to_stop= FilterAllUnits([[f_side, americans], [f_side, arabians], [f_ok]]);
+       ComStop(Units_to_stop);
+       SetLives([GetUnitNumber(78, 12), //ArRuFact,
+                                                     //P3                  //P4
+                 Kozlov] ^ UnitFilter([GetUnitNumber(91, 3), GetUnitNumber(93, 7)], [f_side, arabians])
+                 , 0);
+
+       SetResourceType(GetBase(ArDep1), mat_cans, 20);
+       SetResourceType(GetBase(ArDep1), mat_siberit, 10);
+       SetResourceType(GetBase(ArDep2), mat_cans, 15);
+       SetResourceType(GetBase(ArDep2), mat_siberit, 15);
+       Wait(1);
+
+       unit_lives= GetLives(ar_units[1]);
+       Unit_with_max_lives= ar_units[1];
+       for Un in ar_units do
+         if GetLives(Un) > unit_lives then
+           begin
+             Unit_with_max_lives= Un;
+             unit_lives= GetLives(Un);
+           end;
+       X= GetX(Unit_with_max_lives);
+       Y= GetY(Unit_with_max_lives);
+       dir= GetDir(Unit_with_max_lives);
+       cl= GetClass(Unit_with_max_lives);
+
+       if IsInUnit(Unit_with_max_lives) = 0 then
+         begin
+           DestroyUnit(Unit_with_max_lives);
+           SetLives(Kurt, unit_lives);
+           SetClass(Kurt, cl);
+           SetDir(Kurt, dir);
+           PlaceUnitXY(Kurt, X, Y, false);
+         end
+       else
+         begin
+           InUn= IsInUnit(Unit_with_max_lives);
+           DestroyUnit(Unit_with_max_lives);
+           SetLives(Kurt, unit_lives);
+           SetClass(Kurt, cl);
+           PlaceHumanInUnit(Kurt, InUn);
+         end;
+
+       DialogueON;
+       Say(JMM, 'D13-JMM-1');
+       Say(Kurt, 'D13-Kurt-1');
+       Say(JMM, 'D13-JMM-2');
+       if legion_cheated then            // Legion cheated
+         begin
+           Say(Kurt, 'D13-Kurt-2');
+           SetAttitude(arabians, russians, att_enemy, true);
+         end
+       else
+         begin
+            if Really_Kurt then          // Really Kurt
+              Say(Kurt, 'D13-Kurt-2a')
+            else                              // Else
+              Say(Kurt, 'D13-Kurt-2b');
+            Say(JMM, 'D13-JMM-3');
+            Say(Kurt, 'D13-Kurt-3');
+            Say(JMM, 'D13-JMM-4');
+            ar_units= Kurt ^ (FilterAllUnits([[f_side, arabians], [f_type, unit_human], [f_alive]]) diff Kozlov);
+            for Un in ar_units do
+              begin
+                if GetLives(Un) < 300 then
+                  SetLives(Un, 300);
+                SetSide(Un, americans);
+                // exit building or vehicle
+                if GetType(IsInUnit(Un)) = unit_vehicle then
+                  ComExitVehicle(Un)
+                else if GetType(IsInUnit(Un)) = unit_building then
+                       ComExitBuilding(Un);
+                // Add to All_americans
+                if not((GetClass(Un) = class_apeman) or
+                       (GetClass(Un) = class_apeman_engineer) or
+                       (GetClass(Un) = class_apeman_kamikaze) or
+                       (GetClass(Un) = class_apeman_soldier)) then
+                  All_americans= All_americans ^ Un;
+              end;
+
+            for Un in Arabian_buildings do
+              begin
+                if IsOk(GetUnitNumber(Un[2], Un[3])) then
+                  SetSide(GetUnitNumber(Un[2], Un[3]), americans);
+              end;
+
+            DialogueOFF;
+            SA_OnLegionJoin;
+            Hint('Legion');
+            ChangeMissionObjectives('MlegionOut');
+            Wait(0$5);
+            if not(Friend_has_come) then
+              FriendComing;
+         end;
+       DialogueOFF;
+     end;
+ end;
+
+EXPORT Function ArVehicleConstructed(veh);
+ begin
+   if (GetWeapon(veh) = ru_siberium_rocket) then
+     begin
+       Wait(0$2);
+       ComExitVehicle(Kozlov);
+       Wait(2);
+       ComEnterUnit(Kozlov, GetUnitNumber(78, 12));
+       AddComConstruct(GetUnitNumber(78, 12),
+             ru_heavy_tracked, engine_siberite, control_computer, ru_siberium_rocket);
+       case Number_of_Arabian_rocket of
+         1: begin
+              Construction_of_Arabian_rocket= false;  // We will not control it in the next
+              Number_of_Arabian_rocket= Number_of_Arabian_rocket+1;
+              SiberiteRocketAttack(veh, 46, 64, 1);
+            end;
+         2: SiberiteRocketAttack(veh, 155, 60, 2);
+       end;
+     end;
+ end;
+
+

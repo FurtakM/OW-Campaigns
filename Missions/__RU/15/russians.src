@@ -1,0 +1,763 @@
+var lidi,ostatni,vehikly,masha;              
+export burlak,jmm,roth,powel,heike,farmer;
+var titov,belkov,kuzmov,gnyevko,kozlov,kiril,kapitsova,petrosyan,scholtze,dolgov,kovalyuk,
+  karamazov,petrovova,gleb,lipshchin,xavier,fadeev,gladkov,bystrov,oblukov;
+export legdestr;
+
+export function prepare_russians;
+var tmp,tmp2,tmp3,na,veh;
+begin
+  centernowonxy(99,102);
+  na=0;
+  uc_side=ru;
+  if testcharacters('Burlak') then
+    if checkcharacterset('Burlak') then burlak=createcharacterwithclass('Burlak',class_engineer)
+    else msg('jakto ze Burlak je chciplej?!')
+  else msg('neny Burlak');
+
+  uc_side=al;
+  if testvariable('JMMKilled') then tmp=loadvariable('JMMKilled',-1)
+  else buildquery('neny JMMKilled',['OK']);
+  if tmp then jmm=0
+  else begin
+    jmm=newcharacter('Macmillan');
+    if not jmm then msg('neny Macmillan');
+    placeunitxyr(jmm,164,74,1,false);  //156,42
+    comenterunit(jmm,alware00);
+  end;
+//  uc_nation=nation_american;
+//  preparesoldier(sex_male,7);
+//  jmm=createhuman;
+  roth=newcharacter('Roth');
+  if not roth then msg('neny Roth');
+  placeunitxyr(roth,161,54,1,false);
+  comenterunit(roth,allab00);
+
+  uc_side=am;
+  powel=newcharacter('Powell');
+  if not powel then msg('neny Powell');
+  placeunitxyr(powel,86,8,1,false);  //88,15
+  comenterunit(powel,amware00);
+
+  uc_side=le;  //a co s abdulem?
+  if testcharacters('Heike') then
+    if checkcharacterset('Heike') and not LoadVariable('HeikeKilled', true) then begin
+      heike=createcharacter('Heike');
+      placeunitxyr(heike,152,133,1,false);  //135,124
+      comenterunit(heike,leware00);
+    end
+    else heike=0
+  else msg('neny Heike');
+
+  if not heike then
+    if testcharacters('Farmer') then
+      if checkcharacterset('Farmer') then begin
+        farmer=createcharacter('Farmer');
+        placeunitxyr(farmer,152,133,1,false);  //135,124
+        comenterunit(farmer,leware00);
+       end
+      else farmer=0
+    else msg('neny Farmer')
+  else farmer=0;
+
+  uc_side=ru;
+  if testcharacters('Titov') then
+    if checkcharacterset('Titov') then titov=createcharacter('Titov')
+    else begin titov=0;na=na+1;end
+  else msg('neny Titov');
+  if testcharacters('Belkov') then
+    if checkcharacterset('Belkov') then belkov=createcharacter('Belkov')
+    else begin belkov=0;na=na+1;end
+  else msg('neny Belkov');
+  if testcharacters('Kuzmov') then
+    if checkcharacterset('Kuzmov') then kuzmov=createcharacter('Kuzmov')
+    else begin kuzmov=0;na=na+1;end
+  else msg('neny Kuzmov');
+  if testcharacters('Gnyevko') then
+    if checkcharacterset('Gnyevko') then gnyevko=createcharacter('Gnyevko')
+    else begin gnyevko=0;na=na+1;end
+  else msg('neny Gnyevko');
+  if testcharacters('Kozlov') then
+    if checkcharacterset('Kozlov') then kozlov=createcharacter('Kozlov')
+    else begin kozlov=0;na=na+1;end
+  else msg('neny Kozlov');
+  if testcharacters('Kirilenkova') then
+    if checkcharacterset('Kirilenkova') then kiril=createcharacter('Kirilenkova')
+    else begin kiril=0;na=na+1;end
+  else msg('neny Kirilenkova');
+  if testcharacters('Kapitsova') then
+    if checkcharacterset('Kapitsova') then kapitsova=createcharacter('Kapitsova')
+    else begin kapitsova=0;na=na+1;end
+  else msg('neny Kapitsova');
+  if testcharacters('Petrosyan') then
+    if checkcharacterset('Petrosyan') then petrosyan=createcharacter('Petrosyan')
+    else begin petrosyan=0;na=na+1;end
+  else msg('neny Petrosyan');
+  if testcharacters('Scholtze') then
+    if checkcharacterset('Scholtze') then scholtze=createcharacter('Scholtze')
+    else begin scholtze=0;na=na+1;end
+  else msg('neny Scholtze');
+  if testcharacters('Dolgov') then
+    if checkcharacterset('Dolgov') then dolgov=createcharacter('Dolgov')
+    else begin dolgov=0;na=na+1;end
+  else msg('neny Dolgov');
+  if testcharacters('Kovalyuk') then
+    if checkcharacterset('Kovalyuk') then kovalyuk=createcharacter('Kovalyuk')
+    else begin kovalyuk=0;na=na+1;end
+  else msg('neny Kovalyuk');
+  if testcharacters('Karamazov') then
+    if checkcharacterset('Karamazov') then karamazov=createcharacter('Karamazov')
+    else begin karamazov=0;na=na+1;end
+  else msg('neny Karamazov');
+  if testcharacters('Petrovova') then
+    if checkcharacterset('Petrovova') then petrovova=createcharacter('Petrovova')
+    else begin petrovova=0;na=na+1;end
+  else msg('neny Petrovova');
+  if testcharacters('Gleb') then
+    if checkcharacterset('Gleb') then gleb=createcharacter('Gleb')
+    else begin gleb=0;na=na+1;end
+  else msg('neny Gleb');
+  if testcharacters('Lipshchin') then
+    if checkcharacterset('Lipshchin') then lipshchin=createcharacter('Lipshchin')
+    else begin lipshchin=0;na=na+1;end
+  else msg('neny Lipshchin');
+  if testcharacters('Xavier') then
+    if checkcharacterset('Xavier') then xavier=createcharacter('Xavier')
+    else begin xavier=0;na=na+1;end
+  else msg('neny Xavier');
+  if testcharacters('Fadeev') then
+    if checkcharacterset('Fadeev') then fadeev=createcharacter('Fadeev')
+    else begin fadeev=0;na=na+1;end
+  else msg('neny Fadeev');
+  if testcharacters('Gladkov') then
+    if checkcharacterset('Gladkov') then gladkov=createcharacter('Gladkov')
+    else begin gladkov=0;na=na+1;end
+  else msg('neny Gladkov');
+  if testcharacters('Bystrov') then
+    if checkcharacterset('Bystrov') then bystrov=createcharacter('Bystrov')
+    else begin bystrov=0;na=na+1;end
+  else msg('neny Bystrov');
+  if testcharacters('Oblukov') then
+    if checkcharacterset('Oblukov') then oblukov=createcharacter('Oblukov')
+    else begin oblukov=0;na=na+1;end
+  else msg('neny Oblukov');                   //max na==20
+
+  uc_nation=nation_russian;
+  if not testvariable('Masha') then msg('neny Masha');
+  veh=loadvariable('Masha',[]);
+  if veh then begin
+    vc_chassis=veh[1];
+    vc_engine=veh[2];
+    vc_control=veh[3];
+    vc_weapon=veh[4];
+    masha=createvehicle;
+    setmark(masha,1);
+  end
+  else masha=0;
+
+  ostatni=[];
+  for tmp=1 to na do begin
+    preparehuman(rand(1,2),rand(1,4),ru_def_skill);    //sex,cl,lev
+    ostatni=ostatni^[createhuman];
+  end;
+
+  lidi=[titov,belkov,kuzmov,gnyevko,kozlov,kiril,kapitsova,petrosyan,scholtze,dolgov,
+    kovalyuk,karamazov,petrovova,gleb,lipshchin,xavier,fadeev,gladkov,bystrov,oblukov] diff [0];
+
+  tmp3=lidi^ostatni;
+
+  vehikly=[];
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  vc_weapon=ru_cargo_bay;
+  vc_chassis=ru_medium_wheeled;
+  for tmp=1 to 3 do begin
+    tmp2=createvehicle;
+{    if tmp=1 then begin
+      setcargo(tmp2,mat_oil,60);
+      addcargo(tmp2,mat_cans,40);
+    end
+    else} setcargo(tmp2,mat_cans,100);
+    placehumaninunit(tmp3[tmp],tmp2);
+    placeunitxyr(tmp2,12,14,8,false);
+  end;
+  placeunitxyr(tmp3[4],12,14,8,false);
+  placeunitxyr(tmp3[5],12,14,8,false);
+  placeunitxyr(tmp3[6],12,14,8,false);
+  if masha then begin
+    setdir(masha,2);
+    placehumaninunit(burlak,masha);
+    placeunitxyr(masha,12,14,8,false);
+  end
+  else placeunitxyr(burlak,12,14,8,false);
+
+  tmp2=[//[ru_medium_tracked,ru_gatling_gun],[ru_medium_tracked,ru_gatling_gun],[ru_medium_tracked,ru_gatling_gun],
+        [ru_medium_tracked,ru_rocket_launcher],[ru_medium_tracked,ru_rocket_launcher],[ru_medium_tracked,ru_gun],
+        [ru_medium_tracked,ru_gun],[ru_medium_tracked,ru_gun],[ru_medium_tracked,ru_rocket_launcher]];
+//        [ru_medium_tracked,ru_gun],[ru_medium_tracked,ru_rocket_launcher],
+//        [ru_heavy_tracked,ru_heavy_gun],[ru_heavy_tracked,ru_heavy_gun],[ru_heavy_tracked,ru_heavy_gun]];
+  for tmp=1 to 6-(0+([masha] diff [0])) do begin          //was 14
+    vc_weapon=tmp2[tmp][2];
+    vc_chassis=tmp2[tmp][1];
+    vehikly=vehikly^[createvehicle];
+    placehumaninunit(tmp3[tmp+6],vehikly[tmp]);
+    setdir(vehikly[tmp],rand(2,3));
+    placeunitxyr(vehikly[tmp],12,14,8,false);
+  end;
+  if masha then placeunitxyr(tmp3[12],12,14,8,false);
+  for tmp=13 to 20 do placeunitxyr(tmp3[tmp],12,14,8,false);
+
+  centernowonunits(vehikly);
+  commovexy(lidi^ostatni^[burlak],21,33);
+  wait(0$2);
+  centeronxy(21,33);
+  while not isinarea(burlak,prichod) do wait(0$1);
+
+  legdestr=0;
+  if testvariable('LegionDestroyed') then legdestr=loadvariable('LegionDestroyed',-1)
+  else msg('neny LegionDestroyed');
+
+  tmp2=unitfilter(lidi,[[f_sex,sex_male]]);
+  tmp3=unitfilter(ostatni,[[f_sex,sex_male]]);
+  dialogueon;
+  say(burlak,'DStart-Bur-1');
+  if not legdestr then
+    if gladkov then say(gladkov,'DStart-Gla-1')
+    else
+      if tmp3 then say(tmp3[1],'DStart-Gla-1')
+      else if tmp2 then say(tmp2[1],'DStart-Gla-1')
+  else
+    if bystrov then say(bystrov,'DStart-Bys-1')
+    else if tmp3 then say(tmp3[1],'DStart-Rsol1-1')
+    else if tmp2 then say(tmp2[1],'DStart-Rsol1-1');
+  say(burlak,'DStart-Bur-2');
+  if tmp2 then say(tmp2[1],'DStart-Rsol1-2')
+  else if tmp3 then say(tmp3[1],'DStart-Rsol1-2');
+  say(burlak,'DStart-Bur-3');
+  dialogueoff;
+  saveforquickrestart;
+  wait(0$0.5);
+  changemissionobjectives('MStart');
+
+end;
+
+
+function visib_dep;
+var tmp,tmp1,deps;
+begin
+  deps=[[47,48],[48,57],[55,61],[54,65],[47,69],[56,74],[66,75]];
+  tmp1=0;
+  for tmp in deps do tmp1=tmp1+getresourcevisibility(tmp[1],tmp[2],ru);
+  result=tmp1;
+end;
+
+//vidi motherlode
+every 0$1 trigger seearea(ru,mthldvw) do
+var tmp;
+begin
+  while visib_dep<4 do wait(0$1);
+  tmp=unitfilter(ostatni,[[f_sex,sex_male]]);
+  if not tmp then tmp=unitfilter(lidi,[[f_sex,sex_male]]);
+  dialogueon;
+  say(burlak,'DMotherlode-Bur-1');
+  if belkov then say(belkov,'DMotherlode-Bel-1');
+  if tmp then say(tmp[1],'DMotherlode-Rsol1-1');
+  say(burlak,'DMotherlode-Bur-2');
+  dialogueoff;
+  changemissionobjectives('MFindOut');
+end;
+
+                                             
+//sejmuta sib. stavba (mine, power plant)
+export poticadlo;
+every 0$10+5$0 marked 06 do
+var tmp,tmp2,tmp3;
+begin
+  if al_surr then exit else enable;
+  if artef_gone then begin enable;exit;end;
+  poticadlo=poticadlo-1;
+  if not poticadlo then begin
+    if debug then msg('al: preparing to kill a sib. building');
+    tmp2=filterallunits([[f_side,ru],[f_or,[f_btype,b_siberite_mine],[f_btype,b_siberite_power]],f_not,[f_constructed]]);
+    if not tmp2 then begin poticadlo=1;enable;exit;end
+    else begin
+      tmp=rand(1,0+tmp2);
+      centernowonunits(tmp2[tmp]);
+      tmp3=getbtype(tmp2[tmp]);
+      setlives([tmp2[tmp]],0);
+    end;
+
+    if fst_vybuch then begin
+      tmp=unitfilter(ostatni,[[f_sex,sex_male],[f_ok]]);
+      if not tmp then tmp=unitfilter(lidi,[[f_sex,sex_male],[f_ok]]);
+      dialogueon;
+      if tmp3=b_siberite_mine then
+        if tmp then begin
+           say(tmp[1],'DAlaskDestroyed-Rsol1-1');
+           say(burlak,'DAlaskDestroyed-Bur-1');
+           say(tmp[1],'DAlaskDestroyed-Rsol1-2');
+        end
+        else
+      else
+        if tmp then say(tmp[1],'DAlaskDestroyed-Rsol2-2');
+      say(burlak,'DAlaskDestroyed-Bur-2');
+      dialogueoff;
+      fst_vybuch=0;
+    end;
+
+    poticadlo=rand(poticadlo_min,poticadlo_max);
+  end;
+end;
+
+
+var dul_v_ml_;
+function dul_v_ml;
+var tmp,tmp1;
+begin
+  dul_v_ml_=0;
+  tmp=filterunitsinarea(mothdep,[[f_btype,b_siberite_mine],f_not,[f_side,ru]]);
+  for tmp1 in tmp do if not isconstructed(tmp1) and (getlives(tmp1)>hranice_umirani) then begin
+    dul_v_ml_=tmp1;
+    result=true;
+    if debug then msg(tmp1&':dul u arabu');
+    exit;
+  end;
+  tmp=hexinfo(64,17);
+  if (getbtype(tmp)=b_siberite_mine) and (getlives(tmp)>hranice_umirani) and not isconstructed(tmp) then begin
+    dul_v_ml_=tmp;
+    result=true;
+  end
+  else result=false;
+  if debug and tmp and not isconstructed(tmp) then msg(tmp&':dul u amiku');
+end;
+                            //DODELAT todle uz celkem slusne funguje u le i am
+//cizi dul v motherlodu                              (al moc daleko)
+every 0$3 trigger dul_v_ml do
+var tmp;
+begin
+  tmp=unitfilter(ostatni,[[f_sex,sex_male],[f_ok]]);
+  if not tmp then tmp=unitfilter(lidi,[[f_sex,sex_male],[f_ok]]);
+  centernowonunits([dul_v_ml_]);
+  placeseeing(getx(dul_v_ml_),gety(dul_v_ml_),ru,5);
+  if tmp then begin
+    dialogueon;
+    say(tmp[1],'DMines-Rsol1-1');
+    say(burlak,'DMines-Bur-1');
+    dialogueoff;
+  end;
+  youlost('Motherlode');
+end;
+
+                           //DODELAT tohle uz taky vice mene (spis vice) funguje
+//siberitofka vynalezena   
+export amsibdeveldone;
+on researchcomplete(tech,lab) do
+var tmp;
+  if (tech=tech_sibfiss) and (getside(lab)=ru) then begin
+    tmp=unitfilter(ostatni,[[f_class,class_scientistic],[f_sex,sex_male],[f_ok]]);
+    if not tmp then tmp=unitfilter(lidi,[[f_class,class_scientistic],[f_sex,sex_male],[f_ok]]);
+    if tmp then begin dialogueon;say(tmp[1],'DRuBomb-Sci-1');dialogueoff;end
+  end
+  else if (tech=tech_sibfiss) and (getside(lab)=am) then amsibdeveldone=true;
+
+//siberitofka postavena
+export rusacimajisib;
+on vehicleconstructed(veh,fact) do
+  if (getside(veh)=ru)and(getweapon(veh)=ru_siberium_rocket)and not rusacimajisib then sibdone
+  else if (getside(veh)=am) and (getweapon(veh)=us_siberium_rocket) then sibdone2;
+
+on weaponplaced(bunk,fact) do
+  if (getside(bunk)=ru)and(getbweapon(bunk)=ru_siberium_rocket)and not rusacimajisib then sibdone
+  else if (getside(bunk)=am) and (getbweapon(bunk)=us_siberium_rocket) then sibdone2;
+
+export vyhrozoval;
+function sibdone;
+var tmp;
+begin
+  rusacimajisib=true;
+  tmp=unitfilter(ostatni,[[f_sex,sex_male],[f_ok]]);
+  if not tmp then tmp=unitfilter(lidi,[[f_sex,sex_male],[f_ok]]);
+  dialogueon;
+  if tmp then say(tmp[1],'DRuBomb-Rsol1-1');
+  dialogueoff;
+  case query('QUseBomb') of
+    1:begin //ask them to surrender
+      vyhrozoval=true;
+      dialogueon;
+      forcesay(burlak,'DQrUseBomb#1-Bur-1');
+      if isok(powel) then say(powel,'DQrUseBomb#1-Pow-1')
+      else begin
+        tmp=filterallunits([[f_side,am],[f_sex,sex_male],[f_ok]]);
+        if tmp then say(tmp[1],'DQrUseBomb#1-Pow-1');
+      end;
+      if isok(jmm) then say(jmm,'DQrUseBomb#1-JMM-1')
+      else begin
+        tmp=filterallunits([[f_side,al],[f_sex,sex_male],[f_ok]]);
+        if tmp then say(tmp[1],'DQrUseBomb#1-JMM-1');
+      end;
+      if isok(heike) then say(heike,'DQrUseBomb#1-Hke-1')
+      else
+        if isok(farmer) then say(farmer,'DQrUseBomb#1-Frm-1')
+        else begin
+          tmp=filterallunits([[f_side,le],[f_sex,sex_male],[f_ok]]);
+          if tmp then say(tmp[1],'DQrUseBomb#1-Frm-1')
+          else begin
+            tmp=filterallunits([[f_side,le],[f_sex,sex_female],[f_ok]]);
+            if tmp then say(tmp[1],'DQrUseBomb#1-Hke-1')
+          end;
+        end;
+      dialogueoff;
+    end;
+    2:begin
+    end;
+  end;
+  changemissionobjectives('Mrocket');
+end;
+
+function sibdone2;
+var tmp;
+begin
+  tmp=filterallunits([[f_side,am],[f_sex,sex_male],[f_ok]]);
+  dialogueon;
+  if isok(powel) then say(powel,'DAmBomb-Pow-1')
+  else if tmp then say(tmp[1],'DAmBomb-Pow-1');
+  if tmp then say(burlak,'DAmBomb-Bur-1');
+  if isok(powel) then say(powel,'DAmBomb-Pow-2')
+  else if tmp then say(tmp[1],'DAmBomb-Pow-2');
+  if tmp then say(burlak,'DAmBomb-Bur-2');
+  dialogueoff;
+  youlost('Bomb');
+end;
+
+
+//rusaci slohli artefakt         //DODELAT, napr. by se ti smejdi mohli pokusit to ziskat zpet
+export vezeartef,artef_gone;
+on artifactloaded(un,size) do
+  if getside(un)=ru then begin artef_gone=true;changemissionobjectives('Martef');disable(06);end; //vezeartef=un;
+
+every 0$1 trigger rusacimajisib do
+begin
+  if not findartifact(5) then
+    artef_gone=true
+  else
+    enable;
+end;
+
+
+//rusaci hodili siberitofku
+export hodiliju;
+export legionmed;
+on siberiterocketexploded(un,x,y) do
+var tmp;
+begin
+  SA_OnSiberiteRocketExploded(un,x,y);
+
+  if getside(un)=ru then begin  // v podstate zbytecny test, ale opatrnosti neny nigdy nazbyt :)
+    hodiliju=true;
+    disable;
+    tmp=filterallunits([[f_side,al],[f_sex,sex_male]]);
+    wait(0$7);
+    if not artef_gone then begin
+      dialogueon;
+      if isok(jmm) then say(jmm,'DAfterBlastAll-JMM-1')
+      else if tmp then forcesay(tmp[1],'DAfterBlastAll-JMM-1');
+      if tmp then say(burlak,'DAfterBlastAll-Bur-1');
+      if isok(jmm) then say(jmm,'DAfterBlastAll-JMM-2')
+      else if tmp then forcesay(tmp[1],'DAfterBlastAll-JMM-2');
+      dialogueoff;
+      changemissionobjectives('M1');
+      enable(08);
+    end;
+    if not lesurr then begin
+      tmp=filterallunits([[f_side,le],[f_sex,sex_male]]);
+      dialogueon;
+      if isok(heike) then say(heike,'DAfterBlastLeg-Hke-1')
+      else if isok(farmer) then say(farmer,'DAfterBlastLeg-Frm-1')
+      else if tmp then forcesay(tmp[1],'DAfterBlastLeg-Merc1-1');
+      dialogueoff;
+      lesurr=true;
+      legionmed=true;
+      legiontobali;
+    end;
+  end;
+end;
+
+var all_odch_le_lidi;
+function legiontobali;
+var tmp,tmp1,tmp2,tmp3,tmp4;
+begin
+  disable(09); //opoce
+  hint('Legion');
+  tmp=filterallunits([[f_side,le],[f_type,unit_human]]);
+  tmp1=filterallunits([[f_side,le],[f_type,unit_vehicle]]);
+  if isok(ledepo00) and (getside(ledepo00)=le) then setsidebase(getbase(ledepo00),sr)
+  else setside(ledepo00,sr);
+  if isok(leware00) and (getside(leware00)=le) then setsidebase(getbase(leware00),sr)
+  else setside(filterallunits([[f_side,le],[f_type,unit_building]]),sr);
+  total_sr=total_sr+0+tmp;
+  setside(tmp,sr);
+  setside(tmp1,sr);
+  tmp=unitfilter(tmp,[[f_ok]]);
+  tmp1=tmp diff [heike,farmer];
+  for tmp2=1 to 0+tmp1 do
+    if tmp2<=((0+tmp1)/3) then begin
+      tmp=tmp diff tmp1[tmp2];
+      setside(tmp1[tmp2],ru);
+      if gettype(isinunit(tmp1[tmp2]))=unit_vehicle then setside(isinunit(tmp1[tmp2]),ru)
+      else
+        if gettype(isinunit(tmp1[tmp2]))=unit_building then comexitbuilding(tmp1[tmp2]);
+    end;
+
+  tmp3=[];
+  tmp4=[];
+  tmp1=[];
+  for tmp2 in tmp do
+    if gettype(isinunit(tmp2))=unit_vehicle then
+      if not isinarea(isinunit(tmp2),lebase) then tmp3=tmp3^[tmp2]
+      else tmp4=tmp4^[tmp2]
+    else tmp1=tmp1^[tmp2];
+  comwait(tmp4,17);
+  addcomexitvehicle(tmp4);
+  addcommovetoarea(tmp4,leexitar);
+  commovetoarea(tmp3,lemeetar);
+  addcomexitvehicle(tmp3);
+  addcommovetoarea(tmp3,leexitar);
+  commovetoarea(tmp1,leexitar);
+  all_odch_le_lidi=tmp1^tmp3^tmp4;
+  enable(04);
+end;                                       
+
+function odch_le_lidi;
+begin
+  odch_le_lidi_=filterunitsinarea(leexitar,[[f_type,unit_human],[f_side,sr]]);
+  result=0+odch_le_lidi_;
+end;
+
+var odch_le_lidi_;
+every 0$2+3 trigger odch_le_lidi marked 04 do
+var tmp;
+begin
+  all_odch_le_lidi=all_odch_le_lidi diff odch_le_lidi_;
+  for tmp in odch_le_lidi_ do destroyunit(tmp);
+  if all_odch_le_lidi then enable;
+end;
+
+
+function surrender(budlist,side);
+var tmp;
+begin
+//  tmp=unitfilter(budlist,[[f_side,side],[f_lives,hranice_umirani+1]]);
+//  result=(0+tmp)<((0+budlist)/bdkoef);
+  tmp=unitfilter(budlist,[[f_side,side],[f_lives,hranice_umirani+1]]);
+  result=(0+tmp)<((0+budlist)/bdkoef);
+end;
+
+
+//alliance surrender
+var all_odch_al_lidi;
+every 0$3+5 trigger surrender(aliancnici,al) do //surrender(albudovy,al) do
+var tmp,tmp1,tmp2,tmp3,tmp4;
+begin
+  al_surr=true;
+  tmp=filterallunits([[f_side,al],[f_sex,sex_male]]);
+  dialogueon;
+  if isok(jmm) then say(jmm,'DSurrenderAlliance-JMM-1')
+  else if isok(roth) then say(roth,'DSurrenderAlliance-Roth-1')
+  else if tmp then forcesay(tmp[1],'DSurrenderAlliance-Sci1-1');
+  dialogueoff;
+  if not artef_gone then changemissionobjectives('Martef');
+  disable(06); //niceni sib. staveb
+  disable(08); //odpal ml
+  tmp=filterallunits([[f_side,al],[f_type,unit_human]]);
+  tmp1=filterallunits([[f_side,al],[f_type,unit_vehicle]]);
+  total_sr=total_sr+0+tmp;
+  if isok(alware00) and (getside(alware00)=al) then setsidebase(getbase(alware00),sr)
+  else setside(filterallunits([[f_side,al],[f_type,unit_building]]),sr);
+  setside(tmp,sr);
+  setside(tmp1,sr);
+  tmp=unitfilter(tmp,[[f_ok]]);
+  tmp3=[];
+  tmp4=[];
+  tmp1=[];
+  for tmp2 in tmp do
+    if gettype(isinunit(tmp2))=unit_vehicle then
+      if not isinarea(isinunit(tmp2),albase) then tmp3=tmp3^[tmp2]
+      else tmp4=tmp4^[tmp2]
+    else tmp1=tmp1^[tmp2];
+  comwait(tmp4,17);
+  addcomexitvehicle(tmp4);
+  addcommovetoarea(tmp4,alexitar);
+  commovetoarea(tmp3,almeetar);
+  addcomexitvehicle(tmp3);
+  addcommovetoarea(tmp3,alexitar);
+  commovetoarea(tmp1,alexitar);
+  all_odch_al_lidi=tmp1^tmp3^tmp4;
+  enable(03);
+end;
+
+function odch_al_lidi;
+begin
+  odch_al_lidi_=filterunitsinarea(alexitar,[[f_type,unit_human],[f_side,sr]]);
+  result=0+odch_al_lidi_;
+end;
+
+var odch_al_lidi_;
+every 0$2+3 trigger odch_al_lidi marked 03 do
+var tmp;
+begin
+  all_odch_al_lidi=all_odch_al_lidi diff odch_al_lidi_;
+  for tmp in odch_al_lidi_ do destroyunit(tmp);
+  if all_odch_al_lidi then enable;
+end;
+
+
+//americans surrender
+var all_odch_am_lidi;
+every 0$3+7 trigger surrender(americani,am) do //surrender(ambudovy,am) do
+var tmp,tmp2,tmp3,tmp1,tmp4;
+begin
+  am_surr=true;
+  tmp=filterallunits([[f_side,am],[f_sex,sex_male]]);
+  dialogueon;
+  if isok(powel) then begin
+    if hodiliju then say(powel,'DSurrenderAmericans-Pow-1')
+    else say(powel,'DSurrenderAmericans-Pow-1a');
+    say(powel,'DSurrenderAmericans-Pow-1b');
+  end
+  else if tmp then forcesay(tmp[1],'DSurrenderAmericans-Sol1-1');
+  dialogueoff;
+  changemissionobjectives('MDev');
+  tmp=filterallunits([[f_side,am],[f_type,unit_human]]);
+  tmp1=filterallunits([[f_side,am],[f_type,unit_vehicle]]);
+  total_sr=total_sr+0+tmp;
+  if isok(amware00) and (getside(amware00)=am) then setsidebase(getbase(amware00),sr)
+  else setside(filterallunits([[f_side,am],[f_type,unit_building]]),sr);
+  setside(tmp,sr);
+  setside(tmp1,sr);
+  tmp=unitfilter(tmp,[[f_ok]]);
+  tmp3=[];
+  tmp4=[];
+  tmp1=[];
+  for tmp2 in tmp do
+    if gettype(isinunit(tmp2))=unit_vehicle then
+      if not isinarea(isinunit(tmp2),ambase) then tmp3=tmp3^[tmp2]
+      else tmp4=tmp4^[tmp2]
+    else tmp1=tmp1^[tmp2];
+  comwait(tmp4,17);
+  addcomexitvehicle(tmp4);
+  addcommovetoarea(tmp4,amexitar);
+  commovetoarea(tmp3,ammeetar);
+  addcomexitvehicle(tmp3);
+  addcommovetoarea(tmp3,amexitar);
+  commovetoarea(tmp1,amexitar);
+  all_odch_am_lidi=tmp1^tmp3^tmp4;
+  enable(02);
+end;
+
+function odch_am_lidi;
+begin
+  odch_am_lidi_=filterunitsinarea(amexitar,[[f_type,unit_human],[f_side,sr]]);
+  result=0+odch_am_lidi_;
+end;
+
+var odch_am_lidi_;
+every 0$2+3 trigger odch_am_lidi marked 02 do
+var tmp;
+begin
+  all_odch_am_lidi=all_odch_am_lidi diff odch_am_lidi_;
+  for tmp in odch_am_lidi_ do destroyunit(tmp);
+  if all_odch_am_lidi then enable;
+end;
+
+
+//legion surrender
+export lesurr;
+every 0$3+11 trigger surrender(legionari,le) do //surrender(lebudovy,le) do
+var tmp;                                           
+begin
+  if not lesurr then begin
+    tmp=filterallunits([[f_side,le],[f_sex,sex_male]]);
+    dialogueon;
+    if isok(heike) then say(heike,'DSurrenderLegion-Hke-1')
+    else if isok(farmer) then say(farmer,'DSurrenderLegion-Frm-1')
+    else if tmp then forcesay(tmp[1],'DSurrenderLegion-Merc1-1');
+    dialogueoff;
+    lesurr=true;
+    if not rusacimajisib then legionmed=true;
+    legiontobali;
+  end;
+end;
+
+
+//cipl burlak
+on unitdestroyed(un) do
+  if un=burlak then youlost('Burlak');
+
+
+//win
+every 0$3.2 trigger not filterallunits([f_or,[f_side,am],[f_side,al],[f_side,le]]) do
+//every 1$0 do
+var tmp;
+begin
+  dialogueon;
+  if isok(burlak) then say(burlak,'DEnd-Bur-1');
+  if isok(petrosyan) then say(petrosyan,'DEnd-Pty-1');
+  if isok(belkov) then say(belkov,'DEnd-Bel-1');
+  if isok(kiril) then say(kiril,'DEnd-Kir-1');
+  if isok(gnyevko) then say(gnyevko,'DEnd-Gny-1');
+  if isok(gladkov) then say(gladkov,'DEnd-Gla-1');
+  if isok(dolgov) then say(dolgov,'DEnd-Dol-1');
+  if isok(kapitsova) then say(kapitsova,'DEnd-Kap-1');
+  if isok(gleb) then say(gleb,'DEnd-Glb-1');
+  if isok(kuzmov) then say(kuzmov,'DEnd-Kuz-1');
+  if isok(kovalyuk) then say(kovalyuk,'DEnd-Kov-1');
+  if isok(scholtze) then say(scholtze,'DEnd-Sch-1');
+  if isok(karamazov) then say(karamazov,'DEnd-Kar-1');
+  if isok(titov) then say(titov,'DEnd-Tit-1');
+  if isok(oblukov) then say(oblukov,'DEnd-Obl-1');
+  if isok(kozlov) then say(kozlov,'DEnd-Koz-1');
+  if isok(petrovova) then say(petrovova,'DEnd-Ptr-1');
+  if isok(bystrov) then say(bystrov,'DEnd-Bys-1');
+  if isok(lipshchin) then say(lipshchin,'DEnd-Lip-1');
+  if isok(fadeev) then say(fadeev,'DEnd-Fad-1');
+  dialogueoff;
+  
+  addmedal('Hero',1);
+  tmp=unitfilter(lidi^ostatni,[[f_side,ru],[f_alive]]);
+  if (0+tmp)=20 then addmedal('NoLosses',1) else addmedal('NoLosses',-1);
+  if legionmed then addmedal('Legion',1) else addmedal('Legion',-1);
+
+  SA_OnMissionComplete;
+  givemedals('Main');
+//  rewardpeople(filterallunits([[f_alive],[f_side,ru],[f_type,unit_human]])); //?
+  savecharacters(burlak,'Burlak');  
+  if titov then savecharacters(titov,'Titov');
+  if belkov then savecharacters(belkov,'Belkov');
+  if kuzmov then savecharacters(kuzmov,'Kuzmov');
+  if gnyevko then savecharacters(gnyevko,'Gnyevko');
+  if kozlov then savecharacters(kozlov,'Kozlov');
+  if kiril then savecharacters(kiril,'Kirilenkova');
+  if kapitsova then savecharacters(kapitsova,'Kapitsova');
+  if petrosyan then savecharacters(petrosyan,'Petrosyan');
+  if scholtze then savecharacters(scholtze,'Scholtze');
+  if dolgov then savecharacters(dolgov,'Dolgov');
+  if kovalyuk then savecharacters(kovalyuk,'Kovalyuk');
+  if karamazov then savecharacters(karamazov,'Karamazov');
+  if petrovova then savecharacters(petrovova,'Petrovova');
+  if gleb then savecharacters(gleb,'Gleb');
+  if lipshchin then savecharacters(lipshchin,'Lipshchin');
+  if xavier then savecharacters(xavier,'Xavier');
+  if fadeev then savecharacters(fadeev,'Fadeev');
+  if gladkov then savecharacters(gladkov,'Gladkov');
+  if bystrov then savecharacters(bystrov,'Bystrov');
+  if oblukov then savecharacters(oblukov,'Oblukov');
+
+  tmp=filterallunits([[f_side,ru],[f_type,unit_human]]) diff [burlak,titov,belkov,kuzmov,gnyevko,
+    kozlov,kiril,kapitsova,petrosyan,scholtze,dolgov,kovalyuk,karamazov,petrovova,gleb,lipshchin,
+    xavier,fadeev,gladkov,bystrov,oblukov];
+  savecharacters(tmp,'Ru15Winners');
+
+  youwin;
+end;
+

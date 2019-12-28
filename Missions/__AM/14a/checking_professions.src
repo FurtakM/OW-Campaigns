@@ -1,0 +1,113 @@
+// udrzovani MacMillana v pracovnim
+every 0$2 trigger GetClass(MacMillan)<>class_engineer do
+begin
+  MacMillan_To_Engineer;
+  enable;
+end;
+
+function MacMillan_To_Engineer;
+var depot;
+begin
+  depot:=FilterAllUnits([ f_or, [f_btype,b_depot], [f_btype,b_warehouse]]);
+  if depot then
+    begin
+      depot:=depot[1];
+      InGameOn;
+      if IsInUnit(MacMillan) then
+        ComExitBuilding(MacMillan);
+      while GetClass(MacMillan)<>class_engineer do
+        begin
+          CenterOnUnits(MacMillan);
+          ComEnterUnit(MacMillan,depot);
+          if IsInUnit(MacMillan)=depot then
+            begin
+              ComChangeProfession(MacMillan,class_engineer);
+              AddComExitBuilding(MacMillan);
+            end;
+          wait(0$1);
+        end;
+      InGameOff;
+    end;
+  enable;
+end;
+
+
+// udrzovani Burlaka v ridicskem
+every 0$2 trigger GetClass(Burlak)<>class_mechanic do
+var factory;
+begin
+  factory:=FilterAllUnits([ f_or, [f_btype,b_workshop], [f_btype,b_factory]]);
+  if factory then
+    begin
+      factory:=factory[1];
+      InGameOn;
+      if IsInUnit(Burlak) then
+        ComExitBuilding(Burlak);
+      while GetClass(Burlak)<>class_mechanic do
+        begin
+          CenterOnUnits(Burlak);
+          ComEnterUnit(Burlak,factory);
+          if IsInUnit(Burlak)=factory then
+            begin
+              ComChangeProfession(Burlak,class_mechanic);
+              AddComExitBuilding(Burlak);
+            end;
+          wait(0$1);
+        end;
+      InGameOff;
+    end;
+  enable;
+end;
+
+
+// udrzovani depotu a factory v provozuschopnem stavu
+every 0$2 do
+var build;
+begin
+  build:=FilterAllUnits([ f_or, [f_btype,b_depot], [f_btype,b_warehouse]]);
+  if build then
+    begin
+      build:=build[1];
+      if GetLives(build)<800 then
+        begin
+          ComExitVehicle([Burlak,MacMillan]);
+          interface_hidden:=true;
+          if GetClass(MacMillan)<>class_engineer then
+            MacMillan_To_Engineer;
+          InGameOn;
+          while GetLives(build)<1000 do
+            begin
+              ComRepairBuilding(MacMillan,build);
+              wait(0$1);
+            end;
+          InGameOff;
+          interface_hidden:=false;
+        end;
+    end;
+
+  build:=FilterAllUnits([ f_or, [f_btype,b_workshop], [f_btype,b_factory]]);
+  if build then
+    begin
+      build:=build[1];
+      if GetLives(build)<800 then
+        begin
+          ComExitVehicle([Burlak,MacMillan]);
+          interface_hidden:=true;
+          if GetClass(MacMillan)<>class_engineer then
+            MacMillan_To_Engineer;
+          InGameOn;
+          while GetLives(build)<1000 do
+            begin
+              ComRepairBuilding(MacMillan,build);
+              wait(0$1);
+            end;
+          InGameOff;
+          interface_hidden:=false;
+        end;
+    end;
+
+  enable;
+end;
+
+
+

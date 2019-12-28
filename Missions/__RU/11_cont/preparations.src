@@ -1,0 +1,1189 @@
+//vsevolod neny new
+//stolypin je new
+//popov je new
+//gaydar neny new
+//yashin je new
+//titov neny new
+//belkov neny new
+//kuzmov neny new
+//gnyevko neny new
+//kozlov neny new
+//furmanov je new
+//kirilenkova neny new
+//kapitsova neny new
+//petrosyan neny new
+//scholtze neny new
+
+//dolgov neny new
+//kovalyuk neny new
+//karamazov neny new
+
+//petrovova neny new
+//oblukov neny new
+
+export vsevol,popov,gaydar,yashin,titov,belkov,kuzmov,gnyevko,kozlov,furmanov,kiril,kapitsova,petrosyan,
+  scholtze,dolgov,kovalyuk,karamazov,petrovova,oblukov,burlak,platonov,jmm;
+export masha;
+var obeti,obeti2,survivors,ostatni,nedoboje;
+export vs; //pravost vsevoloda
+
+
+function myisinarea(list,area,x,y);  //test esli jsou uz vsici v te arey, gdyz tak je tam poslu
+var tmp,tmp1;
+begin
+  tmp1=[];
+  for tmp in list do if not isinarea(tmp,area) then begin tmp1=tmp1^[tmp];end;
+  if tmp1 then begin
+    comstop(list diff tmp1);
+    commovexy(tmp1,x,y);
+    result=false;
+  end
+  else result=true;
+end;
+
+var vsevol_v,popov_v,gaydar_v,yashin_v,vehikly,vehiklyo,vehiklys;
+export function prepare_russians;
+var tmp,tmp2,tmp3,na,na2,surv3,veh;
+begin
+  centernowonxy(99,102);
+  na=0;
+  na2=0;
+  uc_side=ru;
+  if testcharacters('Burlak') then
+    if checkcharacterset('Burlak') then burlak=createcharacterwithclass('Burlak',class_engineer)
+    else msg('jakto ze Burlak je chciplej?!')
+  else msg('neny Burlak');
+  platonov=newcharacter('Platonov');
+  if not platonov then msg('neny Platonov');
+  uc_side=am;
+  jmm=newcharacter('Macmillan');
+  if not jmm then msg('neny Macmillan');
+//  uc_nation=nation_american;
+//  preparesoldier(sex_male,7);
+//  jmm=createhuman;
+
+  uc_side=ru2;
+  vs=false;
+  if testcharacters('Vsevolod') then
+    if checkcharacterset('Vsevolod') then begin vs=true;vsevol=createcharacterwithclass('Vsevolod',class_soldier);end
+    else begin
+      vsevol=newcharacter('Stolypin');
+      if not vsevol then msg('neny Stolypin');
+    end
+  else msg('neny Vsevolod');
+  popov=newcharacter('Popov');
+  if not popov then msg('neny Popov');
+  if testcharacters('Gaydar') then
+    if checkcharacterset('Gaydar') then gaydar=createcharacterwithclass('Gaydar',class_soldier)
+    else begin gaydar=0;na2=na2+1;end
+  else msg('neny Gaydar');
+  yashin=newcharacter('Yashin');
+  if not yashin then msg('neny Yashin');
+  if testcharacters('Titov') then
+    if checkcharacterset('Titov') then titov=createcharacterwithclass('Titov',class_soldier)
+    else begin titov=0;na2=na2+1;end
+  else msg('neny Titov');
+  if testcharacters('Belkov') then
+    if checkcharacterset('Belkov') then belkov=createcharacterwithclass('Belkov',class_soldier)
+    else begin belkov=0;na2=na2+1;end
+  else msg('neny Belkov');
+  if testcharacters('Kuzmov') then
+    if checkcharacterset('Kuzmov') then kuzmov=createcharacterwithclass('Kuzmov',class_soldier)
+    else begin kuzmov=0;na2=na2+1;end
+  else msg('neny Kuzmov');
+  if testcharacters('Gnyevko') then
+    if checkcharacterset('Gnyevko') then gnyevko=createcharacterwithclass('Gnyevko',class_soldier)
+    else begin gnyevko=0;na2=na2+1;end
+  else msg('neny Gnyevko');
+  if testcharacters('Kozlov') then
+    if checkcharacterset('Kozlov') then kozlov=createcharacterwithclass('Kozlov',class_soldier)
+    else begin kozlov=0;na2=na2+1;end
+  else msg('neny Kozlov');
+
+  uc_side=ru;
+  furmanov=newcharacter('Furmanov');
+  if not furmanov then msg('neny Furmanov');
+  if testcharacters('Kirilenkova') then
+    if checkcharacterset('Kirilenkova') then kiril=createcharacterwithclass('Kirilenkova',class_scientistic)
+    else begin kiril=0;na=na+1;end
+  else msg('neny Kirilenkova');
+  if testcharacters('Kapitsova') then
+    if checkcharacterset('Kapitsova') then kapitsova=createcharacterwithclass('Kapitsova',class_scientistic)
+    else begin kapitsova=0;na=na+1;end
+  else msg('neny Kapitsova');
+  if testcharacters('Petrosyan') then
+    if checkcharacterset('Petrosyan') then petrosyan=createcharacterwithclass('Petrosyan',class_scientistic)
+    else begin petrosyan=0;na=na+1;end
+  else msg('neny Petrosyan');
+  if testcharacters('Scholtze') then
+    if checkcharacterset('Scholtze') then scholtze=createcharacterwithclass('Scholtze',class_scientistic)
+    else begin scholtze=0;na=na+1;end
+  else msg('neny Scholtze');
+
+  uc_side=ru2;
+  if testcharacters('Dolgov') then
+    if checkcharacterset('Dolgov') then dolgov=createcharacterwithclass('Dolgov',class_soldier)
+    else begin dolgov=0;na2=na2+1;end
+  else msg('neny Dolgov');
+  if testcharacters('Kovalyuk') then
+    if checkcharacterset('Kovalyuk') then kovalyuk=createcharacterwithclass('Kovalyuk',class_soldier)
+    else begin kovalyuk=0;na2=na2+1;end
+  else msg('neny Kovalyuk');
+  if testcharacters('Karamazov') then
+    if checkcharacterset('Karamazov') then karamazov=createcharacterwithclass('Karamazov',class_soldier)
+    else begin karamazov=0;na2=na2+1;end
+  else msg('neny Karamazov');
+  if testcharacters('Petrovova') then
+    if checkcharacterset('Petrovova') then petrovova=createcharacterwithclass('Petrovova',class_soldier)
+    else begin petrovova=0;na2=na2+1;end
+  else msg('neny Petrovova');
+  if testcharacters('Oblukov') then
+    if checkcharacterset('Oblukov') then oblukov=createcharacterwithclass('Oblukov',class_soldier)
+    else begin oblukov=0;na2=na2+1;end
+  else msg('neny Oblukov');                   //max na==16
+  uc_side:=ru;
+  if testcharacters('survivors3') then
+    if checkcharacterset('survivors3') then surv3=createcharacterset('survivors3')
+    else 
+  else msg('neny survivors3');
+
+  uc_nation=nation_russian;
+  if not testvariable('Masha') then msg('neny Masha');
+  veh=loadvariable('Masha',[]);
+  if veh then begin
+    vc_chassis=veh[1];
+    vc_engine=veh[2];
+    vc_control=veh[3];
+    vc_weapon=veh[4];
+    masha=createvehicle;
+    setmark(masha,1);
+  end
+  else masha=0;
+
+  uc_side=ru2;  
+  ostatni=[];
+  tmp2=na+na2;
+  for tmp=1 to tmp2 do begin
+    preparehuman(rand(1,2),rand(1,4),7);    //sex,cl,lev
+    ostatni=ostatni^[createhuman];
+  end;
+
+  obeti=[vsevol,popov,gaydar,yashin];   //vsichni tidle ziji
+  survivors=[belkov,petrovova,titov,oblukov,kuzmov,gnyevko,kozlov] diff [0];
+  obeti2=[dolgov,kovalyuk,karamazov] diff [0];  //necham je chcipnout
+  nedoboje=[kiril,kapitsova,petrosyan,scholtze,furmanov] diff [0];
+  tmp2=7-survivors;
+  for tmp=1 to tmp2 do
+    if surv3 then begin
+      survivors=survivors^[surv3[1]];
+      setside([surv3[1]],ru2);
+      surv3=surv3 diff surv3[1];
+    end else begin
+      survivors=survivors^[ostatni[1]];
+      ostatni=ostatni diff ostatni[1];
+    end;
+  tmp2=3-obeti2;
+  for tmp=1 to tmp2 do begin
+    obeti2=obeti2^[ostatni[1]];
+    ostatni=ostatni diff ostatni[1];
+  end;
+  tmp2=5-nedoboje;
+  for tmp=1 to tmp2 do 
+    if surv3 then begin
+      nedoboje=nedoboje^[surv3[1]];
+      surv3=surv3 diff surv3[1];
+    end else begin
+      nedoboje=nedoboje^[ostatni[1]];
+      setside([ostatni[1]],ru);
+      ostatni=ostatni diff ostatni[1];
+    end;
+
+  tmp3=obeti^obeti2^survivors; //4+3+7 //pekne je vybavim vozitkama
+  vehikly=[];
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  uc_side=ru;
+  vc_weapon=ru_cargo_bay;
+  vc_chassis=ru_medium_wheeled;
+  for tmp=1 to 3 do begin
+    tmp2=createvehicle;
+    if tmp=1 then begin
+      setcargo(tmp2,mat_oil,90);
+      addcargo(tmp2,mat_cans,10);
+    end
+    else setcargo(tmp2,mat_cans,100);
+    placehumaninunit(nedoboje[tmp],tmp2);
+    placeunitxyr(tmp2,105,115,15,false);
+  end;
+  placeunitxyr(nedoboje[4],105,115,15,false);
+  placeunitxyr(nedoboje[5],105,115,15,false);
+  if masha then begin
+    placehumaninunit(burlak,masha);
+    placeunitxyr(masha,105,115,15,false);
+  end
+  else placeunitxyr(burlak,105,115,15,false);
+
+  uc_side=ru2;
+  tmp2=[[ru_medium_tracked,ru_gatling_gun],[ru_medium_tracked,ru_gatling_gun],[ru_medium_tracked,ru_gatling_gun],
+        [ru_medium_tracked,ru_rocket_launcher],[ru_medium_tracked,ru_rocket_launcher],[ru_medium_tracked,ru_rocket_launcher],
+        [ru_medium_tracked,ru_gun],[ru_medium_tracked,ru_gun],[ru_medium_tracked,ru_gun],
+        [ru_medium_tracked,ru_gun],[ru_medium_tracked,ru_rocket_launcher],
+        [ru_heavy_tracked,ru_heavy_gun],[ru_heavy_tracked,ru_heavy_gun],[ru_heavy_tracked,ru_heavy_gun]];
+  for tmp=1 to 14 do begin
+    vc_weapon=tmp2[tmp][2];
+    vc_chassis=tmp2[tmp][1];
+    vehikly=vehikly^[createvehicle];
+    placehumaninunit(tmp3[tmp],vehikly[tmp]);
+    placeunitxyr(vehikly[tmp],105,115,15,false);
+  end;
+  
+  vehiklyo=vehikly[1]^vehikly[2]^vehikly[3]^vehikly[4]^vehikly[5]^vehikly[6]^vehikly[7];
+  vehiklys=vehikly[8]^vehikly[9]^vehikly[10]^vehikly[11]^vehikly[12]^vehikly[13]^vehikly[14];
+
+  tmp=game_speed;
+  game_speed=2;
+  commovexy(vehikly,95,98); //96,95); //90,86);
+//popov west, gaydar center, vselovod(stolypin) east
+
+  ingameon;
+  wait(0$7);
+  while not myisinarea(vehikly,arrival,95,98) do wait(0$1);
+  vsevol_v=isinunit(vsevol);
+  popov_v=isinunit(popov);
+  gaydar_v=isinunit(gaydar);
+  yashin_v=isinunit(yashin);
+  comexitvehicle([yashin,popov,gaydar,vsevol]);
+  wait(0$0.5);
+  game_speed=tmp;
+  centernowonunits([burlak,yashin]);
+  comstop(vehikly);
+//  ingameon;
+  say(yashin,'DBetaStart-Yas-1');
+  if vs then say(yashin,'DBetaStart-Yas-1a')
+  else say(yashin,'DBetaStart-Yas-1b');
+  say(yashin,'DBetaStart-Yas-1c');
+  sayeffect('DBetaStart-All-1');
+//  say(popov,'DBetaStart-All-1');
+//  say(gaydar,'DBetaStart-All-1');
+//  say(burlak,'DBetaStart-All-1');
+//  ingameoff;
+  while not myisinarea([vsevol,popov,gaydar],arrival,95,98) do wait(0$0.5);
+  DoNotAttack(am,vsevol);
+  DoNotAttack(am,popov);
+  DoNotAttack(am,gaydar);
+  comremember([vsevol,popov,gaydar]);
+  commovexy(vsevol,135,90);
+  addcommovexy(vsevol,130,66);
+  addcommovexy(vsevol,124,65); //123,64);
+  addcomwait(vsevol,0$0.5);
+  addcommovexy(vsevol,131,73);
+  addcomwait(vsevol,2$15);
+  addcomreturn(vsevol);
+  commovexy(popov,66,88);
+  addcommovexy(popov,44,62);  //48,62);
+  addcommovexy(popov,45,68); //49,68);
+  addcomwait(popov,3$15);
+  addcomreturn(popov);
+  commovexy(gaydar,83,72); //81,68);
+  addcomreturn(gaydar);
+  wait(0$7);
+  comstop(vehikly);
+//  dialogueon;
+  say(yashin,'DBetaStart-Yas-2');
+  say(yashin,'DBetaStart-Yas-2a');
+  say(burlak,'DBetaStart-Bur-2');
+//  dialogueoff;
+  ingameoff;
+  //comhold(filterallunits([[f_side,ru2],[f_type,unit_vehicle]]));
+  saveforquickrestart;
+  wait(11);
+  changemissionobjectives('MStart');
+  dontGoOutSideArea := true;
+  wait(0$17);
+  enable(01);
+end;
+
+// 25.12.19 - added by Serpent
+Every 0$1 trigger dontGoOutSideArea do
+var tmp;
+begin
+enable;
+
+tmp := FilterUnitsExceptArea(arrival, [f_side, ru2]) diff [vsevol, gaydar, popov];
+
+if not tmp then
+   exit;
+
+ComMoveToArea(tmp, arrival);
+End;
+
+
+var basedone;
+every 0$1 trigger isinarea(vsevol,arrival) and isinarea(popov,arrival) and isinarea(gaydar,arrival) marked 01 do
+begin
+  NormalAttack(am,vsevol);
+  NormalAttack(am,popov);
+  NormalAttack(am,gaydar);
+  centernowonunits([yashin,popov,vsevol,gaydar]);
+  dialogueon;
+  say(yashin,'DBetaAttack-Yas-1');
+  centernowonxy(123,64);
+  say(vsevol,'DBetaAttack-Vse-1');
+  centernowonxy(48,62);
+  say(popov,'DBetaAttack-Pop-1');
+  centernowonxy(83,72);
+  say(gaydar,'DBetaAttack-Gay-1');
+  say(yashin,'DBetaAttack-Yas-2');
+  basedone=false;
+  if filterallunits([[f_side,ru],[f_or,[f_btype,b_oil_power],[f_btype,b_siberite_power]]{[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]}])
+     and filterallunits([[f_side,ru],[f_btype,b_factory]]) then begin
+    say(burlak,'DBetaAttack-Bur-2');
+    say(yashin,'DBetaAttack-Yas-3');
+    changemissionobjectives('MStarta');
+    changemissionobjectives('MfastOut');
+    basedone=true;
+    rychlik=true;
+  end
+  else begin
+    say(burlak,'DBetaAttack-Bur-3');
+    say(yashin,'DBetaAttack-Yas-4');
+    changemissionobjectives('MFastDel');
+  end;
+  say(burlak,'DBetaAttack-Bur-4');
+  say(yashin,'DBetaAttack-Yas-5');
+  if filterallunits([[f_side,ru],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) then begin
+    say(burlak,'DBetaAttack-Bur-5');
+    say(yashin,'DBetaAttack-Yas-6');
+  end;
+  say(burlak,'DBetaAttack-Bur-6');
+  dialogueoff;
+  changemissionobjectives('MBull');
+end;
+
+var lesnik;
+function jevlese;
+begin
+  lesnik=filterunitsinarea(les,[[f_side,ru],[f_ok]]);
+  result=0+lesnik;
+end;
+
+export lastsay;
+every 0$1.1 trigger jevlese marked 06 do
+begin
+  enable;
+  commovetoarea(lesnik,targetarea);
+  if (tick-lastsay)>(0$7) then begin
+    dialogueon;
+    say(yashin,'DSpoil-Yas-1');
+    dialogueoff;
+    lastsay=tick;
+  end;
+end;
+
+var buldoz1,buldoz2;
+function buldozery;
+var buldoz;
+begin
+  buldoz=filterallunits([[f_side,ru],[f_weapon,ru_bulldozer]]);
+  result=0+buldoz;
+  if result>1 then begin
+    buldoz1=buldoz[1];
+    buldoz2=buldoz[2];
+  end;
+end;
+
+function jsou_zpatky;
+var tmp;
+begin
+  result=true;
+  for tmp in survivors do
+    if not isinarea(tmp,uketar) and not isdead(tmp) then begin result=false;exit;end;
+end;
+
+var nenicit,poskoz;
+every 0$0.3 marked 10 do
+var tmp;
+begin
+  if nenicit then enable;
+  for tmp in [ambunk2,ambunk3,ambunk4,ambunk5,ambunk6] do
+    if getlives(tmp)<=500 then begin
+      donotattack(ru2,tmp);
+      poskoz=poskoz union [tmp];
+    end
+    else if (getlives(tmp)>800) and (tmp in poskoz) then begin
+      poskoz=poskoz diff [tmp];
+      normalattack(ru2,tmp);
+    end;
+
+end;
+
+var devet,dva,center_o;
+every 0$0.9 trigger buldozery>=2 do
+var popin,gayin,tmp,tmp2,tspeed,oldbl1,oldbl2;
+var b1, b2;
+begin
+  dontGoOutSideArea := false;
+
+  changemissionobjectives('MReady');
+  if not basedone then changemissionobjectives('MStarta');
+  popin=false;
+  gayin=false;
+  setside([buldoz1,buldoz2],ru2);
+  if getcontrol(buldoz1)=control_manual then begin
+    comexitvehicle(buldoz1);
+    wait(0$1);
+    comenterunit(popov,buldoz1);
+    popin=true;
+  end;
+  if getcontrol(buldoz2)=control_manual then begin
+    comexitvehicle(buldoz2);
+    wait(0$1);
+    comenterunit(gaydar,buldoz2);
+    gayin=true;
+  end;
+  if popin then while not isinunit(popov) do begin
+    if isdrivenby(buldoz1) then comexitvehicle(buldoz1);
+    wait(0$0.3);
+    comenterunit(popov,buldoz1);
+  end;
+  if gayin then while not isinunit(gaydar) do begin
+    if isdrivenby(buldoz2) then comexitvehicle(buldoz2);
+    wait(0$0.3);
+    comenterunit(gaydar,buldoz2);
+  end;
+  setattitude(ru2,am,att_neutral,true);
+  centernowonunits([buldoz1,buldoz2]);
+  center_buld=true;
+  enable(05);
+  comfree(filterallunits([[f_side,ru2],[f_type,unit_vehicle]]));
+  ingame_video=true;
+  interface_hidden=true;
+  disable(06);
+  commovexy(buldoz1,87,86);
+  commovexy(buldoz2,91,85); //91,86);
+  commovexy(buldoz2,91,84);
+  addcommovexy(buldoz1,85,82);
+  addcommovexy(buldoz2,89,81); //89,82);
+  addcommovexy(buldoz2,88,81);
+  addcommovexy(buldoz1,83,78);
+  addcommovexy(buldoz1,82,77);
+  addcommovexy(buldoz1,82,76);
+  addcommovexy(buldoz2,87,79); //87,78);
+  addcommovexy(buldoz1,81,74);
+  addcommovexy(buldoz2,85,74);
+  addcommovexy(buldoz1,79,69); //80,70);
+  addcommovexy(buldoz1,78,68);
+  addcommovexy(buldoz1,79,67);
+  addcommovexy(buldoz1,78,66);
+  addcommovexy(buldoz2,83,70);
+  addcommovexy(buldoz2,81,69);
+  addcommovexy(buldoz2,80,66);
+
+  addcommovexy(buldoz1,76,71); //77,70);
+  addcommovexy(buldoz2,86,71); //86,70);
+  addcommovexy(buldoz1,78,75); //78,74);
+  addcommovexy(buldoz2,88,73); //88,74);
+  addcommovexy(buldoz2,89,75);
+  addcommovexy(buldoz1,80,78);
+  addcommovexy(buldoz2,90,78);
+  addcommovexy(buldoz1,81,81); //82,82);
+  addcommovexy(buldoz1,82,83);
+  addcommovexy(buldoz1,83,84);
+  addcommovexy(buldoz2,93,82);
+  addcommovexy(buldoz1,81,84); //82,85);
+  addcommovexy(buldoz1,81,85);
+  addcommovexy(buldoz2,95,85); //96,85);
+
+  addcommovexy(buldoz1,81,89);
+  addcommovexy(buldoz2,104,89);
+//  addcommovexy([buldoz[1],buldoz[2]],77,90);
+  //while not isinarea(buldoz1,les) or not isinarea(buldoz2,les) do wait (0$5);
+  wait(0$1);  //Wait for tasks to be "activated" so HasTask works properly
+  b1 = false;
+  b2 = false;
+  while not ( b1 and b2 ) do
+       begin
+            if not b1 and not HasTask(buldoz1) then
+                 begin
+                      if FreeHex(83,91) then
+                           begin
+                                if not IsInArea(buldoz1,bulcile) then
+                                     ComMoveXY(buldoz1,83,91)
+                                else
+                                     b1 = true;
+                           end
+                      else
+                           if GetY(buldoz1) < 100 then
+                                ComMoveToArea(buldoz1,south_area)
+                           else
+                                b1 = true;
+                 end;
+
+            if not b2 and not HasTask(buldoz2) then
+                 begin
+                      if FreeHex(106,91) then
+                           begin
+                                if not IsInArea(buldoz2,bulcile) then
+                                     ComMoveXY(buldoz2,106,91)
+                                else
+                                     b2 = true;
+                           end
+                      else
+                           if GetY(buldoz2) < 100 then
+                                ComMoveToArea(buldoz2,south_area)
+                           else
+                                b2 = true;
+                 end;
+
+            //Don't run out of fuel...
+            for tmp in [buldoz1,buldoz2] do
+                 if GetEngine(tmp) = engine_combustion and GetFuel(tmp) < 10 then
+                      SetFuel(tmp,10);
+
+            wait(0$1);
+       end;
+  {while not isinarea(buldoz1,bulcile) or not isinarea(buldoz2,bulcile) do begin
+    if isidle(buldoz1) then commovexy(buldoz1,82,89);
+    if isidle(buldoz2) then commovexy(buldoz2,104,89);
+    wait(0$1);
+  end;}
+  disable(05);
+  center_buld=false;
+  center_o=true;
+  enable(08);
+
+  setattitude(ru2,am,att_enemy,true);
+  if popin then comexitvehicle(popov);
+  if gayin then comexitvehicle(gaydar);
+  while (popin and isinunit(popov)) or (gayin and isinunit(gaydar)) do wait(0$0.5);
+  comenterunit(vsevol,vsevol_v);
+  comenterunit(popov,popov_v);
+  comenterunit(gaydar,gaydar_v);
+  comenterunit(yashin,yashin_v);
+  while not isinunit(vsevol) or not isinunit(popov) or not isinunit(gaydar) or not isinunit(yashin) do begin
+    wait(0$0.3);
+    tmp=isinunit(vsevol_v);
+    if tmp and tmp<>vsevol then begin comexitvehicle(vsevol_v);comenterunit(vsevol,vsevol_v);end;
+    tmp=isinunit(popov_v);
+    if tmp and tmp<>popov then begin comexitvehicle(popov_v);comenterunit(popov,popov_v);end;
+    tmp=isinunit(gaydar_v);
+    if tmp and tmp<>gaydar then begin comexitvehicle(gaydar_v);comenterunit(gaydar,gaydar_v);end;
+    tmp=isinunit(yashin_v);
+    if tmp and tmp<>yashin then begin comexitvehicle(yashin_v);comenterunit(yashin,yashin_v);end;
+  end;
+  for tmp in survivors do donotattack(am,tmp);
+  tspeed=game_speed;
+  game_speed=2;
+
+  nesahat=false;
+
+  donotattack(ru2,ame1);
+  donotattack(ru2,ame2);
+  oldbl1=getblevel(ambunk3);
+  oldbl2=getblevel(ambunk5);
+  setblevel([ambunk3,ambunk5],10);
+//  oldsl1=getskill(ams3,skill_combat);
+//  oldsl2=getskill(ams5,skill_combat);
+//  setskill([ams3,ams5],skill_combat,10);
+  nenicit=true;
+  poskoz=[];
+  enable(10);
+
+  commovexy(vehiklyo,73,49);
+  wait(0$9);
+  comagressivemove(vehiklys,74,54);
+
+  tmp2=[1,2,3,4];
+  tmp=rand(1,4);
+  tmp2=tmp2 diff [tmp];
+  case tmp of
+    1:say(vsevol,'DDeath-Vse-1');
+    2:say(yashin,'DDeath-Yas-1');
+    3:say(popov,'DDeath-Pop-1');
+    4:say(gaydar,'DDeath-Gay-1');
+  end;
+  tmp=rand(1,3);
+  case tmp2[tmp] of
+    1:say(vsevol,'DDeath-Vse-1');
+    2:say(yashin,'DDeath-Yas-1');
+    3:say(popov,'DDeath-Pop-1');
+    4:say(gaydar,'DDeath-Gay-1');
+  end;
+
+  zdrhaci=[];
+  dva=true;
+  enable(02);
+  while filterunitsinarea(attckar,[[f_side,ru2]])<1 do wait(0$0.3);
+  disable(08);
+  center_o=false;
+  centeronxy(74,51);
+//  devet=true;
+//  enable(09);
+
+  while filterunitsinarea(attckar,[[f_side,ru2]])<2 do wait(0$0.3);
+
+  tmp2=[1,2,3,4];
+  tmp=rand(1,4);
+  tmp2=tmp2 diff [tmp];
+  case tmp of
+    1:say(vsevol,'DDeath-Vse-2');
+    2:say(yashin,'DDeath-Yas-2');
+    3:say(popov,'DDeath-Pop-2');
+    4:say(gaydar,'DDeath-Gay-2');
+  end;
+  tmp=rand(1,3);
+  case tmp2[tmp] of
+    1:say(vsevol,'DDeath-Vse-2');
+    2:say(yashin,'DDeath-Yas-2');
+    3:say(popov,'DDeath-Pop-2');
+    4:say(gaydar,'DDeath-Gay-2');
+  end;
+
+  while not jsou_zpatky do wait(0$0.5);
+  nenicit=false;
+  disable(10);
+  disable(02);
+  dva=false;
+  disable(09);
+  devet=false;
+  setblevel([ambunk3],oldbl1);
+  setblevel([ambunk5],oldbl2);
+  game_speed=tspeed;
+  centernowonxy(94,98);
+  for tmp in survivors do
+    if isinunit(tmp) then setside([isinunit(tmp)],ru);
+  setside(survivors,ru);
+  setside([buldoz1,buldoz2],ru);
+  for tmp in survivors do normalattack(am,tmp);
+  ingame_video=false;
+  interface_hidden=false;
+  dialogueon;
+  say(burlak,'DAftermath-Bur-1');
+  if isok(titov) then say(titov,'DAftermath-Tit-1');
+  if isok(belkov) then say(belkov,'DAftermath-Bel-1');
+  if isok(kuzmov) then say(kuzmov,'DAftermath-Kuz-1');
+  if isok(gnyevko) then say(gnyevko,'DAftermath-Gny-1');
+  if isok(belkov) then say(belkov,'DAftermath-Bel-2');
+  if isok(kozlov) then say(kozlov,'DAftermath-Koz-2');
+  say(furmanov,'DAftermath-Fur-2');
+  say(burlak,'DAftermath-Bur-2');
+  say(furmanov,'DAftermath-Fur-3');
+  say(burlak,'DAftermath-Bur-3');
+  say(burlak,'DAftermath-Bur-3a');
+  dialogueoff;
+  changemissionobjectives('MDest');
+  wait(0$15);
+  enable(03);
+//  disable(06);
+  disable(07);
+{  dialogueon;
+  say(burlak,'DRocketLaunchers-Bur-1');
+  if isok(kiril) then say(kiril,'DRocketLaunchers-Kir-1')
+  else if isok(kapitsova) then say(kapitsova,'DRocketLaunchers-Kap-1')
+  else if isok(petrosyan) then say(petrosyan,'DRocketLaunchers-Pty-1')
+  else if isok(scholtze) then say(scholtze,'DRocketLaunchers-Sch-1')
+  else begin
+    tmp=filterallunits([[f_side,ru],[f_class,class_scientistic],[f_ok]]);
+    if tmp then say(tmp[1],'DRocketLaunchers-RSci1-1');
+  end;
+  dialogueoff;}
+end;
+Function FreeHex(x,y);
+     var un;
+     begin
+          un = HexInfo(x,y);
+
+          if un = 0 then
+               begin
+                    result = true;
+                    exit;
+               end;
+
+          if un = -1 then
+               begin
+                    result = false;
+                    exit;
+               end;
+
+          if GetType(un) = unit_building or ( GetType(un) = unit_vehicle and ( ( GetControl(un) = control_manual and IsDrivenBy(un) = 0 ) or ( GetControl(un) = control_remote and IsControledBy(un) = 0 ) ) ) then
+               result = false
+          else
+               result = true;
+     end;
+
+on vehiclecaptured(new,old,origside,by) marked 07 do
+var tmp;
+  case old of
+    vsevol_v:begin
+      comexitvehicle(new);
+      setside(new,ru2);
+      for tmp=1 to 0+vehikly do
+        if vehikly[tmp]=vsevol_v then break;
+      vehikly=replace(vehikly,tmp,new);
+      for tmp=1 to 0+vehiklyo do
+        if vehiklyo[tmp]=vsevol_v then break;
+      vehiklyo=replace(vehiklyo,tmp,new);
+      vsevol_v=new;
+    end;
+    yashin_v:begin
+      comexitvehicle(new);
+      setside(new,ru2);
+      for tmp=1 to 0+vehikly do
+        if vehikly[tmp]=yashin_v then break;
+      vehikly=replace(vehikly,tmp,new);
+      for tmp=1 to 0+vehiklyo do
+        if vehiklyo[tmp]=yashin_v then break;
+      vehiklyo=replace(vehiklyo,tmp,new);
+      yashin_v=new;
+    end;
+    popov_v:begin
+      comexitvehicle(new);
+      setside(new,ru2);
+      for tmp=1 to 0+vehikly do
+        if vehikly[tmp]=popov_v then break;
+      vehikly=replace(vehikly,tmp,new);
+      for tmp=1 to 0+vehiklyo do
+        if vehiklyo[tmp]=popov_v then break;
+      vehiklyo=replace(vehiklyo,tmp,new);
+      popov_v=new;
+    end;
+    gaydar_v:begin
+      comexitvehicle(new);
+      setside(new,ru2);
+      for tmp=1 to 0+vehikly do
+        if vehikly[tmp]=gaydar_v then break;
+      vehikly=replace(vehikly,tmp,new);
+      for tmp=1 to 0+vehiklyo do
+        if vehiklyo[tmp]=gaydar_v then break;
+      vehiklyo=replace(vehiklyo,tmp,new);
+      gaydar_v=new;
+    end;
+    buldoz1:buldoz1=new;
+    buldoz2:buldoz2=new;
+  end;
+
+var center_buld;
+every 0$2 marked 05 do
+begin
+  if center_buld then enable;
+  centeronunits([buldoz1,buldoz2]);
+end;
+
+every 0$1+0$0.1 marked 08 do
+begin
+  if center_o then enable;
+  centeronunits(nearestunittoxy(vehiklyo,73,49));
+end;
+
+every 0$1+0$0.2 marked 09 do
+begin
+  if devet then enable;
+  centeronunits(nearestunittoxy(vehiklys,74,54));
+end;
+
+var zdrhaci;
+every 0$0.1 marked 02 do
+var tmp;
+begin
+  if not dva then exit;
+  for tmp in vehiklys do                                                                                //94,98
+    if (getlives(tmp)<zdrhame) and not (tmp in zdrhaci) then begin commovexy(tmp,88,86);addcommovexy(tmp,97,99);zdrhaci=zdrhaci^[tmp];end;
+  for tmp in survivors do
+    if not isinunit(tmp) and not (tmp in zdrhaci) then begin commovexy(tmp,88,86);addcommovexy(tmp,97,99);zdrhaci=zdrhaci^[tmp];end;
+  if ((0+zdrhaci)>2)and not devet then begin
+    devet=true;
+    enable(09);
+  end;
+  if dva then enable;
+end;
+
+//chcipaci dialogy
+export nesahat;
+on unitgoestored(un) do
+  case un of
+    vsevol:
+      if vs then begin
+        forcesay(vsevol,'DDeath-Vse-3');
+        say(burlak,'DDeath-Bur-3');
+        priorityattack(am,vsevol);
+      end
+      else forcesay(vsevol,'DDeath-Sto-3');
+    yashin:begin
+      forcesay(yashin,'DDeath-Yas-3');
+      priorityattack(am,yashin);
+    end;
+    popov:begin
+      forcesay(popov,'DDeath-Pop-3');
+      priorityattack(am,popov);
+    end;
+    gaydar:begin
+      forcesay(gaydar,'DDeath-Gay-3');
+      priorityattack(am,gaydar);
+    end;
+    else
+      if (getside(un)=ru2) and nesahat then youlost('Mad')
+      else if (getside(un)=am) then
+        case un of
+          amv1:begin
+            comrepairvehicle(amm1,amv1);
+            addcomenterunit(amm1,amv1);
+          end;
+          amv2:begin
+            comrepairvehicle(amm2,amv2);
+            addcomenterunit(amm2,amv2);
+          end;
+          amv3:begin
+            comrepairvehicle(amm3,amv3);
+            addcomenterunit(amm3,amv3);
+          end;
+          amv4:begin
+            comrepairvehicle(amm4,amv4);
+            addcomenterunit(amm4,amv4);
+          end;
+          amv5:begin
+            comrepairvehicle(amm4,amv5);
+            addcomenterunit(amm4,amv5);
+          end;
+          amv6:begin
+            comrepairvehicle(amm6,amv6);
+            addcomenterunit(amm6,amv6);
+          end;
+          amv7:begin
+            comrepairvehicle(amm7,amv7);
+            addcomenterunit(amm7,amv7);
+          end;
+        end;
+  end;
+
+on unitdestroyed(un) do
+  if un=burlak then youlost('Burlak')
+  else
+    if (getside(un)=ru)and(gettype(un)=unit_human) then chcipli=chcipli+1;
+
+on unitteleported(tel,un) do
+begin
+  telepused=1;
+  disable;
+end;
+
+ON Contact(side1, side2) do
+begin
+
+     if side1 = 3 and side2 = 6 then YouLost('Mad');
+
+end;
+
+//ending condition
+every 0$1 trigger (not filterallunits([[f_side,am],[f_alive],[f_type,unit_human]])) marked 03 do
+var tmp;
+begin
+  dialogueon;
+  say(burlak,'DBetaCaptured-Bur-1');
+  say(jmm,'DBetaCaptured-JMM-1');
+  say(burlak,'DBetaCaptured-Bur-2');
+  dwait(0$1);
+  sayradio(platonov,'DReturn-Pla-1');
+  say(burlak,'DReturn-Bur-1');
+  sayradio(platonov,'DReturn-Pla-2');
+  dialogueoff;
+                              
+  if chcipli>4 then addmedal('LittleLosses',-1)
+  else addmedal('LittleLosses',1);
+{  if islive(masha) then addmedal('Masha',1)
+  else begin
+    addmedal('Masha',-1);
+    if loadvariable('Masha',[]) then deletevariable('Masha');
+  end;}
+  if rychlik then addmedal('Quick',1) else addmedal('Quick',-1);
+  if telepused then addmedal('Teleport',1)
+  else addmedal('Teleport',-1);
+  givemedals('Main');
+  rewardpeople(filterallunits([[f_alive],[f_side,ru],[f_type,unit_human]]));
+  saveitall;
+  youwin;
+end;
+
+function saveitall;
+var tmp;
+begin
+  savecharacters(burlak,'Burlak');
+  if vs then savecharacters(vsevol,'Vsevolod')
+  else savecharacters(vsevol,'Stolypin');
+  savecharacters(popov,'Popov');
+  savecharacters(gaydar,'Gaydar');
+  savecharacters(yashin,'Yashin');
+  savecharacters(titov,'Titov');
+  savecharacters(belkov,'Belkov');
+  savecharacters(kuzmov,'Kuzmov');
+  savecharacters(gnyevko,'Gnyevko');
+  savecharacters(kozlov,'Kozlov');
+  savecharacters(furmanov,'Furmanov');
+  savecharacters(kiril,'Kirilenkova');
+  savecharacters(kapitsova,'Kapitsova');
+  savecharacters(petrosyan,'Petrosyan');
+  savecharacters(scholtze,'Scholtze');
+  savecharacters(dolgov,'Dolgov');
+  savecharacters(kovalyuk,'Kovalyuk');
+  savecharacters(karamazov,'Karamazov');
+  savecharacters(petrovova,'Petrovova');
+  savecharacters(oblukov,'Oblukov');
+
+  tmp=filterallunits([[f_alive],[f_side,ru],[f_type,unit_human]]);
+  savecharacters(tmp diff [burlak,vsevol,popov,gaydar,yashin,titov,belkov,kuzmov,gnyevko,kozlov,furmanov,kiril,kapitsova,petrosyan,scholtze,dolgov,kovalyuk,karamazov,petrovova,oblukov],'survivors3');
+
+end;
+
+
+export function prepare_americans;
+var tmp;
+begin
+  uc_side=am;
+  uc_nation=nation_american;
+//osadka bunkru
+  preparesoldier(sex_male,ams0_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,34,38,1,false);
+  comenterunit(tmp,ambunk0);
+  ams0=tmp;
+  preparesoldier(sex_male,ams1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,54,46,1,false);
+  comenterunit(tmp,ambunk1);
+  ams1=tmp;
+  preparesoldier(sex_male,ams2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,58,47,1,false);
+  comenterunit(tmp,ambunk2);
+  ams2=tmp;
+  preparesoldier(sex_male,ams3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,62,48,1,false);
+  comenterunit(tmp,ambunk3);
+  ams3=tmp;
+  preparesoldier(sex_male,ams4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,60,44,1,false);
+  comenterunit(tmp,ambunk4);
+  ams4=tmp;
+  preparesoldier(sex_male,ams5_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,83,50,1,false);
+  comenterunit(tmp,ambunk5);
+  ams5=tmp;
+  preparesoldier(sex_male,ams6_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,83,47,1,false);
+  comenterunit(tmp,ambunk6);
+  ams6=tmp;
+  preparesoldier(sex_male,ams7_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,100,47,1,false);
+  comenterunit(tmp,ambunk7);
+  ams7=tmp;
+  preparesoldier(sex_male,ams8_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,96,30,1,false);
+  comenterunit(tmp,ambunk8);
+  ams8=tmp;
+  preparesoldier(sex_male,ams9_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,94,30,1,false);
+  comenterunit(tmp,ambunk9);
+  ams9=tmp;
+  preparesoldier(sex_male,amsa_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,84,17,1,false);
+  comenterunit(tmp,ambunka);
+  amsa=tmp;
+  preparesoldier(sex_male,amsb_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,91,10,1,false);
+  comenterunit(tmp,ambunkb);
+  amsb=tmp;
+  preparesoldier(sex_male,amsc_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,95,9,1,false);
+  comenterunit(tmp,ambunkc);
+  amsc=tmp;
+//osadka barracksu
+  preparesoldier(sex_male,ams_1_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,69,33,1,false);
+  comenterunit(tmp,ambarr);
+  ams_1=tmp;
+  preparesoldier(sex_male,ams_2_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,69,33,1,false);
+  comenterunit(tmp,ambarr);
+  ams_2=tmp;
+  preparesoldier(sex_male,ams_3_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,69,33,1,false);
+  comenterunit(tmp,ambarr);
+  ams_3=tmp;
+  preparesoldier(sex_male,ams_4_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,69,33,1,false);
+  comenterunit(tmp,ambarr);
+  ams_4=tmp;
+  preparesoldier(sex_male,ams_5_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,69,33,1,false);
+  comenterunit(tmp,ambarr);
+  ams_5=tmp;
+  preparesoldier(sex_male,ams_6_sk);
+  tmp=createhuman;
+  placeunitxyr(tmp,69,33,1,false);
+  comenterunit(tmp,ambarr);
+  ams_6=tmp;
+//mechanik do control toweru
+  preparemechanic(sex_female,amm0_sk);
+  amm0=createhuman;
+  placeunitxyr(amm0,45,15,1,false);
+  comenterunit(amm0,amcntltwr);
+//vozitka
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+
+  vc_chassis=amv1_ch;
+  vc_weapon=amv1_wp;
+  amv1=createvehicle;
+  setdir(amv1,2);
+  placeunitxy(amv1,61,32,false);
+  preparemechanic(sex_male,amm1_sk);
+  amm1=createhuman;
+  placehumaninunit(amm1,amv1);
+                 
+  vc_chassis=amv2_ch;
+  vc_weapon=amv2_wp;
+  amv2=createvehicle;
+  setdir(amv2,3);
+  placeunitxy(amv2,75,34,false);
+  preparemechanic(sex_male,amm2_sk);
+  amm2=createhuman;
+  placehumaninunit(amm2,amv2);
+
+  vc_chassis=amv3_ch;
+  vc_weapon=amv3_wp;
+  amv3=createvehicle;
+  setdir(amv3,2);
+  placeunitxy(amv3,38,31,false);
+  preparemechanic(sex_male,amm3_sk);
+  amm3=createhuman;
+  placehumaninunit(amm3,amv3);
+
+  vc_chassis=amv4_ch;
+  vc_weapon=amv4_wp;
+  amv4=createvehicle;
+  setdir(amv4,3);
+  placeunitxy(amv4,47,35,false);
+  preparemechanic(sex_male,amm4_sk);
+  amm4=createhuman;
+  placehumaninunit(amm4,amv4);
+
+  vc_chassis=amv5_ch;
+  vc_weapon=amv5_wp;
+  amv5=createvehicle;
+  setdir(amv5,1);
+  placeunitxy(amv5,83,23,false);
+  preparemechanic(sex_male,amm5_sk);
+  amm5=createhuman;
+  placehumaninunit(amm5,amv5);
+
+  vc_chassis=amv6_ch;
+  vc_weapon=amv6_wp;
+  amv6=createvehicle;
+  setdir(amv6,2);
+  placeunitxy(amv6,80,8,false);
+  preparemechanic(sex_male,amm6_sk);
+  amm6=createhuman;
+  placehumaninunit(amm6,amv6);
+
+  vc_chassis=amv7_ch;
+  vc_weapon=amv7_wp;
+  amv7=createvehicle;
+  setdir(amv7,3);
+  placeunitxy(amv7,43,31,false);
+  preparemechanic(sex_male,amm7_sk);
+  amm7=createhuman;
+  placehumaninunit(amm7,amv7);
+
+//snipers
+  preparehuman(sex_male,class_sniper,amsn0_sk);
+  amsn0=createhuman;
+  placeunitxyr(amsn0,99,40,1,false);
+  comhold(amsn0);
+
+  preparehuman(sex_male,class_sniper,amsn1_sk);
+  amsn1=createhuman;
+  placeunitxyr(amsn1,94,11,1,false);
+  comhold(amsn1);
+
+//engineer in depot
+  prepareengineer(sex_female,7);
+  tmp=createhuman;
+  placeunitxyr(tmp,78,23,2,false);
+  comenterunit(tmp,amwareh);
+
+//engineers
+  prepareengineer(sex_male,ame0_sk);
+  ame0=createhuman;
+  placeunitxyr(ame0,31,37,1,false);
+  comhold(ame0);
+  prepareengineer(sex_male,ame1_sk);
+  ame1=createhuman;
+  placeunitxyr(ame1,58,45,1,false);
+  comhold(ame1);
+  prepareengineer(sex_male,ame2_sk);
+  ame2=createhuman;
+  placeunitxyr(ame2,86,48,1,false);
+  comhold(ame2);
+  prepareengineer(sex_male,ame3_sk);
+  ame3=createhuman;
+  placeunitxyr(ame3,96,33,1,false);
+  comhold(ame3);
+  prepareengineer(sex_male,ame4_sk);
+  ame4=createhuman;
+  placeunitxyr(ame4,81,29,1,false);
+  comhold(ame4);
+  prepareengineer(sex_male,ame5_sk);
+  ame5=createhuman;
+  placeunitxyr(ame5,93,8,1,false);
+  comhold(ame5);
+//init seznamu budov k oprave
+  inzinyri=[ame0,ame1,ame2,ame3,ame4,ame5];
+  comremember(inzinyri);
+  opravujte=[[ambunk0],[ambunk1,ambunk2,ambunk3,ambunk4],[ambunk5,ambunk6,ambunk7],[ambunk7,ambunk8,ambunk9],[ambarr,ambunka],[ambunkb,ambunkc]];
+  //opravujese=[];
+
+end;
+
+var opravujte;
+var opravujese;
+var inzinyri;
+every 0$3 do
+var tmp,tmp2,tmp3,oprav,buds,lives;
+begin
+  for tmp=1 to 0+opravujte do begin
+    buds=[];
+    lives=[];
+    for tmp2 in opravujte[tmp] do
+      if (getlives(tmp2)<hranice_zdravi) {and not (tmp2 in opravujese)} then begin
+        buds=buds^[tmp2];
+        lives=lives^[getlives(tmp2)];
+        //opravujese=opravujese^[tmp2];
+      end;
+    tmp2=sortlistbylistasc(buds,lives);
+    if tmp2 then begin
+      comrepairbuilding(inzinyri[tmp],tmp2[1]);
+      for tmp3=2 to 0+tmp2 do addcomrepairbuilding(inzinyri[tmp],tmp2[tmp3]);
+      addcomreturn(inzinyri[tmp]);
+      addcomhold(inzinyri[tmp]);
+    end;
+  end;
+  enable;
+end;
+
+
+

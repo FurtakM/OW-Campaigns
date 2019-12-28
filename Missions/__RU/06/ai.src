@@ -1,0 +1,191 @@
+export fort,ctrl,sol, dep,eng, fact,mec, lab,sci;
+export b1, b2, b3, b4, b5;
+export a1, a2, a3, a4, a5;
+export attack, defence;
+export under_attack;
+export mcdef;
+export ct;
+export sib_dul;
+
+every 3 do
+begin
+    sol:=FilterAllUnits([[f_side,ai],[f_class,class_soldier]]) ;
+
+    dep:=FilterAllUnits([[f_side,ai],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]) ;
+    eng:=FilterAllUnits([[f_side,ai],[f_class,class_engineer]]) ;
+
+    fact:=FilterAllUnits([[f_side,ai],[f_or,[f_btype,b_factory],[f_btype,b_workshop]]]) ;
+    ctrl:=FilterAllUnits([[f_side,ai],[f_btype,b_control_tower]]) ;
+    mec:=FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]) ;
+
+    lab:=FilterAllUnits([[f_side,ai],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) ;
+    sci:=FilterAllUnits([[f_side,ai],[f_class,class_scientistic]]) ;
+    sib_dul:=FilterAllUnits([[f_side,ai],[f_btype,b_siberite_mine],[f_distxy,101,93,5]]);
+    if sib_dul then
+      sib_dul:=sib_dul[1];
+end;
+
+//posily
+every 20$0 do
+var a, i;
+begin
+    InitUc;
+    InitHc;
+    uc_nation:=nation_american;
+    uc_side:=americans;
+    for i:=1 to 5 do begin
+       PrepareMechanic(0, 5);
+       hc_class:=class_soldier;
+       a:=CreateHuman;
+       PlaceUnitXYR(a, 21,2,5, false);
+       ComMoveXY(a, 25,32);
+       sol:=sol ^ a;
+    end;
+end;
+
+every 0$3 do
+var i, cm;
+begin
+   if ctrl then begin
+     cm:=UnitFilter(UnitsInside(ctrl[1]), [[f_class, class_mechanic]]);
+     for i in cm do
+        if UnitsLinked(i)>= GetSkill(i, skill_mechanical) then
+           cm:=cm diff i;
+     for i in attack do begin
+        if not IsControledBy(i) then
+          case cm of
+               1: ComLinkTo(i, cm[1]);
+               2: if UnitsLinked(cm[1]) <= UnitsLinked(cm[2]) then
+                    ComLinkTo(i, cm[1])
+                  else
+                    ComLinkTo(i, cm[2]);
+               3: if UnitsLinked(cm[1]) <= UnitsLinked(cm[2]) then
+                    if UnitsLinked(cm[1]) <= UnitsLinked(cm[3]) then
+                       ComLinkTo(i, cm[1])
+                    else
+                       ComLinkTo(i, cm[3])
+                  else
+                    if UnitsLinked(cm[2]) <= UnitsLinked(cm[3]) then
+                       ComLinkTo(i, cm[2])
+                    else
+                       ComLinkTo(i, cm[3]);
+          end;
+     end;
+   end;
+   enable;
+end;
+
+every 0$2 + 0$0.1 do
+var i,j, blds, hums, cars;
+begin
+   blds:=UnitFilter(fort, [[f_or,[f_btype,b_bunker],[f_btype,b_breastwork]],[f_not,[f_occupied]]]);
+//   wait(0$0.1);
+   hums:=[];
+   for i in sol do
+      if (IsIdle(i) and GetBType(IsInUnit(i))<>b_bunker and GetBType(IsInUnit(i))<>b_breastwork)
+          or GetBType(IsInUnit(i))=b_barracks or GetBType(IsInUnit(i))=b_armoury then
+         hums:=hums ^ [i];
+//   wait(0$0.1);
+
+   for i in blds do begin
+      j:=NearestUnitToUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+      ComExitBuilding(j);
+      AddComEnterUnit(j, i);
+      hums:=hums diff j;
+   end;
+//   wait(0$0.1);
+   cars:=UnitFilter(defence, [f_not,[f_occupied]]);
+//   wait(0$0.1);
+   for i in cars do begin
+      j:=NearestUnitToUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 20]]), i);
+      ComExitBuilding(j);
+      AddComEnterUnit(j, i);
+      hums:=hums diff j;
+   end;
+//   wait(0$0.1);
+
+   blds:=UnitFilter(fort diff blds, [f_not,[f_occupied]]);
+   for i in blds do
+      ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;
+
+every 0$2 + 0$0.5 do
+var i,j, blds, hums;
+begin
+   blds:=dep;
+   hums:=[];
+   for i in eng do
+      if IsIdle(i) and not IsInUnit(i) then hums:=hums ^ [i];
+
+   for i in blds do
+     ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;
+every 0$2 + 0$0.7 do
+var i,j, blds, hums;
+begin
+   blds:=fact;
+   hums:=[];
+   for i in mec do
+      if (IsIdle(i) and not IsInUnit(i)) or not IsInArea(i, def_base) then hums:=hums ^ [i];
+
+
+   for i in blds do
+     ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;
+every 0$2 + 0$0.35 do
+var i,j, bld, hums;
+begin
+   if ct<2 then
+     if ctrl then begin
+       bld:=ctrl[1];
+       hums:=[];
+
+       for i in get_x_best(mec, mec, skill_mechanical, 0, false) do
+          if GetBType(IsInUnit(i))<>b_control_tower and GetType(IsInUnit(i))<>unit_vehicle then
+             hums:=hums ^ [i];
+
+
+       ct:=ct union get_x_best(UnitFilter(mec, [[f_dist, bld, 50]]), 2, skill_mechanical, 0, false);
+       remove_from_humans(ct);
+       ComEnterUnit(ct, bld);
+
+     end;
+   enable;
+end;
+every 0$2 + 0$0.9 do
+var i,j, blds, hums;
+begin
+   blds:=lab;
+   hums:=[];
+   for i in sci do
+      if IsIdle(i) and not IsInUnit(i) then hums:=hums ^ [i];
+
+   for i in blds do
+     ComEnterUnit(UnitFilter(hums, [[f_side,Getside(i)],[f_dist, i, 30]]), i);
+
+   enable;
+end;
+every 0$2 + 0$0.8 do
+var i,j, blds, hums;
+begin
+   for i in a3 ^ a4 do begin
+     if IsIdle(i) and not IsInArea(i, def_base) and not IsInUnit(i) then
+       if GetDistUnitArea(i, abase3)<GetDistUnitArea(i, abase4) then
+         ComMoveToArea(i, abase3)
+       else
+         ComMoveToArea(i, abase4);
+     if IsIdle(IsInUnit(i)) and not IsInArea(IsInUnit(i), def_base) and IsInUnit(i) then
+       if GetDistUnitArea(IsInUnit(i), abase3)<GetDistUnitArea(IsInUnit(i), abase4) then
+         ComMoveToArea(IsInUnit(i), abase3)
+       else
+         ComMoveToArea(IsInUnit(i), abase4);
+   end;
+
+   enable;
+end;

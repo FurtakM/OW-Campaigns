@@ -1,0 +1,187 @@
+var am,amam,moji;
+
+var tmp,tmp2,max,zbytekz11a,zbytekz11b;
+starting
+begin
+  SA_OnMissionStart;
+  amam=1;
+  am=7;
+  moji=[];
+  changesidefog(amam,am);
+  revealfogarea(am,celamapa);
+  prepare_americans;
+  placeunitxy(john,55,14,false);
+  placeunitxy(roth,58,14,false);
+  centernowonunits([john,roth]);
+
+  interface_hidden=true;
+  dialogueon;
+  dwait(0$0.5);
+  say(roth,'DStart-Roth-1');
+  say(john,'DStart-JMM-1');
+  say(roth,'DStart-Roth-2');
+  say(john,'DStart-JMM-2');
+  say(roth,'DStart-Roth-3');
+  say(john,'DStart-JMM-3');
+  say(roth,'DStart-Roth-4');
+  say(john,'DStart-JMM-4');
+  say(roth,'DStart-Roth-5');
+  say(john,'DStart-JMM-5');
+  say(roth,'DStart-Roth-6');
+  dialogueoff;
+  tmp=12-na+zbytekz11;  //was 11, ale pridal jsem browna a lucy a dal jsem frank=>!yamoko
+  randomizeall;
+  if tmp<7 then
+    for tmp2=tmp+1 to 7 do begin
+      max=rand(1,2);
+      //if max=2 then max=4;
+      preparehuman(rand(1,2),[class_soldier,class_scientistic][max],6);   //sex,cl,lev
+      zbytekz11=zbytekz11^[createhuman];
+    end;
+  tmp2=0;
+  if not denis then tmp2=tmp2+1;
+  if not simms then tmp2=tmp2+1;
+  max=5+tmp2;
+
+  moji=[denis,simms]^characterselection('',max-2,max,
+    [sel_change_class,john,roth,denis,simms,sel_not_hired,sel_changeable,joan,bobby,cyrus,lisa,frank,markc,brown,lucy,tim,yamoko,gary]^zbytekz11,
+    [[class_scientistic,3],[class_sniper,0,3],class_soldier]);
+
+  if (denis=0) then savevariable(0,'denis')
+  else if (denis in moji) then begin savevariable(1,'denis');moji=moji diff [denis];end
+  else savevariable(2,'denis');
+  savecharacters(denis,'Denis');
+  if (simms=0) then savevariable(0,'simms')
+  else if (simms in moji) then begin savevariable(1,'simms');moji=moji diff [simms];end
+  else savevariable(2,'simms');
+  savecharacters(simms,'Simms');
+  if (joan=0) then savevariable(0,'joan')
+  else if (joan in moji) then begin savevariable(1,'joan');moji=moji diff [joan];end
+  else savevariable(2,'joan');
+  savecharacters(joan,'Joan');
+  if (bobby=0) then savevariable(0,'bobby')
+  else if (bobby in moji) then begin savevariable(1,'bobby');moji=moji diff [bobby];end
+  else savevariable(2,'bobby');
+  savecharacters(bobby,'Bobby');
+  if (cyrus=0) then savevariable(0,'cyrus')
+  else if (cyrus in moji) then begin savevariable(1,'cyrus');moji=moji diff [cyrus];end
+  else savevariable(2,'cyrus');
+  savecharacters(cyrus,'Cyrus');
+  if (lisa=0) then savevariable(0,'lisa')
+  else if (lisa in moji) then begin savevariable(1,'lisa');moji=moji diff [lisa];end
+  else savevariable(2,'lisa');
+  savecharacters(lisa,'Lisa');
+  if (frank=0) then savevariable(0,'frank')
+  else if (frank in moji) then begin savevariable(1,'frank');moji=moji diff [frank];end
+  else savevariable(2,'frank');
+  savecharacters(frank,'Frank');
+  if (markc=0) then savevariable(0,'cornell')
+  else if (markc in moji) then begin savevariable(1,'cornell');moji=moji diff [markc];end
+  else savevariable(2,'cornell');
+  savecharacters(markc,'Cornell');
+
+  if (brown=0) then savevariable(0,'brown')
+  else if (brown in moji) then begin savevariable(1,'brown');moji=moji diff [brown];end
+  else savevariable(2,'brown');
+  savecharacters(brown,'Brown');
+  if (lucy=0) then savevariable(0,'lucy')
+  else if (lucy in moji) then begin savevariable(1,'lucy');moji=moji diff [lucy];end
+  else savevariable(2,'lucy');
+  savecharacters(lucy,'Donaldson');
+
+  if (tim=0) then savevariable(0,'gladstone')
+  else if (tim in moji) then begin savevariable(1,'gladstone');moji=moji diff [tim];end
+  else savevariable(2,'gladstone');
+  savecharacters(tim,'Gladstone');
+  if (yamoko=0) then savevariable(0,'yamoko')
+  else if (yamoko in moji) then begin savevariable(1,'yamoko');moji=moji diff [yamoko];end
+  else savevariable(2,'yamoko');
+  if yamoko then savecharacters(yamoko,'Yamoko');
+  if (gary=0) then savevariable(0,'gary')
+  else if (gary in moji) then begin savevariable(1,'gary');moji=moji diff [gary];end
+  else savevariable(2,'gary');
+  savecharacters(gary,'Gary');
+
+  savevariable(0+moji,'mojiam12a_c');
+  savecharacters(moji,'mojiam12a');
+
+  savecharacters((zbytekz11a^zbytekz11b) isect moji,'otherwithJMM');
+  savecharacters((zbytekz11a^zbytekz11b) diff moji,'othernotJMM');
+
+  wait(0$1);
+  interface_hidden=false;
+  changemap('1','%_cont');
+//  youwin;
+end;
+
+var john,powell,roth,joan,bobby,cyrus,lisa,frank,markc,tim,denis,yamoko,gary,simms,zbytekz11;
+var lucy,brown;
+
+var na;
+function prepare_americans;
+var tmp;
+begin
+//load jednotek
+  uc_side=am;
+  if checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+
+//  if checkcharacterset('Roth') then roth=createcharacterwithclass('Roth',class_scientistic)
+//  else buildquery('neny Roth',['OK']);
+  // -- patched by MK on Oct 5 --       
+  roth=newcharacter('Roth');
+  if not roth then buildquery('neny Roth',['OK']);
+
+//  if checkcharacterset('Powell') then powell=createcharacter('Powell')
+//  else buildquery('neny Powell',['OK']);
+  powell=newcharacter('Powell');
+  if not powell then buildquery('neny Powell',['OK']);
+
+//  if not testcharacters('Donaldson') then msg('neny Lucy');  //debug
+
+  na=0;
+  if checkcharacterset('Joan') then joan=createcharacterwithclass('Joan',class_scientistic)
+  else begin joan=0;na=na+1;end;
+  if checkcharacterset('Bobby') then bobby=createcharacterwithclass('Bobby',class_soldier)
+  else begin bobby=0;na=na+1;end;
+  if checkcharacterset('Cyrus') then cyrus=createcharacterwithclass('Cyrus',class_soldier)
+  else begin cyrus=0;na=na+1;end;
+  if checkcharacterset('Lisa') then lisa=createcharacterwithclass('Lisa',class_soldier)
+  else begin lisa=0;na=na+1;end;
+  if checkcharacterset('Frank') then frank=createcharacterwithclass('Frank',class_sniper)
+  else begin frank=0;na=na+1;end;
+  if checkcharacterset('Cornell') then markc=createcharacterwithclass('Cornell',class_soldier)
+  else begin markc=0;na=na+1;end;
+
+  if checkcharacterset('Brown') then brown=createcharacterwithclass('Brown',class_soldier)
+  else begin brown=0;na=na+1;end;
+  if checkcharacterset('Donaldson') then lucy=createcharacterwithclass('Donaldson',class_soldier)
+  else begin lucy=0;na=na+1;end;
+
+  if checkcharacterset('Gladstone') then tim=createcharacterwithclass('Gladstone',class_scientistic)
+  else begin tim=0;na=na+1;end;
+  if checkcharacterset('Denis') then denis=createcharacterwithclass('Denis',class_scientistic)
+  else begin denis=0;na=na+1;end;
+  if not frank then
+    if checkcharacterset('Yamoko') then yamoko=createcharacterwithclass('Yamoko',class_soldier)
+    else begin yamoko=0;na=na+1;end
+  else begin yamoko=0;na=na+1;end;
+  if checkcharacterset('Gary') then gary=createcharacterwithclass('Gary',class_soldier)
+  else begin gary=0;na=na+1;end;
+  if checkcharacterset('Simms') then simms=createcharacterwithclass('Simms',class_scientistic)
+  else begin simms=0;na=na+1;end;
+
+  zbytekz11a=[];
+  zbytekz11b=[];
+  if checkcharacterset('otherwithJMM') then zbytekz11a=createcharacterset('otherwithJMM')
+  else buildquery('neny otherwithJMM',['OK']);
+  if checkcharacterset('othernotJMM') then zbytekz11b=createcharacterset('othernotJMM')
+  else buildquery('neny othernotJMM',['OK']);
+  zbytekz11=zbytekz11a^zbytekz11b;
+
+  for tmp in zbytekz11 do
+    if (getclass(tmp)=class_mechanic) or (getclass(tmp)=class_engineer) or (getclass(tmp)=class_mortar) then
+      if getskill(tmp,skill_scientistic)>getskill(tmp,skill_combat) then setclass(tmp,class_scientistic)
+      else setclass(tmp,class_soldier);
+
+end;

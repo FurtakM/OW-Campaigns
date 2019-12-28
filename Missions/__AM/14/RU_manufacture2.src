@@ -1,0 +1,153 @@
+export base_crates,base_oil,base_siberit;
+export busy_fact1,busy_fact2;                // identifikatory produkce tovaren
+export vyber_pro_tovarnu;                    // identifikator pro kterou fabriku se vybiraji komponenty
+
+
+var hotove_vozidlo,volna_tovarna;            // identifikatory prave vyrobeneho vozidla a tovarny
+var cekat_dodavku;
+var time_fact1,time_fact2;                   // random posun pri vyrobe vozidel
+
+export function startup_manufacturing;
+begin
+  busy_fact1:=false;
+  busy_fact2:=false;
+
+  time_fact1:=Rand(0$20,1$0);
+  time_fact2:=Rand(0$20,1$0);
+
+end;
+
+
+// zjistovani aktualniho stavu zdroju v zakladne
+function zjisti_zdroje;
+var base;
+begin
+  base:=GetBase(ru_depot);
+  base_crates:=GetResourceType(base,mat_cans);
+  base_oil:=GetResourceType(base,mat_oil);
+  base_siberit:=GetResourceType(base,mat_siberit);
+end;
+
+// vyber nejvhodnejsich komponent podle dostupnych zdroju
+function vyber_komponenty;
+var specialni;                      // manual control, time_lapser, crane
+begin
+  cekat_dodavku:=true;
+  specialni:=true;
+
+  // vyber medium podvozku a zbrane
+  if base_crates<65 then
+    begin
+      cekat_dodavku:=false;
+      specialni:=false;
+      vc_weapon:=ru_rocket_launcher;
+      vc_chassis:=ru_medium_tracked;
+
+      if base_crates<60 then
+        vc_chassis:=ru_medium_wheeled;
+      if base_crates<55 then
+        begin
+          vc_chassis:=ru_medium_tracked;
+          vc_weapon:=ru_gatling_gun;
+        end;
+      if base_crates<50 then
+        vc_chassis:=ru_medium_wheeled;
+    end;
+
+  // vyber heavy podvozku a zbrane
+  if (base_crates>=65) and (vyber_pro_tovarnu=1) then
+    begin
+      cekat_dodavku:=false;
+      specialni:=false;
+      vc_weapon:=ru_heavy_gun;
+      vc_chassis:=ru_heavy_tracked;
+
+      if base_crates<80 then
+        vc_chassis:=ru_heavy_wheeled;
+      if base_crates<70 then
+        begin
+          vc_weapon:=ru_rocket;
+          vc_chassis:=ru_heavy_tracked;
+        end;
+      if base_crates<65 then
+        vc_chassis:=ru_heavy_wheeled;
+    end;
+
+  if (base_crates>=70) and (vyber_pro_tovarnu=2) then
+    begin
+      cekat_dodavku:=false;
+      specialni:=false;
+      vc_weapon:=ru_rocket;
+      vc_chassis:=ru_heavy_tracked;
+
+      if base_crates<75 then
+        vc_chassis:=ru_heavy_wheeled;
+    end;
+
+  // vyber druhu rizeni - prioritne manualni, pokud manualni auta nepokryvaji pocet rusu
+  if not specialni then
+    begin
+      vc_control:=control_computer;
+      if (vc_chassis > 22) and (base_siberit >= 10) then
+        begin
+          vc_engine:=engine_siberite;
+          cekat_dodavku:=false;
+        end
+      else
+        if base_oil>=30 then
+          begin
+            vc_engine:=engine_combustion;
+            cekat_dodavku:=false;
+          end;
+    end;
+end;
+
+
+// detecting finished vehicle
+on VehicleConstructed(hotove_vozidlo,volna_tovarna) do
+begin
+  war_forces:=war_forces^hotove_vozidlo;
+  collect_war_forces;
+    case volna_tovarna of
+  ru_fact1: busy_fact1:=false;
+  ru_fact2: busy_fact2:=false;
+    end;
+end;
+
+// Factory 1 production
+every 0$20 trigger UnitsInside(ru_fact1) and (not busy_fact1) and (TICK>=time_fact1) do
+var un;
+begin
+  zjisti_zdroje;
+  if base_crates>=40 then
+    begin
+      vyber_pro_tovarnu:=1;
+      vyber_komponenty;
+      if not cekat_dodavku then
+        begin
+          ComConstruct (ru_fact1, vc_chassis, vc_engine, vc_control, vc_weapon);
+          busy_fact1:=true;
+        end;
+    end;
+  time_fact1:=TICK+Rand(0$40,1$20);
+  Enable;
+end;
+
+// Factory 2 production
+every 0$20 trigger UnitsInside(ru_fact2) and (not busy_fact2) and (TICK>=time_fact2) do
+var un;
+begin
+  zjisti_zdroje;
+  if base_crates>=40 then
+    begin
+      vyber_pro_tovarnu:=2;
+      vyber_komponenty;
+      if not cekat_dodavku then
+        begin
+          ComConstruct (ru_fact2, vc_chassis, vc_engine, vc_control, vc_weapon);
+          busy_fact2:=true;
+        end;
+    end;
+  time_fact2:=TICK+Rand(0$40,1$20);
+  Enable;
+end;

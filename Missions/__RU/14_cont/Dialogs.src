@@ -1,0 +1,301 @@
+// Dialogy.
+
+
+Function najdi_nekoho;
+Var Lidi;
+Begin
+  Lidi = FilterAllUnits ([[F_SIDE, side_Ru], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_NATION, NATION_RUSSIAN], [F_SEX, SEX_MALE]]) diff [Burlak];
+  Lidi = bez_opic (Lidi);
+  If Lidi then Result = Lidi [1]
+  else Result = Burlak;
+End;
+
+
+Function najdi_nekohoMF;
+Var Lidi;
+Begin
+  Lidi = FilterAllUnits ([[F_SIDE, side_Ru], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_NATION, NATION_RUSSIAN]]) diff [Burlak];
+  Lidi = bez_opic (Lidi);
+  If Lidi then Result = Lidi [1]
+  else Result = Burlak;
+End;
+
+
+Function najdi_vojaka;
+Var Vojaci;
+Begin
+  Vojaci = FilterAllUnits ([[F_SIDE, side_Ru], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_NATION, NATION_RUSSIAN], [F_CLASS, CLASS_SOLDIER], [F_SEX, SEX_MALE]]) diff [Burlak];
+  Vojaci = bez_opic (Vojaci);
+  If Vojaci then Result = Vojaci [1]
+  else Result = najdi_nekoho;
+End;
+
+
+Function najdi_vedce;
+Var Vojaci;
+Begin
+  Vojaci = FilterAllUnits ([[F_SIDE, side_Ru], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_NATION, NATION_RUSSIAN], [F_CLASS, CLASS_SCIENTISTIC], [F_SEX, SEX_MALE]]) diff [Burlak];
+  Vojaci = bez_opic (Vojaci);
+  If Vojaci then Result = Vojaci [1]
+  else Result = 0;
+End;
+
+
+Function najdi_vedceMF;
+Var Vojaci;
+Begin
+  Vojaci = FilterAllUnits ([[F_SIDE, side_Ru], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_NATION, NATION_RUSSIAN], [F_CLASS, CLASS_SCIENTISTIC]]) diff [Burlak];
+  Vojaci = bez_opic (Vojaci);
+  If Vojaci then Result = Vojaci [1]
+  else Result = 0;
+End;
+
+
+Function najdi_sejka;
+Var Lidi, Sejkove;
+Begin
+  Lidi = FilterAllUnits ([[F_SIDE, side_Ar], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_SEX, SEX_MALE]]);
+  Lidi = bez_opic (Lidi);
+  Sejkove = UnitFilter (Lidi, [[F_CLASS, CLASS_DESERT_WARIOR]]);
+  If Sejkove then Result = Sejkove [1]
+  else If Lidi then Result = Lidi [1]
+  else Result = 0;
+End;
+
+
+Function najdi_araba;
+Var Lidi;
+Begin
+  Lidi = FilterAllUnits ([[F_SIDE, side_Ar], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_SEX, SEX_MALE]]);
+  Lidi = bez_opic (Lidi);
+  If Lidi then Result = Lidi [1]
+  else Result = 0;
+End;
+
+
+Export Function dialog_Start;
+Var V;
+Begin
+  V = najdi_vojaka;
+  If not V then V = najdi_nekoho;
+  If V then Say (V, 'DStart-RSol1-1');
+  Say (Burlak, 'DStart-Bur-1');
+End;
+
+
+Export Function dialog_AmAttack;
+Var G;
+Begin
+  If Gladkov then G = Gladkov else G = GladkovFake;
+  SayRadio (G, 'DAmAttack-Gla-1');
+  SayRadio (Burlak, 'DAmAttack-Bur-1');
+  SayRadio (G, 'DAmAttack-Gla-2');
+  SayRadio (Burlak, 'DAmAttack-Bur-2');
+  Say (Burlak, 'DAmAttack-Bur-2a');
+End;
+
+
+Export Function dialog_LegionOfferHeike1;
+Begin
+  SayRadio (Heike, 'DLegionOfferHeike1-Hke-1');
+  SayRadio (Burlak, 'DLegionOfferHeike1-Bur-1');
+  SayRadio (Heike, 'DLegionOfferHeike1-Hke-2');
+End;
+
+
+Export Function dialog_LegionOfferHeike2;
+Begin
+  SayRadio (Heike, 'DLegionOfferHeike1-Hke-2a');
+  SayRadio (Burlak, 'DLegionOfferHeike1-Bur-2');
+  SayRadio (Heike, 'DLegionOfferHeike1-Hke-3');
+End;
+
+
+Export Function dialog_LegionOfferHeikeCont;
+Begin
+  SayRadio (Heike, 'DLegionOfferHeikeCont-Hke-1');
+End;
+
+
+Export Function query_LegionHeike;
+Begin
+  Result = Query ('QLegionHeike');
+End;
+
+
+Export Function dialog_QrLegionHeike13;
+Begin
+  SayRadio (Burlak, 'DQrLegionHeike#1-2-Bur-1');
+End;
+
+
+Export Function dialog_QrLegionHeike4;
+Begin
+  SayRadio (Burlak, 'DQrLegionHeike#3-Bur-1');
+End;
+
+
+Export Function dialog_LegionOfferFarmer;
+Begin
+  SayRadio (Farmer, 'DLegionOfferFarmer-Frm-1');
+  SayRadio (Burlak, 'DLegionOfferFarmer-Bur-1');
+  SayRadio (Farmer, 'DLegionOfferFarmer-Frm-2');
+End;
+
+
+Export Function query_LegionFarmer;
+Begin
+  Result = Query ('QLegionFarmer');
+End;
+
+
+Export Function dialog_QrLegionFarmer13;
+Begin
+  SayRadio (Burlak, 'DQrLegionFarmer#1-3-Bur-1');
+End;
+
+
+Export Function dialog_QrLegionFarmer4;
+Begin
+  SayRadio (Burlak, 'DQrLegionFarmer#4-Bur-1');
+End;
+
+
+Export Function dialog_LegionFugit;
+Begin
+  Say (Bergkamp, 'DLegionFugit-Brg-1');
+  Say (Burlak, 'DLegionFugit-Bur-1');
+  Say (Bergkamp, 'DLegionFugit-Brg-2');
+End;
+
+
+Export Function query_LegionBergkamp;
+Begin
+  Result = Query ('QLegionBergkamp');
+End;
+
+
+Export Function dialog_QrLegionBergkamp1;
+Begin
+  Say (Burlak, 'DQrLegionBergkamp#1-Bur-1');
+  Say (Bergkamp, 'DQrLegionBergkamp#1-Brg-1');
+End;
+
+
+Export Function dialog_QrLegionBergkamp2;
+Begin
+  Say (Burlak, 'DQrLegionBergkamp#2-Bur-1');
+End;
+
+
+Export Function dialog_LegionLeave;
+Begin
+  If not IsOk (Bergkamp) then Exit;
+  If LegionOffer_Accepted then Say (Bergkamp, 'DLegionLeave-Brg-1')
+  else Begin
+    Say (Bergkamp, 'DLegionLeave-Brg-1a');
+    Say (Burlak, 'DLegionLeave-Bur-1');
+    Say (Bergkamp, 'DLegionLeave-Brg-2');
+  End;
+End;
+
+
+Export Function dialog_LegionSpy;
+Var V;
+Begin
+  V = najdi_vedce;
+  If not V then V = najdi_nekoho;
+  If V then Say (V, 'DLegionSpy-Sci1-1');
+  Say (Burlak, 'DLegionSpy-Bur-1');
+End;
+
+
+Export Function dialog_LegionChallengeHeike;
+Begin
+  SayRadio (Burlak, 'DLegionChallengeHeike-Bur-1');
+  SayRadio (Heike, 'DLegionChallengeHeike-Hke-1');
+  SayRadio (Burlak, 'DLegionChallengeHeike-Bur-2');
+  If OmarKilled then SayRadio (Heike, 'DLegionChallengeHeike-Hke-2');
+End;
+
+
+Export Function dialog_LegionChallengeFarmer;
+Begin
+  SayRadio (Burlak, 'DLegionChallengeFarmer-Bur-1');
+  SayRadio (Farmer, 'DLegionChallengeFarmer-Frm-1');
+  SayRadio (Burlak, 'DLegionChallengeFarmer-Bur-2');
+  SayRadio (Farmer, 'DLegionChallengeFarmer-Frm-2');
+  SayRadio (Burlak, 'DLegionChallengeFarmer-Bur-3');
+End;
+
+
+Export Function dialog_Contam;
+Var V;
+Begin
+  V = najdi_vedce;
+  If not V then V = najdi_nekoho;
+  If V and (V <> Burlak) then
+  Begin
+    Say (V, 'DContam-Sci1-1');
+    Say (Burlak, 'DContam-Bur-1');
+    Say (V, 'DContam-Sci1-2');
+    Say (Burlak, 'DContam-Bur-2');
+  End;
+End;
+
+
+Export Function dialog_SurrenderArabians;
+Var V;
+Begin
+  If IsOK (Abdul) then Say (Abdul, 'DSurrenderArabians-Abd-1')
+  else Begin
+    If Omar and IsOk (Omar) then V = Omar
+    else V = najdi_sejka;
+    If not V then V = najdi_araba;
+    If V then Say (V, 'DSurrenderArabians-ArSol1-1');
+  End;
+End;
+
+
+Export Function dialog_BehemothTechno1;
+Var V;
+Begin
+  Say (Burlak, 'DBehemothTechno-Bur-1');
+  If Petrosyan and IsOk (Petrosyan) then Say (Petrosyan, 'DBehemothTechno-Pty-1')
+  else Begin
+    V = najdi_vedceMF;
+    If not V then V = najdi_nekoho;
+    If GetSex (V) = SEX_MALE then Say (V, 'DBehemothTechno-Sci-1')
+    else If GetSex (V) = SEX_FEMALE then Say (V, 'DBehemothTechno-FSci1-1');
+  End;
+End;
+
+
+Export Function dialog_BehemothTechno2;
+Var V;
+Begin
+  Say (Burlak, 'DBehemothTechno-Bur-2');
+  V = najdi_vedceMF;
+  If not V then V = najdi_nekoho;
+  If GetSex (V) = SEX_MALE then Say (V, 'DBehemothTechno-Sci-2')
+  else If GetSex (V) = SEX_FEMALE then Say (V, 'DBehemothTechno-FSci1-2');
+End;
+
+
+Export Function dialog_BehemothComplete;
+Var Vsichni, Seznam, Vedci, Kdo;
+Begin
+  Seznam = FilterAllUnits ([[F_SIDE, side_Ru], [F_OK], [F_PLACED], [F_TYPE, UNIT_HUMAN], [F_SEX, SEX_MALE]]) diff [Burlak];
+  Vedci = UnitFilter (Vsichni, [[F_CLASS, CLASS_SCIENTISTIC]]);
+  Vsichni = Vedci ^ (Seznam diff Vedci);
+  If Vsichni >= 1 then
+  Begin
+    Kdo = Vsichni [1];
+    Say (Kdo, 'DBehemothComplete-Sci-1');
+    Say (Kdo, 'DBehemothComplete-Sci-1a');
+    Say (Kdo, 'DBehemothComplete-Sci-1b');
+  End;
+  Hint ('Behemoth');
+End;
+
+

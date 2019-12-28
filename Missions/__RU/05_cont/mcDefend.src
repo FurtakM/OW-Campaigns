@@ -1,0 +1,126 @@
+{WaitForMc i mcid
+// waits for finishing of macro mcid
+ExistMc i mcid
+// if macro mcid exists, returns true, otherwise false
+KillMc i mcid
+// if macro mcid exists, closes macro and returns true; otherwise returns false
+GetUnitMc i un
+// returns mcid of macro which uses unit un; returns zero if not used
+GetMcUnits i mcid
+// returns list of units of the macro mcid
+AddMcUnits il mcid, units
+// changes list of units of the macro mcid; returns true if succesfull
+RemoveMcUnits il mcid, units
+// changes list of units of the macro mcid; returns true if succesfull
+
+McBase illlll prior, units, build, research, construct, options
+// runs macro and returns mcid
+// build must be BuildList, researchs - list of techs, construct - not implemented
+
+McMove illl prior, units, waypoints, options
+// runs macro and returns mcid
+// informace u Pedra
+
+McRegistry il side, options
+// Runs macro for automatic registration of enemies of side in specified intervals and returns mcid.
+// Every registration gives count and strength of all registered units as its result. If registration
+// returns different result than a previous (or nonzero in first registration), it raises event:
+//
+// McRegistrationResultChanges(mcid,count,strength).
+//
+// Value of strength has no real meaning, use it only for comparation with another result of
+// macro or for comparation with zero.
+//
+// Posible options (note that defarea can be given in two formats, as 'areanumber' or as '[x,y,r]'):
+//
+//   [mc_reg_refresh_time, ticks]            ... interval between two registrations (default 0$1)
+//   [mc_reg_area_to_guard, defarea]         ... registries enemies in defined area (default none)
+//   [mc_reg_area_to_protect, defarea]       ... registries enemies attacking units in specified area (default none)
+//   [mc_reg_units_to_protect, listofunits]  ... registries enemies attackign specified units (default none)
+//   [mc_reg_expire_stops_to_attack, ticks]  ... how long after enemy stops to attack the registration expires (default 0$3)
+//   [mc_reg_expire_leaves_area, ticks]      ... how long after enemy leaves area the registration expires (default 0$2)
+//   (-)mc_reg_ignore_fog                    ... ignores fog so you can see all enemies in area (default false)
+//   (-)mc_reg_only_important                ... doesn't raise event if result changes from nonzero value to another nonzero value (default false)
+//
+McRegistryChangeOptions il mcid, options
+// changes options of McRegistry with ident mcid
+
+McDefend iill prior, regid, units, options
+// runs McDefend macro and returns mcid
+// There must be running McRegistry macro to start McDefend - enemies are registred by this McRegistry. McDefend
+// starts after each registration of this McRegistry. Parameters:
+//
+//   [mc_def_advantage, percent]       ... how great advantage over enemy is enough (default 200, twice)
+//   [mc_area_dont_leave, defarea] ... area where must all defenders be (default none)
+//   (-)mc_change_to_soldiers          ... set here if McDefend can switch people to soldiers
+//   (-)mc_change_to_mechanics         ... set here if McDefend can switch people to mechanics
+
+McAttack iill prior, regid, units, options
+// runs McAttack macro and returns mcid
+// There must be running McRegistry macro to start McAttack - enemies are registred by this McRegistry. McAttack
+// starts after each registration of this McRegistry.
+
+McPatrol iill prior, regid, units, options
+// runs McPatrol macro and returns mcid
+// There must be running McRegistry macro to start McPatrol - enemies are registred by this McRegistry. McPatrol
+// starts after each registration of this McRegistry.
+}
+{
+McDone ii mcid, state
+// macro mcid closes with state state
+
+McRegistryResultChanges iii mcid, count, strength
+// McRegistration tick returns different result than previous tick
+McDefendTakesUnit ii mcid, unit
+// McDefend start to use an unit to do defend tasks
+McDefendReturnsUnit ii mcid, unit
+// McDefend stops to use an unit
+
+McAttackOutOfFuel ii mcid, un
+// A vehicle un in McAttack macro mcid is running out of fuel
+McAttackDone ii mcid, surv
+// McAttack finished with surv survivers
+
+McPatrolOutOfFuel ii mcid, un
+// A vehicle un in McPatrol macro mcid is running out of fuel
+McPatrolSeesEnemy ii mcid, un
+// McPatrol mcid sees an enemy unit un
+}
+
+var rDef1, rDef2;
+var idDef1, idDef2;
+export toDef1, toDef2;
+every 0$1 do
+begin
+   todef1:=fort ^ attack ^ defence ^ mor ^ sol ^ sci ^ mec ^ eng;
+
+
+   rDef1:=McRegistry(arabians, [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, def_base],[mc_reg_area_to_protect,def_base]]);
+//   [mc_reg_refresh_time, ticks]            ... interval between two registrations (default 0$1)
+//   [mc_reg_area_to_guard, defarea]         ... registries enemies in defined area (default none)
+//   [mc_reg_area_to_protect, defarea]       ... registries enemies attacking units in specified area (default none)
+//   [mc_reg_units_to_protect, listofunits]  ... registries enemies attackign specified units (default none)
+//   [mc_reg_expire_stops_to_attack, ticks]  ... how long after enemy stops to attack the registration expires (default 0$3)
+//   [mc_reg_expire_leaves_area, ticks]      ... how long after enemy leaves area the registration expires (default 0$2)
+//   (-)mc_reg_ignore_fog                    ... ignores fog so you can see all enemies in area (default false)
+//   (-)mc_reg_only_important                ... doesn't raise event if result changes from nonzero value to another nonzero value (default false)
+//)
+   idDef1:=McDefend(10, rDef1, toDef1,[mc_def_advantage, mcdef_difficulty]);//-mc_change_to_soldiers, -mc_change_to_mechanics]);
+// runs McDefend macro and returns mcid
+// There must be running McRegistry macro to start McDefend - enemies are registred by this McRegistry. McDefend
+// starts after each registration of this McRegistry. Parameters:
+//
+//   [mc_def_advantage, percent]       ... how great advantage over enemy is enough (default 200, twice)
+//   [mc_area_dont_leave, defarea] ... area where must all defenders be (default none)
+//   (-)mc_change_to_soldiers          ... set here if McDefend can switch people to soldiers
+//   (-)mc_change_to_mechanics         ... set here if McDefend can switch people to mechanics
+end;
+every 0$2 do
+begin
+   todef1:=fort ^ attack ^ defence ^ mor ^ sol;
+
+   AddMcUnits(idDef1, todef1 diff GetMcUnits(idDef1));
+   RemoveMcUnits(idDef1, GetMcUnits(idDef1) diff todef1);
+
+   enable;
+end;

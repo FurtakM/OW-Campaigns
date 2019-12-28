@@ -1,0 +1,118 @@
+export you, americans, arabians, neutral, you2;
+export rulive, apemans;
+
+export DefendLast;
+export action_was_fast, breaked_trough;
+export Stevens_killed;
+export wait_while;
+export mcdef_difficulty;
+export depot;
+export mezera_mezi_minami;
+export pocet_min;
+export breaketrough_time;
+export first_attack;
+
+//skupiny jednotek
+export sol, mor, sci, mec, eng, rmec;
+export cargo, scout, attack, defence, remote;
+export to_defence, to_attack, to_scout, to_cargo, to_remote;
+export vodni_utok, normal1_utok, normal2_utok, normal3_utok, normal4_utok;
+export fact1, dep1, lab1;
+export fort;
+export ape_agress;
+export first_apeman_tamed;
+
+export dialogy, canlost, debug;
+
+Export StevensStayInBase;
+
+starting
+begin
+  dialogy:=true; //def true
+  canlost:=true; //def true
+  debug:=false; //def false
+  disable(99);
+  stevens_killed:=false;
+
+  StevensStayInBase = 0;
+
+  RemoveUnit(Mastodon);
+  set_sides;
+  set_difficulty;
+  load_chars;
+  place_apes;
+  place_in_ru_cars;
+  place_ru_cars(ru_place2);
+  create_arabs_scout;
+  if dialogy then DIntro;
+  place_arabs_base;
+end;
+
+function set_difficulty;
+begin
+   mcdef_difficulty:=[170,200,130][difficulty];
+   breaketrough_time:=[72$0,55$0,35$0][difficulty];
+   mezera_mezi_minami:=[4$0,2$0,1$0][difficulty];
+   pocet_min:=[1,2,3][difficulty];
+   ape_agress:=[[-15,-10],[-2,2],[2,15]][difficulty];
+end;
+
+function set_sides;
+begin
+  you:=3;
+  you2:=6;
+  americans:=1;
+  arabians:=2;
+  neutral:=0;
+end;
+
+export function Vyhra;
+begin
+    set_medals;
+    GiveMedals('Main');
+    RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_russian]]));
+    Save;
+    YouWin;
+end;
+
+export function set_medals;
+begin
+     AddMedal('Time', action_was_fast);
+     if first_apeman_tamed then
+       AddMedal('Apemen', 1)
+     else begin
+       if GetTech(tech_ApeLang, you)=state_researched then
+         AddMedal('Apemen', -1)
+       else
+         AddMedal('Apemen', -2);
+     end;
+     AddMedal('Abdul', IsDead(Omar));
+end;
+
+every 0$7 trigger FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_russian]])<6 do
+begin
+    if canlost then YouLost('Survive');
+end;
+
+//cas
+every 0$1 do
+begin
+  if debug then display_strings:=[
+                     ['cas: ' & (tick div 1$0) & ':' & ((tick mod 1$0) div 0$1)],
+                     ['mines',mines],
+                     ['crates',crates],
+                     ['attack',attack],
+                     ['defence',defence],
+                     ['sol',sol],
+                     ['mor',mor],
+                     ['eng',eng],
+                     ['mec',mec],
+                     ['sci',sci],
+                     ['brk_cars',brk_cars],
+                     ['opravit',opravit],
+                     ['stavi',stavi],
+                     ['todef1', todef1]
+                                 ];
+  enable;//------------
+end;
+

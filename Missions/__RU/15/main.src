@@ -1,0 +1,268 @@
+export ru,am,al,le,sr;
+
+export ams0,ams1,ams2,ams3,ams4;
+export ams0_sk,ams1_sk,ams2_sk,ams3_sk,ams4_sk;
+export ams_1,ams_2,ams_3,ams_4;
+export ams_1_sk,ams_2_sk,ams_3_sk,ams_4_sk;
+export amm0,amm0_sk,amm1,amm1_sk,amm2,amm2_sk,amm3,amm3_sk,amm4,amm4_sk,amm5,amm5_sk,amm6,amm6_sk;
+export amv1,amv1_ch,amv1_wp,amv2,amv2_ch,amv2_wp,amv3,amv3_ch,amv3_wp,amv4,amv4_ch,amv4_wp,amv5,amv5_ch,amv5_wp,amv6,amv6_ch,amv6_wp;
+export amsm0,amsm1,amsm2,amsm3,amsm4,amsm5;
+export amsm0_sk,amsm1_sk,amsm2_sk,amsm3_sk,amsm4_sk,amsm5_sk;
+export amsn0,amsn0_sk,amsn1,amsn1_sk,amsn2,amsn2_sk;
+export ame0,ame0_sk,ame1,ame1_sk,ame2,ame2_sk,ame3,ame3_sk,ame4,ame4_sk;
+
+export als0,als1,als2,als3,als4;
+export als0_sk,als1_sk,als2_sk,als3_sk,als4_sk;
+export als_1,als_2,als_3,als_4;
+export als_1_sk,als_2_sk,als_3_sk,als_4_sk;
+export als__1,als__2,als__3,als__4;
+export als__1_sk,als__2_sk,als__3_sk,als__4_sk;
+export alm0,alm0_sk,alm1,alm1_sk,alm2,alm2_sk,alm3,alm3_sk,alm4,alm4_sk,alm5,alm5_sk,alm6,alm6_sk;
+export alv1,alv1_ch,alv1_wp,alv2,alv2_ch,alv2_wp,alv3,alv3_ch,alv3_wp,alv4,alv4_ch,alv4_wp,alv5,alv5_ch,alv5_wp,alv6,alv6_ch,alv6_wp;
+export alsn0,alsn0_sk,alsn1,alsn1_sk,alsn2,alsn2_sk;
+export ale0,ale0_sk,ale1,ale1_sk,ale2,ale2_sk,ale3,ale3_sk;
+
+export les0,les1,les2;
+export les0_sk,les1_sk,les2_sk;
+export les_1,les_2,les_3,les_4;
+export les_1_sk,les_2_sk,les_3_sk,les_4_sk;
+export lem0,lem0_sk,lem1,lem1_sk,lem2,lem2_sk,lem3,lem3_sk;
+export lev1,lev1_ch,lev1_wp,lev2,lev2_ch,lev2_wp,lev3,lev3_ch,lev3_wp;
+export lee0,lee0_sk,lee1,lee1_sk,lee2,lee2_sk;
+export lesc_1_sk,lesc_2_sk,lesc_3_sk,lesc_1,lesc_2,lesc_3;
+
+export poticadlo_min,poticadlo_max,lestavidul_min,lestavidul_max,amdoustavit_min,amdoustavit_max,al_att_min,al_att_max;
+
+export albudovy,ambudovy,lebudovy,bdkoef,le_def_sk;
+
+export fst_vybuch,lestavidul,amdoustavit;
+export total_sr,al_att,al_def_skill,ru_def_skill,regid,al_surr,am_surr,before_sib_res;
+var supply;
+function setvars;
+begin
+  ru=3;
+  am=1;
+  al=7;
+  le=8;
+  sr=6;
+  ambudovy=[amware00,amfact00,amlabf00,amlabf01,ambarr00,amsimn00,amcntw00,amsibp00,amsibp01,amsibp02];
+  albudovy=[alware00,alfact00,alfact01,allab00,allab01,allab02,albarr00,albarr01,alspow00,alspow01,alspow02,alspow03,alsbmn00,alcttw00,altelp00];
+  lebudovy=[leware00,lesmn00,lebarr00,lefact00,lespow00,lespow01,lelabf00,lelabf01,lesopw02,ledepo00];
+  rusacimajisib=false;
+  amsibdeveldone=false;
+  legionmed=false;
+  vyhrozoval=false;
+  hodiliju=false;
+  lesurr=false;
+  fst_vybuch=1;
+
+  poticadlo_min=[12,6,6][difficulty];
+  poticadlo_max=[42,36,24][difficulty];
+  lestavidul_min=[18,6,6][difficulty];
+  lestavidul_max=[30,18,12][difficulty];
+  amdoustavit_min=[18,6,6][difficulty];
+  amdoustavit_max=[30,18,12][difficulty];
+  al_att_min=[90,90,60][difficulty];
+  al_att_max=[150,120,90][difficulty];
+           
+  poticadlo=rand(poticadlo_min,poticadlo_max);          //0$10+5$0
+  lestavidul=rand(lestavidul_min,lestavidul_max);         //0$10+15$0
+  amdoustavit=rand(amdoustavit_min,amdoustavit_max);        //0$10+10$0
+  ledolu=0;
+  poziceledolu=[[115,130],[113,121],[103,126],[103,133]];
+  vezeartef=0;
+  artef_gone=false;
+  total_sr=0;
+  al_att=rand(al_att_min,al_att_max);           //0$10+10$0
+  regid=0;
+  al_surr=false;
+  am_surr=false;
+  before_sib_res=[20$0,10$0,0][difficulty];  //base is 20$1
+
+  supply=30;
+  bdkoef=3;   //minimalni cast ze vsech budov co musi zit; jinak surrender
+
+
+  ru_def_skill=[8,6,4][difficulty];
+  al_def_skill=[6,8,9][difficulty];
+  le_def_sk=[6,8,10][difficulty];
+
+  ams0_sk=[6,8,10][difficulty];
+  ams1_sk=[6,8,10][difficulty];
+  ams2_sk=[6,8,10][difficulty];
+  ams3_sk=[6,8,10][difficulty];
+  ams4_sk=[6,8,10][difficulty];
+  ams_1_sk=[6,8,10][difficulty];
+  ams_2_sk=[6,8,10][difficulty];
+  ams_3_sk=[6,8,10][difficulty];
+  ams_4_sk=[6,8,10][difficulty];
+  amm0_sk=[6,8,10][difficulty];
+  amm1_sk=[6,8,10][difficulty];
+  amm2_sk=[6,8,10][difficulty];
+  amm3_sk=[6,8,10][difficulty];
+  amm4_sk=[6,8,10][difficulty];
+  amm5_sk=[6,8,10][difficulty];
+  amm6_sk=[6,8,10][difficulty];
+  amv1_ch=[us_medium_tracked,us_morphling,us_heavy_tracked][difficulty];
+  amv1_wp=[us_double_gun,us_heavy_gun,us_heavy_gun][difficulty];
+  amv2_ch=[us_medium_tracked,us_medium_tracked,us_heavy_tracked][difficulty];
+  amv2_wp=[us_rocket_launcher,us_rocket_launcher,us_rocket_launcher][difficulty];
+  amv3_ch=[us_medium_wheeled,us_medium_tracked,us_heavy_tracked][difficulty];
+  amv3_wp=[us_laser,us_laser,us_laser][difficulty];
+  amv4_ch=[us_morphling,us_morphling,us_heavy_tracked][difficulty];
+  amv4_wp=[us_heavy_gun,us_heavy_gun,us_heavy_gun][difficulty];//musi byt tracked
+  amv5_ch=[us_medium_tracked,us_medium_tracked,us_heavy_tracked][difficulty];
+  amv5_wp=[us_rocket_launcher,us_rocket_launcher,us_rocket_launcher][difficulty];
+  amv6_ch=[us_heavy_tracked,us_heavy_tracked,us_heavy_tracked][difficulty];
+  amv6_wp=[us_double_gun,us_heavy_gun,us_heavy_gun][difficulty];
+  amsm0_sk=[5,7,9][difficulty];
+  amsm1_sk=[5,7,9][difficulty];
+  amsm2_sk=[5,7,9][difficulty];
+  amsm3_sk=[5,7,9][difficulty];
+  amsm4_sk=[5,7,9][difficulty];
+  amsm5_sk=[5,7,9][difficulty];
+  amsn0_sk=[6,8,10][difficulty];
+  amsn1_sk=[6,8,10][difficulty];
+  amsn2_sk=[6,8,10][difficulty];
+  ame0_sk=[6,9,10][difficulty];
+  ame1_sk=[6,9,10][difficulty];
+  ame2_sk=[6,9,10][difficulty];
+  ame3_sk=[6,9,10][difficulty];
+  ame4_sk=[6,9,10][difficulty];
+
+  als0_sk=[6,8,10][difficulty];
+  als1_sk=[6,8,10][difficulty];
+  als2_sk=[6,8,10][difficulty];
+  als3_sk=[6,8,10][difficulty];
+  als4_sk=[6,8,10][difficulty];
+  als_1_sk=[6,8,10][difficulty];
+  als_2_sk=[6,8,10][difficulty];
+  als_3_sk=[6,8,10][difficulty];
+  als_4_sk=[6,8,10][difficulty];
+  als__1_sk=[6,8,10][difficulty];
+  als__2_sk=[6,8,10][difficulty];
+  als__3_sk=[6,8,10][difficulty];
+  als__4_sk=[6,8,10][difficulty];
+  alm0_sk=[5,8,9][difficulty];
+  alm1_sk=[6,8,9][difficulty];
+  alm2_sk=[5,8,9][difficulty];
+  alm3_sk=[6,8,9][difficulty];
+  alm4_sk=[5,8,9][difficulty];
+  alm5_sk=[6,8,9][difficulty];
+  alm6_sk=[6,8,9][difficulty];
+  alv1_ch=[us_medium_wheeled,us_medium_tracked,us_heavy_tracked][difficulty];
+  alv1_wp=[us_laser,us_laser,us_laser][difficulty];  //bacha na nations!!
+  alv2_ch=[us_medium_tracked,us_morphling,us_heavy_tracked][difficulty];  //posledni podvozek opravili Rumun a Martin
+  alv2_wp=[us_double_gun,us_heavy_gun,us_heavy_gun][difficulty];
+  alv3_ch=[ru_medium_wheeled,ru_medium_tracked,ru_heavy_tracked][difficulty];
+  alv3_wp=[ru_gatling_gun,ru_gatling_gun,ru_gatling_gun][difficulty];
+  alv4_ch=[ru_medium_tracked,ru_medium_tracked,ru_heavy_tracked][difficulty];
+  alv4_wp=[ru_rocket_launcher,ru_rocket_launcher,ru_rocket_launcher][difficulty];   //tracked
+  alv5_ch=[us_medium_tracked,us_morphling,us_heavy_tracked][difficulty];
+  alv5_wp=[us_laser,us_laser,us_laser][difficulty];   //tracked
+  alv6_ch=[us_medium_tracked,us_morphling,us_heavy_tracked][difficulty];
+  alv6_wp=[us_laser,us_laser,us_laser][difficulty];   //tracked
+  alsn0_sk=[6,8,9][difficulty];
+  alsn1_sk=[6,8,9][difficulty];
+  alsn2_sk=[6,7,8][difficulty];
+  ale0_sk=[7,8,10][difficulty];
+  ale1_sk=[6,8,10][difficulty];
+  ale2_sk=[7,8,10][difficulty];
+  ale3_sk=[7,8,10][difficulty];
+
+  les0_sk=[6,8,10][difficulty];
+  les1_sk=[6,8,10][difficulty];
+  les2_sk=[6,8,10][difficulty];
+  les_1_sk=[6,8,10][difficulty];
+  les_2_sk=[6,8,10][difficulty];
+  les_3_sk=[7,9,10][difficulty];
+  les_4_sk=[7,9,10][difficulty];
+  lem0_sk=10;  //control tower
+  lem1_sk=[6,8,10][difficulty];
+  lem2_sk=[7,8,10][difficulty];
+  lem3_sk=[6,8,10][difficulty];
+  lev1_ch=[ar_medium_trike,ar_medium_trike,ar_half_tracked][difficulty];
+  lev1_wp=[ar_flame_thrower,ar_flame_thrower,ar_flame_thrower][difficulty];
+  lev2_ch=[ar_medium_trike,ar_medium_trike,ar_half_tracked][difficulty];
+  lev2_wp=[ar_flame_thrower,ar_flame_thrower,ar_flame_thrower][difficulty];
+  lev3_ch=[ar_half_tracked,ar_half_tracked,ar_half_tracked][difficulty];
+  lev3_wp=[ar_rocket_launcher,ar_rocket_launcher,ar_rocket_launcher][difficulty];   //tracked
+  lee0_sk=[5,8,10][difficulty];
+  lee1_sk=[6,8,10][difficulty];
+  lee2_sk=[5,8,10][difficulty];
+  lesc_1_sk=[5,7,9][difficulty];
+  lesc_2_sk=[6,8,10][difficulty];
+  lesc_3_sk=[5,7,9][difficulty];
+
+
+end;
+
+export debug;
+starting
+begin
+  debug=false; //true;
+  randomizeall;
+  disable(01);
+  disable(02);
+  disable(03);
+  disable(04);
+  disable(08);
+  disable(10);
+//disable(11);
+  setvars;
+  prepare_americans;
+  prepare_aliance;
+  prepare_legion;
+  if debug then msg('Bacha, debug is on!');
+  prepare_russians;
+end;
+
+
+//krabice
+every 1$0+0$15 do
+begin
+  createcratesarea(5,target,true);
+  if supply<10 then begin
+    supply=supply-1;
+    enable;
+  end
+  else enable(01);
+end;
+
+every 2$0 marked 01 do
+begin
+  createcratesarea(5,target,true);
+  if supply then begin
+    supply=supply-1;
+    enable;
+  end
+  else enable(13);
+end;
+
+every 4$0 marked 13 do
+begin
+  createcratesarea(5,target,true);
+end;
+
+every 0$7 do
+begin
+  randomize;
+  enable;
+end;
+
+//placovani opoc do lesika  
+every 1$0 do begin
+  enable;
+  if filterunitsinarea(opoles,[[f_side,0]])>7 then exit;
+  if prob(33) then begin
+    uc_nation=nation_nature;
+    uc_side=0;
+    hc_agressivity = rand(0, 20);
+    preparehuman(sex_male,class_apeman,0);
+    placeunitarea(createhuman,opoles,false);
+  end;
+end;
+
+
+
+

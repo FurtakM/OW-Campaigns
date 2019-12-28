@@ -1,0 +1,319 @@
+@ Breaking Through
+% Macmillan and his soldiers succeeded in capturing the depot. A tougher challenge lies ahead - to break through the Russian lines and join the rest of the US forces in the North.
+
+// Dialogue 1 (after the start of the mission)
+$ D1-JMM-1
+- Cornell!
+$ D1-Corn-1
+- John! I didn't know you were here!
+$ D1-JMM-2
+- If they'd said you were coming I wouldn't be!
+$ D1-JMM-2a
+- (sincerely) Good to see you Andy.
+$ D1-Corn-2
+- Likewise old buddy.
+
+// Dialogue 1a (only if Mikhail is present)
+$ D1a-Corn-1
+- So who's your friend here?
+$ D1a-JMM-1
+- Mikhail? He's an engineer, could be useful, except he's Russian.
+$ D1a-Corn-2
+- Plenty of them. You learn anything about their mission?
+$ D1a-JMM-2
+- Not yet. Right now I'm not even sure what future they're from.
+$ D1a-Corn-3
+- What do you mean?
+$ D1a-JMM-3
+- Ask him a question about our time, like who was Hitler. Says he's never heard of him.
+$ D1a-Corn-4
+- Could be lying.
+$ D1a-JMM-4
+- Why's he gonna do that? When we get through here give him a history quiz.
+$ D1a-Corn-5
+- If we get through. I'll take him with me.
+
+// Dialogue 1b continues in both cases.)
+$ D1b-JMM-1
+- We should have a good chance going in as one unit.
+$ D1b-Corn-1
+- We're not. Powell just radioed. Said there are more guys around here and your orders are to find them. Then we attack the Russian line at different points. While they're busy killing one of us the other goes through.
+$ D1b-JMM-2
+- I like my way better. Then there's a chance we all succeed.
+$ D1b-Corn-2
+- Try telling Powell.
+$ D1b-JMM-3
+- Don't worry I will. (into radio) Cobra 1 to Alpha base. We've rendezvoused with Cobra 2, request permission to proceed as one unit.
+$ D1b-Pow-3
+- (over radio) Your job's to follow orders Macmillan, not question them! Tell Cornell to proceed eastward and wait for the signal to attack.  You take four soldiers and join the camp in the South West. You'll both attack on my order and we'll give you support. Do you understand?
+$ D1b-JMM-4
+- Yes sir.
+$ D1b-Corn-4
+- Great, you sorted that one out.
+$ D1b-Khat-4
+- [present: alt 1a] I have a feeling the support will be minimal.
+$ D1b-Sol1-4
+- [otherwise: alt 1b] I bet that support ain't much.
+$ D1b-Cyrus-4
+- [present: reply] Sweet FA.
+$ D1b-Lisa-4
+- [present: reply] Give things a chance will you. Powell managed to get to the North, maybe he knows something we don't.
+$ D1b-Cyrus-5
+- [present: reply] Yeah? Then the bastard should tell us!
+
+! CharacterSelection
+CharacterSelection
+
+There will be hint...
+!
+
+// Dialogue 1d (after selection)
+$ D1d-JMM-1
+- Take it easy buddy.
+$ D1d-Corn-1
+- You too John. (Cornell and his group leaves)
+
+# M1
+Add Main capture
+- Reach the South West base
+Add Main wait
+- Wait for the signal to attack
+#
+
+// Dialogue 2 (after reaching small American base)
+$ D2-JMM-1
+- My name's Macmillan. Major Powell ordered us to join you.
+$ D2-Sol1-1
+- Then he sure doesn't like you guys.
+$ D2-JMM-2
+- Our orders are to break through the Russian line.
+$ D2-Sol1-2
+- Never said nothing to me...
+$ D2-JMM-3
+- That's because I'm in command here now. Do what I tell you and we've a chance of getting through. Mess me around and we're all dead. Is that clear?
+$ D2-Sol1-3
+- Yes sir.
+$ D2-JMM-4
+- OK. So what are we facing here?
+$ D2-Sol1-4
+- They've got tanks all along the roads.
+$ D2-JMM-5
+- So the jeeps are no go.
+$ D2-Sol1-5
+- And this is where they've got their weapons sighted.
+$ D2-JMM-6
+- That makes the meadows a shooting range.
+$ D2-Sol1-6
+- And they've got strong patrols this way, they know the woods inside out. I'm telling you Ltnt it's a suicide mission!
+$ D2-JMM-7
+- Another group's going in from the East, between us we'll split the Russians and at least one of party should get through.
+$ D2-Sol1-7
+- While the other lot gets their brains blown out.
+$ D2-JMM-8
+- We're here to do a job soldier, let's get on with it.
+
+! RunningBase
+RunningBase
+
+There will be hint...
+!
+
+! Workshop
+Workshop
+
+There will be hint...
+!
+
+! BuildingVehicles
+BuildingVehicles
+
+There will be hint...
+!
+
+! Laboratory
+Laboratory
+
+There will be hint...
+!
+
+// Dialogue 2a (short time after reaching American base)
+$ D2a-JMM-1
+- What did we get in the shipments?
+$ D2a-Sci1-1
+- Variety of stuff sir. Mainly solar power components.
+$ D2a-JMM-2
+- Good. Do you think you could squeeze enough juice from them to run a vehicle?
+$ D2a-Sci1-2
+- It wouldn't get close to the Russian combustion engines, but it would be lighter.
+$ D2a-JMM-3
+- So we could mount small weapons and still outrun them?
+$ D2a-Sci1-3
+- I'll do what I can, but until we've got a lab and a workshop it's not a lot.
+
+// Dialogue 2b (when first vehicle is created)
+$ D2b-JMM-1
+- Not bad for a first try.
+$ D2b-Sci1-1
+- The solar panels can't generate all the power it uses so we added the batteries. So when the vehicle isn't using energy it's storing it up for later.
+$ D2b-JMM-2
+- You mean if I want to go a distance I've got to take a break for a recharge?
+$ D2b-Sci1-2
+- I'm sorry, we've done all we could sir.
+$ D2b-JMM-3
+- I'll remember that when it gives up outside the Russian base!
+
+// Dialogue 2c (when some character enters the car)
+$ D2c-JMM-1
+- [$Macmillan enters the vehicle: alt a1] When it comes to technology we're still just a little behind the Russians! (drives little bit forward and back)
+$ D2c-JMM-1a
+- [$cont. if he entered Russian vehicle in previous mission: alt a1] I've got to say I felt kind of safer in the Russian's tank.
+$ D2c-Lisa-1
+- [$Lisa enters vehicle: alt a2] (she tries to drive in circle) It handles better than the Russian one and it's faster. I wouldn't recommend ramming the Russians but we can sure outrun them.
+$ D2c-Cyrus-1
+- [$Cyrus enters vehicle: alt a3] No leg room! This whole mission's economy class!
+$ D2c-Cyrus-1a
+- [$cont. if he entered Russian vehicle in previous mission: alt c1] Makes you realise how good the Russian one was.
+$ D2c-Bobby-1
+- [$Bobby enters vehicle: alt a4] Doesn't give you that much protection but it's better than running.
+
+// Dialogue 6 (Frank returns)
+$ D6-JMM-1
+- Who the hell are you?
+$ D6-Frank-1
+- Corporal Frank Forsyth reporting sir. (reveals fog) I have some information for you.
+$ D6-Lisa-1
+- [present] Frank!
+$ D6-Frank-2
+- [reply] Lisa! Still alive! Russians must be getting sloppy!
+$ D6-Sol1-2
+- Lieutenant, let me introduce the best scout the force has ever known. Corporal Forsyth. He can take pictures inside your ass and you wouldn't even know!
+$ D6-JMM-2
+- Do you do anything more useful Forsyth?
+$ D6-Frank-3
+- I bring back the papers!
+$ D6-JMM-3
+- You what?
+$ D6-Frank-4
+- While I was in the Russian camp I took a trip to the latrines and...
+$ D6-Frank-4a
+- Nothing to wipe their ass on the can any more.
+$ D6-JMM-4
+- You really hit them where it hurts.
+$ D6-Frank-5
+- Sap the moral sir, that's my MO.
+$ D6-Lisa-5
+- [present] Just does it to his own side now and again.
+$ D6-Frank-6
+- With your permission I'd like to get back out there sir.
+$ D6-JMM-6
+- Why? Have you finished reading those?
+
+// Query 1
+? Q1
+What will you do with Frank?
+- Let him return to his reconnaissance duties
+- Keep him at the base to assist in the breakthrough
+?
+
+// Dialogue 6a (At end of mission, Frank joins escaping forces)
+$ D6a-Frank-1
+- Thank God for that. I thought I'd never move again.
+
+// Dialogue 3 (some 2 minutes before 3a)
+$ D3-Corn-1
+- This is Cobra 2. We're ready to go in two minutes.
+
+// Dialogue 3a (signal to attack, some 10 minutes after making contact with Python)
+$ D3a-Corn-1
+- John, we have to attack now.
+$ D3a-JMM-1
+- A1 good buddy. See you at Alpha.
+$ D3a-Corn-2
+- Go, go, go.
+
+// Dialogue 3b (if Frank was sent to recon, one minute after 3a)
+$ D3b-Frank-1
+- (over radio) This is Frank, Ltnt. You might want to know I've seen a column of Russian vehicles heading eastward.
+
+# M2
+Add Main capture
+- Reach the Northern edge of the map with John and at least 4 members of your party alive and kicking.
+Add Secondary collect
+- Reach the Northern edge of the map with the fewest possible casualties.
+#
+
+// Dialogue 4 (some 5 minutes later)
+$ D4-Corn-1
+- John, we're in trouble here, they're all coming this way. If you can do more then do it now!
+
+// Dialogue 5 (some 5 minutes later)
+$ D5-Corn-1
+- We've screwed up John. They've split my guys apart and they're picking us off... (The sound of gunfire, then Russian voice then the radio goes to static.)
+
+// Dialogue 8 (Russian patrol spots the American base)
+$ D8-Rus1-1
+- (Posmatri, zdies kakiyeto amerikantsi! Bistro nazpiat! Native titles) Look, Americans. Back! Back!
+$ D8-JMM-1
+- The bastards have seen us. Don't let them escape!
+
+// Dialogue 8a (Russian patrol killed)
+$ D8a-JMM-1
+- Good job. I hope they didn't manage to warn the others.
+
+// Dialogue 8b (Russian patrol escapes)
+$ D8b-JMM-1
+- Shit, one of them got away. Now they'll all know we're here.
+$ D8b-JMM-1a
+- Shit, they got away. Now they'll all know we're here.
+$ D8b-Sol1-1
+- What do you think's going to happen now?
+$ D8b-Cyrus-1
+- [present] Tanks'll come and level this base. I don't want to be in it.
+$ D8b-Bobby-1
+- [present] I don't want to be in it.
+$ D8b-Sol2-1
+- [else] I don't want to be in it.
+$ D8b-JMM-2
+- I think we can expect a strong attack.
+$ D8b-Lisa-2
+- [present] So what if we started building proper fortifications, instead of talking?
+
+// Query 2 (when JMM is in target area and some of his men are too far)
+? Q2
+Not all of your men arrived at the destination area. Will you:
+- Wait for them
+- Leave them to make their own way
+?
+
+| 0
+John Macmillan died.
+
+| 1
+Your losses were too great to fulfil the objective.
+
+| 2
+The South West base is destroyed.
+
+| 3
+The South West base was captured by Russians.
+
+^ Main
+Successful breakthrough.
+
+* UpTo4
++
++
++ You suffered few casualties.
+- You have lost more than four men.
+*
+
+* UpTo2
++
++ Small casualties.
+-  You have lost more than two men.
+*
+
+* No
++ No casualties.
+-  You lost some of your men.
+*

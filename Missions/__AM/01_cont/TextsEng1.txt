@@ -1,0 +1,196 @@
+@ Surprise Party
+% Lieutenant John Macmillan is now a member of the  expedition, with the objective of mining and moving the massive Siberite deposits to what will, one day, be Alaska. His first task is to contact the other expedition members and to join them at the camp.
+& Somewhere in Siberia, some 2,000,000 years BC
+
+// Dialogue 1 (immediately after materialisation)
+$ D1-JMM-1
+- 	My God... How long till the tourists spoil it all!? (into radio) This is Ltnt John Macmillan reporting for duty. Alpha do you read me? (pause)
+$ D1-JMM-1a
+- 	What more could a guy ask for, I come back here to the land time forgot and there's nobody home. (into radio) This is Ltnt Macmillan, Alpha do you...
+$ D1-Pow-1
+- 	(weak, noisy voice over  radio) Shut up and move.
+$ D1-JMM-2
+- 	(into radio) Thanks for the welcome. Who is that?
+$ D1-Pow-2
+- 	(over  radio) If you want to live get your head down and get out of there. Stay put and you're dead soldier.
+$ D1-JMM-3
+- 	(into radio) Identify yourself. Who are you? (pause) (Suddenly from the undergrowth there's a movement, fast, bearing down on him, before Macmillan can fire the sabre toothed tiger has already gone racing away.)
+
+# M1
+Add Main survive
+- Survive
+#
+
+! Selection
+Ovládání tvého pižïucha
+Klepni na nìj levým a oznaèíš ho. Klepni nìkam pravým a on tam pùjde.
+!
+
+// Dialogue 1R (Russian patrol)
+$ D1R-Rus1-1
+- 	(Russian, with Native titles) The signal comes from the hill.
+$ D1R-Rus2-1
+- 	(Russian, with Native titles) Quick before he moves.
+
+! Visibility
+Terén a viditelnost
+Tvoje postava vidí jenom to, co je zobrazeno svìtle. Tmavì zobrazené kousky mapy zná, ale nevidí je, takže neví, jestli je na nich nìjaký nepøítel. O èerných oblastech neví vùbec nic.
+
+Povšimni si nepøátel na hranici tvé viditelnosti: oni tì ještì nevidí, zatímco ty je ano. To proto, že stojíš na kopci - výše položená jednotka dohlédne dále. Zkus toho ve høe využívat.
+!
+
+// Dialogue 1Ra (moment later, if the Russian arrive at spot and don't see anyone)
+$ D1Ra-Rus1-1
+- 	(Russian, with Native titles) Too late! The bastard is gone.
+$ D1Ra-Rus2-1
+- 	(Russian, with Native titles) He'll never get through the front line. He lives now, but not for long.
+
+// Dialogue 1Rb (only if Russian patrol spots MacMillan and starts to shot him)
+$ D1Rb-Rus1-1
+- 	( Russian, with Native titles) Look, he is there!
+$ D1Rb-Rus2-1
+- 	(Russian, with Native titles) Shoot him.
+
+// Dialogue 1Rc (after 1Rb, if MacMillan runs away and patrol lost him)
+$ D1Rc-Rus1-1
+- 	(Russian, with Native titles) Shit! The bastard is gone.
+$ D1Rc-Rus2-1
+- 	(Russian, with Native titles) He'll never get through the front line. He lives now, but not for long.
+
+// Dialogue 2 (when John finds a medium wounded American)
+$ D2-Bobby-1
+- 	No, please!
+$ D2-JMM-1
+- 	What happened?
+$ D2-Bobby-2
+- 	I stepped through the EON and the first thing I knew I was being shot at.
+$ D2-JMM-2
+- 	Who were they?
+$ D2-Bobby-3
+- 	I didn't wait to find out.
+$ D2-JMM-3
+- 	You've been hit, you need treatment.
+$ D2-Bobby-4
+- 	Go ahead, call a hospital?
+$ D2-JMM-4
+- 	We've got to find Alpha base. 
+$ D2-Bobby-5
+- 	Have you made contact yet?
+$ D2-JMM-5
+- 	Just about. All they said was keep our heads down.
+$ D2-Bobby-6
+- 	And then what?
+$ D2-JMM-6
+- 	You tell me.
+
+// Dialogue 2a (in a small valley)
+$ D2a-JMM-1
+- 	I think there is no way how to climb anywhere from this valley.
+$ D2a-Bobby-1
+- 	But we can hide here for a while.
+
+! selection2
+Ovládání více piïuchù
+Jak je selektovat a tak vùbec...
+!
+
+! healthbar
+Ukazatel zranìní
+Bobby je žlutej a neléèí se. Zelení jsou živí, èervení umírají, bla bla...
+!
+
+// Dialogue 3 (some five minutes into mission and triggered for faster players)
+$ D3-Pow-1
+- 	(very weak and noisy voice over radio) If you can hear us, keep together.  We believe there are three of you in the area.  Head Northeast, repeat Northeast and we'll try to get you out of there.
+$ D3-JMM-1
+- 	(into radio) Hello?
+$ D3-Pow-2
+- 	Keep to the long grass, avoid the roads or you'll be seen.
+$ D3-JMM-2
+- 	What the hell's going on. Who are you?
+$ D3-Pow-3
+- 	Commander Powell, Don't waste any time. They're tracing the radio signals so keep moving. Use the radio again and you're finished.
+
+# M2
+Add Main northeast
+- ***Reach Right Upper edge of map
+Add Secondary join
+- ***Try to join other men in the area and break through with them
+#
+
+// Dialogue 4 (when John reaches a certain area in the centre of map)
+$ D4-Rus3-1
+- 	(over radio, speaks English with suspiciously perfect accent) Head North now, we're sending a search party over.
+$ D4-Pow-1
+- 	(weaker and noisier signal over radio) Don't listen to them. It's a trap. Continue North East. I repeat, North East.
+
+# M3
+Add Alternative north
+- ***Reach center of Top edge of map
+#
+
+// Query 1 (after this objective change)
+? Q1
+***You are not sure what you should do. Will you try to make a contact over radio?
+- Yes
+- No
+?
+
+// Dialogue 4a (if player selects first option)(player selects 'O' (or clicks Objective/Radio button))
+$ D4a-JMM-1
+- 	***This is Ltnt Macmillan, confirm your instructions.... repeat, confirm instructions... do you read me anybody?
+
+// Dialogue 4b (if dialogue 4 took place and John gets to North edge of map)
+$ D4b-JMM-1
+- 	***Oh hell, it's a trap. I might have known...
+
+// Dialogue 5 (when John finds another wounded American)
+$ D5-Cyrus-1
+- 	***Fuck me, I'm so glad to see ya. Does anybody of you knows where is the fucking North East?
+$ D5-Bobby-1
+- 	[present] ***Not me but ltnt here has a compass.
+$ D5-JMM-1
+- 	***You must be Cyrus Parker, aren't you? Welcome on board.
+
+// Dialogue 6 (when Americans meet guards blocking their way to northeast)
+$ D6-FRus1-1
+- 	(Russian with native subtitles) ***We have some Americans here, we need help!
+$ D6-JMM-1
+- 	***Stop hiding - let's get them!
+$ D6-Cyrus-1
+- 	[present] ***Sure, let's go kick some butt!
+$ D6-Bobby-1
+- 	[present] ***Sir, yes, sir!
+
+// Dialogue 6a (when Americans beat guards)
+$ D6a-JMM-1
+- 	***Don't wait, let's move fast!
+
+// Query 2 (when JMM is in target area and some of his men are too far)
+? Q2
+***Some of your men are not yet in the target area. Do you want to:
+- *** Wait for them
+- *** Leave them alone
+?
+
+| JMM
+John Macmillan is dying
+
+^ MAIN
+Target achieved
+
+* JMM
++ John Macmillan saved.
+*
+
+* Bobby
++ Bobby Brandon saved.
+- You missed one man.
+- Bobby Brandon was killed.
+*
+
+* Cyrus
++ Cyrus Parker saved.
+- You missed one man.
+- Cyrus Parker was killed.
+*

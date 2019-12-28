@@ -1,0 +1,337 @@
+
+
+on UnitDestroyed(un) do
+var h, hinfo, a;
+begin  
+{  if art_cargo1=un then begin
+    maji_artifact:=false;
+    h:=FindArtifact(4);
+    if not h then
+      CreateResourcesXYR(mat_artifact, 4, GetX(un), GetY(un),5, false)
+    else begin
+      hinfo:=HexInfo(h[1],h[2]);
+      if hinfo<=0 then
+        CreateResourcesXYR(mat_artifact, 4, GetX(un), GetY(un),5, false)
+      else begin //je to jednotka
+        if GetWeapon(un)=ru_cargo_bay then begin
+          SetCargo(hinfo, mat_artifact, 4*10);
+          if GetSide(hinfo)=you then
+            maji_artifact:=true;
+        end
+        else
+          CreateResourcesXYR(mat_artifact, 4, GetX(un), GetY(un),8, false);
+      end;
+    end;
+  end;
+}
+  if un=Burlak then begin
+    YouLost('Burlak');
+  end;
+  if un=Platonov then begin
+    SurrenderBase(t_kill, GetSide(un));
+    VyhraPlaton;
+  end;
+  if GetSide(un)<>you then begin
+    remove_from_vehicles(un);
+    remove_from_humans(un);
+    remove_from_builds(un);
+  end;
+
+  if not GetSide(un) in your_bases then begin
+
+    if un=Borodin then begin
+      SurrenderBase(t_kill, ai_s[2]);
+    end;
+    if un=Tsaritsyn then begin
+      SurrenderBase(t_kill, ai_s[3]);
+    end;
+    if un=Davidov then begin
+      SurrenderBase(t_kill, ai_s[4]);
+    end;
+    if un=Eisenstein then begin
+      SurrenderBase(t_kill, ai_s[5]);
+    end;
+  end;
+  if GetSide(un)=you then
+    case true of
+      GetType(un)=unit_building : your_builds:=your_builds diff un;
+      GetType(un)=unit_vehicle : your_cars:=your_cars diff un;
+      GetType(un)=unit_human : your_humans:=your_humans diff un;
+    end;
+
+end;
+
+on UnitGoesToRed(un) do
+var a;
+begin
+  if not GetSide(un) in your_bases ^ you then begin  //The player could build a depot himself/herself
+    if GetBType(un) in [b_depot,b_warehouse] then begin
+      a:=FilterAllUnits([[f_side,GetSide(un)]]);
+      if GetSide(un)=ai_s[1]
+         and IsDead(behemoth)
+         and UnitFilter(a, [mf_sol])<=2
+         and UnitFilter(a, [[f_type,unit_vehicle],[f_or,[[f_control,control_manual],[f_occupied]],[f_control,control_computer]]])<=1 then
+        SurrenderBase(t_killbeat, GetSide(un));
+
+      if GetSide(un)<>ai_s[1] then
+        SurrenderBase(t_killbeat, GetSide(un));
+    end;
+  end;
+end;
+
+on VehicleCaptured(vehnew, vehold, origside, hum) do
+begin
+   if origside in ai then begin
+      remove_from_vehicles(vehold);
+      if GetAttitude(origside, you)=att_neutral then begin
+        ComExitVehicle(vehnew);
+        SetSide(vehnew, origside);
+        add_to_vehicles(vehnew);
+      end;
+   end;
+   if Getside(vehnew) in ai then begin
+      add_to_vehicles(vehnew);
+   end;
+
+   if origside=you then
+     your_cars:=your_cars diff vehold;
+   if GetSide(vehnew)=you then
+     your_cars:=your_cars union vehnew;
+
+   if getside(vehnew) and GetCargo(vehnew, mat_artefact)>0 then
+     maji_artifact:=true;
+   if origside=you and GetCargo(vehnew, mat_artefact)>0 then
+     maji_artifact:=false;
+end;
+
+on BuildingCaptured(build, origside, eng) do
+begin
+   if origside=you then begin
+     your_builds:=your_builds diff build;
+   end;
+   if GetSide(build)=you then begin
+     your_builds:=your_builds union build;
+   end;
+   if origside in ai then begin
+     remove_from_builds(build);
+   end;
+   if GetSide(build) in ai then begin
+     add_to_builds(build);
+   end;
+end;
+
+on BuildingComplete(build) do
+begin
+   if GetSide(build)=you then begin
+     your_builds:=your_builds union build;
+   end;
+   if GetSide(build) in ai then begin
+      add_to_builds(build);
+   end;
+end;
+
+on VehicleConstructed(veh, fact) do
+begin
+   if GetSide(veh)=you then begin
+     your_cars:=your_cars union veh;
+   end;
+
+   if GetSide(veh) in ai then begin
+      if GetControl(veh)=control_computer then
+         case GetSide(veh) of
+            ai_s[1] : ComMoveToArea(veh, pro_attA);
+            ai_s[2] : ComMoveToArea(veh, pro_attB);
+            ai_s[3] : ComMoveToArea(veh, pro_attC);
+            ai_s[4] : ComMoveToArea(veh, pro_attD);
+            ai_s[5] : ComMoveToArea(veh, pro_attE);
+         end
+      else
+         case GetSide(veh) of
+            ai_s[1] : ComMoveToArea(veh, pro_defA);
+            ai_s[2] : ComMoveToArea(veh, pro_defB);
+            ai_s[3] : ComMoveToArea(veh, pro_defC);
+            ai_s[4] : ComMoveToArea(veh, pro_defD);
+            ai_s[5] : ComMoveToArea(veh, pro_defE);
+         end;
+      AddComExitVehicle(veh);
+      add_to_vehicles(veh);
+   end;
+end;
+
+on ArtifactLoaded(un, size) do
+begin
+   if GetSide(un)=you then
+     maji_artifact:=true;
+   art_cargo1:=un;
+end;
+
+on ArtifactUnloaded(un, size) do
+begin
+   if GetSide(un)=you then
+     maji_artifact:=false;
+   art_cargo1:=0;
+end;
+{
+on EndTheMissionRaised(x) do
+begin
+   VyhraMain;
+end;}
+
+on Command(comm) do
+begin
+  if not Getside(Eisenstein)=you and IsInUnit(Eisenstein) then
+    RemoveTasks(Eisenstein);
+  if not Getside(Davidov)=you and IsInUnit(Davidov) then
+    RemoveTasks(Davidov);
+  if not Getside(Tsaritsyn)=you and IsInUnit(Tsaritsyn) then
+    RemoveTasks(Tsaritsyn);
+  if not Getside(Borodin)=you and IsInUnit(Borodin) then
+    RemoveTasks(Borodin);
+end;
+
+on McAttackDone(mcid, surv) do
+begin
+  msg([mcid,'McAttackDone',surv]);
+end;
+on McRegistryResultChanges(mcid, count, strength) do
+begin
+  if mcid=BehMcRegId then
+    debug_strings:=replace(debug_strings,2,[mcid,count,strength,GetMcUnits(BehMcAttId)]);
+end;
+
+
+
+
+
+
+//////// pridani do seznamu ///////////////
+export function add_to(un);
+begin
+  add_to_humans(UnitFilter(un, [[f_type,unit_human]]));
+  add_to_builds(UnitFilter(un, [[f_type,unit_building]]));
+  add_to_vehicles(UnitFilter(un, [[f_type,unit_vehicle]]));
+end;
+
+export function add_to_humans(un);
+var i;
+begin
+  sol:=sol union UnitFilter(un, [mf_sol]);
+  eng:=eng union UnitFilter(un, [mf_eng]);
+  mec:=mec union UnitFilter(un, [mf_mec]);
+  sci:=sci union UnitFilter(un, [mf_sci]);
+
+  for i in un do begin
+    case GetSide(i) of
+      ai_s[1] : humans:=replace(humans,1,humans[1] union i);
+      ai_s[2] : humans:=replace(humans,2,humans[2] union i);
+      ai_s[3] : humans:=replace(humans,3,humans[3] union i);
+      ai_s[4] : humans:=replace(humans,4,humans[4] union i);
+      ai_s[5] : humans:=replace(humans,5,humans[5] union i);
+    end;
+  end;
+end;
+
+export function add_to_vehicles(un);
+var i;
+begin
+  attack_units:=attack_units union UnitFilter(un, [mf_comp]);
+  defence_units:=defence_units union UnitFilter(un, [mf_manu]);
+
+  for i in un do begin
+    case getside(i) of
+      ai_s[1] : vehicles:=replace(vehicles,1,vehicles[1] union i);
+      ai_s[2] : vehicles:=replace(vehicles,2,vehicles[2] union i);
+      ai_s[3] : vehicles:=replace(vehicles,3,vehicles[3] union i);
+      ai_s[4] : vehicles:=replace(vehicles,4,vehicles[4] union i);
+      ai_s[5] : vehicles:=replace(vehicles,5,vehicles[5] union i);
+    end;
+  end;
+end;
+
+export function add_to_builds(un);
+var i,j, bt;
+begin
+  fort:=fort union UnitFilter(un, [mf_fort]);
+  dep:=dep union UnitFilter(un, [mf_dep]);
+  fact:=fact union UnitFilter(un, [mf_fact]);
+  lab:=lab union UnitFilter(un, [mf_lab]);
+
+  for i in un do begin
+    case GetSide(i) of
+      ai_s[1] : buildings:=replace(buildings,1,buildings[1] union i);
+      ai_s[2] : buildings:=replace(buildings,2,buildings[2] union i);
+      ai_s[3] : buildings:=replace(buildings,3,buildings[3] union i);
+      ai_s[4] : buildings:=replace(buildings,4,buildings[4] union i);
+      ai_s[5] : buildings:=replace(buildings,5,buildings[5] union i);
+    end;
+  end;
+
+  write_deps;
+  write_facts;
+end;
+
+//////// odebrani ze seznamu ///////////////
+export function remove_from(un);
+begin
+  remove_from_humans(UnitFilter(un, [[f_type,unit_human]]));
+  remove_from_builds(UnitFilter(un, [[f_type,unit_building]]));
+  remove_from_vehicles(UnitFilter(un, [[f_type,unit_vehicle]]));
+end;
+
+export function remove_from_builds(un);
+var i;
+begin
+  fact:=fact diff un;
+  fort:=fort diff un;
+  lab:=lab diff un;
+  dep:=dep diff un;
+
+  buildings:=replace(buildings,1,buildings[1] diff un);
+  buildings:=replace(buildings,2,buildings[2] diff un);
+  buildings:=replace(buildings,3,buildings[3] diff un);
+  buildings:=replace(buildings,4,buildings[4] diff un);
+  buildings:=replace(buildings,5,buildings[5] diff un);
+
+  write_deps;
+  write_facts;
+end;
+
+export function remove_from_humans(un);
+var i;
+begin
+  sol:=sol diff un;
+  eng:=eng diff un;
+  mec:=mec diff un;
+  sci:=sci diff un;
+
+  humans:=replace(humans,1,humans[1] diff un);
+  humans:=replace(humans,2,humans[2] diff un);
+  humans:=replace(humans,3,humans[3] diff un);
+  humans:=replace(humans,4,humans[4] diff un);
+  humans:=replace(humans,5,humans[5] diff un);
+end;
+
+export function remove_from_vehicles(un);
+var i;
+begin
+  attack_units:=attack_units diff un;
+  defence_units:=defence_units diff un;
+
+  vehicles:=replace(vehicles,1,vehicles[1] diff un);
+  vehicles:=replace(vehicles,2,vehicles[2] diff un);
+  vehicles:=replace(vehicles,3,vehicles[3] diff un);
+  vehicles:=replace(vehicles,4,vehicles[4] diff un);
+  vehicles:=replace(vehicles,5,vehicles[5] diff un);
+
+  bc:=replace(bc,1,bc[1] diff un);
+  bc:=replace(bc,2,bc[2] diff un);
+  bc:=replace(bc,3,bc[3] diff un);
+  bc:=replace(bc,4,bc[4] diff un);
+  bc:=replace(bc,5,bc[5] diff un);
+
+  rc:=replace(rc,1,rc[1] diff un);
+  rc:=replace(rc,2,rc[2] diff un);
+  rc:=replace(rc,3,rc[3] diff un);
+  rc:=replace(rc,4,rc[4] diff un);
+  rc:=replace(rc,5,rc[5] diff un);
+end;

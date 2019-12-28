@@ -1,0 +1,123 @@
+// The Arabians of the Sheik Omar
+
+Function PlaceAttackingUnits;
+var Un;
+ begin
+   for Un in Omar_vehicles do
+     PlaceUnitArea(Un, ArStart1, false);
+
+   PlaceUnitArea(Masto, ArStart, false);
+   PlaceUnitArea(Heike, ArStart, false);
+
+   for Un in Omar_Soldiers do
+     PlaceUnitArea(Un, ArStart, false);
+
+   for Un in Omar_Scientists do
+     PlaceUnitArea(Un, ArStart, false);
+ end;
+
+
+Function JMM_warns;
+var Remaining_americans, Remaining_unnamed_males, sold;
+ begin
+   placeseeing(157, 7, americans, -15);
+   placeseeing(165, 21, americans, -15);
+   CenterNowOnUnits([Omar, Heike]);
+   Wait(0$0.5);
+
+   Remaining_americans=
+     FilterAllUnits([[f_side, americans], [f_sex, sex_male],
+     f_not, [[f_or, [f_class, class_apeman], [f_class, class_apeman_engineer],
+             [f_class, class_apeman_kamikaze], [f_class, class_apeman_soldier],
+             [f_class, class_apeman_kamikaze]]]]) diff JMM;
+
+   Remaining_unnamed_males=
+     Remaining_americans diff
+      [JMM, Powell, Bobby, Cyrus, Lisa, Frank, Brown, Donaldson, Gladstone,
+       Cornell, Denis, Joan, Kurt, Yamoko, Gary, Simms, Stevens, Coonie,
+       Friend];
+
+   Sold= 0;
+   if Remaining_unnamed_males <> 0 then
+     Sold= Remaining_unnamed_males[Rand(1, Remaining_unnamed_males)]
+   else
+     if Sold <> 0 then
+       Sold= Remaining_americans[Rand(1, Remaining_americans)];
+
+   DialogueON;
+   Say(JMM, 'D19-JMM-1');
+   Say(Sold, 'D19-Sol1-1');
+   Say(JMM, 'D19-JMM-2');
+   DialogueOFF;
+   ChangeMissionObjectives('M5');
+ end;
+
+Function LaunchMines;
+var mines_pos, mines_pos1, i, j;
+ begin
+   // Mines positions on the stones
+   mines_pos= [[168,18], [169,20], [167,20], [164,18], [164,19], [163,19],
+               [164,21], [165,21], [163,20], [164,22], [162,20]];
+   // Mines positions on the factory
+   mines_pos1= [[169,34], [169,35], [167,32], [170,31], [173,35], [174,39]];
+
+   // Launch the mines
+   for i= 1 to mines_pos do
+     begin
+       // Launch the environmnent
+       MineExplosion(mines_pos[i][1], mines_pos[i][2], 1);
+       Wait(Rand(1, 3));
+       if i < mines_pos then
+         RemoveEnvironmentWithoutRebuild(mines_pos[i][1], mines_pos[i][2])
+       else
+         begin
+           // Launch the factory
+           for j= 1 to mines_pos1 do
+             begin
+               MineExplosion(mines_pos1[j][1], mines_pos1[j][2], 1);
+               Wait(Rand(1,3));
+             end;
+           RemoveEnvironment(mines_pos[i][1], mines_pos[i][2]);
+         end;
+     end;
+ end;
+
+Function StartTheAttack;
+ begin
+   ComMoveXY(Omar_vehicles ^ Masto, 184, 82);
+   Wait(0$3);
+   McMove(100, Heike ^ Omar_Soldiers, [[184, 82]], mc_no_stop);
+   Wait(0$5);
+   ComContaminate(Omar_Scientists, 177, 69);
+ end;
+
+
+EXPORT Function HeikeLastWords;
+ begin
+   if IsDead(Omar) and (Heike_Last_Words = false) then
+     begin
+       Heike_Last_Words= true;
+       Say(JMM, 'D19a-JMM-1');
+       if IsOk(Heike) then
+         Say(Heike, 'D19a-Hke-1');
+     end
+ end;
+
+// Test for end of the mission
+EXPORT Function TestForEndOfMission;
+var Last_enemies;
+ begin
+   Last_enemies= FilterAllUnits([[f_type, unit_human], [f_side, arabians1]]);
+   if Last_enemies= 0 then
+     Enable(End_of_m);
+ end;
+
+EXPORT Function TheLastArabianAttack;
+ begin
+   Wait(0$10);
+//   msg('The last arabians attack.');
+   PlaceAttackingUnits;
+   JMM_warns;
+   LaunchMines;
+   StartTheAttack;
+ end;

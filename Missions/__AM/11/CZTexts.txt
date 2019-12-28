@@ -1,0 +1,370 @@
+@ ???
+% Recent events have proved the Arabs and their mercenaries can never be trusted. John has also proved his abilities as a leader in the fight against the new enemy.
+& Base Epsilon 1; November 7, ERA + 1
+
+// Dialogue 1 
+$ D1-Pow-1
+- Tady budeme mít snad chvíli klidu...
+$ D1-JMM-1
+- K èemu ty tajnosti, generále?
+$ D1-Pow-2
+- Pøiznávám, Macmillane, trochu vám køivdil... myslím, e jste ten nejlepší, koho teï mám. Potøebuji si promluvit s nìkım, na jeho názor se mùu spolehnout.
+$ D1-JMM-2
+- Poslouchám, pane...
+$ D1-Pow-3
+- Víte, tohle není obyèejná válka. Není tu civilní obyvatelstvo, poèty vojákù se poèítají nanejvıš na desítky, bojovou techniku si vyrábíme na kolenì sami...
+$ D1-JMM-3
+- K vìci...
+$ D1-Pow-4
+- Chci øíci, e všechny zabìhané taktiky a strategie jsou tu na nic, všechny zákonitosti války postavené na hlavu. Takové rozhodování je velmi vyèerpávající, Macmillane. Jediné, co èlovìk mùe pouít, je instinkt ... a ten ho mùe zradit.
+$ D1-JMM-4
+- Naráíte na to spojenectví s Araby, pane?
+$ D1-Pow-5
+- Byl jsem pøesvìdèen, e je to jediná monost, Macmillane. Kdy jsou ve válce tøi strany, nikdy není dobré bıt ten, kdo je sám.
+$ D1-JMM-5
+- Obávám se ale, e právì to se nám teï stalo, pane.
+$ D1-Pow-6
+- Ne tak docela... a to je právì vìc, o které jsem s vámi chtìl mluvit. Dostal jsem velmi zvláštní depeši od arabské strany. Podívejte se na to.
+
+// Query Letter
+? QLetter
+ZITRA MUZETE ZISKAT ARABSKOU TEZEBNOU ZAKLADNU JIZNE OD MUDDY RIVER STOP ZAUTOCTE NAD USVITEM OD JIHOZAPADU STOP HLIDKY BUDOU DRZET NASI LIDE STOP JAKMILE VAS UVIDI VYTRATI SE ZE ZAKLADNY A VY JE NECHATE PROJIT STOP PAK MUZETE ZAKLADNU BEZ PROBLEMU DOBYT STOP TENTO NAVRH POVAZUJTE ZA PRISNE TAJNY STOP NEODPOVIDEJTE STOP POKUD SOUHLASITE PRIJDTE VE STANOVENY CAS STOP ZADAME UPLNE UTAJENI STOP NASI LIDE BY MELI BYT ARABSKOU STRANOU POVAZOVANI ZA ZABITE BEHEM UTOKU STOP DALE POZADUJEME VOLNY PRUCHOD PRES VASE UZEMI STOP
+- OK
+?
+$ D1-Pow-6a
+- Myslíte, e nám skuteènì chtìjí vydat do rukou vlastní základnu?
+$ D1-JMM-6
+- Není to jejich základna... nezapomínejte, e jsou to oldáci.
+$ D1-Pow-7
+- Ale i tak se mi to nelíbí. Myslíte, e jim mùeme vìøit?
+$ D1-JMM-7
+- Nejspíš došlo k nìjaké neshodì s jejich chlebodárci. Ta nabídka zní lákavì.
+$ D1-Pow-8
+- Moná a pøíliš.
+$ D1-JMM-8
+- Jestli chcete znát mùj názor... zkusil bych to, pane...
+$ D1-Pow-9
+- Proè?
+$ D1-JMM-9
+- Jak jste øíkal - instinkt. Dejte mi pìt lidí, pane, a já tam pùjdu.
+$ D1-Pow-10
+- Lidí dostaneš mnohem více, Macmillane. Vezmi si ty nejlepší, co máme, kromì lidí ze siberitového vızkumu, ovšem. Jestli je to pravda, tak se nesmíme zastavit u jedné základny - máme šanci zasadit Arabùm ránu, ze které se u nevzpamatují.
+$ D1-JMM-10
+- Provedu, generále.
+$ D1-Pow-11
+- Hodnì štìstí, majore.
+
+// Dialogue 1a (some without  titles)
+$ D1a-Merc1-1
+- Ahoj. Nemùeš spát?
+$ D1a-FMerc2-1
+- Hmm...
+$ D1a-Merc1-2
+- (heknutí, kdy padá na zem)
+$ D1a-FMerc2-2
+- (napodobení ptáka)
+
+# M1
+Add Main capture
+- Capture the base
+#
+
+// Dialogue 2 (after capturing of base and elimination of remaining arabian)
+$ D2-JMM-1
+- Základna je naše, pane. Všechno bylo tak, jak øíkali.
+$ D2-Pow-1
+- Vıbornì, Macmillane. Konsolidujte svou pozici, a ne se Arabové vzpamatují, zaútoète na další základny.
+$ D2-JMM-2
+- Jistì, pane.
+$ D2-Pow-2
+- Buïte rychlí a nekompromisní. Nemùeme si dovolit vázat vaše síly pøíliš dlouho. Máte naše nejlepší lidi a rusové mohou zaútoèit kadou chvíli.
+$ D2-JMM-3
+- Spolehnìte se.
+
+# M2
+Out capture
+Add Main destroy
+- Destroy all other Arabian bases. 
+Add Secondary time
+- Sna se to zvládnout co nejrychleji.
+#
+
+! CapturedBase
+Obsazená základna
+Obsadil jsi arabskı depot. Pokud obsadíš i okolní budovy, budou ti do urèité míry k dispozici. Kasárna ti umoní vybavit tvé lidi speciální arabskou zbraní - mortarem. Továrna ti umoní vyrábìt arabská vozidla, nemùeš k ní však pøistavovat další pøístavky. Lab neumoní americkım vìdcùm zkoumat ani vıluènì arabské, ani vıluènì americké technologie - jen ty, které jsou obìma národùm spoleèné.
+
+V tée základnì však tví ameriètí dìlníci mohou postavit i americké budovy.
+!
+
+// Dialogue 2a (after new objevtive use two or three of these lines)
+$ D2a-Gary-1
+- Finally we've got a mission that makes sense!
+$ D2a-Bobby-1
+- Those guys are gonna get what's coming to them.
+$ D2a-Frank-1
+- They won't be laughing by the time we're through with them.
+$ D2a-Lisa-1
+- We're gonna kick their asses to Mecca and back.
+$ D2a-Corn-1
+- Sakra, Johne, na tohle se zrovna necítím... radši jsi mì mìl nechat odpoèinout.
+
+// Dialogue 3F (a short time after start of the mission, if Frank is present)
+$ D3F-Frank-1
+- Majore?
+$ D3F-JMM-1
+- Co potøebuješ, Franku?
+$ D3F-Frank-2
+- Tak si øíkám, co kdybych šel trochu omrknout situaci, pane?
+
+// Query Frank
+? QFrank
+Frank se nabídnul, e trochu prozkoumá situaci.
+- Pustíš ho
+- Øekneš mu, e je to pøíliš nebezpeèné
+- Øekneš mu, e jej potøebuješ v základnì
+?
+
+// Dialogue 3Fa (if first option is selected)
+$ D3Fa-JMM-1
+- OK, Franku, pøines nám pár suvenırù z Arabskıch opevnìní.
+
+// Dialogue 3Fb (if second option is selected)
+$ D3Fb-JMM-1
+- Nevím Franku... myslím e trochu moc spoléháš na své štìstí. Nerad bych o tebe pøišel.
+$ D3Fb-Frank-1
+- Dám na sebe pozor, majore, slibuju.
+
+// Query Frank2
+? QFrank2
+Frank slibuje, e bude opatrnı. 
+- Pustíš ho
+- Nepustíš ho
+?
+
+// Dialogue 3Fba (if second and then first option is selected)
+$ D3Fba-JMM-1
+- Tak dobøe. Ale ádné suvenıry, ádné frajeøiny. Jen základní prùzkum. Rozumìls?
+$ D3Fba-Frank-1
+- Spolehnìte se.
+
+// Dialogue 3Fbb (if second and then second option is selected)
+$ D3Fbb-JMM-1
+- Franku, zùstaneš tady. Ber to jako rozkaz, nebudeme o tom diskutovat.
+
+// Dialogue 3Fc (if third option is selected)
+$ D3Fc-JMM-1
+- Nudná døina v základnì není nic pro tebe, co? Nezlob se, Franku, ale teï tu potøebujeme kadou ruku.
+
+// Dialogue 4Fa (if Frank succeeds)
+$ D4Fa-JMM-1
+- Tak co, neseš nìjaké drby z arabskıch kuloárù.
+$ D4Fa-Frank-1
+- Tak hele... tahle základna, to nebude tìkı...
+$ D4Fa-JMM-2
+- A tady? Co je tady?
+$ D4Fa-Frank-2
+- Nerad to pøiznávám pane, ale tam jsem se nedostal... Je tu baina a za ní spousta tìch arabskıch rachotin ovìšenıch zbranìmi. Jezdí sem a tam a nepronikne jim ani vakomyš.
+
+// Dialogue 4Fb (if Frank dies, after about eight minutes)
+$ D4Fb-JMM-1
+- Nevidìli jste nìkdo Franka? Nìjak dlouho se neozıvá... bojím se, jestli jsme o nìj nepøišli.
+
+// Dialogue 4Fc (if Frank doesn't succeed, after about eight minutes)
+$ D4Fc-Frank-1
+- Hlásím návrat, majore.
+$ D4Fc-JMM-1
+- A hele, Frank. Co tak smutnì?
+$ D4Fc-FSci1-1
+- [if any female present] Sakra, pane, nevidíte, e je zranìn?
+$ D4Fc-Frank-2
+- Zdá se, e Arabové jsou opatrnìjší, ne Rusové. Byl jsem rád, e jsem utekl. Mrzí mì, e jsem vás zklamal, pane.
+$ D4Fc-JMM-2
+- S tím si nedìlej starosti, Franku. Jediné, èím bys mì skuteènì zklamal, by bylo, kdyby ses nechal zastøelit.
+
+// Dialogue 3Y (a short time after start of the mission, if Yamoko is present and Frank isn't)
+$ D3Y-Yam-1
+- Pane?
+$ D3Y-JMM-1
+- Ano?
+$ D3Y-Yam-2
+- S vaším svolením bych podnikla základní prùzkum a zjistila rozloení Arabskıch sil.
+
+// Query Yamoko
+? QYamoko
+Yamoko se nabídla, e trochu prozkoumá situaci.
+- Pustíš ji
+- Nepustíš ji
+?
+
+// Dialogue 3Ya (if first option is selected)
+$ D3Ya-JMM-1
+- Dobøe. Ale dej na sebe pozor, nerad bych o tebe pøišel.
+$ D3Ya-Yam-1
+- Jistì, pane. Nemìjte strach, jsem nejlepší.
+
+// Dialogue 3Yb (if third option is selected)
+$ D3Yb-JMM-1
+- Na opatrnı prùzkum teï není èas, Yamoko. Navíc potøebujeme kadou ruku, abychom pøipravili prùlom.
+
+// Dialogue 4Ya (if Yamoko succeeds)
+$ D4Ya-Yam-1
+- Hlásím návrat, majore.
+$ D4Ya-JMM-1
+- Vıbornì, u jsem mìl o tebe strach. Podej hlášení.
+$ D4Ya-Yam-2
+- V tìchto místech je jedna nijak zvláš opevnìná základna.
+$ D4Ya-JMM-2
+- A tady?
+$ D4Ya-Yam-3
+- Je mi líto se, pane, ale za tenhle moèál jsem se nedostala. Z dálky jsem vidìla, e tam køiuje vìtší mnoství bojové techniky.
+
+// Dialogue 4Yb (if Yamoko dies, after about eight minutes)
+$ D4Yb-JMM-1
+- Yamoko se ještì neozvala? Bojím se, e jsme o ni pøišli...
+
+// Dialogue 4Yc (if Yamoko doesn't succeed, after about eight minutes)
+$ D4Yc-Yam-1
+- Hlásím návrat.
+$ D4Yc-JMM-1
+- Yamoko! Proboha, jsi zranìná.
+$ D4Yc-Yam-2
+- To nic. Ale nepodaøilo se mi proniknout skrz hlídky.
+$ D4Yc-JMM-2
+- Nevadí. Hlavnì e se ti podaøilo vrátit se zpátky.
+
+// Dialogue 5a (when first apeman driven vehicle spoted)
+$ D5a-Sol1-1
+- Boe, to snad není moné? Oni nechali opièáky udìlat øidièák!
+$ D5a-FSol1-1
+- Boe, to snad není moné? Oni nechali opièáky udìlat øidièák!
+$ D5a-Sol2-1
+- A co ty hadièky a dráty, které jim vedou do hlavièek - nepøipadne mi, e by si to zrovna uívali!
+$ D5a-FSol2-1
+- A co ty hadièky a dráty, které jim vedou do hlavièek - nepøipadne mi, e by si to zrovna uívali!
+
+// Dialogue 5b (when first apeman kamikaze spoted)
+$ D5b-Sol1-1
+- Podívejte, támhle ten opièák nám nìco nese...
+$ D5b-FSol1-1
+- Podívejte, támhle ten opièák nám nìco nese...
+$ D5b-Sol2-1
+- Do háje, vdy to je dynamit!
+$ D5b-FSol2-1
+- Do háje, vdy to je dynamit!
+
+// Dialogue 5c (when first apeman kamikaze exploded)
+$ D5c-Sol1-1
+- The bastards are using HP like it didn't matter. We should do the same fucking thing.
+$ D5c-FSol1-1
+- The bastards are using HP like it didn't matter. We should do the same fucking thing.
+$ D5c-JMM-1
+- Then we're no better than them. We need the Apemen back on our side but we've got to win them round.
+
+// Dialogue 5d (after first of dialogues 5a, 5b and 5c)
+$ D5d-Lisa-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-Cyrus-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-Gary-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-Sol1-1
+- The fuckers! Using the Apemen was our idea.
+$ D5d-JMM-1
+- Better tell them then. Maybe they'll stop!
+
+//******************** 3. replika .. .zmena textu 
+// Dialogue 6 (when second base is captured)
+$ D6-Sci1-1
+- Major, there's some equipment the Arabs found while mining for Siberite. It looks like the same technology as EON, but it's larger and incomplete.
+$ D6-JMM-1
+- Can we take it back for testing?
+$ D6-Sci1-2
+- Mohli bychom ho nalozit na nakladak a odvezt ho.
+$ D6-JMM-2
+- If it's that valuable they're going to want it back. Better get ourselves prepared.
+
+// ************ zmenen text ! ... neni tam naklada, ale musi ho nalozit
+# M3
+Add Secondary protect
+- Naloz artefakt do nakladaku a uchran ho do konce mise.
+#
+
+//***************** uprava mista poslani
+// Dialogue 7 (short time after second base is captured or destroyed)
+$ D7-Sol1-1
+- Majore, zachytili jsme nìjaké vysílání na naší kódované frekvenci.
+$ D7-Ar1-1
+- Yankee commander, I could be friend. Vím, e to s Arabama jde s kopce, a chtìl bych zùstat na tı správnı stranì. Mùu vám pomoct.
+$ D7-JMM-1
+- Kdo jste? Jak jste dokázal dekódovat naši frekvenci.
+$ D7-Ar1-2
+- To teï není dùleité, stejnì jako moje jméno. Jsem elektrotechnik a byl jsem v oldu Arabù. Ale u mám téhle praštìné války plnı zuby. Chtìl bych se s vámi dohodnout, nìco za nìco.
+$ D7-JMM-2
+- A co za co?
+$ D7-Ar1-3
+- Kolem základny jsou rozmístìnı skryté kamery, které pokryjí její široké okolí. Sám jsem jich vìtšinu instaloval. Jestli chcete, mùu vám sdìlit frekvenci, na které zachytíte jejich signál a zpùsob kódování.
+$ D7-JMM-3
+- To zní dobøe. A co chceš?
+$ D7-Ar1-4
+- Malı náklaïák na siberitovı pohon. A bezpeènı odchod pro mì a mého nového kámoše Mika. Auto pøistavte na vıchod, je tam v bazinach obrovsky tmavy zvlastne rozvetveny strom (kamera ukáe). Pak vám odvysílám kód.
+
+// Query Cameras
+? QCameras
+Do you accept the mercenaries offer? It may result in valuable intelligence about the Northern Arabian base.
+- Yes.
+- No.
+?
+
+// Dialogue 7a (if transaction is successful)
+$ D7a-Ar1-1
+- Díky, veliteli, u jsem se nemohl doèkat, a z toho blázince s Mikem vypadneme. A teï moje èást dohody. (kamera ukáe øetìzec kamer)
+
+// Dialogue 8 (if first remote controled vehicle is spoted)
+$ D8-Sol1-1
+- Zatracenì. Zdá se, e Arabové u také pøišli na vıhodu ovládání vozidel na dálku.
+$ D8-FSol1-1
+- Zatracenì. Zdá se, e Arabové u také pøišli na vıhodu ovládání vozidel na dálku.
+$ D8-JMM-1
+- Nìkde pøece musí mít øídící vìe! Musíme je najít.
+
+// Dialogue 8a (if first remote control tower is spoted, at least 15 sec after 7a or 8)
+$ D8a-Sol2-1
+- Majore, nemùou ty jejich øídící vìe bıt mobilní? Podívejte se na támhleto auto!
+$ D8a-FSol2-1
+- Majore, nemùou ty jejich øídící vìe bıt mobilní? Podívejte se na támhleto auto!
+$ D8a-JMM-1
+- Zatracenì! To by mohlo bıt ono.
+
+// Dialogue 9 (if mission is too long)
+$ D9-Pow-1
+- MacMillane, mìla to bıt blesková akce. Potøebujeme vaše jednotky na jiné naléhavé úkoly. Do deseti minut ohlašte splnìní úkolu!
+
+// Dialogue 9a (if mission is not completed 10 mins after Dialogue 9)
+$ D9a-Pow-1
+- Zklamal jste mì, MacMillane, vìøil jsem, e to zvládnete. Zrušte akci. Vaše jednotky nutnì potøebujeme tady.
+
+^ MAIN
+Arabian bases destroyed.
+
+| JMM
+John MacMillan zahynul
+
+| Command
+Byl jsi zbaven velení
+
+* Time1
++ Rychlá akce.
+- Akci bys musel stihnout rychleji.
+*
+
+* Time2
++ Blesková akce.
+- Akci bys musel stihnout rychleji.
+- Akci bys musel stihnout mnohem rychleji.
+*
+
+* Artefact
++ Získán artefakt.
+- Neuchránil jsi artefakt.
+- Nenašel jsi zvláštní artefakt.
+*

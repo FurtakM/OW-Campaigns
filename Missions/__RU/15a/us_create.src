@@ -1,0 +1,87 @@
+var cpu_side,
+    cpu_nation,
+    cpu_base;
+
+
+
+// tvorba jednotek v americke zakladne
+export function create_americans;
+var un,
+    class_list,                 // seznam zadanych povolani
+    members;                    // pocet lidi v kazdem z povolani
+
+begin
+  cpu_side:=us;
+  cpu_nation:=nation_american;
+  cpu_base:=us_create;
+
+  members:=difficulty*2;
+  class_list:=[class_soldier, class_mechanic, class_scientistic, class_engineer];
+
+  for un in class_list do
+    create_units(cpu_side,cpu_nation,un,members,cpu_base);
+  create_units(cpu_side,cpu_nation,class_mechanic,2,cpu_base);
+
+  place_all_soldiers;
+  place_all_scientistics;
+  place_all_mechanics;
+end;
+
+
+
+// umisteni vsech vojaku na sva mista
+function place_all_soldiers;
+var un,i,max,
+    units,buildings;
+begin
+  buildings:=FilterAllUnits([ [f_side,cpu_side], [f_btype,b_bunker] ]);
+  units:=FilterAllUnits([ [f_side,cpu_side], [f_class,class_soldier] ]);
+
+  if buildings>=units then
+    max:=0+units
+  else
+    max:=0+buildings;
+
+  i=1;
+  for un in units do
+    begin
+      if i<=max then
+        ComEnterUnit(un,buildings[(i mod buildings)+1]);
+      i:=i+1;
+    end;
+end;
+
+
+// umisteni vsech vedcu na sva mista
+function place_all_scientistics;
+var un,i,
+    units,buildings;
+begin
+  buildings:=FilterAllUnits([ [f_side,cpu_side], [f_or, [f_btype,b_lab_full], [f_btype,b_lab]] ]);
+  units:=FilterAllUnits([ [f_side,cpu_side], [f_class,class_scientistic] ]);
+  i=1;
+  for un in units do
+    begin
+      ComEnterUnit(un,buildings[(i mod buildings)+1]);
+      i:=i+1;
+      if i>(units div 2) then
+        break;
+    end;
+end;
+
+
+// umisteni vsech mechaniku na sva mista
+function place_all_mechanics;
+var un,i,
+    units,buildings;
+begin
+  buildings:=FilterAllUnits([ [f_side,cpu_side], [f_or, [f_btype,b_workshop], [f_btype,b_factory]] ]);
+  units:=FilterAllUnits([ [f_side,cpu_side], [f_class,class_mechanic] ]);
+  i=1;
+  for un in units do
+    begin
+      ComEnterUnit(un,buildings[(i mod buildings)+1]);
+      i:=i+1;
+    end;
+end;
+

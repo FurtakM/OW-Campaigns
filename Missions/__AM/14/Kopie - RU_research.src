@@ -1,0 +1,148 @@
+export ru_lab1_queue,ru_lab2_queue;     // fronta planovaneho vyzkumu ruske baze
+export ru_lab1_upgrade,ru_lab2_upgrade; // fronta upgradu technologii v ruske bazi
+export research_1,research_2;           // posledni zkoumana technologie v lab 1 a lab 2
+
+var research_done,laboratory;           // promene pro ulozeni ukonceneho vyzkumu v laboratori
+
+
+
+//-----  Scientistic progress in RU Base  -----//
+
+// Scientistic priorities in RU base
+export function ru_scientistic_priority;
+begin
+  // fronta ukolu v laboratori 1
+  ru_lab1_queue:=[tech_Behemoth];
+  // fronta ukolu v laboratori 2
+  ru_lab2_queue:=[tech_TauRad,tech_SpacAnom,tech_LimTeleport,tech_MatPred,tech_TargTeleport];
+
+  // priority upgradu v laboratori 1
+  ru_lab1_upgrade:=[tech_Weap1,tech_Weap2,tech_Sib1,tech_Weap3,tech_Sib2,tech_Sib3];
+  // priotity upgradu v laboratori 2
+  ru_lab2_upgrade:=[tech_Comp1,tech_ST1,tech_Comp2,tech_ST2,tech_Comp3,tech_ST3];
+
+  research_1:=ru_lab1_queue[1];
+  research_2:=ru_lab2_queue[1];
+end;
+
+
+// odstraneni posledne vynalezene technologie z fronty vyzkumu
+function change_technology_lab1;
+begin
+  ru_lab1_queue:=ru_lab1_queue diff research_done;
+end;
+
+function change_technology_lab2;
+begin
+  ru_lab2_queue:=ru_lab2_queue diff research_done;
+end;
+
+// prechod na upgadovane technologie v RU Lab 1
+function upgrade_technology_lab1;
+var un;
+begin
+  if ru_lab1_upgrade<>[] then
+    begin
+      ru_lab1_queue:=ru_lab1_upgrade;
+      ru_lab1_upgrade:=[];
+      if ru_lab2_upgrade<>[] then
+        begin
+          un:=UnitsInside(ru_lab2);
+          if not un then
+            begin
+              un:=UnitsInside(ru_lab1);
+              ComExitBuilding(un);
+              AddComEnterUnit(un,ru_lab2);
+              repeat
+                wait(0$2);
+              until un=UnitsInside(ru_lab2);
+            end;
+        end;
+    end
+  else
+    research_1:=-1;
+end;
+
+// prechod na upgadovane technologie v RU Lab 1
+function upgrade_technology_lab2;
+var un;
+begin
+  if ru_lab2_upgrade<>[] then
+    begin
+      ru_lab2_queue:=ru_lab2_upgrade;
+      ru_lab2_upgrade:=[];
+      if ru_lab1_upgrade<>[] then
+        begin
+          un:=UnitsInside(ru_lab1);
+          if not un then
+            begin
+              un:=UnitsInside(ru_lab2);
+              ComExitBuilding(un);
+              AddComEnterUnit(un,ru_lab1);
+              repeat
+                wait(0$2);
+              until un=UnitsInside(ru_lab1);
+            end;
+        end;
+    end
+  else
+    research_2:=-1;
+end;
+
+
+on ResearchComplete(research_done,laboratory) do
+begin
+    case laboratory of
+  ru_lab1: if research_1=0 then
+             upgrade_technology_lab1         // prechod na vyvoj upgradovanych technologii v RU Lab 1
+           else
+             change_technology_lab1;         // posun vyzkumu k dalsi technologii v RU Lab 1
+  ru_lab2: if research_2=0 then
+             upgrade_technology_lab2         // prechod na vyvoj upgradovanych technologii v RU Lab 2
+           else
+             change_technology_lab2;         // posun vyzkumu k dalsi technologii v RU Lab 2
+    end;
+end;
+
+// Vedeni vyzkumu - Lab 1
+every 0$2 trigger UnitsInside(ru_lab1) and research_1=ru_lab1_queue[1] do
+var un;
+begin
+  un:=UnitsInside(ru_lab1);
+  SetClass(un,class_scientistic);                      // Change all units inside lab 1 into Scientistics
+
+  ComResearch(ru_lab1,ru_lab1_queue[1]);
+  if ru_lab1_queue>1 then                             //  Osetreni konce vyzkumu
+    research_1:=ru_lab1_queue[2]
+  else
+    research_1:=0;
+  if research_1>=0 then
+    Enable;
+end;
+
+// Vedeni vyzkumu - Lab 2
+every 0$2 trigger UnitsInside(ru_lab2) and research_2=ru_lab2_queue[1] do
+var un;
+begin
+  un:=UnitsInside(ru_lab2);
+  SetClass(un,class_scientistic);                      // Change all units inside lab 2 into Scientistics
+
+  ComResearch(ru_lab2,ru_lab2_queue[1]);
+  if ru_lab2_queue>1 then                             //  Osetreni konce vyzkumu
+    research_2:=ru_lab2_queue[2]
+  else
+    research_2:=0;
+  if research_2>=0 then
+    Enable;
+end;
+
+
+// Zmena vsech vedcu na mechaniky po dokonceni veskereho vyzkumu
+every 0$10 trigger research_1<0 and research_2<0 do
+var un;
+begin
+  un:=UnitsInside(ru_lab1) ^ UnitsInside(ru_lab2);
+  SetClass(un,class_mechanic);
+  ComExitBuilding(un);
+end;
+

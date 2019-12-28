@@ -1,0 +1,398 @@
+VAR pom;
+VAR i;
+EXPORT Dietrich;
+EXPORT LS;
+EXPORT Arabi_Utoci;
+VAR polozil;
+VAR Autok;
+VAR auta;
+EXPORT UTEKLI_ARABI;
+
+// arabske budovy
+VAR lab,arm,dep,el1,el2;
+
+// arabsti vojaci;
+EXPORT Are;
+EXPORT Asci;
+EXPORT ar_eng;
+EXPORT Afi;
+
+// disablovani trigeru na zacatku
+EVERY 0$0.5 DO
+begin
+  for i:=1 to 22 do disable(i);
+  Arabi_utoci=false;
+end;
+
+// uvodni pohyb na misto baze
+EVERY 0$1 DO
+begin
+  Are=FilterUnitsInArea(EArabi,[[f_side,Arabi]]);
+  Afi=UnitFilter(Are,[[f_class,class_soldier]]);
+  ComMoveXY(Are,63,18);
+end;
+
+// zacatek staveni base u arabu
+EVERY 0$1 TRIGGER FilterUnitsInArea(PArabi,[[f_type,unit_vehicle]])>1 DO
+begin
+  auta:=UnitFilter(Are,[[f_type,unit_vehicle]]);
+  ComExitVehicle(auta[1]);
+  ComExitVehicle(auta[2]);
+  wait(0$1);
+  Are=FilterUnitsInArea(Abase,[[f_side,Arabi]]);
+  enable(7);
+end;
+
+//staveni depotu
+EVERY 0$5 marked 7 DO
+begin
+  ar_eng:=UnitFilter(Are,[[f_class,class_engineer]]);
+  ComBuild(ar_eng[1],b_depot,70,17,2);
+  enable(1);
+end;
+
+// dodani matrose z 1. auta
+EVERY 0$5 TRIGGER FilterUnitsInArea(Abase,[[f_side,Arabi],[f_and],[f_btype,b_depot]])>0 DO
+begin
+  ComEnterUnit(Afi[1],auta[1]);
+  AddComMoveXY(Afi[1],72,20);
+  enable(16);
+end;
+
+// odvoz 1. auta
+EVERY 0$4 marked 16 DO
+begin
+  if not Carry(auta[1]) then begin
+                               ComMoveXY(auta[1],64,23);
+                               enable(17);
+                             end
+                        else enable;
+end;
+
+// dojelo 1. auto?
+EVERY 0$3 marked 17 DO
+begin
+  if IsInArea(auta[1],Odstav)
+    then
+      begin
+        ComExitVehicle(auta[1]);
+        wait(0$2);
+        AddComEnterUnit(Afi[1],auta[2]);
+        AddComMoveXY(Afi[1],73,21);
+        enable(18);
+      end
+   else enable;
+end;
+
+// prazdne 2 auto
+EVERY 0$4 marked 18 DO
+begin
+  if not Carry(auta[2]) then begin
+                               ComMoveXY(auta[2],64,23);
+                               enable(19);
+                             end
+                        else enable;
+end;
+
+// odstavenmi 2. auta
+EVERY 0$3 marked 19 DO
+begin
+  if IsInArea(auta[2],Odstav)
+    then
+      begin
+        ComExitVehicle(auta[2]);
+        wait(0$2);
+        AddComMoveXY(Afi[1],75,25);
+       end
+   else enable;
+end;
+
+// staveni laboratore
+EVERY 0$10 marked 1 do
+begin
+  pom=FilterUnitsInArea(Abase,[[f_type,unit_building]]);
+  if pom>0 then
+    if GetResourceType(GetBase(pom[1]),mat_cans)>0 then
+      begin
+        AddComBuild(ar_eng[2],b_lab,77,17,3);
+        enable(12);
+      end
+                                                   else enable
+           else enable;
+end;
+
+// podporeni stavby labu
+EVERY 0$5 marked 12 DO
+begin
+  if FilterUnitsInArea(Abase,[[f_side,Arabi],[f_and],[f_btype,b_lab]])=0 then
+    begin
+      AddComBuild(ar_eng[2],b_lab,77,17,3);
+    end
+   else enable;
+end;
+
+//test, jestli se zacala stavet laborator
+EVERY 0$1 TRIGGER FilterUnitsInArea(Abase,[[f_type,unit_building]])>1 do
+begin
+  lab:=FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_lab]]);
+  lab:=lab[1];
+  dep:=FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_depot]]);
+  dep:=dep[1];
+  enable(2);
+end;
+
+// stavba solarni alektrarny
+EVERY 0$3 marked 2 do
+begin
+  if IsConstructed(lab)=0 then
+    begin
+      ComMoveXY(Afi[1],62,17);
+      wait(0$5);
+      AddComExitVehicle(Afi[1]);
+      ComEnterUnit(ar_eng,dep);
+      wait(0$20);
+      enable(3);
+      ComMoveXY(Ar_eng[2],61,18);
+      ComExitBuilding(ar_eng);
+      AddComBuild(ar_eng[1],b_solar_power,71,23,3);
+      enable(13);
+      AddResourceType(GetBase(dep),mat_cans,100);
+      AddResourceType(GetBase(dep),mat_oil,50);
+    end
+    else enable;
+end;
+
+// podporeni stavby elektrarkny
+EVERY 0$5 marked 13 DO
+begin
+  if FilterUnitsInArea(Abase,[[f_side,Arabi],[f_and],[f_btype,b_solar_power]])=0
+    then AddComBuild(ar_eng[1],b_solar_power,71,23,3)
+    else enable;
+end;
+
+// upgrade sib. laboratore
+EVERY 0$10 marked 3 DO
+begin
+  el1:=FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_solar_power]]);
+  el1:=el1[1];
+  AddComMoveXY(ar_eng[2],75,20);
+  ComUpgradeLab(lab,b_lab_siberium);
+  enable(4);
+end;
+
+// schovani jednotek
+EVERY 0$10 marked 4 do
+begin
+  if IsConstructed(lab)=0 and IsConstructed(el1)=0 then
+    begin
+      ComEnterUnit(ar_eng,lab);
+      ComExitVehicle(Ar_eng[2]);
+      wait(0$5);
+      ComEnterUnit(Afi[1],dep);
+      enable(5);
+      enable(22);
+    end
+    else enable;
+end;
+
+// stavba armory
+EVERY 0$10 marked 5 do
+begin
+  ComChangeProfession(ar_eng,class_scientistic);
+  AddComChangeProfession(Afi[1],class_engineer);
+  AddComExitBuilding(Afi[1]);
+  AddComBuild(Afi[1],b_armoury,80,28,0);
+  enable(14);
+end;
+
+// podporeni stavby armoury
+EVERY 0$5 marked 14 DO
+begin
+  if FilterUnitsInArea(Abase,[[f_side,Arabi],[f_and],[f_btype,b_armoury]])=0
+    then AddComBuild(Afi[1],b_armoury,80,28,0)
+    else enable;
+end;
+
+//test, jestli se zacala stavet armoury
+EVERY 0$1 TRIGGER FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_armoury]])>0 do
+begin
+  arm:=FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_armoury]]);
+  arm:=arm[1];
+  enable(6);
+end;
+
+// uklid jednotek po stavbe armoury
+EVERY 0$10 marked 6 do
+begin
+  if IsConstructed(arm)=0 then
+    begin
+      ComEnterUnit(Afi[1],dep);
+      enable(8);
+    end
+    else enable;
+end;
+
+// stavba 2. solarni elektrarny
+EVERY 0$10 marked 8 do
+begin
+  ComExitBuilding(Afi[1]);
+  AddComBuild(Afi[1],b_solar_power,74,26,0);
+  enable(9);
+  enable(15);
+end;
+
+// podporeni stavby 2. solarni elektrarny
+EVERY 0$5 marked 15 DO
+begin
+  if FilterUnitsInArea(Abase,[[f_side,Arabi],[f_and],[f_btype,b_solar_power]])=1
+    then AddComBuild(Afi[1],b_solar_power,74,26,0)
+    else enable;
+end;
+
+//test, jestli se zacala stavet 2. el
+EVERY 0$1 TRIGGER FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_solar_power]])>1 do
+begin
+  el2:=FilterUnitsInArea(Abase,[[f_type,unit_building],[f_and],[f_btype,b_armoury]]);
+  if el1=el2[1] then el2:=el2[2]
+                else el2:=el2[1];
+  enable(6);
+end;
+
+// uklid po dostaveni 2. elektrarny
+EVERY 0$10 marked 9 do
+begin
+  if IsConstructed(el2)=0 then
+    begin
+      wait(0$5);
+      cheat_source(dep,100,50,10);
+      AddComUpgrade(arm);
+      enable(10);
+    end
+    else enable;
+end;
+
+// trigger na dodelani upgradu armoury
+EVERY 0$10 marked 10 do
+begin
+  if IsConstructed(arm)=0 then
+    begin
+      ComEnterUnit(Afi[1],arm);
+      AddComChangeProfession(Afi[1],class_soldier);
+      AddComExitBuilding(Afi[1]);
+      wait(0$5);
+      cheat_source(dep,100,50,10);
+      enable(11);
+      polozil=false;
+    end
+    else enable;
+end;
+
+// polozeni miny - zruseno ... minu vubec pokladat nebude
+EVERY 1$45 marked 11 DO
+begin
+  AddComMoveXY(Afi[1],96,27);
+  AddComMoveXY(Afi[1],113,30);
+  AddComMoveXY(Afi[1],107,40);
+  AddComMoveXY(Afi[1],75,26);
+end;
+
+// zrada arabu a jejich utok
+EVERY 0$1 TRIGGER Arabi_utoci=true DO
+VAR arabi_v_zakladne;
+begin
+  Dial=5;
+  arabi_v_zakladne=FilterAllUnits([[f_side,Arabi],[f_type,unit_human]]);
+  ComExitBuilding(arabi_v_zakladne);
+  AddComEnterUnit(arabi_v_zakladne,arm);
+  AddComChangeProfession(arabi_v_zakladne diff LS,class_mortar);
+  AddComExitBuilding(arabi_v_zakladne);
+  AddComMoveXY(arabi_v_zakladne,76,20);
+  wait(0$3);
+  prebarvi_araby(arabi_v_zakladne);
+  AddComMoveXY(arabi_v_zakladne,86,12);
+  wait(cekani_zradnych_arabu_pred_utokem);
+  enable(20);
+  wait(cas_druzi_arabaci);
+  create_ar_zradu;
+  Autok=FilterAllUnits([[f_side,Arabi2]]);
+  ComAgressiveMove(Autok,104,25);
+end;
+
+//utok a utek
+EVERY 0$4 marked 20 DO
+VAR pomarabi;
+begin
+  if FilterUnitsInArea(Mortari,[[f_side,Arabi3]])>0 then
+    begin
+      AddComFireExplosives(Afi[1]);
+      wait(0$20);
+      AddComMoveXY(Afi[1],128,19);
+      AddComMoveXY(ar_eng,129,20);
+      enable(21);
+      pomarabi=FilterAllUnits([[f_side,Arabi3]]);
+      AddComMoveXY(pomarabi,129,20);
+    end
+   else enable;
+end;
+
+// oidebirani
+EVERY 0$1 marked 21 DO
+begin
+  pom=FilterUnitsInArea(REUTEK,[[f_side,Arabi3]]);
+  if pom>0 then begin
+                  RemoveUnit(pom[1]);
+                  UTEKLI_ARABI:=UTEKLI_ARABI+1;
+                end;
+  enable;
+end;
+
+// vyzkum - arabi pro toceni elektraren
+EVERY 0$20 marked 22 DO
+begin
+  pom=UnitsInside(lab);
+  if pom>0 then ComResearch(lab,tech_Sib1)
+           else enable;
+end;
+
+// vyzkum 2
+EVERY 0$45 TRIGGER Researched(Arabi,tech_Sib1) DO
+begin
+  wait(1$0);
+  ComResearch(lab,tech_Sib2);
+end;
+
+// vyzkum 3
+EVERY 0$43 TRIGGER Researched(Arabi,tech_Sib2) DO
+begin
+  wait(1$0);
+  SetTech(tech_Sib3,Arabi,state_enabled);
+  ComResearch(lab,tech_Sib3);
+end;
+
+// utok arabu pokud je to moc rychle !!!
+EVERY 0$13 TRIGGER Researched(You,tech_Sib1) DO
+begin
+  arabi_utoci=true;
+end;
+
+// prebarvovani arabu
+function prebarvi_Araby(people);
+VAR i;
+VAR poc;
+begin
+  poc=0;
+  while FilterUnitsExceptArea(APU,[[f_side,Arabi],[f_type,unit_human]])>0 and poc<8 do
+    begin
+      wait(0$1);
+      poc=poc+1;
+    end;
+  for i in people do
+    begin
+      while not (GetClass(i)=class_mortar or i=LS) do wait(0$1);
+      while IsInUnit(i) do begin
+                             wait(0$1);
+                             ComExitBuilding(i);
+                           end;
+      SetSide(i,Arabi3);
+    end;
+end;

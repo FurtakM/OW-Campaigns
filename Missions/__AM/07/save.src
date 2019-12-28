@@ -1,0 +1,62 @@
+EXPORT Function Save;
+ begin
+   SaveCharacters(JMM, 'JMM');
+
+   if Cyrus in selected_americans then
+     begin
+       CyrusLoc= 4;
+       SaveVariable(CyrusLoc, 'CyrusLoc');
+       SaveCharacters(Cyrus, 'Cyrus');
+     end;
+
+   if Bobby in selected_americans then
+     begin
+       BobbyLoc= 4;
+       SaveVariable(BobbyLoc, 'BobbyLoc');
+       SaveCharacters(Bobby, 'Bobby');
+     end;
+
+   if Lisa in selected_americans then
+     begin
+       LisaLoc= 4;
+       SaveVariable(LisaLoc, 'LisaLoc');
+       SaveCharacters(Lisa, 'Lisa');
+     end;
+
+   if Donaldson in selected_americans then
+     begin
+       DonaldsonLoc= 4;
+       SaveVariable(DonaldsonLoc, 'DonaldsonLoc');
+       SaveCharacters(Donaldson, 'Donaldson');
+     end;
+
+   if Brown in selected_americans then
+     begin
+       BrownLoc= 4;
+       SaveVariable(BrownLoc, 'BrownLoc');
+       SaveCharacters(Brown, 'Brown');
+     end;
+
+   if Gladstone in selected_americans then
+     begin
+       GladstoneLoc= 4;
+       SaveCharacters(Gladstone, 'Gladstone');
+     end
+   else GladstoneLoc= 3;
+   SaveVariable(GladstoneLoc, 'GladstoneLoc');
+
+   if Denis in selected_americans then
+     begin
+       DenisLoc= 4;
+       SaveCharacters(Denis, 'Denis');
+     end
+   else DenisLoc= 3;
+   SaveVariable(DenisLoc, 'DenisLoc');
+
+   // Groups
+   SaveCharacters((otherGamma2 ^ New_americans)diff Selected_americans, 'otherGamma2');
+   SaveCharacters(otherDelta diff Selected_americans, 'otherDelta');
+   SaveCharacters(otherUnplaced diff Selected_americans, 'otherUnplaced');
+
+   SaveCharacters(Selected_americans diff [Cyrus, Bobby, Lisa, Donaldson, Brown, Gladstone, Denis, JMM], 'OtherJMM');
+ end;

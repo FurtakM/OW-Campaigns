@@ -1,0 +1,428 @@
+@ Stealing the Steel
+% Macmillan has avoided capture by the enemy forces. But he's still in more danger than he knows.
+& Somewhere in Siberia, some 2,000,000 years B.C.
+
+// Dialogue 1 (after start of mission, hidden in forest)
+$ D1-Sol1-1
+- 	How the hell did our ancestors get this tooled up? They got better weapons than we have.
+$ D1-JMM-1
+- 	They must be from the future same as us.
+$ D1-FSol2-1
+- 	Like everyone just happens to have their personal time machine these days!?
+$ D1-JMM-2
+- 	I don't know how they got here, but they know about us. If the Russians knew what was going on they'd want to try and stop us.
+$ D1-Sol3-2
+- 	They're doing pretty well from what I've seen. I passed a couple of bodies on the way.
+$ D1-Lisa-2
+- 	We lost Phil Carpenter. I tried to save him but....
+$ D1-JMM-3
+- 	It's like a turkey shoot. They just sit here waiting for us to appear. Then mow us down.
+$ D1-Sol3-3
+- 	I don't get it, say the Russians found out, went and broke out the EON, how come they got here before us?
+$ D1-Lisa-3
+- 	Hey, our guys couldn't tell us what decade we'd hit or who'd get here first, maybe the Russians just got lucky.
+$ D1-JMM-4
+- 	Shut up. There is some incoming broadcast...
+$ D1-Pow-4
+- 	(weak signal over radio) Macmillan this is Colonel Powell at Alpha Base. Listen up! The enemy are based seven miles North of you and Alpha is beyond them.
+$ D1-Cyrus-4
+- 	[present] So what the fuck do we do!?
+$ D1-Lisa-4
+- 	[reply] Shut up and you might find out.
+$ D1-Pow-5
+- 	(continues) Contact all other survivors. Reconnoitre the area. Try to capture an outlying Russian building, consolidate your position and await further orders.
+$ D1-Cyrus-5
+- 	[present: alt a1] Fuck this, two millions years in past, surrounded by pissed Russians, the last I need is some fucking clown telling me to capture their building and stay put.
+$ D1-Bobby-5
+- 	[present: alt a2] What? We kill their guys then sit and wait for their friends to come looking!? Why not put a bullet in our brains right now.
+$ D1-Lisa-5
+- 	[reply] Cos knowing you, you'd probably miss!
+$ D1-Bobby-6
+- 	[reply] Fuck you.
+$ D1-JMM-6
+- 	Come on. You heard the Colonel. He gave an order. Let's do what the man says.
+
+# M1
+Add Main capture
+- Capture Russian depots in the area
+Add Main wait
+- Wait for further instructions
+Add Secondary join
+- Join other US soldiers in the area
+#
+
+! Engineers
+Engineers
+Take a good look at people at your disposal (you can browse through them by pressing Tab or you can click Review Team icon on toolbar). Two of them are not dressed like soldiers, but like engineers instead. The profession kin gives characters the possibilities they otherwise would not have.
+
+Soldiers' weapons have longer range and do greater damage. Also, soldiers can crawl.
+
+Engineers can capture enemy buildings. They can also transport material and construct buildings (but you would have to capture some Russian base).
+
+You will meet more professions later. The character's profession can be switched in specialised buildings.
+
+[reviewing team] [classes]
+!
+
+! Groups
+Groups
+Watch your engineers carefully. If you lose them you will not be able to capture Russian depots.
+
+If you want to select all engineers quickly (e.g. in order to send them out of combat), double-click any of them. By the same token, double-clicking a soldier selects all soldiers on map.
+
+To streamline units handling you can create numbered groups. Select several characters and press e.g.. Ctrl+1. If you then press 1, this group will be re-selected. You can create e.g. a group of soldiers (number 1) and group of engineers (2) and group of all characters (3).
+
+[groups]
+!
+
+// Dialogue X1 (when Americans attack northern base first)
+$ DX1-JMM-1
+- 	Retreat. There's no way we're getting through Here without a lot more firepower.
+
+! Hold
+Hold command
+If combat ensues, everybody tries to help anybody else. This also means that especially engineers, with their shorter range of fire, get into the harm's way. 
+
+If you want to stop some of your characters from interfering in combat by their own volition, give them the order to stay put - select them and click Hold position icon (or press H). They will not leave their position now and they will only open fire at those enemy units that come within range.
+
+[Hold command]
+!
+
+// Dialogue X2 (when Americans capture eastern base)
+$ DX2-Bobby-1
+- 	[present - alt a1] Weird vehicles man. Ain't seen nothing like that before.
+$ DX2-JMM-1
+- 	[otherwise - alt a2] These vehicles surely look weird.
+$ DX2-JMM-1a
+- 	[$dialogue X1 executed] Check them out Bobby, they've gotta beat walking our way through the frontline. 
+
+! CapturingVehicles1
+Capturing vehicles
+You managed to do away with vehicle crew before they managed to get in. This is your chance to steal vehicle. Select one of your men and right-click the empty vehicle. The character will get in and the vehicle's colour will change to the colour of your side.
+
+[Capturing vehicles]
+!
+
+! CapturingVehicles2
+Capturing vehicles
+You captured Russian vehicles. The one that burns is lost - you would need an experienced mechanic to repair them. But the other one is operational - you can capture it. Select one of your men and right-click the empty vehicle. The character will get in and the vehicle's colour will change to the colour of your side.
+
+[Capturing vehicles]
+!
+
+! ControlingVehicles
+Controlling vehicles
+You can control a vehicle in the same way you control your men - you can select it, group it, issue it default order by right-clicking (move or attack, depending on what you click) or give orders by clicking icons on command pane.
+
+You can get out of vehicle by clicking Exit Vehicle icon (or by pressing E). You can enter it again by selecting a character and right-clicking the empty vehicle.
+
+Please note, that there is one more bar above a vehicle. It shows how much fuel it has in its tank. Both movement and combat consume fuel. You have not much fuel and when it runs out, vehicle will stop. Therefore, you should be very careful about your fuel - there will be no possibility to refuel in this mission.
+
+[Controlling Vehicles][Fuel tank]
+!
+
+! CapturingBuilding
+Capturing buildings
+Your task is to capture Russian depots, those tall wooden buildings. Select one of your engineers and right-click an enemy depot. The engineer will get there and after a short while the depot will change colour to that of your side.
+
+Capturing a depot is a very important action: it puts you into control of its supply of material and enables you to capture other buildings in the base.
+
+ [Capturing buildings]
+!
+
+! Depot
+Depot and base
+You have captured enemy depot and thus gained a fledgling new base. If there is some other building nearby, you can capture it as well and join it to the base. You can change the profession of your men to engineers inside depot - you simply send one of them inside and then click Change to Engineer icon. Then click Exit building icon or right-click anywhere on the map and new engineer will leave the building.
+
+In the upper right corner of the screen you can see a bar showing supplies of material, oil and siberite in depot. It also shows level of power supply and power consumption but we need not to concern us with them now.
+
+[Depot] [Base]
+!
+
+! Building
+If you have a depot with supply of material you can construct buildings within certain distance of it. In this mission, you can only build simple fortifications and an armoury. Select an engineer and click Build icon (or press B). Then choose a building you want to construct.
+
+You will then see a shape of the selected building - move it around the map until you find a place where you want to place it. Use right mouse button to rotate the building (please note that it has entrances and so its rotation is of some importance: you wouldn't like to place a breastwork with the entrance pointed in the supposed direction of the enemy attack). Use the left mouse button to confirm building.
+
+If the mock building turns red, you cannot build it on that place (probably because it is too far from depot or because the terrain is too uneven here).
+
+[Construction of buildings]
+!
+
+! Armoury
+Armoury
+This is your first armoury. You can turn your people into soldiers there. Send them in by right-clicking the building and then click Change to soldier icon. Then right-click anywhere outside building (or click Exit Building icon) and your new soldiers will get out.
+
+The armoury is built in such a way that it can be protected. Contrary to depot, the characters inside can shoot outside and so armoury can serve as a kind of fortification as well.
+
+[Armoury]
+!
+
+! Breastworks
+Breastwork
+You have first breastwork. You can send one soldier inside - he will be able to shoot at the enemy while safe against fire.
+
+Do you remember notes about terrain and line of sight? It is important to build breastworks on hills to increase its range of fire, because they can't move closer to enemy.
+
+[Breastworks]
+!
+
+! Transporting
+Resource pools and transportation
+You have two depots in this moment and so you have two bases. Each base hase separate supplies of raw materials. You have a separate resource bar in the upper right corner of the screen for each of them. If you select a building, the resource bar of the corresponding base will light up.
+
+As you can see, there is plenty of material in the eastern base. Your orders are to transport it to the northern base. You can go about it in the following way: select the eastern depot, click the Transport icon and click crates. Then click the northern base. This will issue command to transport maerial.
+
+Now select an engineer and right-click a depot. Engineer will start carrying crates from one base to the other.
+
+[Bases][Transporting]
+!
+
+// Dialogue X2a (when someone other than JMM enters a vehicle - use his sentence)
+$ DX2a-JMM-1
+- 	***So? How does it look?
+$ DX2a-Lisa-1
+- 	[present: alt a1] ***Oh, yeah, I've driven worse... but the fuel tank is almost empty!
+$ DX2a-Bobby-1
+- 	[present: alt a2] ***Sure, boss, cars are my hobby... if this is the fuel gauge, we are almost out of gas!
+$ DX2a-Cyrus-1
+- 	[present: alt a3] ***A 747 has less switches. And, if that is the fuel gauge, we are bloody low on fuel.
+$ DX2a-Sol1-1
+- 	[otherwise: alt a4] ***I think I can drive it but we are low on fuel.
+$ DX2a-FSol2-1
+- 	[otherwise: alt a5] ***I think I can drive it but we are low on fuel.
+$ DX2a-JMM-2
+- 	***So go easy on it, the next gas station I know of is two million years away.
+
+// Dialogue X2b (when JMM enters a vehicle)
+$ DX2b-Lisa-1
+- 	[present] ***So how it goes, lieutenant?
+$ DX2b-JMM-1
+- 	***It's one hell of a machine! It looks more like a bulldozer than a tank. And we will have to be very easy on gas, the tank is almost empty.
+
+// Dialogue X3 (when Americans attacks eastern base)
+$ DX3-Rus1-1
+- 	(Russian voice: Eto Amerikanci! Bystro v mashiny!) Americans! Hurry to our machines!
+$ DX3-JMM-1
+- 	***Damn, Russian tanks! Kill the driver before they get into them!
+
+// Dialogue 2 (when Khattam meets someone and JMM  not present.).
+$ D2-Kha-1
+- 	***Finally, I meet somebody! So how do you giaours like the period where you can't stodge pork?
+
+// Dialogue 2a (when Khattam meets Macmillan)
+$ D2a-Kha-1
+- 	Allah be praised! The EON actually works! When I stepped inside I thought I was going to die.
+$ D2a-JMM-1
+- 	If we hadn't reached you, you'd have died anyway. The Russians would have found you.
+$ D2a-Kha-2
+- 	Russians?
+$ D2a-JMM-2
+- 	Don't ask me how they got here but they're good soldiers with good kit and they're picking off our people all the time.
+$ D2a-Kha-3
+- 	My thanks to you Lieutenant. One day I hope to pay you back.
+$ D2a-JMM-3
+- 	You don't have to thank me, just identify yourself.
+$ D2a-Kha-4
+- 	Paul Khattam, nuclear physicist. 
+$ D2a-JMM-4
+- 	That's great, you were working on the EON and you didn't think it'd work?
+$ D2a-Kha-5
+- 	Nothing is certain Lieutenant, sometimes science owes more to faith than religion.
+$ D2a-JMM-5
+- 	I'm glad to hear you've got plenty of it anyway, you're gonna need it here.
+
+// Dialogue 3 (when Americans seize first Russian base)
+$ D3-JMM-1
+- 	(into radio) Ltnt Macmillan reporting to Alpha. We're now in command of a Russian installation. Where do we go from here Colonel?
+$ D3-Pow-1
+- 	(over radio) We're trying to establish your exact location, when we do you'll receive further orders. Till then maintain your position and gather deposited supplies... ***Recon tells me that there is one more base in your area. Try to capture it as well.
+
+// Dialogue 3a (when Americans seize the other Russian base)
+$ D3a-JMM-1
+- 	(into radio) *** Ltnt Macmillan calling Alpha. We have captured the second Russian base. Awaiting further instructions.
+$ D3a-Pow-1
+- 	(over radio) ***Maintain your position and try to gather as much material in the northern base as possible. Try to transport the material from the eastern base there too. We'll get back to you a.s.a.p. 
+$ D3a-JMM-2
+- 	(into radio) Sir, I'd appreciate it if you could tell me what's going on here...
+$ D3a-Pow-2
+- 	(over radio) I said don't use the radio Macmillan! You keep talking they'll be right down on you. Your call sign is now Cobra 1. Await further instructions and don't radio us. Is that understood?
+$ D3a-JMM-3
+- 	(into radio) Yes sir (cynically) Cobra 1 out.
+
+# M2
+Out capture
+Add Secondary collect
+- Gather as much material as possible in the northern base
+#
+
+// Dialogue 3b (when Americans seize northern Russian base)
+$ D3b-JMM-1
+- 	***Lets get to it.  We'd better keep a careful lookout for the Russians or the only material we'll be collecting is lead.
+
+// Dialogue 4 (when a Russian soldier appears in the American position)
+$ D4-Mikh-1
+- 	(In Russian: Èto sluèilos? Kto vy? Gdye Saša?) What happened? Who are you? Where is Sasha?
+$ D4-Sol1-1
+- 	See you in hell comrade.
+$ D4-FSol2-1
+- 	See you in hell comrade.
+$ D4-Mikh-2
+- 	Please! Don't shoot. I am not soldier...
+$ D4-Sol1-2
+- 	Course not. You just happen to live round here...
+$ D4-FSol2-2
+- 	Course not. You just happen to live round here...
+$ D4-Mikh-3
+- 	I can explain...
+$ D4-Sol1-3
+- 	With a bullet in your head? I don't think so. Time to die soldier.
+$ D4-FSol2-3
+- 	With a bullet in your head? I don't think so. Time to die soldier.
+$ D4-Mikh-4
+- 	I am NOT soldier! Please. Listen to me...
+
+// Query s1
+? Qs1
+Sir, this Rusky speaks a bit of English.  Claims he's a civilian.  Want me to kill him?
+- Kill the Russian?
+- Interrogate the Russian and gather intelligence?
+- Release the Russian?
+?
+
+// Dialogue 4b (when Mikhail meets Macmillan)
+$ D4b-JMM-1
+- 	Good work soldier.
+$ D4b-Mikh-1
+- 	I am not soldier.
+$ D4b-JMM-2
+- 	No-one's talking to you Stalin.
+$ D4b-Mikh-2
+- 	I am no Stalin. I am Mikhail.
+$ D4b-JMM-3
+- 	If you're not a soldier what are you doing here?
+$ D4b-Mikh-3
+- 	I am engineer, from Moscow Institute. I not want to be here. I have no choice. Comrade Solyanov says our duty to save resource.
+$ D4b-JMM-4
+- 	Solyanov?
+$ D4b-Mikh-4
+- 	I like American, hamburger - good meal...
+$ D4b-JMM-5
+- 	Shut up! Who is Solyanov.
+$ D4b-Mikh-5
+- 	Alexy Solyanov! President of Russia...
+$ D4b-JMM-6
+- 	What fucking year are you come from?
+$ D4b-Mikh-6
+- 	2009.
+$ D4b-JMM-7
+- 	Don't mess me around. I was there in 2009 Prokhorov was President.
+$ D4b-Mikh-7
+- 	I no lie. Prokhorov I not know. Solyanov - President fourteen years.
+$ D4b-Sol1-7
+- 	What do you make of it Ltnt?
+$ D4b-FSol2-7
+- 	What do you make of it Ltnt?
+$ D4b-JMM-8
+- 	Either the guy's full of shit or he's from a different future to us.
+$ D4b-Sol1-8
+- 	I don't get it, you mean we've already changed the course of time?
+$ D4b-FSol2-8
+- 	I don't get it, you mean we've already changed the course of time?
+$ D4b-JMM-9
+- 	Don't think about it soldier, we don't know and it wouldn't help if we did. Just lock the Russian in the depot and make sure he doesn't move. Whatever the future, we've got work to do now. ***We'll keep him for interrogation later.
+
+# M3
+Add Secondary prisoner
+- Take a prisoner to the Northern depot and keep him there.
+#
+
+# M3a
+Del prisoner
+#
+
+// Dialogue 5 (when Russian trucks appears)
+$ D5-Rus2-1
+- 	(Russian voice: Nastasa Styepanovna, have you cooked your pasty?) Nastasa Styepanovna, ty uzhe padgatovila svoye pirogy?
+$ D5-Rus2-1a
+- 	(Russian voice: Eto prosto nyevazmozhno! Nikolay, chto nibud uzhasnoye zdyes sluchilos. Bistro! Vyernyem sa!) This isn't possible...there's something happened here, something terrible...Nikolay, we must return. 
+
+// Dialogue 5a (when Americans fail to destroy both Russian trucks)
+$ D5a-Sol1-1
+- 	[$one truck managed to escape: alt a1] Their commander's gonna be happy when it gets home.
+$ D5a-Sol1-1a
+- 	[$both trucks managed to escape: alt a2] Their commander's gonna be happy  when they get home.
+$ D5a-JMM-1
+- 	So happy he'll send troops down here to take us out. Let's make sure we're ready for them.
+
+// Dialogue 6 (after time limit, when Americans still hold the Russian base - end of mission)
+$ D6-Pow-1
+- 	(over radio) Alpha calling Cobra 1. We picked up the Russian broadcasts. Sounds like you did a good job. Time to move. Take what you can and then destroy the depots. Head North East and after one mile you'll be met by Captain Cornell leading another group. Await orders there.
+$ D6-JMM-1
+- 	Cornell eh?  I wonder if it's the same Cornell.. Cobra 1 Out.
+
+// Dialogue 7a (when Russian tries to escape and someone spots him)
+$ D7a-Sol1-1
+- 	Stop right there. One more step and... (shoots him)
+$ D7a-Sol1-1a
+- 	...you're a dead man.
+$ D7a-FSol2-1
+- 	Stop right there. One more step and... (shoots him)
+$ D7a-FSol2-1a
+- 	...you're a dead man.
+
+// Dialogue 7 (when Russian escapes and Macmillan is near to warehouse)
+$ D7-JMM-1
+- 	(moves to warehouse) Where's the prisoner?
+$ D7-Sol1-1
+- 	got away sir, there was nothing we could do...
+$ D7-JMM-2
+- 	Don't give me excuses Soldier, I gave you an order and you failed to carry it out. Don't screw up again. Do you understand me!?
+$ D7-Sol1-2
+- 	Yes sir.
+$ D7-Cyrus-2
+- 	[Lisa present: alt a1] We should have shot the fucker.
+$ D7-Sol1-3
+- 	[reply] Mikhail or Macmillan?
+$ D7-Lisa-3
+- 	[reply] You were supposed to guard him and you fucked up big time. Ain't Macmillan's fault you're a fucking dumb ass.
+
+// Dialogue 8 (when player attacks depot)
+$ D8-JMM-1
+- 	***Stop! Don't shoot the depot! We've got to capture it not destroy it.
+
+// Dialogue 9 (during final attack)
+$ D9-Rus3-1
+- 	(Russian voice: Tovaryshchi, my dolzhny vzyat eto nazad! Dlya Rosii!) Comrades, we have to get back what's rightfully ours! For Russia!
+$ D9-Russ-1
+- 	(no titles) Uraaa!
+
+^ MAIN
+***Bases captured
+
+* Cans
++ ***Lot of spoils.
+- ***You gathered not enough material.
+*
+
+* Deaths
++ ***Little losses.
++ No losses.
+- ***Your losses were too big.
+*
+
+* Prisoner
++ ***Prisoner taken.
++ ***Prisoner shot when escaped.
+- You did not capture a Russian prisoner.
+- Your were not able to guard the Russian prisoner.
+*
+
+| JMM
+John Macmillan is dying.
+
+| DepotDestroyed
+***The Warehouse, you were supposed to capture, is destroyed.
+
+| DepotCaptured
+***The Warehouse, you were supposed to capture, is in Russian hands again.

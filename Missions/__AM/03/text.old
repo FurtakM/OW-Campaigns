@@ -1,0 +1,312 @@
+@ Breaking Through
+% Macmillan and his soldiers succeeded in capturing the depot. A tougher challenge now lies ahead - to break through the Russian lines and join the rest of the US forces in the North.
+& Approximately 20 miles South of Alpha base. 2,000,000 years B.C.
+
+// Dialogue 1 (after the start of the mission)
+$ D1-Corn-1
+- John! If I'd known you were here I wouldn't have come.
+$ D1-JMM-1
+- I'm surprised they let you. They said they were sending the best.
+
+// Dialogue 1a (only if Mikhail is present)
+$ D1a-Corn-1
+- So who's your friend?
+$ D1a-JMM-1
+- Mikhail? He's an engineer, could be useful, except he's Russian.
+$ D1a-Corn-2
+- Have you found out much about their forces?
+$ D1a-JMM-2
+- That they might come from a different future.
+$ D1a-Corn-3
+- What?
+$ D1a-JMM-3
+- Ask the guy a question about our time, like who was Hitler. He's never heard of him.
+$ D1a-Corn-4
+- Could just be lying.
+$ D1a-JMM-4
+- What's in it for him? See what you think, when we get through the front line you talk to him.
+$ D1a-Corn-5
+- OK, I'll take him with my outfit now.
+$ D1a-JMM-5
+- Aren't we sticking together.
+$ D1a-Corn-6
+- Powell just radioed.  Said there are more guys around here and your orders are to find them. Then we attack their line at several points.
+
+// Dialogue 1b (if Mikhail is not present)
+$ D1b-Corn-1
+- I'd love to speak about old times. But Powell just radioed.  Said there are more guys around here and your orders are to find them. Then we attack their line at several points.
+
+// Dialogue 1c (continues in both cases)
+$ D1c-JMM-1
+- So while they're busy slaughtering one of us the other goes through? I like my way better.
+$ D1c-Corn-1
+- You're not the only one, together we've got a chance of forcing through with fewer casualties. (into radio) Cobra 2 to Alpha base. We've rendezvoused with Cobra 1, request permission to proceed as one group.
+$ D1c-Powell-1
+- (over radio) Your job's to follow orders Cornell, not question them. You proceed Eastward and wait for the signal to attack. Macmillan, you take four of your soldiers and join the camp in the South West. You'll attack from there at the same time. We will give you support. Do you understand?
+$ D1c-Corn-2
+- Yes sir.
+$ D1c-JMM-2
+- Great, you sorted that one out.
+$ D1c-Khat-2
+- [present: alt 1a] I have a feeling the support will be pretty minimal.
+$ D1c-Sol1-2
+- [otherwise: alt 1b] I fear the support can be pretty small.
+$ D1c-Cyrus-2
+- [present: reply] You mean like fucking nothing.
+$ D1c-Lisa-2
+- [present: reply] Powell managed to get to the North, maybe he knows something we don't.
+$ D1c-Cyrus-3
+- [present: reply] Then the bastard should tell us!
+
+! CharacterSelection
+Character selection
+You are now about to select the characters that are to go with you into next mission. This is very important decision - you have to carefully select your team depending on your task: characters with high combat skill for combat missions, scientists for research mission etc. Do not forget to include a couple of workers in a mission when you need to capture enemy's base or build your own.
+
+You select your team in Select team windows. It is similar to Review team window accesable from the toolbar but it has two main windows - one shows the characters available to you and the other the ones you have already selected. Use Hire button to add characters to your team and Fire button to move them back into pool of available characters.
+
+[Characters]
+!
+
+// Dialogue 1d (after selection)
+$ D1d-JMM-1
+- See you later.
+$ D1d-Corn-1
+- Hope not. That'd mean we both got killed! (Cornell and his group leaves)
+
+# M1
+Add Main capture
+- Reach the South West base
+Add Main wait
+- Wait for the signal to attack
+#
+
+// Dialogue 2 (after reaching small American base)
+$ D2-JMM-1
+- My name's Macmillan. Major Powell ordered us to join you.
+$ D2-Sol1-1
+- Then he sure you don't like you guys.
+$ D2-JMM-2
+- Our orders are to break through the Russian line.
+$ D2-Sol1-2
+- No way. I've had no orders...
+$ D2-JMM-3
+- That's because I'm in command here now. Do what I tell you and we've a chance of getting through. Fuck me around and we're all dead. You got that?
+$ D2-Sol1-3
+- Yes sir.
+$ D2-JMM-4
+- Now what are we up against?
+$ D2-Sol1-4
+- They've got tanks all along the roads.
+$ D2-JMM-5
+- So the jeeps are no go.
+$ D2-Sol1-5
+- This is where they've got their weapons sighted.
+$ D2-JMM-6
+- Makes the meadows a shooting range.
+$ D2-Sol1-6
+- And they've strong patrols this way. They know the woods inside out. This is a suicide mission!
+$ D2-JMM-7
+- Another group's going in from the East, between us we'll split the Russians and at least one party should go through.
+$ D2-Sol1-7
+- While the other has their brains blown out?
+
+! RunningBase
+Running the base
+Now you are in control of your first base. Here are few useful tips, you might wish to try out.
+
+You will need material to build new buildings or construct vehicles. The material appears randomly all over the map in form of plain wooden crates - these are the shipments your friends who sent you here are sending for your convenience. Every time a crate appears (materialise) you can hear a sonic boom, regardless of your distance from the spot. You can also see a blip on your mini-map indicating the approximate position of materialisation. Use your engineers to transport material to your base.
+
+In order to produce vehicles you need workshop. Order one of your engineers to build it (access the Build menu and then select Workshop). Another useful building is a laboratory, where you can turn your characters into scientists. A scientist can conduct research in laboratory but he can also heal the wounded characters in field.
+
+[Buildings]
+!
+
+! Workshop
+Workshop
+You have just built your first workshop. Your people can become mechanics here - this works like in other buildings. Mechanics are better drivers (a vehicle driven by a mechanic is faster and deals more damage to enemy than the one driven by, say, soldier). A mechanic is also able to repair a damaged vehicle: just click his Repair icon (or press R) and then click the damaged vehicle.
+
+Only mechanics can operate workshop. If you try to build a vehicle and you have no mechanic inside (i.e. the workshop is either empty or only characters of other professions are in), you will se flashing red icon "Mechanic missing". Until you send some mechanic in, the production will not start.
+[Workshop]
+!
+
+! BuildingVehicles
+Building Vehicles
+You can build vehicles in workshop. If you select it, you can see four drop-down lists: these correspond to four vehicle components - chassis, weapon, control system and engine. At present you have not much choice in constructing vehicles as you have only one available type of chassis, weapon and control system. You do not even have an engine until you research it in a laboratory.
+
+In more advanced missions you will be able to select from more types of components and build many different types of vehicles.
+
+Anyway, once you are satisfied with the vehicle design, just press the Construct Vehicle icon and production starts (presuming that there is a mechanic inside). You will also note that the amount of material in the base decreases. This material is consumed to build the vehicle. When you hover the mouse over Construct Vehicle icon, you will see hint telling you how much material and other resources the vehicle will cost.
+
+[Vehicles]
+!
+
+! Laboratory
+Laboratory
+You have just constructed your first laboratory. Your can turn your people into scientists there - this works like in other buildings. Scientists can research new technologies inside laboratory and they can also act as medics, healing wounded characters in field. Just click the Heal icon (or press H) and then click the wounded character (if the character is dying (his health bar is red), you can simply right-click him with a scientist selected - healing will be the default command).
+
+To start a research, select a laboratory and then click the Basic research button. You will then see which fields of exploration are available to you. Click one of them and research commences. If you have no scientist in laboratory (e.e. the laboratory is either empty or youhave only characters of other professions inside), you will see flashing red icon "Missing scientist".
+
+[Laboratory]
+!
+
+// Dialogue 2a (short time after reaching American base)
+$ D2a-Sci1-1
+- The shipments from the future contain components of solar panels, sir. We could construct our own vehicles.
+$ D2a-JMM-1
+- You think you could make a solar vehicle with enough power?
+$ D2a-Sci1-2
+- Well, I'm afraid it won't be anything near as powerful as Russian combustion engines, but a really light vehicle could drive faster than those Russian monsters even if powered by sun.
+$ D2a-JMM-2
+- OK, we can try this out. What are you going to need?
+$ D2a-Sci1-3
+- A lab and a workshop, sir.
+
+// Dialogue 2b (when first vehicle is created)
+$ D2b-JMM-1
+- Well done, it doesn't look bad for a first try. But I wouldn't bet on it if pitched against a Russian tank.
+$ D2b-Sci1-1
+- We added the batteries. The solar panels can't cover all power consumption and so we store the energy when vehicle doesn't move. It works beautifully, sir.
+$ D2b-JMM-2
+- So... in other words - from time to time it stops and doesn't move until it recharges, does it?
+$ D2b-Sci1-2
+- Yeah, you can put it this way.
+$ D2b-JMM-3
+- I only hope it doesn't happen when I have Russians after me.
+
+// Dialogue 2c (when some character enters the car)
+$ D2c-JMM-1
+- [$Macmillan enters the vehicle: alt a1] Well, I'd say that the Russians keep the technological edge here (drives little bit forward and back)
+$ D2c-JMM-1a
+- [$cont. if he entered Russian vehicle in previous mission: alt a1] I tell you the Russian vehicle really felt like it was made for combat.
+$ D2c-Lisa-1
+- [$Lisa enters vehicle: alt a2] (she tries to drive in circle) It handles better than the Russian one and it is also faster... a smart driver can easily outrun them, but I wouldn't recommend a direct confrontation.
+$ D2c-Cyrus-1
+- [$Cyrus enters vehicle: alt a3] Fuck it, my legs are freezing.
+$ D2c-Cyrus-1a
+- [$cont. if he entered Russian vehicle in previous mission: alt c1] I tell you the Russian vehicle was much more comfy
+$ D2c-Bobby-1
+- [$Bobby enters vehicle: alt a4] I'd say it wouldn't protect you much but still it's better than walking.
+
+// Dialogue 6 (Frank returns)
+$ D6-JMM-1
+- Who the hell are you?
+$ D6-Frank-1
+- Corporal Frank Forsyth reporting sir. (reveals fog) I have some information for you sir.
+$ D6-Lisa-1
+- [present] Frank!
+$ D6-Frank-2
+- [reply] Lisa! Still alive. The Russians must be getting sloppy!
+$ D6-Sol1-2
+- Lieutenant, let me introduce the best scout the force has ever known. Corporal Forsyth. He can take pictures of your ass from the inside and you wouldn't know!
+$ D6-JMM-2
+- That's a hell of a recommendation Forsyth. Do you do anything more useful!?
+$ D6-Frank-3
+- While I was in the Russian camp I took a trip to the latrines and...
+$ D6-Frank-3a
+- Nothing to read on the can any more.
+$ D6-JMM-3
+- You really hit them where it hurts.
+$ D6-Frank-4
+- Undermine the moral, that's my way sir.
+$ D6-Lisa-4
+- [present] I can vouch for that!
+$ D6-Frank-5
+- With your permission I'd like to get back out there sir.
+$ D6-JMM-5
+- Why? Have you read those already?
+
+// Query 1
+? Q1
+What shall you do about Frank?
+- Let him return to his reconnaissance duties
+- Keep him at the base to assist in the breakthrough
+?
+
+// Dialogue 6a (At end of mission, Frank joins escaping forces)
+$ D6a-Frank-1
+- Thank God for that. I thought I'd never move again.
+
+// Dialogue 3 (some 2 minutes before 3a)
+$ D3-Corn-1
+- This is Cobra 2. We are ready to go in two minutes. We'd like to take a shower in Alpha before we go to party.
+
+// Dialogue 3a (signal to attack, some 10 minutes after making contact with Python)
+$ D3a-Corn-1
+- John, we're ready to go. How are you doing? (there is a problem that the player may not be ready for attack yet and so he doesn't feel like replying the way Macmillan does here. Instead, Cornell should flatly state that he starts attack -- after all he warned the player two minutes ago that he will do it).
+$ D3a-JMM-1
+- A1 buddy. See you at Alpha.
+$ D3a-Corn-2
+- Go, go, go.
+$ D3a-Sol1-2
+- This is going to be tough. If this was a computer game, I'd save the game now.
+
+# M2
+Add Main capture
+- Reach the Northern edge of the map with John and at least 4 members of your party alive and kicking.
+Add Secondary collect
+- Reach the Northern edge of the map with the fewest possible casualties.
+#
+
+// Dialogue 4 (some 5 minutes later)
+$ D4-Corn-1
+- Get over here John. There's too many of the fuckers. We need you.... (this sounds as if Macmillan is supposed to go and help Cornell. Instead, Cornell should be asking Macmillan to step up his attack to bind more of the Russian forces)
+
+// Dialogue 5 (some 5 minutes later)
+$ D5-Corn-1
+- It's all fucked up. They split us apart and they're picking us off... (The sound of gunfire, then Russian voice then the radio goes to static.)
+
+// Dialogue 8 (Russian patroll spots the American base)
+$ D8-Rus1-1
+- (Posmatri, zdes kakiyeto amerikanci! Bistro nazpjat!) Look, we have here some Americans. Lets get back fast.
+$ D8-JMM-1
+- Bloody hell, they spotted us. They must not escape!
+
+// Query 2 (when JMM is in target area and some of his men are too far)
+? Q2
+Not all of your men arrived at the destination area. Do you want to:
+- Wait for them
+- Leave them to get there alone
+?
+
+| 0
+Macmillan died.
+
+| 1
+You have not enough man to fulfill the objective.
+
+| 2
+South West base is destroyed.
+
+| 3
+South West base was captured by Russians.
+
+^ Main
+ Succesful breakthrough.
+
+* UpTo4
++
++
++ Very small casualties.
+- You have lost more than four men.
+*
+
+* UpTo2
++
++ Small casualties.
+-  You have lost more than two men.
+*
+
+* No
++ No casualties.
+-  You have lost some of your men.
+*
+$ D8-JMM-1a
+- Andy this name needs re-inforcing above if it is going to be used was the best friend I ever had, but when he needed help there was nothing I could do. Powell was right, following his orders got one of us through. But I can't help wishing it hadn't been me.
+$ D8-JMM-1b
+- I've been here at Alpha a couple of days now and I'm beginning to piece things together. It seems the first American to arrive and survive was Tim Gladstone. His arrival marks the beginning of time here, we use the term ERA, or earliest recorded arrival. It's now April 15, in the year ERA + 1.
+$ D8-JMM-1c
+- This is Gladstone with the Apemen, or to give them their full title, Homo Pekinsis. When he first arrived he made contact with them and took shelter in their caves. Better neighbours than I had back home.
+$ D8-JMM-1d
+- This base, Alpha, was set up six months ago by a guy named Ron Harrison. He pulled together enough survivors to begin work and since then things have moved quickly. Harrison began to establish smaller sites by the oil deposits and other areas, so he handed command of this place to Colonel Powell. Maybe if he hadn't, then Andy...
+$ D8-JMM-1e
+- Bloody as it was, we were one of the biggest groups to make it here, and Harrison's promoted me to Captain. which gets me away from Powell. He thinks I should have been disciplined, not promoted, didn't like me questioning his orders.  In two weeks time I'm taking command of one of the new bases, Gamma, Gets me away from Powell, I think that's best for all of us.

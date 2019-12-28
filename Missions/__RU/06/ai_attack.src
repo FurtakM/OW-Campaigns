@@ -1,0 +1,197 @@
+
+//utoky na vsevoloda
+every 0$55 trigger vsevolod_vstoupil and not VsevolodSaved do
+var tmp;
+begin
+   while tmp<=2 do begin
+     tmp:=UnitFilter(attack, [[f_inarea,top_attack],[f_side,ai],[f_control, control_remote]]);
+     wait(0$1);
+   end;
+   if tmp>1 then
+     if difficulty>1 then
+       zbytek:=tmp[1] ^ tmp[2]
+     else
+       zbytek:=tmp[1]
+   else
+     zbytek:=tmp;
+   if tick>((vsevolod_vstoupil+kolik_ma_vsevolod_casu)-(2$0*Vsevolod_uderna_group)) then
+     ComExitBuilding(Vsevolod_uderna_group[Rand(1,Vsevolod_uderna_group)]);
+
+   RaiseSailEvent(f_vsevolod_utok);
+   enable;
+end;
+//last utok na vsevoloda
+every 0$2 trigger (vsevolod_vstoupil and tick>(vsevolod_vstoupil+kolik_ma_vsevolod_casu)) do
+//              or (vsevolod_vstoupil and GetTechProgress(tech_TauField, you)>90) do
+var i;
+begin
+   while IsLive(Vsevolod) and not VsevolodSaved do begin
+     ComExitBuilding(Vsevolod_uderna_group ^ [Vsevolod]);
+     for i in Vsevolod_uderna_group ^ [Vsevolod] do
+       PriorityAttack(ai, i);
+     zbytek:=FilterUnitsInArea(top_attack, [[f_side,ai],[f_control, control_remote]]) isect attack;
+     RaiseSailEvent(f_vsevolod_final_utok);
+     wait(0$30);
+   end;
+end;
+
+
+//amici attacking
+export zbytek;
+every 0$10 trigger ovsyenkotaken and tick>(ovsyenkotaken+cas_prvniho_utoku) and ((tick>20$0 and attack>=3) or attack>=4) do
+var i, max;
+begin
+  zbytek:=[];
+  max:=utoci_max;
+  if max>attack then
+    max:=attack+0;
+  for i:=1 to max do
+    zbytek:=zbytek ^ attack[i];
+  ComReturn(mec);
+   case Rand(1,4) of
+      1: RaiseSailEvent(normal1_utok);
+      2: RaiseSailEvent(normal2_utok);
+      3: RaiseSailEvent(normal3_utok);
+      4: RaiseSailEvent(normal4_utok);
+    end;
+  wait(cas_mezi_utoky);
+  enable;
+end;
+
+export rAtt1, idAtt1, toAtt1;
+every 0$1 do
+var i, a;
+begin
+   rAtt1:=McRegistry(ai, [[mc_reg_refresh_time, 0$2],[mc_reg_area_to_guard, mc_attack],[mc_reg_area_to_protect,def_base3],mc_reg_only_important]);
+   idAtt1:=McAttack(5, rAtt1, toAtt1,[mc_def_advantage, mcatt_difficulty]);
+end;
+every 0$2 do         
+begin
+   toAtt1:=UnitFilter(attack, [[f_inarea,mc_attack],[f_side,ai]]);
+
+   if OvsyenkoTaken then
+     AddMcUnits(idAtt1, toAtt1);
+
+   enable;
+end;
+
+export function f_normal1_utok;
+var path, i;
+begin
+   path:=[[66,86],[91,95]];
+
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   ComStop(zbytek);
+   AttackVehicles(3, zbytek);
+  // for i in path do
+   //   AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   if not byl_hint_PA then begin
+     while not ContactTime([ai]) do
+       wait(0$1);
+     MyHint('PriorityAttacks');
+     byl_hint_PA:=true;
+   end;
+end;
+export byl_hint_PA;
+
+export function f_normal2_utok;
+var path, i;
+begin
+   path:=[[66,86],[109,128],[91,95]];
+
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   ComStop(zbytek);
+   AttackVehicles(3, zbytek);
+  // for i in path do
+     // AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   if not byl_hint_PA then begin
+     while not ContactTime([ai]) do
+       wait(0$1);
+     MyHint('PriorityAttacks');
+     byl_hint_PA:=true;
+   end;
+end;
+export function f_normal3_utok;
+var path, i;
+begin
+   path:=[[66,86],[109,128],[110,88],[91,95]];
+
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   ComStop(zbytek);
+   AttackVehicles(3, zbytek);
+  // for i in path do
+    //  AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   if not byl_hint_PA then begin
+     while not ContactTime([ai]) do
+       wait(0$1);
+     MyHint('PriorityAttacks');
+     byl_hint_PA:=true;
+   end;
+end;
+export function f_normal4_utok;
+var path, i;
+begin
+   path:=[[38,16],[75,36],[91,95]];
+
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   ComStop(zbytek);
+   AttackVehicles(3, zbytek);
+  // for i in path do
+   //   AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   if not byl_hint_PA then begin
+     while not ContactTime([ai]) do
+       wait(0$1);
+     MyHint('PriorityAttacks');
+     byl_hint_PA:=true;
+   end;
+end;
+
+export function f_vsevolod_utok;
+var path, i;
+begin
+   path:=[[43,17],[41,7]];
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   ComStop(zbytek);
+   for i in path do
+      AddComAgressiveMove(zbytek, i[1],i[2]);
+   AddComWait(zbytek, 0$5);
+   AddComReturn(zbytek);
+end;
+export function f_vsevolod_final_utok;
+var path, i;
+begin
+   path:=[[43,17],[41,7],[52,7]];
+
+   find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
+   find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
+   wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
+   wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
+   ComRemember(zbytek);
+   for i in path do
+      AddComAgressiveMove(zbytek, i[1],i[2]);
+   AddComAttackUnit(zbytek, Vsevolod);
+end;

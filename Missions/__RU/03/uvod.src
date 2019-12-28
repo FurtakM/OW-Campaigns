@@ -1,0 +1,177 @@
+VAR konzervy_delay;
+
+EXPORT budovy_mise_2;
+EXPORT breastworks_east;
+EXPORT amici_bw_2;
+
+// definice uvodnich nastaveni
+EVERY 0$0.1 DO
+begin
+  konzervy_delay=0;
+end;
+
+// nahodi budovy, ktere jsou nactene z predchozi mise
+EXPORT function placni_budovy_z_predesle_mise;
+VAR pom,i;
+VAR ab;
+VAR bw_e;
+VAR vojaci;
+VAR pocet;
+begin
+  uc_side=You;
+
+  // postaveni budov
+  bc_kind1=b_lab_basic;
+  bc_kind2=b_lab_basic;
+  for i in budovy_mise_2 do
+    begin
+      uc_nation=i[6];
+      bc_type=i[1];
+      bc_level=i[2];
+      pom=CreateAndPlaceBuildingXYD(i[3]+30,i[4]-20,i[5]);
+      if bc_type in [b_depot, b_warehouse] then
+        begin
+          SetResourceType(GetBase(pom),mat_cans,100);
+          SetResourceType(GetBase(pom),mat_oil,25);
+        end;
+    end;
+
+// americke breastworky na vychode
+  bw_e=breastworks_east;
+//  bw_e=LoadVariable('bw_east',3);
+  uc_side=Amici;
+  uc_nation=nation_american;
+  bc_type=b_breastwork;
+  bc_level=level_bw_e[difficulty];
+  if bw_e>1 then CreateAndPlaceBuildingXYD(123,42,1);
+  if bw_e=1 or bw_e=3 then CreateAndPlaceBuildingXYD(120,36,1);
+
+
+  vojaci=amici_bw_2;
+  if bw_e>0 then
+    begin
+      if bw_e=1 or bw_e=2 then pocet=1
+                          else pocet=2;
+      vojaci=vojaci^get_human(sex_male,class_soldier,2,'');
+      vojaci=vojaci^get_human(sex_male,class_soldier,2,'');
+      pom=FilterUnitsinArea(Am_bw_e,[[f_side,Amici],[f_btype,b_breastwork]]);
+      if pocet>=1 then begin
+                         PlaceUnitXYR(vojaci[1],129,39,5,false);
+                         ComEnterUnit(vojaci[1],pom[1]);
+                       end;
+      if pocet=2 then begin
+                        PlaceUnitXYR(vojaci[2],129,39,5,false);
+                        ComEnterUnit(vojaci[2],pom[2]);
+                      end;
+    end;
+end;
+
+// funkce na vyber vojaku pro danou misi
+// Burlak +5, alepon 1 eng, alespon 1 sci
+EXPORT function vyber_characteru;
+VAR pom;
+VAR units_na_vyber;
+VAR i;
+VAR pocet;
+VAR vyber;
+VAR osurviv;
+begin
+  uc_side=You;
+  uc_nation=nation_russian;
+  pocet=3;
+
+  units_na_vyber=[sel_not_changeable,sel_hired,sel_dont_change_class,bur];
+  units_na_vyber=units_na_vyber^[sel_change_class];
+  if IsOK(gny) then begin
+                      SetSide(gny,You);
+                      units_na_vyber=units_na_vyber^gny
+                    end
+               else pocet=pocet+1;
+  if IsOK(kov) then begin
+                      SetSide(kov,You);
+                      units_na_vyber=units_na_vyber^kov
+                    end
+               else pocet=pocet+1;
+  units_na_vyber=units_na_vyber^[sel_not_hired,sel_changeable,sel_change_class];
+  if IsOK(bel) then begin
+                      SetSide(bel,You);
+                      units_na_vyber=units_na_vyber^bel;
+                    end;
+
+  osurviv=other_survivors_mise_2;
+
+  for i in osurviv do SetSide(i,You);
+
+  units_na_vyber=units_na_vyber^osurviv;
+
+  uc_side=You;
+  uc_nation=nation_russian;
+
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_soldier,2,'');
+  units_na_vyber=units_na_vyber^get_human(sex_female,class_soldier,3,'');
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_engineer,2,'');
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_scientistic,2,'');
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_mechanic,2,'');
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_engineer,2,'');
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_scientistic,2,'');
+  units_na_vyber=units_na_vyber^get_human(get_sex,class_mechanic,2,'');
+
+  pom=CharacterSelection('Vyber si peopliky',
+                          pocet,pocet,
+                          units_na_vyber,
+                          [[class_engineer,1],[class_scientistic,1],[class_mechanic,0],[class_soldier,0]]);
+  vyber=[bur];
+  if IsOK(gny) then vyber=vyber^gny;
+  if IsOK(kov) then vyber=vyber^kov;
+  vyber=vyber^pom;
+  manage_zbytek(osurviv diff vyber);
+  result:=vyber;
+end;
+
+// placnuti unitu do 2. ruske baze
+EXPORT function placni_unity(unity);
+VAR i;
+begin
+  for i in unity do
+    begin
+      SetSide(i,You);
+      PlaceUnitXYR(i,99,73,5,false);
+    end;
+  wait(0$0.5);
+  SaveForQuickRestart;
+end;
+
+// padani konzerv
+EVERY 0$10 TRIGGER stav_omikron<3 DO
+begin
+  wait(Rand(50,2$00));
+  wait(konzervy_delay*0$5);
+  konzervy_delay=konzervy_delay+1;
+  CreateCratesArea(Rand(3,5),RU2_bedny,true);
+  enable;
+end;
+
+// spadnuti prvnich konzerv
+EVERY 0$30 DO
+begin
+  CreateCratesArea(Rand(3,5),RU2_bedny,true);
+end;
+
+// padani konzerv vsude
+EVERY 1$20 DO
+begin
+  wait(Rand(1,0$40));
+  CreateCratesArea(Rand(1,4),konzervy_all,true);
+end;
+
+// zbytek prezivsich lidi do baze
+function manage_zbytek(lidi);
+VAR i;
+begin
+  for i in lidi do
+    begin
+      SetSide(i,You2);
+      PlaceUnitXYR(i,144,79,3,false);
+    end;
+  ComEnterUnit(lidi,RU1_dep);
+end;

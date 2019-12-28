@@ -1,0 +1,18 @@
+//Steam achievements
+
+Every 0$1 do
+     begin
+          repeat
+          wait(0$1);
+
+          if depot_done then
+               exit;
+
+          if UnitFilter([ruhengi1,ruhengi0],[f_alive]) = 0 then
+               begin
+                    SetAchievement('ACH_SAN');
+                    exit;
+               end;
+
+          until false;
+     end;

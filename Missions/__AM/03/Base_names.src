@@ -1,0 +1,18 @@
+//Rumunuv pokus
+
+export function DisplayNames;
+var i,list;
+begin
+  list:=FilterAllUnits([ [f_or, [f_side,you], [f_side,neutral] ], [f_or,[f_btype,b_depot],[f_btype,b_warehouse]] ]);
+  SetBName(list,'Viper');
+end;
+
+every 0$2 do
+  DisplayNames;
+
+
+on BuildingStarted(b,h) do
+  DisplayNames;
+
+on BuildingCaptured(b,o,e) do
+  DisplayNames;

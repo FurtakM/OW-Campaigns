@@ -1,0 +1,329 @@
+on UnitDestroyed(un) do
+begin
+   if un in rulive then
+      rulive:=rulive diff un;
+   if un in apemans then
+      apemans:=apemans diff un;
+   if un=Burlak then
+      if canlost then YouLost('Burlak');
+   if un=depot then
+      depot:=0;
+
+   defence:=defence diff un;
+   cargo:=cargo diff un;
+   attack:=attack diff un;
+   scout:=scout diff un;
+   remote:=remote diff un;
+   brk_cars:=brk_cars diff un;
+   rep_cars:=rep_cars diff un;
+   opravit:=opravit diff un;
+
+   sol:=sol diff un;
+   eng:=eng diff un;
+   mec:=mec diff un;
+   sci:=sci diff un;
+   mor:=mor diff un;
+
+   case un of
+     dep1: dep1:=0;
+     lab1: lab1:=0;
+     fact1: fact1:=0;
+   end;
+   fort:=fort diff un;
+end;
+
+on ApemanTamed(ape, sci) do
+begin
+   MyHint('ApemenUsing');
+   apemans:=apemans diff ape;
+   if not first_apeman_tamed then
+     DApeTame;
+end;
+
+on ResearchComplete(tech, lab) do
+begin
+   if GetSide(lab)=you then begin
+     if tech=tech_ApeLang then begin
+        MyHint('ApemenTaming');
+        if dialogy then DApeLangCompl;
+     end;
+     if tech=tech_ApePsych then begin
+        if dialogy then DApeWorkCompl;
+     end;
+     if tech=tech_ApeAgres then begin
+        if dialogy then DApeSolCompl;
+     end;
+   end;
+
+end;
+
+on BuildingComplete(build) do
+begin
+   if GetSide(build)=you then begin
+     if not depot and GetBType(build)=b_depot then
+       depot:=build;
+   end
+   else begin
+     if GetBType(build) in [b_depot,b_warehouse] then
+        dep1:=build+0;
+     if GetBType(build) in [b_workshop,b_factory] then
+        fact1:=build+0;
+     if GetBType(build) in [b_lab,b_lab_half,b_lab_full] then
+        lab1:=build+0;
+     if GetBType(build) in [b_breastwork,b_bunker,b_armoury,b_barracks] then
+        fort:=fort ^ [build];
+   end;
+end;
+
+on UpgradeComplete(build) do
+var ar, i;
+begin
+    if GetSide(build)=arabians then begin
+       if GetBType(build)=b_barracks then begin
+          sol:=sol diff ar;
+          mor:=mor diff ar;
+          for i in fort do
+             ar:=ar ^ UnitsInside(i);
+          ComEnterUnit(ar ,build);
+          AddComChangeProfession(ar , class_mortar);
+          AddComExitBuilding(ar);
+          sol:=sol union ar;
+       end;
+    end;
+    if Getside(build)=you then begin
+      if GetBType(build)=b_factory then begin
+        MyHint('Tracks');
+      end;
+    end;
+end;
+
+on VehicleCaptured(vehnew, vehold, origside, hum) do
+begin
+     if origside=arabians then begin
+         defence:=defence diff vehold;
+         cargo:=cargo diff vehold;
+         attack:=attack diff vehold;
+         scout:=scout diff vehold;
+         remote:=remote diff vehold;
+         brk_cars:=brk_cars diff vehold;
+         rep_cars:=rep_cars diff vehold;
+     end;
+end;
+
+on BuildingCaptured(build, origside, eng) do
+begin
+   opravit:=opravit diff build;
+
+   case build of
+     dep1: dep1:=0;
+     lab1: lab1:=0;
+     fact1: fact1:=0;
+   end;
+   fort:=fort diff build;
+end;
+
+on VehicleConstructed(veh, fact) do
+var i, sc, a, mt;
+begin
+     if GetSide(fact)=arabians then begin
+        if to_defence then begin
+           defence:=defence union veh;
+        end;
+        if to_remote then begin
+           remote:=remote union veh;
+        end;
+        if to_cargo then begin
+           cargo:=cargo union veh;
+        end;
+        if to_attack then begin
+           attack:=attack union veh;
+        end;
+        if to_scout then begin
+           scout:=scout union veh;
+        end;
+        to_remote:=false;
+        to_cargo:=false;
+        to_scout:=false;
+        to_attack:=false;
+        to_defence:=false;
+
+        if GetControl(veh)=control_remote then
+           ComLinkTo(veh, rmec);
+
+        mt:=tick+0$7;
+        if veh in defence then begin
+          ComMoveToArea(veh, for_cars_defence);
+          while not IsInArea(veh, for_cars_defence) and mt>tick do
+            wait(0$1);
+        end
+        else begin
+          ComMoveToArea(veh, for_cars);
+          while not IsInArea(veh, for_cars) and mt>tick do
+            wait(0$1);
+        end;
+        a:=UnitsInside(veh);
+        ComRemember(veh);
+        ComExitVehicle(a);
+        AddComEnterUnit(a, fact1);
+        if GetWeapon(veh)<>ar_radar then
+           find_drivers(veh, sol, false)
+        else
+           find_drivers(veh, mec, true);
+     end;
+end;
+
+on SailEvent(num) do
+begin
+   case num of
+      vodni_utok: begin
+         f_vodni_utok;
+      end;
+      normal1_utok: begin
+         f_normal1_utok;
+      end;
+      normal2_utok: begin
+         f_normal2_utok;
+      end;
+      normal3_utok: begin
+         f_normal3_utok;
+      end;
+      normal4_utok: begin
+         f_normal4_utok;
+      end;
+      5001: begin
+         f_arcar1_in;
+      end;
+      5002: begin
+         f_arcar2_in;
+      end;
+      5003: begin
+         f_arcar3_in;
+      end;
+      5051: begin
+         f_arcar1_exit;
+      end;
+      5052: begin
+         f_arcar2_exit;
+      end;
+      5053: begin
+         f_arcar3_exit;
+      end;
+   end;
+end;
+
+export DU_units;
+on DestinationUnreachable(un) do
+begin
+  DU_units:=DU_units union un;
+  SetTag(un+10000, 2);
+end;
+every 0$2 trigger DU_units do
+var i,a;
+begin
+  for i in DU_units do begin
+    a:=GetTag(i+10000);
+    if a=0 then
+      DU_units:=DU_units diff i
+    else
+      SetTag(i+10000, a-1);
+  end;
+  enable;
+end;
+export function DU_wait(un);
+begin
+  wait(0$1);
+  while un in DU_units do
+    wait(0$1);
+end;
+
+
+{
+on McDefendTakesUnit(mcid, un) do
+begin
+   remove_from_humans(un);
+   remove_from_vehicles(un);
+   remove_from_builds(un);
+end;
+on McDefendReturnsUnit(mcid, un) do
+begin
+   add_to_humans(un);
+   add_to_vehicles(un);
+   add_to_builds(un);
+end;
+}
+
+
+
+
+
+
+
+
+
+//////// pridani do seznamu ///////////////
+{export function add_to_humans(un);
+var i;
+begin
+  for i in un do begin
+   case Getclass(i) of
+     class_soldier : sol:=sol union i;
+     class_engineer : eng:=eng union i;
+     class_mechanic : mec:=mec union i;
+     class_scientistic : sci:=sci union i;
+   end;
+  end;
+end;
+
+export function add_to_vehicles(un);
+var i;
+begin
+  for i in un do begin
+   if GetChassis(i)=ar_hovercraft then begin
+      attack:=attack union i;
+   end
+   else begin
+      defence:=defence union i;
+   end;
+  end;
+end;
+
+export function add_to_builds(un);
+var i,j, bt;
+begin
+  for i in un do begin
+   bt:=GetBType(i);
+   if bt=b_barracks or bt=b_armoury or bt=b_bunker or bt=b_breastwork then
+      fort:=fort union i;
+   if bt=b_lab or bt=b_lab_full or bt=b_lab_half then
+      lab:=lab union i;
+   if bt=b_workshop or bt=b_factory then
+      fact:=fact union i;
+   if bt=b_depot or bt=b_warehouse then
+      dep:=dep union i;
+  end;
+end;
+
+//////// odebrani ze seznamu ///////////////
+export function remove_from_builds(un);
+begin
+   fact:=fact diff un;
+   fort:=fort diff un;
+   lab:=lab diff un;
+   dep:=dep diff un;
+end;
+
+export function remove_from_humans(un);
+begin
+    sol:=sol diff un;
+    eng:=eng diff un;
+    mec:=mec diff un;
+    sci:=sci diff un;
+end;
+
+export function remove_from_vehicles(un);
+begin
+  attack:=attack diff un;
+  defence:=defence diff un;
+end;
+
+ }

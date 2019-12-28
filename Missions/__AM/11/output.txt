@@ -1,0 +1,659 @@
+// var konec ; var J , P ; var You ; var testslez ; starting begin RevealFogArea ( You , FOGAR ) ;
+   0: LD_LOC 4
+   4: PPUSH
+   5: LD_INT 5
+   7: PPUSH
+   8: CALL_OW 332
+// You = 1 ;
+  12: LD_ADDR_LOC 4
+  16: PUSH
+  17: LD_INT 1
+  19: ST_TO_ADDR
+// konec = false ;
+  20: LD_ADDR_LOC 1
+  24: PUSH
+  25: LD_INT 0
+  27: ST_TO_ADDR
+// testslez = false ;
+  28: LD_ADDR_LOC 5
+  32: PUSH
+  33: LD_INT 0
+  35: ST_TO_ADDR
+// J = nacti_osobu ( JMM ) ;
+  36: LD_ADDR_LOC 2
+  40: PUSH
+  41: LD_STRING JMM
+  43: PPUSH
+  44: CALL 1036 0 1
+  48: ST_TO_ADDR
+// P = NewCharacter ( Powell ) ;
+  49: LD_ADDR_LOC 3
+  53: PUSH
+  54: LD_STRING Powell
+  56: PPUSH
+  57: CALL_OW 25
+  61: ST_TO_ADDR
+// InGameOn ;
+  62: CALL_OW 8
+// PlaceHumanInUnit ( J , auto4 ) ;
+  66: LD_LOC 2
+  70: PPUSH
+  71: LD_INT 28
+  73: PPUSH
+  74: CALL_OW 52
+// PlaceHumanInUnit ( P , auto2 ) ;
+  78: LD_LOC 3
+  82: PPUSH
+  83: LD_INT 26
+  85: PPUSH
+  86: CALL_OW 52
+// wait ( 0 0$1 ) ;
+  90: LD_INT 35
+  92: PPUSH
+  93: CALL_OW 67
+// CenterOnXY ( 42 , 40 ) ;
+  97: LD_INT 42
+  99: PPUSH
+ 100: LD_INT 40
+ 102: PPUSH
+ 103: CALL_OW 84
+// wait ( 0 0$1 ) ;
+ 107: LD_INT 35
+ 109: PPUSH
+ 110: CALL_OW 67
+// ComMoveXY ( auto3 , 33 , 31 ) ;
+ 114: LD_INT 31
+ 116: PPUSH
+ 117: LD_INT 33
+ 119: PPUSH
+ 120: LD_INT 31
+ 122: PPUSH
+ 123: CALL_OW 111
+// ComMoveXY ( auto1 , 35 , 33 ) ;
+ 127: LD_INT 24
+ 129: PPUSH
+ 130: LD_INT 35
+ 132: PPUSH
+ 133: LD_INT 33
+ 135: PPUSH
+ 136: CALL_OW 111
+// ComMoveXY ( auto2 , 36 , 35 ) ;
+ 140: LD_INT 26
+ 142: PPUSH
+ 143: LD_INT 36
+ 145: PPUSH
+ 146: LD_INT 35
+ 148: PPUSH
+ 149: CALL_OW 111
+// ComMoveXY ( auto4 , 39 , 40 ) ;
+ 153: LD_INT 28
+ 155: PPUSH
+ 156: LD_INT 39
+ 158: PPUSH
+ 159: LD_INT 40
+ 161: PPUSH
+ 162: CALL_OW 111
+// ComMoveXY ( auto5 , 42 , 43 ) ;
+ 166: LD_INT 29
+ 168: PPUSH
+ 169: LD_INT 42
+ 171: PPUSH
+ 172: LD_INT 43
+ 174: PPUSH
+ 175: CALL_OW 111
+// AddComExitVehicle ( auto4 ) ;
+ 179: LD_INT 28
+ 181: PPUSH
+ 182: CALL_OW 181
+// AddComExitVehicle ( auto2 ) ;
+ 186: LD_INT 26
+ 188: PPUSH
+ 189: CALL_OW 181
+// end ;
+ 193: END
+// every 0 0$1 trigger FilterUnitsInArea ( STOP , [ [ f_side , You ] ] ) > 0 do
+ 194: LD_INT 1
+ 196: PPUSH
+ 197: LD_INT 22
+ 199: PUSH
+ 200: LD_LOC 4
+ 204: PUSH
+ 205: EMPTY
+ 206: LIST
+ 207: LIST
+ 208: PUSH
+ 209: EMPTY
+ 210: LIST
+ 211: PPUSH
+ 212: CALL_OW 70
+ 216: PUSH
+ 217: LD_INT 0
+ 219: GREATER
+ 220: IFFALSE 235
+ 222: GO 224
+ 224: DISABLE
+// begin CenterOnXY ( 38 , 37 ) ;
+ 225: LD_INT 38
+ 227: PPUSH
+ 228: LD_INT 37
+ 230: PPUSH
+ 231: CALL_OW 84
+// end ;
+ 235: END
+// every 0 0$1 trigger FilterUnitsInArea ( STOP , [ [ f_side , You ] ] ) = 7 do
+ 236: LD_INT 1
+ 238: PPUSH
+ 239: LD_INT 22
+ 241: PUSH
+ 242: LD_LOC 4
+ 246: PUSH
+ 247: EMPTY
+ 248: LIST
+ 249: LIST
+ 250: PUSH
+ 251: EMPTY
+ 252: LIST
+ 253: PPUSH
+ 254: CALL_OW 70
+ 258: PUSH
+ 259: LD_INT 7
+ 261: EQUAL
+ 262: IFFALSE 351
+ 264: GO 266
+ 266: DISABLE
+// begin ComMoveXY ( J , 67 , 55 ) ;
+ 267: LD_LOC 2
+ 271: PPUSH
+ 272: LD_INT 67
+ 274: PPUSH
+ 275: LD_INT 55
+ 277: PPUSH
+ 278: CALL_OW 111
+// ComMoveXY ( P , 67 , 56 ) ;
+ 282: LD_LOC 3
+ 286: PPUSH
+ 287: LD_INT 67
+ 289: PPUSH
+ 290: LD_INT 56
+ 292: PPUSH
+ 293: CALL_OW 111
+// AddComTurnUnit ( J , P ) ;
+ 297: LD_LOC 2
+ 301: PPUSH
+ 302: LD_LOC 3
+ 306: PPUSH
+ 307: CALL_OW 179
+// AddComTurnUnit ( P , J ) ;
+ 311: LD_LOC 3
+ 315: PPUSH
+ 316: LD_LOC 2
+ 320: PPUSH
+ 321: CALL_OW 179
+// AddComHold ( [ J , P ] ) ;
+ 325: LD_LOC 2
+ 329: PUSH
+ 330: LD_LOC 3
+ 334: PUSH
+ 335: EMPTY
+ 336: LIST
+ 337: LIST
+ 338: PPUSH
+ 339: CALL_OW 200
+// testslez = true ;
+ 343: LD_ADDR_LOC 5
+ 347: PUSH
+ 348: LD_INT 1
+ 350: ST_TO_ADDR
+// end ;
+ 351: END
+// every 0 0$0.5 trigger FilterUnitsInArea ( kecy , [ [ f_side , You ] ] ) = 2 do
+ 352: LD_INT 3
+ 354: PPUSH
+ 355: LD_INT 22
+ 357: PUSH
+ 358: LD_LOC 4
+ 362: PUSH
+ 363: EMPTY
+ 364: LIST
+ 365: LIST
+ 366: PUSH
+ 367: EMPTY
+ 368: LIST
+ 369: PPUSH
+ 370: CALL_OW 70
+ 374: PUSH
+ 375: LD_INT 2
+ 377: EQUAL
+ 378: IFFALSE 829
+ 380: GO 382
+ 382: DISABLE
+// begin CenterOnUnits ( J ) ;
+ 383: LD_LOC 2
+ 387: PPUSH
+ 388: CALL_OW 85
+// ComTurnUnit ( J , P ) ;
+ 392: LD_LOC 2
+ 396: PPUSH
+ 397: LD_LOC 3
+ 401: PPUSH
+ 402: CALL_OW 119
+// AddComTurnUnit ( P , J ) ;
+ 406: LD_LOC 3
+ 410: PPUSH
+ 411: LD_LOC 2
+ 415: PPUSH
+ 416: CALL_OW 179
+// AddComHold ( [ P , J ] ) ;
+ 420: LD_LOC 3
+ 424: PUSH
+ 425: LD_LOC 2
+ 429: PUSH
+ 430: EMPTY
+ 431: LIST
+ 432: LIST
+ 433: PPUSH
+ 434: CALL_OW 200
+// Say ( P , D1-Pow-1 ) ;
+ 438: LD_LOC 3
+ 442: PPUSH
+ 443: LD_STRING D1-Pow-1
+ 445: PPUSH
+ 446: CALL_OW 88
+// Say ( J , D1-JMM-1 ) ;
+ 450: LD_LOC 2
+ 454: PPUSH
+ 455: LD_STRING D1-JMM-1
+ 457: PPUSH
+ 458: CALL_OW 88
+// Say ( P , D1-Pow-2 ) ;
+ 462: LD_LOC 3
+ 466: PPUSH
+ 467: LD_STRING D1-Pow-2
+ 469: PPUSH
+ 470: CALL_OW 88
+// Say ( J , D1-JMM-2 ) ;
+ 474: LD_LOC 2
+ 478: PPUSH
+ 479: LD_STRING D1-JMM-2
+ 481: PPUSH
+ 482: CALL_OW 88
+// Say ( P , D1-Pow-3 ) ;
+ 486: LD_LOC 3
+ 490: PPUSH
+ 491: LD_STRING D1-Pow-3
+ 493: PPUSH
+ 494: CALL_OW 88
+// Say ( J , D1-JMM-3 ) ;
+ 498: LD_LOC 2
+ 502: PPUSH
+ 503: LD_STRING D1-JMM-3
+ 505: PPUSH
+ 506: CALL_OW 88
+// Say ( P , D1-Pow-4 ) ;
+ 510: LD_LOC 3
+ 514: PPUSH
+ 515: LD_STRING D1-Pow-4
+ 517: PPUSH
+ 518: CALL_OW 88
+// Say ( J , D1-JMM-4 ) ;
+ 522: LD_LOC 2
+ 526: PPUSH
+ 527: LD_STRING D1-JMM-4
+ 529: PPUSH
+ 530: CALL_OW 88
+// Say ( P , D1-Pow-5 ) ;
+ 534: LD_LOC 3
+ 538: PPUSH
+ 539: LD_STRING D1-Pow-5
+ 541: PPUSH
+ 542: CALL_OW 88
+// Say ( J , D1-JMM-5 ) ;
+ 546: LD_LOC 2
+ 550: PPUSH
+ 551: LD_STRING D1-JMM-5
+ 553: PPUSH
+ 554: CALL_OW 88
+// Say ( P , D1-Pow-6 ) ;
+ 558: LD_LOC 3
+ 562: PPUSH
+ 563: LD_STRING D1-Pow-6
+ 565: PPUSH
+ 566: CALL_OW 88
+// Say ( J , D1-JMM-6 ) ;
+ 570: LD_LOC 2
+ 574: PPUSH
+ 575: LD_STRING D1-JMM-6
+ 577: PPUSH
+ 578: CALL_OW 88
+// Say ( P , D1-Pow-7 ) ;
+ 582: LD_LOC 3
+ 586: PPUSH
+ 587: LD_STRING D1-Pow-7
+ 589: PPUSH
+ 590: CALL_OW 88
+// Say ( J , D1-JMM-7 ) ;
+ 594: LD_LOC 2
+ 598: PPUSH
+ 599: LD_STRING D1-JMM-7
+ 601: PPUSH
+ 602: CALL_OW 88
+// Say ( P , D1-Pow-8 ) ;
+ 606: LD_LOC 3
+ 610: PPUSH
+ 611: LD_STRING D1-Pow-8
+ 613: PPUSH
+ 614: CALL_OW 88
+// wait ( 0 0$0.5 ) ;
+ 618: LD_INT 18
+ 620: PPUSH
+ 621: CALL_OW 67
+// Query ( QLetter ) ;
+ 625: LD_STRING QLetter
+ 627: PPUSH
+ 628: CALL_OW 97
+// Say ( P , D1aa-Pow-1 ) ;
+ 632: LD_LOC 3
+ 636: PPUSH
+ 637: LD_STRING D1aa-Pow-1
+ 639: PPUSH
+ 640: CALL_OW 88
+// Say ( J , D1aa-JMM-1 ) ;
+ 644: LD_LOC 2
+ 648: PPUSH
+ 649: LD_STRING D1aa-JMM-1
+ 651: PPUSH
+ 652: CALL_OW 88
+// Say ( P , D1aa-Pow-2 ) ;
+ 656: LD_LOC 3
+ 660: PPUSH
+ 661: LD_STRING D1aa-Pow-2
+ 663: PPUSH
+ 664: CALL_OW 88
+// Say ( J , D1aa-JMM-2 ) ;
+ 668: LD_LOC 2
+ 672: PPUSH
+ 673: LD_STRING D1aa-JMM-2
+ 675: PPUSH
+ 676: CALL_OW 88
+// Say ( P , D1aa-Pow-3 ) ;
+ 680: LD_LOC 3
+ 684: PPUSH
+ 685: LD_STRING D1aa-Pow-3
+ 687: PPUSH
+ 688: CALL_OW 88
+// Say ( J , D1aa-JMM-3 ) ;
+ 692: LD_LOC 2
+ 696: PPUSH
+ 697: LD_STRING D1aa-JMM-3
+ 699: PPUSH
+ 700: CALL_OW 88
+// Say ( P , D1aa-Pow-4 ) ;
+ 704: LD_LOC 3
+ 708: PPUSH
+ 709: LD_STRING D1aa-Pow-4
+ 711: PPUSH
+ 712: CALL_OW 88
+// Say ( J , D1aa-JMM-4 ) ;
+ 716: LD_LOC 2
+ 720: PPUSH
+ 721: LD_STRING D1aa-JMM-4
+ 723: PPUSH
+ 724: CALL_OW 88
+// Say ( P , D1aa-Pow-5 ) ;
+ 728: LD_LOC 3
+ 732: PPUSH
+ 733: LD_STRING D1aa-Pow-5
+ 735: PPUSH
+ 736: CALL_OW 88
+// Say ( J , D1aa-JMM-5 ) ;
+ 740: LD_LOC 2
+ 744: PPUSH
+ 745: LD_STRING D1aa-JMM-5
+ 747: PPUSH
+ 748: CALL_OW 88
+// Say ( P , D1aa-Pow-6 ) ;
+ 752: LD_LOC 3
+ 756: PPUSH
+ 757: LD_STRING D1aa-Pow-6
+ 759: PPUSH
+ 760: CALL_OW 88
+// wait ( 0 0$1 ) ;
+ 764: LD_INT 35
+ 766: PPUSH
+ 767: CALL_OW 67
+// ComFree ( [ P , J ] ) ;
+ 771: LD_LOC 3
+ 775: PUSH
+ 776: LD_LOC 2
+ 780: PUSH
+ 781: EMPTY
+ 782: LIST
+ 783: LIST
+ 784: PPUSH
+ 785: CALL_OW 139
+// ComEnterUnit ( J , auto4 ) ;
+ 789: LD_LOC 2
+ 793: PPUSH
+ 794: LD_INT 28
+ 796: PPUSH
+ 797: CALL_OW 120
+// ComEnterUnit ( P , auto2 ) ;
+ 801: LD_LOC 3
+ 805: PPUSH
+ 806: LD_INT 26
+ 808: PPUSH
+ 809: CALL_OW 120
+// testslez = true ;
+ 813: LD_ADDR_LOC 5
+ 817: PUSH
+ 818: LD_INT 1
+ 820: ST_TO_ADDR
+// konec = true ;
+ 821: LD_ADDR_LOC 1
+ 825: PUSH
+ 826: LD_INT 1
+ 828: ST_TO_ADDR
+// end ;
+ 829: END
+// every 0 0$1 trigger konec and IsDrivenBy ( auto4 ) = J and IsDrivenBy ( auto2 ) = P do var i ;
+ 830: LD_LOC 1
+ 834: PUSH
+ 835: LD_INT 28
+ 837: PPUSH
+ 838: CALL_OW 311
+ 842: PUSH
+ 843: LD_LOC 2
+ 847: EQUAL
+ 848: AND
+ 849: PUSH
+ 850: LD_INT 26
+ 852: PPUSH
+ 853: CALL_OW 311
+ 857: PUSH
+ 858: LD_LOC 3
+ 862: EQUAL
+ 863: AND
+ 864: IFFALSE 1033
+ 866: GO 868
+ 868: DISABLE
+ 869: LD_INT 0
+ 871: PPUSH
+// begin CenterOnUnits ( auto2 ) ;
+ 872: LD_INT 26
+ 874: PPUSH
+ 875: CALL_OW 85
+// for i in [ auto3 , auto1 , auto2 , auto4 , auto5 ] do
+ 879: LD_ADDR_VAR 0 1
+ 883: PUSH
+ 884: LD_INT 31
+ 886: PUSH
+ 887: LD_INT 24
+ 889: PUSH
+ 890: LD_INT 26
+ 892: PUSH
+ 893: LD_INT 28
+ 895: PUSH
+ 896: LD_INT 29
+ 898: PUSH
+ 899: EMPTY
+ 900: LIST
+ 901: LIST
+ 902: LIST
+ 903: LIST
+ 904: LIST
+ 905: PUSH
+ 906: FOR_IN
+ 907: IFFALSE 1014
+// begin ComMoveXY ( [ auto1 , auto3 , auto5 , auto2 , auto4 ] , 31 , 27 ) ;
+ 909: LD_INT 24
+ 911: PUSH
+ 912: LD_INT 31
+ 914: PUSH
+ 915: LD_INT 29
+ 917: PUSH
+ 918: LD_INT 26
+ 920: PUSH
+ 921: LD_INT 28
+ 923: PUSH
+ 924: EMPTY
+ 925: LIST
+ 926: LIST
+ 927: LIST
+ 928: LIST
+ 929: LIST
+ 930: PPUSH
+ 931: LD_INT 31
+ 933: PPUSH
+ 934: LD_INT 27
+ 936: PPUSH
+ 937: CALL_OW 111
+// AddComMoveXY ( [ auto1 , auto3 , auto5 , auto2 , auto4 ] , 26 , 21 ) ;
+ 941: LD_INT 24
+ 943: PUSH
+ 944: LD_INT 31
+ 946: PUSH
+ 947: LD_INT 29
+ 949: PUSH
+ 950: LD_INT 26
+ 952: PUSH
+ 953: LD_INT 28
+ 955: PUSH
+ 956: EMPTY
+ 957: LIST
+ 958: LIST
+ 959: LIST
+ 960: LIST
+ 961: LIST
+ 962: PPUSH
+ 963: LD_INT 26
+ 965: PPUSH
+ 966: LD_INT 21
+ 968: PPUSH
+ 969: CALL_OW 171
+// AddComMoveXY ( [ auto1 , auto3 , auto5 , auto2 , auto4 ] , 12 , 18 ) ;
+ 973: LD_INT 24
+ 975: PUSH
+ 976: LD_INT 31
+ 978: PUSH
+ 979: LD_INT 29
+ 981: PUSH
+ 982: LD_INT 26
+ 984: PUSH
+ 985: LD_INT 28
+ 987: PUSH
+ 988: EMPTY
+ 989: LIST
+ 990: LIST
+ 991: LIST
+ 992: LIST
+ 993: LIST
+ 994: PPUSH
+ 995: LD_INT 12
+ 997: PPUSH
+ 998: LD_INT 18
+1000: PPUSH
+1001: CALL_OW 171
+// wait ( 0 0$0.3 ) ;
+1005: LD_INT 10
+1007: PPUSH
+1008: CALL_OW 67
+// end ;
+1012: GO 906
+1014: POP
+1015: POP
+// wait ( 0 0$2 ) ;
+1016: LD_INT 70
+1018: PPUSH
+1019: CALL_OW 67
+// ChangeMap ( 1 , %_cont ) ;
+1023: LD_STRING 1
+1025: PPUSH
+1026: LD_STRING %_cont
+1028: PPUSH
+1029: CALL_OW 340
+// end ;
+1033: PPOPN 1
+1035: END
+// function nacti_osobu ( ident ) ; begin
+1036: LD_INT 0
+1038: PPUSH
+// if CheckCharacterSet ( ident ) then
+1039: LD_VAR 0 1
+1043: PPUSH
+1044: CALL_OW 29
+1048: IFFALSE 1067
+// result := CreateCharacter ( ident ) else
+1050: LD_ADDR_VAR 0 2
+1054: PUSH
+1055: LD_VAR 0 1
+1059: PPUSH
+1060: CALL_OW 34
+1064: ST_TO_ADDR
+1065: GO 1075
+// result := 0 ;
+1067: LD_ADDR_VAR 0 2
+1071: PUSH
+1072: LD_INT 0
+1074: ST_TO_ADDR
+// end ;
+1075: LD_VAR 0 2
+1079: RET
+// every 0 0$0.1 trigger testslez and FilterUnitsInArea ( slez , [ [ f_side , You ] ] ) > 1 do
+1080: LD_LOC 5
+1084: PUSH
+1085: LD_INT 4
+1087: PPUSH
+1088: LD_INT 22
+1090: PUSH
+1091: LD_LOC 4
+1095: PUSH
+1096: EMPTY
+1097: LIST
+1098: LIST
+1099: PUSH
+1100: EMPTY
+1101: LIST
+1102: PPUSH
+1103: CALL_OW 70
+1107: PUSH
+1108: LD_INT 1
+1110: GREATER
+1111: AND
+1112: IFFALSE 1136
+1114: GO 1116
+1116: DISABLE
+// begin CenterOnXY ( 54 , 44 ) ;
+1117: LD_INT 54
+1119: PPUSH
+1120: LD_INT 44
+1122: PPUSH
+1123: CALL_OW 84
+// testslez = false ;
+1127: LD_ADDR_LOC 5
+1131: PUSH
+1132: LD_INT 0
+1134: ST_TO_ADDR
+// enable ;
+1135: ENABLE
+// end ;
+1136: END

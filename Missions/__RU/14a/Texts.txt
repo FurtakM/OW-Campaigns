@@ -1,0 +1,277 @@
+@ Hornet's nest
+% Having escaped from the Alpha Base, John Macmillan and his ragtag band of fugitives has to start from the scratch.
+& Somewhere in the neutral territory, North East from Gamma, March 7, ERA + 2
+
+// Dialogue 1 (after arrival)
+$ D1-JMM-1
+- This seems like a good place where to stop running.
+$ D1-Joan-1
+- [present - var a1] I don't think they are pursuing us anymore; we are too close to Arabian territory now.
+$ D1-Lisa-1
+- [present - var a2] We can surely defend ourselves well here. I like it, too.
+$ D1-JMM-2
+- OK. So let's get to work, we have to build our new base here.
+
+# M1
+Add Main BuildBase
+-Build base and protect it against attacks
+#
+
+// Dialogue 2 (when Russians arrive)
+$ D2-Sol1-1
+- (the first soldier to spot Russians (if it is not Macmillan) starts shooting)
+$ D2-JMM-1
+- [Roth dead - var a1] Hold your fire!
+$ D2-JMM-1a
+- There are our new allies!
+$ D2-JMM-1b
+- (Comes to the group of Russians) You must be professor Gossudarov, sir. Peter spoke about you many times. Unfortunately, he didn't make it here.
+$ D2-Goss-1
+- [var a1] Colonel Macmillan, I suppose. These are sad news you bring.
+$ D2-Roth-1
+- [Roth alive - var a2] Hold your fire!
+$ D2-Roth-1a
+- John, let me introduce you to our new allies.
+$ D2-Roth-1b
+- (Roth and Macmillan walk toward group of Russians) Professor Gossudarov, colonel Macmillan.
+$ D2-JMM-2
+- [var a2] (simultaneously with professor) Nice to meet you.
+$ D2-Goss-2
+- [var a2] How do you do.
+$ D2-JMM-3
+- I can see you are mostly scientists, aren't you? Did you manage to persuade some of your soldiers to join us as well?
+$ D2-Goss-3
+- We are all soldiers, colonel! But I understand your question - no, I'm afraid you'll have to do with us. But you will see we can do any work you will need.
+$ D2-JMM-4
+- And where is your leader? The one you call Burlak, I believe.
+$ D2-Goss-4
+- Yes, Burlak - major Yuri I. Gorki. You see he was one of the few military personnel that actually decided to join Alliance. Besides, he is an excellent driver and so it was agreed that he will take the Artefact part that were in our possession. It lured the pursuers away and we could escape. But don't worry, Burlak can take care of himself, I'm sure he will make it and come here.
+$ D2-JMM-5
+- Very well. Now, let's get back to work.
+
+// Dialogue 3 (when first lab is completed and it is not Russian lab)
+$ D3-Kir-1
+- We have been working on a very interesting research recently. If we could only build ourselves a lab, I'm sure we would be able to make important contribution to our cause. (Kirilenkova is a real character from Russian campaign.)
+
+// Dialogue 3a (when Russian lab is completed)
+$ D3a-Kir-1
+- (if she is for some reason dead, some other Russian scientist will say this) Now we can start our research, colonel. Let me tell you something about our technologies. Last thing we were working on before we left Lenin, were rockets. We could also develop interesting space-time technologies that you could use to build time-warping and space-shifting weapons and ammunition. We also have a special technology that allows us to localise all siberite in the area - including siberite in vehicles, buildings etc. Other than that, we have similar technologies like you.
+$ D3a-Goss-1
+- It's pity we didn't persuade Scholtze to go with us.
+$ D3a-Kir-2
+- That mad hag? We'll do more work without him! (Scholtze is another character from Russian campaign.)
+
+// Dialogue 4 (Russian reckon vehicle comes to base - the player should be able to deal with it easily)
+$ D4-RSci1-1
+- (frightened) Look! They've found us! Oh, Holy Virgin, please save us!
+$ D4-Goss-1
+- (shakily) Colonel, I have to warn you. Comrade Morozov might be not the smartest guy I know, but nobody can say he lacks tenacity. He will never forgive us and if he knows where we are, he will not stop pounding us until he crushes us.
+$ D4-JMM-1
+- We can hardly find a place where we stand a better chance of defending ourselves. We have to make the best of the little time we have now.
+
+// Dialogue 5 (Yagoda arrives - sometime after destruction of the reckon vehicle and before the first Russian attack. His attitude is set to Friendly, the player can see through his eyes.)
+$ D5-Yag-1
+- (appears on Southern edge of map) Hello? Mikhail? Ivan? Can you hear me anybody? Help me please; they are after me!
+$ D5-Goss-1
+- Colonel! This is X. X. Yagoda, one of the best soldiers we have. I didn't know he was coming with us.
+$ D5-JMM-1
+- Maybe he isn't. Maybe it's a trap.
+$ D5-Goss-2
+- With all due respect, colonel, it's highly unlikely. I know him and he wouldn't try to deceive us like this. Besides, he's a good friend of Burlak.
+$ D5-JMM-2
+- Still, if we let him come here, he can do a lot of damage.
+
+// Query SaveYagoda
+? QSaveYagoda
+Russian soldier may be trying to join the Alliance. Will you:
+-1 Accept him
+-2 Reject him
+?
+
+// Dialogue 5a (Outcome of query)
+$ D5a-JMM-1
+- [QSaveYagoda-1] Hello, this is John Macmillan speaking. We are North from your position. We send you a search party.
+$ D5a-Yag-1
+- [reply] Many thanks, colonel. Heading North.
+$ D5a-Yag-1a
+- [QSaveYagoda-2] (Macmillan says nothing. Yagoda wanders around the map for a while, and then a couple of Russian vehicles appear and kill him.)
+
+// Dialogue 6 (first wave of Russian tanks attacks)
+$ D6-Yag-1
+- [alive] These hills colonel make an excellent defensive position. My congratulations on your choice of this place, colonel Macmillan.
+
+// Dialogue 7 (Russians try to drive the defenders from hills by rockets)
+$ D7-Yag-1
+- [present] Retreat! Retreat! They are attacking with rockets! We've got to hide now.
+
+// Dialogue 8 (Russians attack cease)
+$ D8-JMM-1
+- It seems that your former commander's tenacity had met its match, comrades. I'd say they had enough for one day.
+$ D8-Goss-1
+- [alive and $allied losses < XY] Your resolution is admirable colonel. However it's most unfortunate that our effort to start peaceful cooperation ended in this bloodbath.
+$ D8-Goss-1a
+- [alive and $allied losses > XY] I daresay we paid dearly for it, colonel. We've only wanted to live and let live and we brought about such a terrible bloodbath.
+
+// Dialogue 9 (Arabian base is spotted, including at least one mastodon)
+$ D9-Sol1-1
+- [$Burlak didn't tell them about base (see D11)] Colonel, it seems we have a company here. There is some large Arabian base up there.
+$ D9-FSol1-1
+- [$Burlak didn't tell them about base (see D11)] Colonel, it seems we have a company here. There is some large Arabian base up there.
+$ D9-Frank-1
+- I'd talk with some guys that used to operate in this area. Can you see that mastodon over there? This is a personal steed of sheik Omar. This must be Kaaba, the main Arabian base.
+$ D9-JMM-1
+- Are you sure? All mastodons look the same to me. And is Kaaba really so close to the front line?
+$ D9-Frank-2
+- They use to move their base around all the time. I'm pretty sure about mastodon, though. You see that ornate saddle? Only Omar has like of this.
+
+// Dialogue 10 (Arrival of Burlak - about the time Russian attacks ebb. He is medium wounded (in yellow) and he is pushing a Russian tank)
+$ D10-Bur-1
+- Hello? Can you hear me anybody? Major Burlak calling Alliance base.
+$ D10-Yag-1
+- [alive: alt a1] Burlak? Is it you? I knew it! I knew it! No way can anybody stop Burlak!
+$ D10-Goss-1
+- [alive: alt a2] Major Gorki? I'm so glad you made it here.
+$ D10-Kir-1
+- [alive: alt a3] Is it you, Yuri? I've started to worry. But nobody can stop Burlak!
+$ D10-RSol1-1
+- [otherwise] Major? I always knew you will make it here.
+$ D10-Bur-2
+- This time It was no easy sailing. I'm wounded and I had to push my tank for last couple of miles. But I'll be damned if I let 'em put their hands on my Masha!
+$ D10-JMM-2
+- Never mind, major Gorki. Now you are with friends. I'll send you somebody to attend your wounds.
+
+# M2
+Add Main FindBurlak
+-Find Major Yuri "Burlak" Gorki and bring him to base.
+#
+
+// Dialogue 11 (Burlak meets Macmillan)
+$ D11-Bur-1
+- Nice to meet you, Macmillan. There are many people where I come from that spit when they here your name.
+$ D11-JMM-1
+- I take it's a high praise from them. I wish I could say the same for you.
+$ D11-Bur-2
+- (laughs) O.K., Macmillan, let's stop bickering. We don't have to love each other, but I must admit that you are a damn good commander. Quite a few of my friends lost their life learning about it.
+$ D11-JMM-2
+- We have to forget about the past. Or rather, not forget but put it aside for the moment. We have more pressing-
+$ D11-Bur-3
+- I don't have gripes, Macmillan. I was just stating the obvious. I'd bet there is someone you loved that died because of me. It doesn't matter now; you are obviously better suited to be a commander, besides you brought here more soldiers. I don't have a problem with taking orders from you, Macmillan.
+$ D11-JMM-3
+- Thank you Major. But rather, I'd like to think about you as about partner, not a subordinate.
+
+# M3
+Add Main LiveBurlak
+-Burlak must survive.
+Out FindBurlak
+#
+
+// Dialogue 12 (immediately afterwards)
+$ D12-Bur-1
+- [$Arabian base already discovered] Macmillan, on my way here I've took a trip to that Arabian base east of here.
+$ D12-Bur-1a
+- [$Arabian base wasn't yet discovered] I like this place you've chosen for our base here Macmillan. It can be easily defended, contrary to the large Arabian base eastward I discovered on my way here. (fog revealed)
+$ D12-Bur-1b
+- (continues) I found out there many interesting things. For one thing, it is pretty large base, maybe it's Kaaba itself. For the other, they are now weaker than ever. It seems the bulk of their mercenaries was finally fed up with working for money that ain't coming for some two millions years. There is only handful manning that base now.
+$ D12-JMM-1
+- Really? Are you sure?
+$ D12-Bur-2
+- Am I sure? You don't know me well yet, Macmillan. And I didn't tell you the most important thing yet - those two guys I had chat with told me that there is a big piece of "Ancient technology" as they called it. I'd bet that's what we call "Artefacts".
+$ D12-Roth-2
+- [present] What do you say? We must get hold of it!
+$ D12-RSci1-2
+- [otherwise] That's interesting. Do you think we can get a hold of it?
+$ D12-JMM-2
+- This wouldn't be easy. We have only established ourselves here. We don't have resources to take on the main Arabian base!
+$ D12-Bur-3
+- I thought you have balls, Macmillan. They are so weak; with the technology we have here, we can wipe them out in no time. Besides, it's the only way for me to get together with my tank Masha again!
+$ D12-JMM-3
+- Having balls has nothing to do with being reckless fool, Major. We have to consider it for a moment.
+
+// Query Base
+? QBase
+The Arabian base holds another piece of puzzle that is Artefact. What do you do now:
+-1 Leave the base alone.
+-2 Try to communicate with the base.
+-3 Attack the base.
+?
+
+// Dialogue 13a (if QBase-1)
+$ D13a-JMM-1
+- Besides, I thought we've joined this venture so that we didn't have to go on with the senseless killing.
+$ D13a-Bur-1
+- Sheiks can only understand one thing, the gun. If we don't take them out, they will come and attack us!
+$ D13a-Roth-1
+- [alive] Colonel, I have to stress that we absolutely have to have the Arabian piece of Artefact. If we don't have it all our research will be vain.
+$ D13a-JMM-2
+- [reply] Don't be hysterical Peter. Imagine you never heard about it.
+$ D13a-RSci1-2
+- But Colonel, the Arabian Artefact may be really terribly important to us. We were looking into it in our spare time and we are currently clueless. If you want us to make some progress, you should try to secure the Arabian piece.
+$ D13a-JMM-3
+- OK, let's see what we can do.
+
+// Query BaseAgain
+? QBaseAgain
+The Arabian base holds another piece of puzzle that is Artefact. What do you do now:
+-1 Try to communicate with the base.
+-2 Attack the base.
+?
+
+// Dialogue 13b (if QBase-2 of QbaseAgain-1 selected)
+$ D13b-JMM-1
+- We left because we saw that war leads nowhere. We should at least try to get in touch with them.
+$ D13b-Bur-1
+- Suit yourself, Macmillan, but I tell you, force is the only argument Sheiks understand.
+$ D13b-JMM-2
+- (into radio) This is colonel Macmillan calling commander of base Kaaba. I know you can here me, commander. You have a piece of something I need and you have no use for. I suggest that you give us your "Ancient technology".
+$ D13b-Abd-2
+- (over radio) Surely you are joking, colonel. Why should I give you anything? Why shouldn't I just crush you like a bug you are?
+$ D13b-JMM-3
+- (IR) We might give you something in return commander. Some resources or access to some of our technologies... Your scientists know nothing about the Artefacts, but you can exchange it for something useful.
+$ D13b-Abd-3
+- (OR) I'm no horse dealer, colonel. I have something you want, I suggest you come and take it. If you can. Even my mastodon can see that I'd rather destroy that Artefact of yours than give it to you.
+$ D13b-JMM-4
+- (click, he switches off the radio) Bastard. He'd rather destroy it then allow us to take it. But we'll get hold of it anyway.
+
+// Dialogue 13c (if QBase-3 or QbaseAgain-2 selected)
+$ D13c-JMM-1
+- The truth is we came here so that we don't have to go on with war any more. But I'll have no qualms about destroying the people who can only destroy things they cannot understand.
+$ D13c-Bur-1
+- You are absolutely right, Macmillan. Meek might inherit the Earth, but this is long time coming. Just you wait till I get to my Masha!
+
+# M4
+Add Main Base
+-Destroy the Arabian base
+Add Main Artefact
+-Recover Arabian Artefact
+Add Secondary AbdulMast
+-Kill sheik Abdul and his mastodon
+Add Secondary Masha
+-Protect Burlak's tank
+#
+
+^ Main
+Base destroyed, Artefact captured
+
+| Destroyed
+Arabians managed to escape with the Artefact.
+
+| JMM
+John Macmillan is dying
+
+| Burlak
+Burlak is dying.
+
+* Masha
++You saved Masha
+- You allowed Burlak's tank to be destroyed
+*
+
+* Abdul
++ Sheik Abdul killed
+- You allowed sheik Abdul to escape
+*
+
+* Mast
++ Sheik's mastodon killed
+- You allowed sheik Abdul's mastodon to escape
+*

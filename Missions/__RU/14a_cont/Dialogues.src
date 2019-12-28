@@ -1,0 +1,377 @@
+export blast_done,                               // true when sib bomb has exploded
+       query_started,
+       contamine,
+       art_picked,                               // turns true when the artifact was picked up the first time
+       art_cargo;                                // vehicle in which is artefact loaded
+
+export dokecano;
+
+// Dialogue 2 (after map reloads)
+export function starting_scene;
+begin
+  RevealFogArea(you,artefact_fog);
+  CenterNowOnUnits([truck1,truck2]);
+  IngameOn;
+  ComMoveXY(MacMillan,192,82);
+  ComMoveXY(Burlak,193,86);
+
+  AddComExitVehicle([MacMillan,Burlak]);
+
+  wait(0$5);
+
+  IngameOff;
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(Burlak,'D2-Bur-1');
+  Say(MacMillan,'D2-JMM-1');
+  Say(Burlak,'D2-Bur-2');
+
+  SaveForQuickRestart;
+  wait(10);
+
+  ChangeMissionObjectives('MPickup');        //  <<-----   Tohle pak zrusit
+
+  interface_hidden:=false;
+  DialogueOff;
+
+  ComFree([MacMillan,Burlak]);
+end;
+
+// Dialogue 3 (first American patrol is spotted, killed or driven away)
+every 0$1 trigger FilterAllUnits([ [f_see,you], [f_side,americans], [f_type,unit_human] ]) do
+begin
+  if blast_done then
+    exit;
+  repeat                           // dialog nezacne dokud vidim amiky
+    wait(0$1);
+  until not FilterAllUnits([ [f_see,you], [f_side,americans], [f_type,unit_human], [f_ok] ]);
+  wait(0$2);
+
+  Say(Burlak,'D3-Bur-1');
+  Say(MacMillan,'D3-JMM-1');
+end;
+
+// Dialogue 3a (close to the Artefact they spot an abandoned and empty American depot,
+//              and couple of remotely controlled vehicles further off)
+every 0$1 trigger FilterAllUnits([ [f_see,you], [f_type,unit_building] ]) do
+begin
+  wait(0$2);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(MacMillan,'D3a-JMM-1');
+  Say(Burlak,'D3a-Bur-1');
+  Say(Burlak,'D3a-Bur-1a');
+  SayRadio(ru_sci,'D3a-RSci1-1');
+
+  SayRadio(Stevens,'D3a-Huck-1');
+  SayRadio(Powell,'D3a-Pow-1');
+  SayRadio(Stevens,'D3a-Huck-2');
+  SayRadio(Powell,'D3a-Pow-2');
+  SayRadio(Stevens,'D3a-Huck-3');
+
+  Say(MacMillan,'D3a-JMM-3');
+  SayRadio(ru_sci,'D3a-RSci1-3');
+  Say(MacMillan,'D3a-JMM-4');
+  Say(Burlak,'D3a-Bur-4');
+  interface_hidden:=false;
+  DialogueOff;
+  Enable(4);
+end;
+
+// Dialogue 4 - when they pick up the Artefact
+export function Artefact_Picked;
+begin
+  wait(5);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(MacMillan,'D4-JMM-1');
+  Say(Burlak,'D4-Bur-1');
+  ChangeMissionObjectives('MReturn');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// odpocet vybuchu  // Siberite bomb explosion
+every 0$1 Marked 4 do
+var blast_time;
+begin
+  blast_countdown:=true;
+  blast_time:=TICK+([6$0,3$0,1$0] [difficulty]);
+  repeat
+    wait(0$3);
+  until (TICK>blast_time) or IsInArea(truck1,half_line) or IsInArea(truck2,half_line) or
+                             IsInArea(truck1,leave_blast) or IsInArea(truck2,leave_blast);
+  blast_time:=tick;
+
+  DialogueOn;
+  interface_hidden:=true;
+
+  CenterOnXY(103,52);
+  wait(0$3);
+
+  PrepareSiberiteRocket;
+  SendSiberiteRocket(103,52);                          // ! ! ! ! !     VYBUCH     ! ! ! ! !
+
+  interface_hidden:=false;
+  DialogueOff;
+
+  blast_done:=true;
+  contamine:=TICK+6000;
+
+  wait(0$4);
+
+  if not IsLive(Burlak) then
+    Mission_Failed(1);                                         // Burlak zachcipal
+
+  if not IsLive(MacMillan) then
+    Mission_Failed(2);                                         // MacMillan zachcipal
+
+
+  if not (FindArtifact(4) or art_cargo) then           // artefakt zniceny explozi
+    Mission_Failed(4);
+
+  after_the_blast;                                     // dialogy po vybuchu
+  Enable(5);                                           // varovani po vybuchu o odchodu americanu
+  Enable(7);                                           // odchod americanu ze zakladny
+end;
+
+// Dialogue 6 - po siberitovem vybuchu
+function after_the_blast;
+begin
+  blast_was_seen:=true;
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(MacMillan,'D6a-JMM-1');
+  Say(Burlak,'D6a-Bur-1');
+
+  Enable(8);
+
+  // Dialogue 6c (immediately after 6a or 6b, whichever occurs sooner)
+  Say(Burlak,'D6c-Bur-1');
+  Say(MacMillan,'D6c-JMM-1');
+
+  ChangeMissionObjectives('MBase');
+
+  interface_hidden:=false;
+  DialogueOff;
+  Enable(6);                                           // vstup do kontaminovane arei
+end;
+
+// Dialogue 6b (when they first reach the area influenced by the blast)
+every 0$1 trigger FilterAllUnits([ [f_side,you], [f_distxy,103,52,27] ]) Marked 8 do
+begin
+  CenterOnUnits([MacMillan,Burlak]);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(MacMillan,'D6b-JMM-1');
+  Say(Burlak,'D6b-Bur-1');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// Dialogue 7 (when somebody enters the contaminated area)
+every 0$1 trigger IsInArea(MacMillan,blast_area) and (contamine>TICK) Marked 6 do
+begin
+  CenterOnUnits(MacMillan);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(MacMillan,'D7-JMM-1');
+  interface_hidden:=false;
+  DialogueOff;
+  entered_contaminated_area:=true;
+end;
+
+every 0$1 trigger IsInArea(Burlak,blast_area) and (contamine>TICK) Marked 6 do
+begin
+  CenterOnUnits(Burlak);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(Burlak,'D7-Bur-1');
+  interface_hidden:=false;
+  DialogueOff;
+  entered_contaminated_area:=true;
+end;
+
+// Dialogue 8 (some 5 minutes after the explosion)
+every 0$10 Marked 5 do
+var time_limit,               // cas do odchodu americke zakladny v zavislosti na obtiznosti
+    warning_time;
+begin
+  time_limit:=[5$0,4$0,3$0];
+  warning_time:=TICK+time_limit[difficulty];
+  repeat
+    wait(0$10);
+  until TICK>warning_time;
+
+  if (not query_started) or (not technology_taken) then
+    Say(MacMillan,'D8-JMM-1');
+end;
+
+// Dialogue 9 (when they spot the base by the oil mine)
+every 0$2 trigger See(you,oil_2) do
+begin
+  CenterOnUnits(oil_2);
+  DialogueOn;
+  interface_hidden:=true;
+  Say(Burlak,'D9-Bur-1');
+  Say(MacMillan,'D9-JMM-1');
+  interface_hidden:=false;
+  DialogueOff;
+end;
+
+// Query Kill (if either John or Burlak captured the depot in main base or the siberite lab went red)
+export function query_kill;
+var odpoved;
+begin
+  query_started:=true;
+  if Query('QKill')=1 then   //  1 - vyjednavat,   2 - zabit
+    query_vyjednavat
+  else
+    query_pozabijet;
+end;
+
+// Dialogue 10a (if QKill-1 was selected)
+function query_vyjednavat;
+var un,vedci,list;
+begin
+  SetAttitude(you,americans,att_friend,true);  //If neutral the sides would turn enemies again if hit by a rocketlauncher before dialogue starts
+  list:=FilterAllUnits([ [f_side,americans], [f_type,unit_human] ]);
+  for un in list do
+    if not IsInUnit(un) then
+      ComMoveXY(un,ShiftX(GetX(un),GetDir(un),1),ShiftY(GetY(un),GetDir(un),1));
+
+  Wait(10);
+  CenterOnUnits([us_lab]);
+  InGameOn;
+
+  if GetLives(us_lab)>300 then
+    ComExitBuilding(us_sci);
+
+  Check_Heroes;
+
+  Say(Burlak,'D10a-Bur-1');
+  If original_stevens then
+    begin
+      if GetDistUnitArea(Burlak,us_base)=0 then
+        ComMoveUnit(Stevens,Burlak)
+      else
+        ComMoveUnit(Stevens,MacMillan);
+      Say(Stevens,'D10a-Huck-1');
+      repeat
+        wait(0$1);
+      until IsBusy(Stevens);
+    end
+  else
+    begin
+      vedci:=FilterAllUnits([ [f_side,americans], [f_class,class_scientistic] ]);
+      if vedci then
+        un:=vedci[1]
+      else
+        un:=0;
+      Say(un,'D10a-Sci1-1');
+      if GetDistUnitArea(Burlak,us_base)=0 then
+        ComMoveUnit(un,Burlak)
+      else
+        ComMoveUnit(un,MacMillan);
+      repeat
+        wait(0$1);
+      until IsBusy(un);
+    end;
+  ComStop(un);
+  Say(Burlak,'D10a-Bur-2');
+
+  technology_taken:=true;
+
+  InGameOff;
+
+  SetAttitude(you,americans,att_neutral,true);
+  konecny_rozhovor;
+end;
+
+// Dialogue 10b (if QKill-2 was selected)
+function query_pozabijet;
+var un,list,
+    defenders,intruders;
+begin
+  Check_Heroes;
+
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(MacMillan,'D10b-JMM-1');
+  if FilterAllUnits([ [f_side,americans], [f_btype,b_warehouse] ]) then
+    Say(Burlak,'D10b-Bur-1');
+
+  interface_hidden:=false;
+  DialogueOff;
+
+  Enable(9);
+  repeat                                          // cekej dokud nepochcipaji vsichni americti vedci
+    ComMoveToArea(us_sci,leave_area);
+
+    defenders:=FilterAllUnits([ [f_side,americans], [f_class,class_soldier] ]);
+    intruders:=FilterUnitsInArea(us_base, [ [f_side,you], [f_or, [f_type,unit_human], [f_type,unit_vehicle]] ]);
+    if intruders then
+      ComAttackUnit(defenders,intruders[1]);
+
+    wait(0$1);
+  until (not us_sci) or lab_destroyed or (not intruders);
+
+  ComExitBuilding(defenders);
+
+  repeat
+    list:=FilterAllUnits([ [f_see,americans], [f_side,you] ]);
+    if list then
+      ComAttackUnit(defenders,list[1])
+    else
+      if GetLives(us_lab)>1 then
+        ComAttackUnit(defenders,us_lab);
+    wait(0$1);
+  until lab_destroyed;
+
+  ComMoveToArea(defenders,leave_area);
+
+  //if (not us_sci) and lab_destroyed then  -> The player has lost if he/she should at this point since the lab has been destroyed
+  //  Mission_Failed(5);
+end;
+
+// Dialogue 11 (QKill-2 was selected, siberite lab is captured; or QKill-1 was selected)
+export function konecny_rozhovor;
+var art_ready;
+begin
+  if not dokecano then
+    begin
+      dokecano:=true;
+      DialogueOn;
+      interface_hidden:=true;
+      Say(Burlak,'D11-Bur-1');
+      ChangeMissionObjectives('MEnd');
+      Enable(10);
+      Disable(1);
+      interface_hidden:=false;
+      DialogueOff;
+    end;
+  SetAreaMapShow(exit_area,1);
+  repeat
+    wait(0$2);
+    if art_cargo and not IsInArea(art_cargo,us_base) then
+      art_ready:=true
+    else
+      art_ready:=false;
+  until not (IsInArea(MacMillan,us_base) or IsInArea(Burlak,us_base) or not art_ready);
+
+  wait(0$2);
+  konec_mise;
+  DialogueOff;
+end;
+
+// Checking heores (when someone is death, game ending
+function Check_Heroes;
+begin
+  if not IsOK(MacMillan) then
+    YouLost(2);
+  if not IsOK(Burlak) then
+    YouLost(1);
+end;

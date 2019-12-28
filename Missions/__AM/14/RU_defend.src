@@ -1,0 +1,93 @@
+var id_reg,
+    id_def;
+
+//-------------------------------------//
+//-----  UPDATE OBRANNYCH ZDROJU  -----//
+function prepare_defend(side);
+var def_u;
+begin
+  def_u:=FilterAllUnits([ [f_side,side],
+                          [f_or, [ [f_type,unit_building],[f_btype,b_turret],[f_btype,b_bunker],[f_btype,b_breastwork] ],
+                                 [f_type,unit_vehicle] ]]);
+  def_u:=def_u union ru_sol;
+  def_u:=def_u diff reserved_people;
+  def_u:=def_u diff ru_collector;
+  def_u:=(def_u union war_forces) union backup_forces;
+  def_u:=def_u union manual_forces;
+  result:=def_u;
+end;
+
+
+//--------------------------------------------//
+//-----  ZPUSTENI MAKRA OBRANY ZAKLADNY  -----//
+export function start_defend;
+var side;
+begin
+  id_reg:=McRegistry( 3, [ [mc_reg_refresh_time,0$1],
+                           [mc_reg_expire_stops_to_attack,0$4],
+                           [mc_reg_area_to_guard,ru_defend],
+                           [mc_reg_area_to_protect,ru_defend],
+                           [mc_reg_units_to_protect,prepare_defend(russians)],
+                            mc_reg_only_important,
+                           -mc_reg_ignore_fog ]
+                    );
+
+  id_def:=McDefend( 100, id_reg, prepare_defend(russians),
+                       [ [mc_def_advantage,500],
+                         [mc_area_dont_leave,ru_base],
+                         [mc_retreat_area_people,ru_heal],
+                         [mc_retreat_lives_people,600], ]
+                  );
+end;
+
+
+
+// Zasobovani obrany a utoku pocitacu novymi daty
+on McRegistryResultChanges(mcid,n,s) do
+begin
+  if n then
+    begin
+      AddMcUnits(mcid,prepare_defend(russians));
+      SendForces;
+    end;
+end;
+
+
+// healovani jednotek
+every 0$5 do
+var side,sci,list;
+begin
+  list:=FilterUnitsInArea(ru_heal,[ [f_side,russians], [f_type,unit_human], [f_not, [f_lives,950]] ]);
+  if list then
+    begin
+      sci:=FilterAllUnits([ [f_side,russians], [f_class,class_scientistic] ]);
+      ComRemember(sci);
+      wait(5);
+      ComMoveToArea(sci,ru_heal);
+      repeat
+        list:=FilterUnitsInArea(ru_heal,[ [f_side,russians], [f_type,unit_human], [f_not, [f_lives,1000]] ]);
+        if list then
+          AddComHeal(sci,list[1]);
+        wait(0$2);
+      until not list;
+      ComReturn(sci);
+    end;
+  enable;
+end;
+
+
+function SendForces;
+var list,target;
+begin
+  ComRemember(war_forces);
+  ComRemember(backup_forces);
+  repeat
+    list:=FilterUnitsInArea(manual_defend,[[f_side,you],[f_ok]]);
+    defend_forces:=war_forces union backup_forces;
+    target:=NearestUnitToUnit(list,ru_depot);
+    ComAttackPlace(defend_forces,GetX(target),GetY(target));
+    wait(50);
+  until not list;
+  ComReturn(war_forces);
+  ComReturn(backup_forces);
+end;

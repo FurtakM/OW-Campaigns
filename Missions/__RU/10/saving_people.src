@@ -1,0 +1,134 @@
+// SAvovani lidi do mise
+
+export function save_for_mission(list);
+begin
+
+  if Belkov in list then
+    begin
+      SaveCharacters(Belkov,'Belkov');
+      SaveVariable(1,'BelkovRu10');
+    end;
+
+  if Gnyevko in list then
+    begin
+      SaveCharacters(Gnyevko,'Gnyevko');
+      SaveVariable(1,'GnyevkoRu10');
+    end;
+
+  if Kirilenkova in list then
+    begin
+      SaveCharacters(Kirilenkova,'Kirilenkova');
+      SaveVariable(1,'KirilenkovaRu10');
+    end;
+
+  if Kovalyuk in list then
+    begin
+      SaveCharacters(Kovalyuk,'Kovalyuk');
+      SaveVariable(1,'KovalyukRu10');
+    end;
+
+  if Scholtze in list then
+    begin
+      SaveCharacters(Scholtze,'Scholtze');
+      SaveVariable(1,'ScholtzeRu10');
+    end;
+
+  if Kuzmov in list then
+    begin
+      SaveCharacters(Kuzmov,'Kuzmov');
+      SaveVariable(1,'KuzmovRu10');
+    end;
+
+  if Karamazov in list then
+    begin
+      SaveCharacters(Karamazov,'Karamazov');
+      SaveVariable(1,'KaramazovRu10');
+    end;
+
+  if Petrovova in list then
+    begin
+      SaveCharacters(Petrovova,'Petrovova');
+      SaveVariable(1,'PetrovovaRu10');
+    end;
+
+  if Gleb in list then
+    begin
+      SaveCharacters(Gleb,'Gleb');
+      SaveVariable(1,'GlebRu10');
+    end;
+
+  if Petrosyan in list then
+    begin
+      SaveCharacters(Petrosyan,'Petrosyan');
+      SaveVariable(1,'PetrosyanRu10');
+    end;
+
+  if Lipshchin in list then
+    begin
+      SaveCharacters(Lipshchin,'Lipshchin');
+      SaveVariable(1,'LipshchinRu10');
+    end;
+
+  if Titov in list then
+    begin
+      SaveCharacters(Titov,'Titov');
+      SaveVariable(1,'TitovRu10');
+    end;
+
+  if Dolgov in list then
+    begin
+      SaveCharacters(Dolgov,'Dolgov');
+      SaveVariable(1,'DolgovRu10');
+    end;
+
+  if Oblukov in list then
+    begin
+      SaveCharacters(Oblukov,'Oblukov');
+      SaveVariable(1,'OblukovRu10');
+    end;
+
+  if Xavier in list then
+    begin
+      SaveCharacters(Xavier,'Xavier');
+      SaveVariable(1,'XavierRu10');
+    end;
+
+  if Kozlov in list then
+    begin
+      SaveCharacters(Kozlov,'Kozlov');
+      SaveVariable(1,'KozlovRu10');
+    end;
+
+  if Kapitsova in list then
+    begin
+      SaveCharacters(Kapitsova,'Kapitsova');
+      SaveVariable(1,'KapitsovaRu10');
+    end;
+
+  list:=list diff old_chars;
+
+  SaveCharacters(list,'Ru10trans');
+  SaveBaseTrotskij;
+
+  ChangeMap('%_cont','%_cont');
+end;
+
+
+function SaveBaseTrotskij;
+var Trotskij,filter,un;
+begin
+  Trotskij:=[];
+  filter:=FilterAllUnits([[f_btype,b_factory]]) ^
+          FilterAllUnits([[f_type,unit_building],[f_not,[f_btype,b_factory]]]);
+  for un in filter do
+    begin
+      if GetBType(un) in [b_lab, b_lab_half, b_lab_full] then
+        trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un),GetLabKind(un,1),GetLabKind(un,2)]]
+      else
+        if GetBType(un) in [b_bunker,b_turret] then
+          trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un),GetBWeapon(un)]]
+        else
+          trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un)]];
+    end;
+  SaveVariable(trotskij,'Trotskij');
+end;

@@ -1,0 +1,243 @@
+//uvod
+export zdrhat,brod,zapbrod,most_att_bg;
+//var poskoz;
+export zasilka;
+export achjo;
+
+
+every 0$0.1+0$5 marked 17 do
+var tmp;
+begin
+  if marked_17 then enable;
+  for tmp in amgrupa_ do
+    case getlives(tmp) of
+      1..250:if debug then msg('shit, negdo je v cervenem!');
+      251..500:begin
+        setlives(tmp,500);
+        if debug then msg('251-500');
+      end;
+      501..750:begin
+        setlives(tmp,750);
+        if debug then msg('501-750');
+      end;
+      751..999:begin
+        setlives(tmp,999);
+        if debug then msg('751-999');
+      end;
+    end;
+end;
+
+var amgrupa_,marked_17;
+export function intro;
+var tmp;
+begin
+//  poskoz=0;
+  amgrupa_=[];
+  for tmp in am_grupa do
+    if gettype(tmp)=unit_human then amgrupa_=amgrupa_^[tmp]
+    else amgrupa_=amgrupa_^[isdrivenby(tmp)];
+  amgrupa_=amgrupa_ diff [0];
+  disable(1);
+  wait(0$1);
+  centernowonunits(am_grupa);
+  commovexy(am_grupa,133,92);
+  say(john,'D1-JMM-1');
+  commovexy(am_grupa,123,85);
+  say(lucy,'D1-Don-1');
+  say(john,'D1-JMM-2');
+  commovexy(am_grupa,113,84);
+  say(lucy,'D1-Don-2');
+  commovexy(am_grupa,101,84);
+  while not brod do wait(0$0.2);
+  say(am_grupa[1],'D1-Sol1-2');
+  say(john,'D1-JMM-3');
+  changemissionobjectives('M1');
+  marked_17=true;
+  enable(17);
+  commovexy(unitfilter(am_grupa,[[f_type,unit_vehicle]]),82,61);
+  wait(0$1.7);
+  commovexy(unitfilter(am_grupa,[[f_type,unit_human]]),82,61);
+  while not att_began do wait(0$0.2);
+  wait(0$1.5);
+  say(john,'D1a-JMM-1');
+  wait(0$1);
+  say(lucy,'D1a-Don-1');
+  say(john,'D1a-JMM-2');
+  enable(1);
+  disable(4);
+//  commovexy(am_grupa,99,82);
+  while filterunitsinarea(brod2,[[f_side,am],[f_ok]]) do wait(0$1);
+  marked_3=false; //disable
+  wait(0$1);
+  disable(02);
+  achjo=false;
+//  setattitude(am,rus,att_enemy,true);
+  comstop([baz0,baz1,baz2,baz3,baz4,baz5]);
+  comfree([baz0,baz1,baz2,baz3,baz4,baz5]);
+  disable(1);
+  marked_17=false;
+  disable(17);
+  say(lucy,'D1b-Don-1');
+  say(john,'D1b-JMM-1');
+  say(am_grupa[1],'D1b-Sol1-1');
+  say(lucy,'D1b-Don-2');
+  say(john,'D1b-JMM-2');
+  ingame_video=false;  
+  saveforquickrestart;
+  wait(0$0.5);
+  case query('Q1') of
+    1:begin
+      say(john,'D2-JMM-1');
+      sayradio(powell,'D2-Pow-1');
+
+      say(john,'D2a-JMM-1');
+      sayradio(powell,'D2a-Pow-1');
+      say(john,'D2a-JMM-2');
+      sayradio(powell,'D2a-Pow-2');
+      say(john,'D2a-JMM-3');
+      sayradio(powell,'D2a-Pow-3');
+
+      say(john,'D2c-JMM-1');
+      sayradio(powell,'D2c-Pow-1');
+      say(john,'D2c-JMM-2');
+      secondPass = 1;
+      zasilka=1$0;
+    end;
+    2:begin
+      say(john,'D2-JMM-1');
+      sayradio(powell,'D2-Pow-1');
+
+      say(john,'D2b-JMM-1');
+      sayradio(powell,'D2b-Pow-1');
+
+      say(john,'D2c-JMM-1');
+      sayradio(powell,'D2c-Pow-1');
+      say(john,'D2c-JMM-2');
+      secondPass = 1;
+      zasilka=1$0;
+    end;
+    3:zapbrod=true;
+  end;
+  ingame_video=false;
+  interface_hidden=false;
+  bazukeri_jdete_do_toho:=true;
+  am_grupa=[]; //was [am_grupa[1]], netusim proc
+end;
+
+every 0$1 marked 4 do
+begin
+  if am_grupa then enable;
+  centeronunits(am_grupa); //debugrem!!!!!!!!!
+end;
+
+every 0$0.5 trigger isinarea(am_grupa[1],vidi_brod) do brod=true;
+
+every 0$0.2 marked 1 do
+var tmp,grp;
+begin
+  if am_grupa then enable;
+  if zdrhat then
+     begin
+     for tmp in am_grupa do
+         ComMoveXY(tmp, 99, 82);
+     end
+  else begin
+    grp = UnitFilter(am_grupa, [[f_type,unit_human]]);
+
+    for tmp in grp do
+        begin
+        if GetLives(tmp) < 500 then
+           SetLives(tmp, 510);
+           ComMoveXY(tmp, 99, 82);
+        end;
+  end;
+end;
+
+on unitgoestored(un) do
+  if (un=ru_lab) and not dialog6uzbyl then begin
+    dialog6uzbyl=true;
+    dialogueon;
+    say(john,'D6-JMM-1');
+    dialogueoff;
+    commovexy(ru_scies,8,2);  //vedci zdrhaji
+  end
+  else if marked_3 and (un in am_grupa) then begin
+    if not zdrhat then begin
+      commovexy(am_grupa,99,82);
+      zdrhat=true;
+      //setattitude(am,rus,att_neutral,true);
+    end;
+    if isdrivenby(un) then am_grupa=am_grupa^[isdrivenby(un)];
+  end;
+
+
+export us_in_udoli_;
+function us_in_udoli;
+begin
+  us_in_udoli_=us_in_udoli_ union filterunitsinarea(udoli,[[f_side,am],[f_ok]]);
+  result=0+us_in_udoli_;
+end;
+
+
+//osetreni utoku na rusaky branici most
+every 0$0.5 trigger zapbrod and not most_att_bg and us_in_udoli do
+begin
+  most_att_bg=true;
+  enable;
+end;
+
+function negdo_zustal;
+var tmp;
+begin
+  tmp=filterunitsinarea(zdrhaji,[[f_side,am]]);
+  us_in_udoli_=unitfilter(us_in_udoli_,[[f_ok]]) diff tmp;
+  result=0+us_in_udoli_;
+end;
+
+every 0$0.5 trigger zapbrod and most_att_bg and not negdo_zustal do
+var tmp;
+begin
+  most_att_bg=false;
+  tmp=unitfilter([guard0,guard1,guard2,guard3],[[f_side,rus],[f_ok]]);
+  if tmp and isok(john) then begin
+    dialogueon;
+    case query('Q1a') of
+      1:begin
+        say(john,'D2-JMM-1');
+        sayradio(powell,'D2-Pow-1');
+
+        say(john,'D2a-JMM-1');
+        sayradio(powell,'D2a-Pow-1');
+        say(john,'D2a-JMM-2');
+        sayradio(powell,'D2a-Pow-2');
+        say(john,'D2a-JMM-3');
+        sayradio(powell,'D2a-Pow-3');
+
+        say(john,'D2c-JMM-1');
+        sayradio(powell,'D2-Pow-1');
+        say(john,'D2c-JMM-2');
+        zapbrod=false;
+        zasilka=1$0;
+      end;
+      2:begin
+        say(john,'D2-JMM-1');
+        sayradio(powell,'D2-Pow-1');
+
+        say(john,'D2b-JMM-1');
+        sayradio(powell,'D2b-Pow-1');
+
+        say(john,'D2c-JMM-1');
+        sayradio(powell,'D2-Pow-1');
+        say(john,'D2c-JMM-2');
+        zapbrod=false;
+        zasilka=1$0;
+      end;
+    end;
+    dialogueoff;
+    enable;
+  end;
+end;
+
+
+
+

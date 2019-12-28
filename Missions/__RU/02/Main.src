@@ -1,0 +1,221 @@
+EXPORT You,Amici,Rusi,You2,Rusi2,You3,NoLosses;
+
+Export belkov_returns, belkov_american_clash;
+Export belkovSave;
+
+starting
+begin
+  InitVars;
+  disable_prediction=true;
+
+  debug_strings=[];
+  RandomizeAll;
+  InitHc;
+  InitUc;
+  InitVc;
+
+  // nadefinovani stran
+  You=3;
+  Rusi=You;
+  Amici=1;
+  You2=6;
+  You3=5;
+  Rusi2=You2;
+  NoLosses:=True;
+
+  belkovSave = false;
+
+  belkov_returns = false;  //True when Belkov's scouting group should return
+  belkov_american_clash = false;  //True when Belkov should be ambushed by the Americans
+
+  // nastaveni konstant pro obtiznost
+  set_difficulty;
+
+  // nacteni postav ze savu
+  load_postav;
+
+  // rusaci navic z minule mise
+  create_rusi_navic;
+
+  // nastoupeni amiku do breastworku
+  amici_breast;
+  // predvytvoreni amiku pro past
+  create_amici_past;
+  //predvytvoreni amiku na stavbu breastworku na zapade
+  create_amici_staveni_w;
+  // predvytvoreni americkeho utoku na belkova schovaneho na kopci
+  create_utok_na_belkova;
+
+  // vytvoreni vojaku ze save
+  create_vojaci_zacatek;
+
+  // schovani rusu do breastworku apod.
+  uklid_rusu;
+  InGameOn;
+ // wait(0$2);
+
+  // spolecny fog s rusama 2 (ruzovy)
+  ChangeSideFog(You,You2);
+
+  InGameOn;
+  CenterOnXY(117,101);
+end;
+
+// konec !!
+on UnitDestroyed(un) DO
+begin
+  if un=bur then YouLost('Burlak');
+  enable;
+end;
+
+on HumanDestroyed(un,side,nat,x,y,dir,sex,cl) DO
+begin
+  if (side = You) then NoLosses:=False;
+end;
+
+// konec kdyz zacne utocit na vlastni
+EXPORT function konec_mise_utok;
+begin
+  YouLost('SelfAttack');
+end;
+
+//******************************************************
+//*********  SAVENI POSTAV A PROMENNYCH  ***************
+//******************************************************
+// osetreni ukonceni mise
+EXPORT function konec_mise;
+VAR i,pom,pom1;
+VAR zivi;
+VAR drv;
+VAR a,b,c,d,e,f;
+VAR budovy;
+VAR material;
+VAR bw;
+VAR all_lidi;
+var
+  lidi;
+begin
+  DisableExclamations;
+  gained_medals:=[];
+  missing_medals:=[];
+  zivi=0;
+{  for i in (BurlakComp union BelkovComp) do if IsLive(i) then zivi=zivi+1;
+  if Reinforcements then
+    lidi:=5 + BelkovComp
+  else
+    lidi:=3 + BelkovComp;
+  if zivi = lidi then AddMedal('NoLosses',1)
+                 else AddMedal('NoLosses',-1);}
+
+  if NoLosses then
+    AddMedal('NoLosses',1)
+  else
+    AddMedal('NoLosses',-1);
+
+  if BelkovFreed then
+    if IsOK(bel) then AddMedal('Belkov',1)   //saved Belkov
+                 else if UnitFilter(BelkovComp,[f_OK]) + 0 > 0
+                        then AddMedal('Belkov',2)   //saved some Belkovs men
+                        else AddMedal('Belkov',-3)  //saved Belkov but allowed him to die
+                 else if objBelkov and belkovSave = false then AddMedal('Belkov',-2)  //failed to save
+                                   else AddMedal('Belkov',-1); //let him die
+  case stav_utoku of
+   1:AddMedal('Initiative',1);      // OK
+   2:AddMedal('Initiative',-2);     // pozadal o posily
+   3:AddMedal('Initiative',-1);     // reckless attack
+   else AddMedal('Initiative',1);
+  end;
+
+  GiveMedals('Main');
+
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+  pom1=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+  for i in pom1 do
+    if IsDrivenBy(i) then
+      begin
+        drv=IsDrivenBy(i);
+        if not (drv in pom) then pom=pom^drv;
+      end;
+  all_lidi=pom;
+
+  RewardPeople(all_lidi);
+
+  SaveCharacters(bur,'Burlak');
+  SaveCharacters(plat,'Platonov');
+  SaveCharacters(kurin,'Kurin');
+  SaveCharacters(bel,'Belkov');
+  SaveCharacters(gny,'Gnyevko');
+  SaveCharacters(kov,'Kovalyuk');
+
+  // ostatni vojaci
+  all_lidi=pom diff [bur,plat,kurin,bel,gny,kov];
+  all_lidi=all_lidi union rusi_survivors;
+  SaveCharacters(all_lidi,'survivors1');
+
+  if BelkovFreed
+    then SaveVariable(1,'belkov_saved')          // belkov byl savnuty
+    else SaveVariable(0,'belkov_saved');         // belkov nebyl savnuty
+
+  case stav_utoku of
+   0:SaveVariable(3,'utok_stav');
+   1:SaveVariable(1,'utok_stav');                     // zautocil spravne
+   2:SaveVariable(2,'utok_stav');                     // zautocil spravne, ale s posilama       
+   3:SaveVariable(3,'utok_stav');                     // zautocil bez rozkazu
+  end;
+
+  budovy=[];
+  bw=0;
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_building]]);
+  for i in pom do
+    begin
+      a=GetBType(i);
+      b=GetBLevel(i);
+      c=GetX(i);
+      d=GetY(i);
+      e=GetDir(i);
+      f=GetNation(i);
+      pom1=[a,b,c,d,e,f];
+      budovy=budovy^[pom1];
+    end;
+  SaveVariable(budovy,'budovy');
+  if isOK(am_bre1) then bw=bw+1;
+  if IsOK(am_bre2) then bw=bw+2;
+  SaveVariable(bw,'bw_east');
+
+  pom=[];
+  if ISOK(ABW1) then pom=pom^ABW1;
+  if ISOK(ABW2) then pom=pom^ABW2;
+  SaveCharacters(pom,'amici_bw');
+
+  YouWin;
+  EnableExclamations;
+  exit;
+end;
+
+//*******************************************************
+//*********  LOADENI POSTAV A PROMENNYCH  ***************
+//*******************************************************
+function load_postav;
+begin
+  kurin=NewCharacter('kurin');
+
+  if CheckCharacterSet('Belkov') then BELKOV_MRTVY=false
+                                 else BELKOV_MRTVY=true;
+
+  if BELKOV_MRTVY then begin
+                         bel=NewCharacter('Belkov2');
+                       end
+                  else bel=nacti_osobu('Belkov');
+
+  kov=NewCharacter('Kovalyuk');
+
+  bur=nacti_osobu('Burlak');
+
+  gny=nacti_osobu('Gnyevko');
+
+  plat=NewCharacter('Platonov');
+
+  //Radzio's fix
+  DoNotAttack(1,plat);
+  DoNotAttack(4,plat);
+end;

@@ -1,0 +1,374 @@
+// Marked  1 - zadani vsem ruskym vyrobcum v tovarne ComRemember
+// Marked  5 - MacMillanovi ukradli auto, spousti se zjistovani, jestli ho neuvidi
+// Marked 11 - Diaolgy po oznaceni remote control auta nebo opto laboratore
+
+
+
+
+export odpoved;                // answer of MacMillan for help calling
+export visit_base;             // ident if MacMillan visit US base doesn't matter of his answer
+
+var dialogue_running;          // oznacuje zda prave probiha nejaky dialog nebo ne
+
+//  Starting scene
+
+export function starting_scene;
+var x,y;
+begin
+  CenterNowOnUnits(truck1);
+  interface_hidden:=true;
+  InGameOn;
+  ComMoveXY(truck1,20,7);
+  AddComMoveXY(truck1,27,10);
+  AddComMoveXY(truck1,37,16);
+
+  wait(0$3);
+
+  async;
+  SayRadio(Powell,'D1-Pow-1');
+  sync;
+   wait(0$2);
+   ComStop(MacMillan);
+   ComExitVehicle(truck1);
+   x:=GetX(MacMillan)+10;
+   y:=GetY(MacMillan)+10;
+   ComMoveXY(MacMillan,x,y);
+   wait(0$2);
+   InGameOff;
+  DialogueOn;
+  interface_hidden:=true;
+  Say(MacMillan,'D1-JMM-1');
+  SayRadio(Powell,'D1-Pow-2');
+  Say(MacMillan,'D1-JMM-2');
+
+  SaveForQuickRestart;
+  wait(0$0.5);
+  ChangeMissionObjectives('M1');
+
+  DialogueOff;
+  interface_hidden:=false;
+
+  dialogue_running:=false;
+end;
+
+
+
+// Call for help - komunikace
+function odpoved_joan;
+begin
+    case odpoved of
+  1: begin            // MacMillan slibi pomoct
+       Say(MacMillan,'D2Ja-JMM-1');
+       SayRadio(Joan,'D2Ja-Joan-1');
+       Say(MacMillan,'D2Ja-JMM-2');
+     end;
+  2: begin            // MacMillan se omluvi
+       Say(MacMillan,'D2Jb-JMM-1');
+       SayRadio(Joan,'D2Jb-Joan-1');
+       Say(MacMillan,'D2Jb-JMM-2');
+       SayRadio(Joan,'D2Jb-Joan-2');
+       Say(MacMillan,'D2Jb-JMM-3');
+     end;
+  3: begin            // MacMillan neodpovi
+       SayRadio(Joan,'D2Jc-Joan-1');
+     end;
+    end;
+end;
+
+function odpoved_lisa;
+begin
+    case odpoved of
+  1: begin            // MacMillan slibi pomoct
+       Say(MacMillan,'D2La-JMM-1');
+       SayRadio(Lisa,'D2La-Lisa-1');
+       Say(MacMillan,'D2La-JMM-2');
+       SayRadio(Lisa,'D2La-Lisa-2');
+       Say(MacMillan,'D2La-JMM-3');
+     end;
+  2: begin            // MacMillan se omluvi
+       Say(MacMillan,'D2Lb-JMM-1');
+       SayRadio(Lisa,'D2Lb-Lisa-1');
+       Say(MacMillan,'D2Lb-JMM-2');
+       SayRadio(Lisa,'D2Lb-Lisa-2');
+     end;
+  3: begin            // MacMillan neodpovi
+       SayRadio(Lisa,'D2Lc-Lisa-1');
+     end;
+    end;
+end;
+
+function odpoved_anezka;
+begin
+    case odpoved of
+  1: begin            // MacMillan slibi pomoct
+       Say(MacMillan,'D2Xa-JMM-1');
+     end;
+  2: begin            // MacMillan se omluvi
+       Say(MacMillan,'D2Xb-JMM-1');
+       SayRadio(anezka,'D2Xb-Con-1');
+     end;
+  3: begin            // MacMillan neodpovi
+       SayRadio(anezka,'D2Xc-Con-1');
+     end;
+    end;
+end;
+
+
+// Call for help
+every 0$1 trigger IsInArea(MacMillan,help_calling) and (not visit_base) do
+begin
+  DialogueOn;
+  interface_hidden:=true;
+
+    case who_survive of
+  1: SayRadio(Joan,'D2J-Joan-1');
+  2: SayRadio(Lisa,'D2L-Lisa-1');
+  3: SayRadio(anezka,'D2X-Con-1');
+    end;
+
+  if Query('Q1')=2 then
+    begin
+      DialogueOff;
+      interface_hidden:=false;
+      exit;
+    end;
+
+    case who_survive of
+  1: begin
+       Say(MacMillan,'D2J-JMM-1');
+       SayRadio(Joan,'D2J-Joan-2');
+       Say(MacMillan,'D2J-JMM-2');
+       SayRadio(Joan,'D2J-Joan-3');
+     end;
+  2: begin
+       Say(MacMillan,'D2L-JMM-1');
+       SayRadio(Lisa,'D2L-Lisa-2');
+       Say(MacMillan,'D2L-JMM-2');
+       SayRadio(Lisa,'D2L-Lisa-3');
+     end;
+  3: begin
+       Say(MacMillan,'D2X-JMM-1');
+       SayRadio(anezka,'D2X-Con-2');
+     end;
+    end;
+
+  wait(0$1);
+  SayRadio(Powell,'DPowell-Pow-1');
+  wait(0$1);
+
+    case who_survive of
+  1: begin
+       odpoved:=Query('Q2J');    // Joan
+       odpoved_joan;
+     end;
+  2: begin
+       odpoved:=Query('Q2L');    // Lisa
+       odpoved_lisa;
+     end;
+  3: begin
+       odpoved:=Query('Q2X');    // Anezka
+       odpoved_anezka;
+     end;
+    end;
+
+  DialogueOff;
+  interface_hidden:=false;
+end;
+
+// MacMillan is in the US Base named Delta (maybye Kappa, who knows) meeting last survivor
+//every 0$1 trigger IsInArea(MacMillan,survivor_area) do
+every 0$1 trigger IsInArea(MacMillan,US_base) do
+var dist,list;
+begin
+  ComMoveUnit(survivor,MacMillan);
+  repeat
+    wait(0$1);
+  until See(you,survivor);
+  
+  SetSideBase(GetBase(us_depot),you);
+  SetSide(survivor,you);
+  SetSide(us_trucks,you);
+  list:=FilterAllUnits([ [f_side,neutral], [f_class,class_apeman_engineer] ]);
+  SetSide(list,you);
+
+  visit_base:=true;
+  InGameOn;
+  if IsOK(Joan) then
+    dist:=1
+  else
+    dist:=3;
+
+  list:=TICK;
+  while (GetDistUnits(MacMillan,survivor)>dist) and ((list+0$6)>TICK) do
+    begin
+      ComMoveUnit(survivor,MacMillan);
+      ComMoveUnit(MacMillan,survivor);
+      wait(20);
+      CenterOnUnits([MacMillan,survivor]);
+    end;
+
+  ComStop([MacMillan,survivor]);
+  ComTurnUnit(survivor,MacMillan);
+  ComTurnUnit(MacMillan,survivor);
+  wait(5);
+
+  InGameOff;
+  DialogueOn;
+  interface_hidden:=true;
+
+    case who_survive of
+  1: begin
+       Say(Joan,'D3J-Joan-1');
+       Say(MacMillan,'D3J-JMM-1');
+       Say(Joan,'D3J-Joan-2');
+       Say(MacMillan,'D3J-JMM-2');
+       ChangeMissionObjectives('M2J');
+     end;
+  2: begin
+       Say(Lisa,'D3L-Lisa-1');
+       Say(MacMillan,'D3L-JMM-1');
+       Say(Lisa,'D3L-Lisa-2');
+       Say(MacMillan,'D3L-JMM-2');
+       ChangeMissionObjectives('M2L');
+     end;
+  3: begin
+       Say(anezka,'D3X-Con-1');
+       ChangeMissionObjectives('M2X');
+     end;
+    end;
+
+
+
+  // Dialogue 4
+
+  Say(MacMillan,'D4-JMM-1');
+    case who_survive of
+  1: Say(Joan,'D4-Joan-1');
+  2: Say(Lisa,'D4-Lisa-1');
+  3: Say(Anezka,'D4-Con-1');
+    end;
+  Say(MacMillan,'D4-JMM-2');
+    case who_survive of
+  1: Say(Joan,'D4-Joan-2');
+  2: Say(Lisa,'D4-Lisa-2');
+  3: Say(Anezka,'D4-Con-2');
+    end;
+
+  DialogueOff;
+  interface_hidden:=false;
+
+  Enable(11);
+end;
+
+
+// Dialogue 5 (when player selects one of remote controlled vehicles)
+every 0$1 trigger IsSelected(us_trucks) Marked 11 do
+begin
+  if FilterAllUnits([ [f_side,you], [f_btype,b_control_tower] ]) then
+    exit;
+  while dialogue_running do
+    wait(0$1);
+  dialogue_running:=true;
+  DisableExclamations;
+  Say(MacMillan,'D5-JMM-1');
+  CenterOnXY(77,87);
+    case who_survive of
+  1: Say(Joan,'D5-Joan-1');
+  2: Say(Lisa,'D5-Lisa-1');
+  3: Say(Anezka,'D5-Con-1');
+    end;
+  EnableExclamations;
+  dialogue_running:=false;
+end;
+
+// Dialogue 6J (when player selects opto lab)
+every 0$1 trigger IsSelected(us_lab1) Marked 11 do
+begin
+  while dialogue_running do
+    wait(0$1);
+  dialogue_running:=true;
+  DisableExclamations;
+  selected_opto_lab:=true;
+    case who_survive of
+  1: begin
+       Say(MacMillan,'D6J-JMM-1');
+       If TestCharacters('Denis') and CheckCharacterSet('Denis') then
+         begin
+           Say(Joan,'D6J-Joan-1');
+           Say(MacMillan,'D6J-JMM-2');
+           Say(Joan,'D6J-Joan-2');
+         end
+       else
+         Say(Joan,'D6J-Joan-2a');
+       Say(MacMillan,'D6J-JMM-3');
+       Say(Joan,'D6J-Joan-3');
+     end;
+  2: begin
+       Say(MacMillan,'D6L-JMM-1');
+       Say(Lisa,'D6L-Lisa-1');
+       Say(MacMillan,'D6L-JMM-2');
+       Say(Lisa,'D6L-Lisa-2');
+     end;
+  3: begin
+       Say(MacMillan,'D6X-JMM-1');
+       Say(Anezka,'D6X-Con-1');
+       Say(MacMillan,'D6X-JMM-2');
+       Say(Anezka,'D6X-Con-2');
+       Say(MacMillan,'D6X-JMM-3');
+       Say(Anezka,'D6X-Con-3');
+       Say(MacMillan,'D6X-JMM-4');
+       Say(Anezka,'D6X-Con-4');
+       Say(MacMillan,'D6X-JMM-5');
+     end;
+    end;
+  ChangeMissionObjectives('M3');
+  EnableExclamations;
+  dialogue_running:=false;
+end;
+
+// Dialogue 7 (some time after John's arrival)
+every 10$0 do
+begin
+  DialogueOn;
+  interface_hidden:=true;
+  Say(Powell,'D7-Pow-1');
+  Say(MacMillan,'D7-JMM-1');
+  Say(Powell,'D7-Pow-2');
+  if IsLive(survivor) then
+    Say(MacMillan,'D7-JMM-2')
+  else
+    Say(MacMillan,'D7-JMM-2a');
+  Say(Powell,'D7-Pow-3');
+  Say(MacMillan,'D7-JMM-3');
+  Say(Powell,'D7-Pow-4');
+  DialogueOff;
+  interface_hidden:=false;
+end;
+
+// Dialogue 8 (an Russian soldier arives with JMM's vehicle)
+// Checking change of MacMillan's morphling car
+every 0$20 do
+begin
+  ukradle_auto:=FilterAllUnits([ [f_side,russians], [f_type,unit_vehicle], [f_chassis,us_morphling] ]);
+  mm_vehicle:=ukradle_auto;
+  manual_forces:=manual_forces^mm_vehicle;
+  if ukradle_auto then
+    Enable(5);
+end;
+
+function vzdalenost_macmillana_od_auta;
+var v_x,v_y;    // vzdalenost x, vzdalenost y
+begin
+  v_x:=GetX(ukradle_auto)-GetX(MacMillan);
+  v_x:=GetY(ukradle_auto)-GetY(MacMillan);
+  if ((v_x > -6) and (v_x < 6)) and
+     ((v_y > -6) and (v_y < 6)) then
+    result:=true
+  else
+    result:=false;
+end;
+
+every 0$1 trigger vzdalenost_macmillana_od_auta Marked 5 do
+begin
+  Say(MacMillan,'D8-JMM-1');
+end;

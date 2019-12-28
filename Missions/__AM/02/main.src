@@ -1,0 +1,465 @@
+EXPORT test, testing;
+EXPORT americans, americans1, russians, russians1;
+EXPORT John, Cyrus, Bobby, Khatam, Nick, Lisa;
+EXPORT AmME1, AmFE2, AmMSo3;
+EXPORT Powell;
+
+EXPORT AmD1, AmD2, AmD3, AmD4;
+
+EXPORT AmR1, AmR2, RuR1, RuR2;
+
+
+EXPORT Time_of_visit, Time_of_attack, vehicle_goes, escape_flag, flee;
+EXPORT Time_of_capture, vehicles_detected, uncanny_vehicles;
+EXPORT Khatam_met_americans, Khatam_met_MM, Mikhail_placed, Mikhail_captured;
+EXPORT resumption_of_talk, depot, Mikhail_in_depot, great_escape, attack, mikhail_marked_for_death;
+EXPORT remove_mikhail, conversation, Mikhails_escape;
+EXPORT Number_of_tigers;
+EXPORT Dep1_lives, Dep2_lives, rep, Mikhails_lives, firing1, firing2, russians_attack, russians_attack1;
+EXPORT rsol1, rsol2, rsol3, rsol4, rsol5, rsol6, rdrv1, rdrv2, rv1, rv2; //russians attack
+EXPORT Mikhail, vehicle3, vehicle4, driver3, driver4;
+EXPORT tigers, tiger1, tiger2, tiger3, tiger4;
+EXPORT battle, number_of_crates, count, sergej_succeeds;
+EXPORT vehicle1_fuel, vehicle2_fuel;
+EXPORT tigers_allowed, remove_tigers;
+EXPORT Engineers_not_dead, First_Capture;
+EXPORT Attack_Distance, Eng_Skill, Sc_Skill, guard_skill;
+EXPORT Lives_to_Retreat, lost_units;
+EXPORT Mikhails_Escape_Disabled;
+EXPORT Initial_Lives, Attack_canceled;
+EXPORT RuR_lives, JMM_saw_east_guard, East_guard_seen;
+EXPORT vehicle1_new, vehicle2_new;
+EXPORT escape_dialogue, vehicle_goes_flag;
+
+EXPORT Dialogue_Number, Skip;
+
+EXPORT tiger_skill, russ_attack, drivers_skill, soldiers_skill, vehicle_lives;
+
+EXPORT RusEast, RusNorth;
+
+EXPORT Alive, RunDelay;
+
+EXPORT Init_lives, Tested_Americans;
+EXPORT Lives_Jmm, Lives_Bobby, Lives_Cyrus;
+
+
+{FUNCTION QueryDifficulty;
+ begin
+  result:=BuildQuery('Select difficulty level', ['Adventurer','Commander','Master Strategist']);
+ end;
+
+Function SelectAlieve;
+ begin
+  result:=BuildQuery('Select who is alive:', ['Bobby and Cyrus', 'Bobby', 'Cyrus', 'Nobody of the one']);
+ end;
+}
+Function Prepare_difficulty;
+ begin
+  tiger_skill= [0, 1, 2][Difficulty];
+//  russ_attack= [0, 1, 2][Difficulty];                // ??????
+  drivers_skill= [0, 1, 3][Difficulty];
+  soldiers_skill= [0, 1, 2][Difficulty];
+  vehicle_lives= [450, 600, 1000][Difficulty];
+  number_of_crates= [5, 4, 3][Difficulty];
+  vehicle1_fuel= [50, 45, 35][Difficulty];
+  vehicle2_fuel= [55, 50, 40][Difficulty];
+  Attack_Distance= [17, 16, 15][Difficulty];
+  Eng_Skill= [0, 0, 2][Difficulty];
+  Sc_Skill= [0, 0, 2][Difficulty];
+  RunDelay= [[106, 18], [103, 12], [99, 5]][Difficulty]; //[0$10, 0$8, 0$4]             // Delay of Igor befor running to the car.
+    ComMoveXY(RusEM1, RunDelay[1], RunDelay[2]);
+    AddComHold(RusEM1);
+  Guard_Skill= [0, 1, 2][Difficulty];
+  Lives_to_Retreat= [450, 500, 600][Difficulty];
+  RuR_lives= [500, 800, 1000][Difficulty];
+ end;   
+
+FUNCTION Init;
+ begin
+  tigers= [tiger1, tiger2, tiger3, tiger4];
+
+//  Difficulty=QueryDifficulty;
+//  Alive=SelectAlieve;
+
+  //attitudes
+  americans=1; americans1=4; russians=3; russians1= 6;
+  SetAttitude(americans, russians, att_enemy, true);
+  SetAttitude(americans, russians1, att_neutral, false);
+  SetAttitude(russians1, americans, att_neutral, false);
+  SetAttitude(russians, russians1, att_friend, true);
+  SetAttitude(americans, americans1, att_friend, true);
+
+  RusEast=[RusESo1, RusESo2];
+  RusNorth=[RusNSo1, RusNSo2, RusNSc1];
+
+  ComRemember(RusNorth);
+  ComFree(RusNorth);
+
+  Dep1_lives= 1000;
+  Dep2_lives= 1000;
+
+
+// If neither Boby nor Cirus are alive, then one extra soldier is created
+
+  InitUc;
+  InitHc;
+  InitVc;
+
+  uc_direction= 1;
+  uc_nation= nation_russian;
+  uc_side= russians;
+
+  SetFuel(vehicle1, vehicle1_fuel);   // Difficulty
+  SetFuel(vehicle2, vehicle2_fuel);   // Difficulty
+
+
+    // russians
+    // vehicle3 & vehicle4
+    vc_chassis= ru_medium_wheeled;
+    vc_engine= engine_combustion;
+    vc_control= control_manual;
+    vc_weapon= ru_cargo_bay;              //ru_no_weapon;
+
+    vehicle3= CreateVehicle;
+    vehicle4= CreateVehicle;
+
+
+    // v1, v2
+    vc_weapon= ru_heavy_machine_gun;
+
+    rv1= CreateVehicle;
+    SetLives(rv1, vehicle_lives);  // Difficulty
+    rv2= CreateVehicle;
+
+    Time_of_visit= 550$0;
+    Time_of_attack= 550$0;
+    Time_of_capture= 550$0;
+    flee= 0; //killed=0 - not success; flee=1 - one vehicle flees successfully; flee=2 - two...
+
+    // drivers (mechanics)
+    hc_sex= sex_male;
+    hc_class= class_mechanic;
+    hc_skills= [1, 0, drivers_skill, 0];   // Difficulty
+    hc_attr= [10,10];
+
+    hc_name= '';
+    driver3= CreateHuman;
+    PlaceHumanInUnit(driver3, vehicle3);
+
+    hc_name= '';
+    driver4= CreateHuman;
+    PlaceHumanInUnit(driver4, vehicle4);
+
+    // rdrv1, rdrv2 - driver for russians attack
+    hc_name='';
+    hc_skills= [1, 3, drivers_skill+1, 0];    // Difficulty
+    hc_class= class_engineer;
+    rdrv1= CreateHuman;
+    rdrv2= CreateHuman;
+    PlaceHumanInUnit(rdrv1, rv1);
+    PlaceHumanInUnit(rdrv2, rv2);
+
+    // soldiers for russians attack
+    hc_class= class_soldier;
+    hc_skills= [soldiers_skill, 0, 1, 1];   // Difficulty
+    hc_name= '';
+    rsol1= CreateHuman;
+    rsol4= CreateHuman;
+    hc_skills= [soldiers_skill-1, 0, 1, 1]; // Difficulty
+    rsol3= CreateHuman;
+    rsol5= CreateHuman;
+    hc_skills= [soldiers_skill+1, 0, 1, 1];  // Difficulty
+    rsol2= CreateHuman;
+    hc_skills= [soldiers_skill, 0, 1, 1];
+    rsol6= CreateHuman;
+
+
+// Loading of characters
+
+    // Mikhail
+    hc_sex= sex_male;
+    uc_side= russians1;
+    PrepareNewCharacter('Mikhail');
+    hc_class= class_mechanic;
+    Mikhail= CreateHuman;
+
+    Mikhail_in_depot=false;
+    Mikhails_lives=1000;
+
+    hc_gallery= '';
+    hc_face_number= 0;
+    // americans
+    uc_nation= nation_american;
+    uc_side= americans;
+
+    Lives_JMM= LoadVariable('lives_jmm', 1000);
+    Lives_Bobby= LoadVariable('lives_bobby', 1000);
+    Lives_Cyrus= LoadVariable('lives_cyrus', 1000);
+
+    // John Macmillan
+    if testing then
+         begin
+              PrepareSoldier(sex_male,3);
+              hc_name = 'Macmillan';
+              John = CreateHuman;
+              InitHc;
+         end
+    else 
+         John=CreateCharacter('JMM');
+    SetLives(John, Lives_JMM);
+    if not John then
+      BuildQuery('Error: John Macmillan not found!!!',['OK']);
+
+    // Powell
+    if testing then
+         begin
+              PrepareSoldier(sex_male,0);
+              hc_name = 'Powell';
+              Powell = CreateHuman;
+              InitHc;
+         end
+    else    
+         Powell=CreateCharacter('Powell');
+    if not Powell then
+      BuildQuery('Error: Powell not found!!!',['OK']);
+
+    // Bobby, Lisa and Cyrus                       
+    Bobby=CreateCharacter('Bobby');
+    if Bobby then SetLives(Bobby, Lives_Bobby);
+    Cyrus=CreateCharacter('Cyrus');
+    if Cyrus then SetLives(Cyrus, Lives_Cyrus);
+
+    uc_side= americans1;
+    Lisa=NewCharacter('Lisa');
+
+    // Khattam
+    uc_side= americans1;
+    Khatam=NewCharacter('Khatam');
+    SetClass(Khatam, class_scientistic);
+
+    Khatam_met_MM= false; // Khatam met first MM
+
+    uc_side= americans1;
+
+    hc_sex= sex_male;
+    hc_class= class_engineer;
+    hc_skills= [1,2,1,0];
+    hc_name= '';
+    hc_attr= [10,10];
+
+    AmME1= CreateHuman;
+
+    hc_sex= sex_female;
+    hc_skills= [1,1,2,1];
+    hc_name= '';
+
+    AmFE2= CreateHuman;
+
+    hc_sex= sex_male;
+    hc_class= class_soldier;
+    hc_skills= [2,1,1,0];
+    hc_name= '';
+
+    AmMSo3= CreateHuman;
+
+
+
+    // Place the initial group
+
+    if John then
+      PlaceUnitXY(John, 44, 72, false);         // John
+    if Bobby then
+      PlaceUnitXY(Bobby, 43, 74, false);        // Bobby
+    if Cyrus then
+      PlaceUnitXY(Cyrus, 47, 76, false);        // Cyrus
+      PlaceUnitXY(Lisa, 30, 55, false);         // Lisa
+      ComCrawl(Lisa);
+      AddComHold(Lisa);
+      AddComTurnXY(Lisa, 34, 60);
+
+      PlaceUnitXY(AmME1, 31, 50, false);
+      ComCrawl(AmME1);
+      AddComHold(AmME1);
+      AddComTurnXY(AmME1, 34, 50);
+
+      PlaceUnitXY(AmFE2, 33, 51, false);
+      ComCrawl(AmFE2);
+      AddComHold(AmFE2);
+      AddComTurnXY(AmFE2, 34, 50);
+
+
+    ComFree([John, Bobby, Cyrus]);
+
+    Nick= 0;
+    if not Cyrus and not Bobby then
+      begin
+        uc_side= americans1;
+        uc_nation= nation_american;
+
+        hc_sex=sex_male;
+        hc_class=class_soldier;
+        hc_skills=[1,1,1,0];
+        hc_name='';
+        hc_attr=[11,8];
+        Nick=CreateHuman;
+        PlaceUnitXY(Nick, 32, 49, false);
+        comCrawl(Nick);
+        AddComHold(Nick);
+        AddComTurnXY(Nick, 34, 50);
+      end;
+
+//    Over the river
+//    Americans
+    hc_sex= sex_male;
+    hc_class= class_soldier;
+    hc_skills= [1, 2, 1, 1];
+    hc_name= '';
+    hc_attr= [10, 10];
+    uc_direction= 1;
+    AmR1= CreateHuman;     // 75, 70
+    hc_name= '';
+    uc_direction= 1;
+    AmR2= CreateHuman;     // 77, 73
+
+
+//    Russians
+    uc_side= russians;
+    uc_nation= nation_russian;
+
+    hc_sex= sex_male;
+    hc_class= class_soldier;
+    hc_skills= [2, 1, 0, 0];
+    hc_attr= [10, 10];
+    hc_name= '';
+    uc_direction= 4;
+    RuR1= CreateHuman;     // 77, 69
+    SetLives(RuR1, RuR_lives);
+    hc_name= '';
+    uc_direction= 4;
+    RuR2= CreateHuman;     // 78, 71
+    SetLives(RuR2, RuR_lives);
+
+
+// Nove selmy se budou objevovat s jinou prodlevou.
+
+  SetSkill(RusNE1, skill_engineering, eng_skill);   // Difficulty
+  SetSkill(RusNSc1, skill_scientistic, sc_skill);   // Difficulty
+  SetSkill(guard1, skill_combat, guard_skill);
+  SetSkill(guard2, skill_combat, guard_skill);
+  SetSkill(guard3, skill_combat, guard_skill);
+
+  case Difficulty of
+   1: begin
+       SetLives(BrW1, 600);
+       DestroyUnit(BrW3);
+       DestroyUnit(Brw2);
+       DestroyUnit(RusNSo4);
+       DestroyUnit(RusNSo5);
+       DestroyUnit(RusNSo6);
+       DestroyUnit(RusNE1);
+       DestroyUnit(guard2);
+       DestroyUnit(guard3);
+       DestroyUnit(RusNSo3);
+      end;
+   2: begin
+       SetLives(BrW3, 700);
+       DestroyUnit(Brw2);
+       DestroyUnit(RusNSo4);
+       DestroyUnit(RusNSo5);
+       DestroyUnit(RusNSo6);
+       DestroyUnit(RusNE1);
+       DestroyUnit(guard2);
+      end;
+   3: begin
+      end;
+  end;
+
+  battle= false;
+  count=0;
+  sergej_succeeds=0; // 0 - doesn't succeeds; 1 - succeeds; 2 - americans caprured the vehicle firstly...
+// used either as TRIGGER or as MARKED
+  Khatam_met_americans = 1;
+  disable(Khatam_met_americans);
+  escape_flag = false;
+  vehicle_goes = 2;
+  disable(vehicle_goes);
+  Mikhail_placed= 3;
+  disable(mikhail_placed);
+  Mikhail_captured = 4;
+  disable(Mikhail_captured);
+  vehicles_detected = 5;
+  disable(vehicles_detected);
+  uncanny_vehicles =6;
+//  resumption_of_talk = 7;
+//  disable(resumption_of_talk);
+  depot = 8;
+  disable(depot);
+  great_escape= 9;
+  disable(great_escape);
+  attack= 10;
+  disable(attack);
+  remove_mikhail= 11;
+  disable(remove_mikhail);
+  conversation= 12;
+  disable(conversation);
+  Mikhails_escape= 13;
+  disable(Mikhails_escape);
+  rep= true;
+  firing1= 14;
+  disable(firing1);
+  firing2= 15;
+  disable(firing2);
+  russians_attack= 16;
+  disable(russians_attack);
+  russians_attack1= 17;
+  disable(russians_attack1);
+  tigers_allowed= 18;
+  disable(tigers_allowed);
+  remove_tigers= 19;
+  disable(remove_tigers);
+  Engineers_not_dead= 20;
+  disable(Engineers_not_dead);
+  East_guard_seen= 21;
+  enable(East_guard_seen);
+  mikhail_marked_for_death = false;  //If the player decides to shoot Michail (when he appears)
+
+  JMMInVehicle:=false;
+  CyrusInVehicle:=false;
+  Dialogue_Number= 0;
+  Skip= false;
+  JMM_saw_east_guard= false;
+  Attack_canceled= false;
+  lost_units= 0;
+  First_Capture= True;
+  vehicle1_new= 0;
+  vehicle2_new= 0;
+  escape_dialogue= false;
+  vehicle_goes_flag= true;
+
+  Tested_Americans= [];
+  Init_Lives= [];
+
+  Mikhails_Escape_Disabled= true;
+  Initial_Lives= GetLives([John, Cyrus, Bobby, Khatam, Lisa, AmME1, AmFE2, AmMSo3, Nick]);
+
+  // Events
+//  Event_John= 1;
+
+  // Parameters
+//  Event_John_Parameters= 1;
+
+  CenterOnXY(41,65);
+ end;
+
+
+STARTING
+
+ begin
+//  Difficulty= 1;
+  RandomizeAll;
+  testing = false;  //testing mission or for real?
+  test=0; //Some other test thingy.
+  Prepare_difficulty;
+  InitNorthBase;
+  Init;
+ end;

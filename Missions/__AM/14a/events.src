@@ -1,0 +1,19 @@
+
+on UnitDestroyed(un) do
+begin
+  if un=MacMillan then
+    Mission_Failed(1);
+
+  if un=Burlak then
+    Mission_Failed(2)
+end;
+
+
+
+function Mission_Failed(un);
+begin
+    case un of
+  1: YouLost('JMM');
+  2: YouLost('Burlak');
+    end;
+end;

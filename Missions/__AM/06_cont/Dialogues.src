@@ -1,0 +1,763 @@
+export mytick;
+
+// dialog 1
+// po prichodu na mapu
+export function Dialog1;
+var Sci, i;
+begin
+    used:=all ^ [JMM];
+
+    if Lisa in used then
+       Lisa_P:=true;
+    if Frank in used then
+       Frank_P:=true;
+
+    opicaci:=Delete(opicaci, 3);
+    used:=used ^ opicaci;
+
+    used:=used union zgamy2;
+
+    not_char:=used diff [JMM,Lisa,Frank];
+
+  //davam je na konec
+    not_char:=not_char diff [Cyrus, Bobby, Gladstone, Denis, Brown, Donaldson];
+    if Brown in used then not_char:=not_char ^ [Brown];
+    if Donaldson in used then not_char:=not_char ^ [Donaldson];
+    if Cyrus in used then not_char:=not_char ^ [Cyrus];
+    if Bobby in used then not_char:=not_char ^ [Bobby];
+    if Gladstone in used then not_char:=not_char ^ [Gladstone];
+    if Denis in used then not_char:=not_char ^ [Denis];
+  //
+
+    SaveForQuickRestart;
+
+     Wait(0$1.0);
+
+     ChangeMissionObjectives('M1');
+     case difficulty of
+          1: ChangeMissionObjectives('M1-1');
+          2: ChangeMissionObjectives('M1-2');
+          3: ChangeMissionObjectives('M1-3');
+     end;
+     ChangeMissionObjectives('M1cont');
+
+     PlaceHumanInUnit(zgamy2[1], Car1);
+     PlaceHumanInUnit(zgamy2[2], Car2);
+     PlaceUnitXYR(Car1, 13,3, 8, false);
+     PlaceUnitXYR(Car2, 13,3, 8, false);
+
+
+     for i:=1 to used diff (zgamy2^[Car1, Car2]) do
+        PlaceUnitXYR(used[i], 70, 3, 8, false);
+     mytick:=tick;
+     CenterNowOnUnits(JMM);
+     Wait(0$3);
+     talkOn;
+     Say(zgamy2[2], 'DEng-Eng1-1');
+     talkOff;
+     CenterOnUnits(Car1);
+     InGameOff;
+
+     start_game:=true;
+end;
+
+every 1$20 do
+begin
+   DialogueOn;
+   SayRadio(Har, 'DRem-Har-1');
+   if attacky then
+      Say(JMM, 'DRem-JMM-1')
+   else
+      Say(JMM, 'DRem-JMM-1a');
+   SayRadio(Har, 'DRem-Har-2');
+   if CheckCharacterSet('Denis') then
+      Say(JMM, 'DRem-JMM-2')
+   else
+      Say(JMM, 'DRem-JMM-2a');
+   SayRadio(Har, 'DRem-Har-3');
+   Say(JMM, 'DRem-JMM-3');
+   SayRadio(Har, 'DRem-Har-4');
+   if CheckCharacterSet('Denis') then begin
+      Say(JMM, 'DRem-JMM-4');
+      SayRadio(Har, 'DRem-Har-5');
+   end;
+   DialogueOff;
+   ChangeMissionObjectives('MR');
+   if CheckCharacterSet('Denis') then begin
+      InitUc;
+      InitHc;
+      uc_side:=you2;
+      uc_nation:=nation_american;
+      Denis:=CreateCharacterWithClass('Denis', class_scientistic);
+      DialogDenis;
+   end;
+end;
+
+function DialogDenis;
+var depot, nekdo, mytick;
+begin
+   wait(9$0);
+   depot:=FilterAllUnits([[f_side,you],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+   if depot then depot:=depot[1];
+
+   mytick:=tick+0$15;
+   PlaceUnitArea(Denis, denis_come, false);
+   case true of
+        GetDistUnits(Denis, JMM)<20: begin
+           ComMoveUnit(Denis, JMM);
+           
+           while GetDistUnits(Denis, depot)>5 and IsOk(denis) and tick<mytick do begin
+               wait(0$1);
+           end;
+        end;
+
+        GetDistUnits(Denis, depot)<20: begin
+           ComMoveUnit(Denis, depot);
+           while GetDistUnits(Denis, depot)>5 and IsOk(denis) and IsOk(depot) and tick<mytick do begin
+               wait(0$1);
+           end;
+        end;
+
+        else begin
+           nekdo:=NearestUnitToUnit(FilterAllUnits([[f_side,you],[f_type,unit_human]]), denis);
+           ComMoveUnit(Denis, nekdo);
+           while GetDistUnits(Denis, nekdo)>5 and IsOK(nekdo) and tick<mytick do begin
+               wait(0$1);
+           end;
+        end;
+   end;
+   ComStop(Denis);
+   SetSide(Denis, you);
+   if IsLive(Denis) then begin
+       enable(33);
+       DialogueOn;
+       CenterOnUnits(Denis);
+       Say(Denis, 'DDen-Den-1');
+       Say(JMM, 'DDen-JMM-1');
+       Say(Denis, 'DDen-Den-2');
+       Say(JMM, 'DDen-JMM-2');
+       Say(Denis, 'DDen-Den-3');
+       Say(JMM, 'DDen-JMM-3');
+       DialogueOff;
+   end;
+end;
+
+//dialog r0
+export was_dialogR0;
+export function DialogR0;
+var kdo1, kdo2, r;
+begin
+  if not was_dialogR0 then begin
+     kdo1:=WhoSayAny(not_char, you, sex_male, 0, 1);
+     kdo2:=WhoSayAny(not_char, you, sex_male, 0, 2);
+     if not kdo1 then
+        kdo1:=WhoSayAny(TvojiLidi diff [JMM,Cyrus,Denis], you, sex_male, 0, 1);
+     if not kdo2 then
+        kdo2:=WhoSayAny(TvojiLidi diff [JMM,Cyrus,Denis], you, sex_male, 0, 2);
+
+     TalkOn;
+     if IsOK(Lisa) then
+        r:=Say(Lisa, 'DR0-Lisa-1')
+     else
+        r:=Say(kdo1, 'DR0-Sol1-1');
+     if r then
+       if IsOK(Cyrus) then
+          r:=Say(Cyrus, 'DR0-Cyrus-1')
+       else
+          r:=Say(kdo2, 'DR0-Sol2-1');
+     if r then
+        Say(JMM, 'DR0-JMM-1');
+     TalkOff;
+     was_dialogR0:=true;
+  end;
+end;
+
+
+// dialog r1
+function MajiOpto;
+var i;
+begin
+  result:=false;
+  for i in FilterAllUnits([[f_side,you],[f_or,[f_btype,b_lab_half],[f_btype,b_lab_full]]]) do
+    if (GetLabKind(i, 1)=b_lab_opto) or (GetLabKind(i, 2)=b_lab_opto) then begin
+      result:=true;
+      break;
+    end;
+end;
+every 0$7 trigger MajiOpto and  FilterAllUnits([[f_side,you],[f_or, [f_btype,b_oil_power],[f_btype,b_solar_power]]]) marked 33 do begin
+   if IsOK(Denis) then begin
+       DialogueOn;
+       if Say(Denis, 'DR1-Den-1') then
+       Say(JMM, 'DR1-JMM-1');
+       DialogueOff;
+   end;
+end;
+
+// dialog r2
+function ScisInLabs;
+var labs, i, inlabs;
+begin
+   inlabs:=[];
+   labs:=FilterAllUnits([[f_side,you],[f_or,[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]);
+   for i in labs do
+      inlabs:=inlabs ^ UnitsInside(i);
+   result:=UnitFilter(inlabs, [f_class,class_scientistic]);
+end;
+export function DialogR2;
+var scis, r;
+begin
+   scis:=ScisInLabs;
+   if scis isect (not_char union Denis) then
+      scis:=scis isect (not_char union Denis);
+   if scis then begin
+     DialogueOn;
+     if not IsDead(Denis) and (Denis in scis) then
+         r:=Say(Denis, 'DR2-Den-1')
+     else if GetSex(scis[1])=sex_male then
+             r:=Say(scis[1], 'DR2-Sci1-1')
+          else
+             r:=Say(scis[1], 'DR2-FSci1-1');
+     if r then Say(JMM, 'DR2-JMM-1');
+     if r then
+        if SayAny(not_char, 'DR2-Sol1-1', you, sex_male, 0, 0) then
+           Say(JMM, 'DR2-JMM-2');
+     DialogueOff;
+   end;
+end;
+
+
+// dialog 2
+export function DialogKurt(kdo);
+var qr, mytick;
+var JeMM, JeF;
+begin
+// existence postav by mela byt overena pred spustenim fce
+   DialogInProgress:=true;
+
+     kdo:=NearestUnitToUnit(FilterAllUnits([[f_side, you],[f_type, unit_human],[f_outside],[f_nation,nation_american],[f_alive]]),Kurt);
+     JeF:=(GetSex(kdo)=sex_female);
+     JeMM:=(kdo=JMM);
+
+     InGameOn;
+     CenterOnUnits(Kurt);
+     Wait(0$4);
+     ComMoveUnit(kdo, Kurt);
+     AddComTurnUnit(kdo, Kurt);
+     AddComHold(kdo);
+     ComMoveUnit(Kurt, kdo);
+     AddComTurnUnit(Kurt, kdo);
+     AddComHold(Kurt);
+     mytick:=tick+0$15;
+     while mytick>tick and GetDistUnits(Kurt, kdo)>4 do
+           Wait(0$1);
+     InGameOff;
+
+     if IsLive(Kurt) and IsLive(kdo) then begin
+       DialogueOn;
+       if JeMM then begin
+          Say(Kurt, 'D2-Kurt-1');
+          Say(kdo, 'D2-JMM-1');
+          Say(Kurt, 'D2-Kurt-2');
+          Say(kdo, 'D2-JMM-2');
+          Say(Kurt, 'D2-Kurt-3');
+          Say(kdo, 'D2-JMM-3');
+          Say(Kurt, 'D2-Kurt-4');
+          Say(kdo, 'D2-JMM-4');
+          qr:=Query('QKill');
+          case qr of
+              1: begin
+                 Say(Kurt, 'D2a-Kurt-1');
+              end;
+              2: begin
+                 Say(kdo, 'D2b-JMM-1');
+                 Say(Kurt, 'D2b-Kurt-1');
+                 Say(kdo, 'D2b-JMM-2');
+                 Say(Kurt, 'D2b-Kurt-2');
+                 SayEffect('Kurtfire.wav');
+              end;
+              3: begin
+                 Say(kdo, 'D2c-JMM-1');
+                 Say(Kurt, 'D2c-Kurt-1');
+              end;
+          end;
+          if qr=2 then begin
+              qr:=Query('QKill2');
+              case qr of
+                  1: begin
+                     Say(Kurt, 'D2a-Kurt-1');
+                  end;
+                  2: begin
+                     Say(kdo, 'D2c-JMM-1');
+                     Say(Kurt, 'D2c-Kurt-1');
+                  end;
+              end;
+          end;
+       end
+       else
+          if JeF then begin
+             Say(Kurt, 'D2-Kurt-1');
+             Say(kdo, 'D2-FSol1-1');
+             Say(Kurt, 'D2-Kurt-2');
+             Say(kdo, 'D2-FSol1-2');
+             Say(Kurt, 'D2-Kurt-3');
+             Say(kdo, 'D2-FSol1-3');
+             Say(Kurt, 'D2-Kurt-4');
+             Say(kdo, 'D2-FSol1-4');
+             Say(kdo, 'D2-FSol1-5');
+             qr:=Query('QKill');
+             case qr of
+                  1: begin
+                     Say(Kurt, 'D2a-Kurt-1');
+                  end;
+                  2: begin
+                     Say(kdo, 'D2b-FSol1-1');
+                     Say(Kurt, 'D2b-Kurt-1');
+                     Say(kdo, 'D2b-FSol1-2');
+                     Say(Kurt, 'D2b-Kurt-2');
+                     Say(kdo, 'D2b-FSol1-3');
+                  end;
+                  3: begin
+                     Say(kdo, 'D2c-FSol1-1');
+                     Say(Kurt, 'D2c-Kurt-1');
+                  end;
+             end;
+             if qr=2 then begin
+                qr:=Query('QKill2');
+                case qr of
+                    1: begin
+                       Say(Kurt, 'D2a-Kurt-1');
+                    end;
+                    2: begin
+                       Say(kdo, 'D2c-FSol1-1');
+                       Say(Kurt, 'D2c-Kurt-1');
+//                         Say(kdo, 'D2c-FSol1-2');  // tohle sem neprijde
+                    end;
+                end;
+             end;
+          end
+          else begin
+             Say(Kurt, 'D2-Kurt-1');
+             Say(kdo, 'D2-Sol1-1');
+             Say(Kurt, 'D2-Kurt-2');
+             Say(kdo, 'D2-Sol1-2');
+             Say(Kurt, 'D2-Kurt-3');
+             Say(kdo, 'D2-Sol1-3');
+             Say(Kurt, 'D2-Kurt-4');
+             Say(kdo, 'D2-Sol1-4');
+             Say(kdo, 'D2-Sol1-5');
+             qr:=Query('QKill');
+             case qr of
+                  1: begin
+                     Say(Kurt, 'D2a-Kurt-1');
+                  end;
+                  2: begin
+                     Say(kdo, 'D2b-Sol1-1');
+                     Say(Kurt, 'D2b-Kurt-1');
+                     Say(kdo, 'D2b-Sol1-2');
+                     Say(Kurt, 'D2b-Kurt-2');
+                     Say(kdo, 'D2b-Sol1-3');
+                  end;
+                  3: begin
+                     Say(kdo, 'D2c-Sol1-1');
+                     Say(Kurt, 'D2c-Kurt-1');
+                  end;
+             end;
+             if qr=2 then begin
+                 qr:=Query('QKill2');
+                 case qr of
+                      1: begin
+                         Say(Kurt, 'D2a-Kurt-1');
+                      end;
+                      2: begin
+                         Say(kdo, 'D2c-Sol1-1');
+                         Say(Kurt, 'D2c-Kurt-1');
+//                         Say(kdo, 'D2c-Sol1-2');  // tohle sem neprijde
+                      end;
+                 end;
+             end;
+          end;
+       DialogueOff;
+       if qr=1 then begin
+          KurtTryToEscape:=true;
+          SetAttitude(arabians,you,att_enemy,true);
+          ComAttackUnit(kdo, Kurt);
+          while not IsInArea(Kurt, border) and IsLive(Kurt) do begin
+            ComMoveToArea(Kurt, border);
+            wait(0$1);
+          end;
+          RemoveUnit(Kurt);
+       end
+       else begin
+          SA_OnKurtSpared;
+          mytick:=tick+0$20;
+          while not IsInArea(Kurt, border) and IsLive(Kurt) and mytick>tick do begin
+            ComMoveToArea(Kurt, border);
+            wait(0$1);
+          end;
+          if IsPlaced(Kurt) and IsLive(kurt) then
+            RemoveUnit(Kurt);
+       end;
+     end;
+   DialogInProgress:=false;
+end;
+every 0$10 trigger GetAttitude(arabians,you)=att_enemy do
+begin
+    KurtTryToEscape:=true;
+end;
+
+// dialog 5
+export function DialogJoan(kdo);
+var mytick;
+begin
+   DialogInProgress:=true;
+     kdo:=NearestUnitToUnit(FilterAllUnits([[f_sex,sex_male],[f_side, you],[f_type, unit_human],f_not,[f_inside],f_not,[f_driving],f_not,[f_nation,nation_nature],[f_alive]]) diff Joan,Joan);
+     InGameOn;
+     CenterOnUnits(Joan);
+     DoNotAttack(russians, Joan);
+     Wait(0$5);
+     SetLives(Joan, hranice_umirani+50);
+     AddComMoveUnit(Joan, kdo);
+     AddComTurnUnit(Joan, kdo);
+     AddComHold(Joan);
+     ComMoveUnit(kdo, Joan);
+     AddComTurnUnit(kdo, Joan);
+     AddComHold(kdo);
+     mytick:=tick+0$15;
+     while mytick>tick and GetDistUnits(Joan, kdo)>4 and IsOK(kdo) do
+       Wait(0$1);
+     if not IsOK(kdo) then
+       kdo:=NearestUnitToUnit(FilterAllUnits([[f_sex,sex_male],[f_side, you],[f_type, unit_human],f_not,[f_inside],f_not,[f_driving],f_not,[f_nation,nation_nature],[f_alive]]) diff Joan,Joan);
+
+     InGameOff;
+     if IsLive(Joan) and IsLive(kdo) then begin
+         DialogueOn;
+
+         if kdo=JMM then begin
+           Say(kdo, 'D5b-JMM-1');
+           Say(Joan, 'D5b-Joan-1');
+           Say(kdo, 'D5b-JMM-2');
+           Say(Joan, 'D5b-Joan-2');
+           Say(kdo, 'D5b-JMM-3');
+           Say(Joan, 'D5b-Joan-3');
+         end
+         else begin
+           Say(kdo, 'D5a-Sol1-1');
+           Say(Joan, 'D5a-Joan-1');
+           Say(kdo, 'D5a-Sol1-2');
+           Say(Joan, 'D5a-Joan-2');
+           Say(kdo, 'D5a-Sol1-3');
+           Say(Joan, 'D5a-Joan-3');
+           Say(kdo, 'D5a-Sol1-4');
+           ComMoveUnit([kdo, Joan], JMM);
+           AddComHold([kdo,Joan]);
+           DialogueOff;
+//           InGameOn;
+           mytick:=tick+0$15;
+           while mytick>tick and GetDistUnits(Joan, JMM)>5 do
+                 Wait(0$1);
+//           InGameOff;
+           DialogueOn;
+           if IsLive(Joan) and IsLive(JMM) then begin
+              Say(Joan, 'D5a-Joan-4');     
+              Say(JMM, 'D5a-JMM-4');
+              Say(Joan, 'D5a-Joan-5');
+              Say(JMM, 'D5a-JMM-5');
+              Say(Joan, 'D5a-Joan-6');
+           end;
+         end;
+     end;
+    Dialog6;
+end;
+
+//dialog6
+function Dialog6;
+begin
+   if IsLive(Joan) then begin
+       ComStop([Joan, JMM]);
+       ComTurnUnit(JMM, Joan);
+       ComTurnUnit(Joan, JMM);
+       AddComHold([JMM,Joan]);
+       Say(JMM, 'D6-JMM-1');
+       Say(Joan, 'D6-Joan-1');
+       Say(JMM, 'D6-JMM-2');
+       Say(Joan, 'D6-Joan-2');
+       Say(JMM, 'D6-JMM-3');
+       Say(Joan, 'D6-Joan-3');
+       Say(JMM, 'D6-JMM-4');
+   end;
+
+   DialogueOff;
+   ChangeMissionObjectives('MJ');
+   SetSide(Joan, you);
+   NormalAttack(russians, Joan);
+
+   if IsLive(Lisa) then
+      act_Lisa_JMM:=true;
+
+   DialogInProgress:=false;
+end;
+
+//Dialog7
+every 1$0 trigger act_Lisa_JMM do
+begin
+     Wait(3$0);
+     if IsLive(Joan) and IsLive(Lisa) then begin
+        DialogueOn;
+        Say(Lisa, 'D7-Lisa-1');
+        Say(JMM, 'D7-JMM-1');
+        Say(Lisa, 'D7-Lisa-2');
+        Say(JMM, 'D7-JMM-2');
+        Say(Lisa, 'D7-Lisa-3');
+        Say(JMM, 'D7-JMM-3');
+        Say(Lisa, 'D7-Lisa-4');
+        Say(JMM, 'D7-JMM-4');
+        Say(JMM, 'D7-JMM-4a');
+        Say(Lisa, 'D7-Lisa-5');
+        DialogueOff;
+     end;
+end;
+
+
+//Dialog9
+every 0$1.0 trigger Joan_P and not IsLive(Joan) do
+begin
+        ChangeMissionObjectives('MJa');
+end;
+
+// dialog 10
+every 0$10.0 trigger not bojujese and IsOk(Frank) and UnitFilter(apemans, [f_side, you]) do
+var kdo, kdo2;
+begin
+  while DialogInProgress do
+        Wait(0$5);
+  kdo:=WhoSayAny(not_char, you, 0, 0, 1);
+  if not kdo then
+     kdo:=WhoSayAny(TvojiLidi, you, 0, 0, 1);
+  kdo2:=WhoSayAny(not_char, you, 0, 0, 2);
+  if not kdo then
+     kdo2:=WhoSayAny(TvojiLidi, you, 0, 0, 2);
+
+  if IsOk(Frank) then begin
+     TalkOn;
+     Say(Frank, 'D10-Frank-1');
+
+     if GetSex(kdo)=sex_male then
+       Say(kdo, 'D10-Sol1-1')
+     else
+       Say(kdo, 'D10-FSol1-1');
+
+     Say(Frank, 'D10-Frank-2');
+
+     if IsOk(Lisa) then
+        Say(Lisa, 'D10-Lisa-2')
+     else if GetSex(kdo2)=sex_male then
+             Say(kdo2, 'D10-Sol1-2')
+          else
+             Say(kdo2, 'D10-FSol1-2');
+     TalkOff;
+  end;
+end;
+
+// dialog 11aa
+export function Dialog11aa(kdo);
+begin
+     DialogueOn;
+     Say(kdo, 'D11a-Sol2-1');
+     WasD11aa:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+// dialog 11ab
+export function Dialog11ab(kdo);
+begin
+     DialogueOn;
+     Say(kdo, 'D11a-FSol2-1');
+     WasD11ab:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+
+// dialog 11b
+export function Dialog11b(kdo);
+begin
+     DialogueOn;
+     Say(kdo, 'D11b-Sol3-1');
+     Say(JMM, 'D11b-JMM-1');
+     WasD11b:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+// dialog 11c
+export function Dialog11c(kdo);
+var dep;
+begin
+     DialogueOn;
+     Say(kdo, 'D11c-FSol3-1');
+     dep:=FilterAllUnits([[f_side,you],[f_or,[f_btype,b_warehouse],[f_btype,b_depot]]]);
+     if dep then 
+       if GetDistUnits(kdo, dep[1])>30
+          then Say(JMM, 'D11c-JMM-1');
+     WasD11c:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+
+// dialog 11d
+export function Dialog11d(kdo);
+begin
+     DialogueOn;
+     Say(kdo, 'D11d-Sol4-1');
+     Say(JMM, 'D11d-JMM-1');
+     WasD11d:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+
+// dialog 11e
+export function Dialog11e(kdo);
+begin
+     DialogueOn;
+     Say(kdo, 'D11e-FSol4-1');
+     WasD11e:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+
+// dialog 11f
+export function Dialog11f(kdo);
+begin
+     DialogueOn;
+     Say(kdo, 'D11f-Sol5-1');
+     WasD11f:=true;
+     wait(0$1);
+     DialogueOff;
+end;
+
+// Dialogue 3a (when a remote controlled vehicle is constructed and there is no control tower)
+every 0$3 trigger FilterAllUnits([[f_control,control_remote]])
+              and not FilterAllUnits([[f_btype,b_control_tower]]) do
+var a;
+begin
+        a:=WhoSayAny(not_char, you, 0, class_mechanic, 0);
+        TalkOn;
+        if a then
+          if not SayAny(a, 'D3a-Mech1-1', you, sex_male, class_mechanic, 0) then
+                 SayAny(a, 'D3a-FMech1-1', you, sex_female, class_mechanic, 0);
+        TalkOff;
+        MyHint('Linking');
+end;
+
+// Dialogue 3b (when a control tower is constructed and there is no remote controlled vehicle)
+every 0$3 trigger not FilterAllUnits([f_control,control_remote]) and maj_ct do
+var a;
+begin
+        a:=WhoSayAny(not_char, you, 0, class_mechanic, 0);
+        TalkOn;
+        if a then
+          if not SayAny(a, 'D3b-Mech1-1', you, sex_male, class_mechanic, 0) then
+                 SayAny(a, 'D3b-FMech1-1', you, sex_female, class_mechanic, 0);
+        TalkOff;
+        MyHint('Linking');
+end;
+
+
+// Dialogue 4a (a mechanic is in control tower and there is at least one remote controlled vehicle)
+every 0$3 do
+var who, i;
+begin
+     who:=[];
+     for i in FilterAllUnits([f_btype,b_control_tower]) do
+         who:=who ^ UnitFilter(UnitsInside(i), [f_class,class_mechanic]);
+     if FilterAllUnits([f_control,control_remote]) and who then begin
+        TalkOn;
+        who:=who[1];
+        if JMM in who then
+                Say(JMM, 'D4a-JMM-1')
+        else begin
+                if GetSex(who[1])=sex_male then 
+                        Say(who, 'D4a-Mech1-1')
+                else
+                        Say(who, 'D4a-FMech1-1');
+        end;
+        remote_tried:=true;
+        TalkOff;
+        MyHint('Linking');
+     end
+     else
+        enable;
+end;
+
+// Dialogue 4b (when first remote controlled vehicle moves)
+every 0$3 do
+var who, facts, rems, ok, i, j;
+begin
+     who:=[];
+     facts:=FilterAllUnits([[f_side,you],[f_btype,b_factory]]);
+     rems:=FilterAllUnits([f_control,control_remote]);
+     for i in facts do
+         for j in rems do
+             if GetDistUnits(i,j)>9 then
+                ok:=j;
+     if ok then begin
+        TalkOn;
+        who:=IsControledBy(ok);
+        if JMM in who then
+                Say(JMM, 'D4b-JMM-1')
+        else begin
+                if GetSex(who[1])=sex_male then 
+                        Say(who, 'D4b-Mech1-1')
+                else
+                        Say(who, 'D4b-FMech1-1');
+        end;
+        TalkOff;
+        MyHint('RemoteControlling');
+     end
+     else
+        enable;
+end;
+
+
+//Dialogue cans 1st max info
+every 4$30 do
+begin
+     TalkOn;
+     SayRadio(RadioSci, 'D12a-Sci-1');
+     Say(JMM, 'D12a-JMM-1');
+     TalkOff;
+end;
+//Dialogue cans 1st min info
+every 14$0 do
+begin
+     TalkOn;
+     SayRadio(RadioSci, 'D12b-Sci-1');
+     TalkOff;
+end;
+//Dialogue cans 2st max info will in 15 mins
+every 16$0 do
+begin
+     TalkOn;
+     SayRadio(RadioSci, 'D12c-Sci-1');
+     TalkOff;
+end;
+//Dialogue cans 2st max info
+every 34$0 do
+begin
+     TalkOn;
+     SayRadio(RadioSci, 'D12d-Sci-1');
+     TalkOff;
+end;
+//Dialogue cans 2st min info
+every 46$0 do
+begin
+     TalkOn;
+     SayRadio(RadioSci, 'D12e-Sci-1');
+     Say(JMM, 'D12e-JMM-1');
+     TalkOff;
+end;
+
+on DestinationUnreachable(unit) do
+begin
+     if unit=Kurt then begin
+        ComMoveToArea(Kurt, border);
+     end;
+end;

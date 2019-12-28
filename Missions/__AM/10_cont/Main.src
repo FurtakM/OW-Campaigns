@@ -1,0 +1,294 @@
+EXPORT Arabi,Rusi,You;
+EXPORT Arabi2,Rusi2,You2;
+EXPORT Arabi3;
+EXPORT SideKhat;
+EXPORT radzio;
+VAR pom,pom1;
+VAR VIPka;
+VAR i;
+
+// lidi
+EXPORT lidi_other_surv;
+EXPORT lidi_with_JMM;
+
+EXPORT bazookaDialog;
+
+starting
+begin                                   
+  Amici_na_zacatku=[];
+  RandomizeAll;
+  Randomize;
+  Arabi:=2;
+  Arabi2=5;
+  Arabi3=7;
+  You:=1;
+  You2=4;
+  Rusi:=3;
+  SideKhat=8;
+  Rusi2=6;
+
+  bazookaDialog = 0;
+
+  // pomocna pro hodiny
+  cas=[0,':',0];
+
+  // nastaveni konstant pro obtiznost mise
+  SetDificultyLevels;
+
+  //ziskani konstant z predeslych misi + load postav
+  GetConstants;
+  load_postav;
+
+  // jeste nic nevyzkoumano
+  Res:=0;
+
+  // pomocna promenna pro dialogy
+  Dial=0;
+
+  // cornel muze vyrazit
+  COR_GO=0;
+
+  // rusi maji auta OK:)
+  RUSI_AUTA=0;
+
+  //kdy zautoci amici na araby
+  END_ATTACK=false;
+
+  // zautocili uz arabi?
+  Arabi_utoci=false;
+
+  //pocet ruskych utoku
+  PRU_ATTACK=0;
+
+  // jestli Khattam odchazi
+  KHATTAM_PADA=false;
+
+  // kolik arabu uteklo
+  UTEKLI_ARABI:=0;
+
+  ingame_video=true;
+
+// uprava mastodontu
+  uprav_mastodonty;
+
+// vytvoreni arabu na zacatku
+  create_arabi;
+// vytvoreni vedcu, kteri prijedou s arabama
+  create_am_vedci;
+// vytvoreni prvnich amiku na zacatku
+  create_amici1;
+
+// predpriopraveni nahodneho cisla pro rusi
+  nah=Rand(1,4);
+
+// predpriprava ruskeho konvoje
+  create_konvoj_ru(nah);
+
+// predpriprava mechaniku do tovarny
+  create_mechaniky_navic;
+
+// predpriprava 0. ruskeho utoku
+  create_rusky_utok_0;
+
+// predpriprava 1. ruskeho utoku
+  create_rusky_attack1;
+
+// predpriprava ruskych vojaku
+  create_vojaci;
+
+// predpriprava ruskeho utoku po skonceni mise
+  create_attack_after_end;
+
+// predpriprava noveho 2. ruskeho utoku
+  create_2_new_attack;
+
+// predpriprava 3. ruskeho utoku
+  create_3_new_attack;
+
+// predpriprava bazookovaho utoku
+  create_bazooka_attack;
+
+// predvytvoreni Powella                           
+//  create_powell;
+
+  CenterNowOnXY(30,35);
+  RevealFogArea(Arabi,ASE);
+  ChangeSideFog(You,Arabi);
+  ChangeSideFog(You2,Arabi);
+end;
+
+on UnitDestroyed(un) DO
+begin
+  if un=JMM then YouLost('JMM');
+  enable;
+end;
+
+EVERY 0$1 TRIGGER END_ATTACK DO
+begin
+  if not Arabi_Utoci then
+    begin
+      powell_kecy;
+      YouLost('Powell');
+    end;
+end;
+
+ON Contact(side1, side2) do
+begin
+
+     if side1 = 1 and side2 = 4 then Youlost('Powell');
+
+END;
+
+on EndTheMissionRaised(void) do
+begin
+  end_the_mission_allowed := false;
+  Mission_end('EndTheMissionRaised - Main 132');
+end;
+
+//******************************************************
+//*********  SAVENI POSTAV A PROMENNYCH  ***************
+//******************************************************
+// ukonceni mise + udelovani madaili
+EXPORT function Mission_end(tst);
+VAR all_people;
+VAR pom1,pom2,i;
+begin
+  msg(tst);
+  DisableExclamations;
+  gained_medals:=[];
+  missing_medals:=[];
+  if GetTech(tech_LasSight,You)=state_researched
+    then AddMedal('sights',1)
+    else AddMedal('sights',-1);
+  if GetTech(tech_AI,You)=state_researched
+    then AddMedal('computers',1)
+    else AddMedal('computers',-1);
+  if UTEKLI_ARABI=0 then if Arabi_Utoci then AddMedal('renegades',2)
+                                        else AddMedal('renegades',1)
+                    else if UTEKLI_ARABI<=2 then AddMedal('renegades',-1)
+                                            else AddMedal('renegades',-2);
+
+  GiveMedals('Main');
+
+  pom=FilterAllUnits([[f_side,You],[f_and],[f_type,unit_human]]);
+  for i in FilterAllUnits([[f_side,You],[f_and],[f_type,unit_vehicle]]) do
+    begin
+      pom1=IsDrivenBy(i);
+      if not (pom1 in pom) then pom=pom^pom1;
+    end;
+  all_people=pom;
+
+  all_people=all_people diff UnitFilter(all_people,[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer]]);
+
+  RewardPeople(all_people);
+
+  VIPka=[JMM,Cyrus,Khattam,Simms,Joan_F,Gary,Powell,Denis,Cornel];
+
+  SaveCharacters(JMM,'JMM');
+  SaveCharacters(Cyrus,'Cyrus');
+
+  SaveCharacters(Khattam,'Khatam');
+
+  SaveCharacters(Simms,'Simms');
+  SaveVariable(6,'SimmsLoc');
+  SaveCharacters(Joan_F,'Joan');
+  SaveVariable(6,'JoanLoc');
+  SaveCharacters(Gary,'Gary');
+  SaveVariable(6,'GaryLoc');
+  SaveCharacters(Powell,'Powell');
+  SaveCharacters(Denis,'Denis');
+  SaveVariable(6,'DenisLoc');
+  SaveCharacters(Cornel,'Cornell');
+  SaveVariable(6,'CornellLoc');
+
+  DeleteVariable('Stoupa9_siberit');
+  DeleteVariable('Stoupa9_informace');
+  DeleteVariable('us2mikhail_state');
+
+  pom1=lidi_other_surv diff Amici_na_zacatku;
+  pom2=lidi_with_JMM diff Amici_na_zacatku;
+
+  SaveCharacters(pom1,'other_survivors');
+  SaveCharacters(pom2,'otherNotJMM');
+
+  pom2=all_people diff VIPka;
+  SaveCharacters(pom2,'otherWithJMM');
+
+  pom=FilterUnitsInArea(Eps_save,[[f_side,You],[f_type,unit_building],[f_ok]]);
+  pom1=[];
+  for i in pom do
+    case GetBType(i) of
+     b_lab,b_lab_half,b_lab_full:pom1=pom1 ^ [[GetBType(i),GetX(i),GetY(i),GetDir(i),GetBLevel(i),GetNation(i),GetLabKind(i,1),GetLabKind(i,2)]];
+     b_bunker,b_turret:pom1=pom1 ^ [[GetBType(i),GetX(i),GetY(i),GetDir(i),GetBLevel(i),GetNation(i),GetBWeapon(i)]];
+     else pom1=pom1 ^ [[GetBType(i),GetX(i),GetY(i),GetDir(i),GetBLevel(i),GetNation(i)]];
+    end;
+
+  SaveVariable(pom1,'Epsilon');
+  YouWin;
+  EnableExclamations;
+  exit;
+end;
+
+//*******************************************************
+//*********  LOADENI POSTAV A PROMENNYCH  ***************
+//*******************************************************
+function load_postav;
+VAR ah;
+begin
+  // vedci
+  Cyrus=nacti_osobu('Cyrus');
+  Khattam=nacti_osobu('Khatam');
+  Simms=NewCharacter('Simms');
+  Joan_F=nacti_osobu('Joan');
+
+  // vojaci
+  JMM:=CreateCharacter('JMM');
+
+  Gary=nacti_osobu('Gary');
+  if Gary=0 then
+    begin
+      prepare_human(sex_male,class_soldier,5,'David Love');
+      ah=CreateHuman;
+      Gary=ah;
+    end;
+
+  
+  Denis=nacti_osobu('Denis');
+
+  Cornel=nacti_osobu('Cornell');
+
+  Powell=NewCharacter('Powell');
+
+  uc_side=Arabi;
+  uc_nation=nation_arabian;
+  Dietrich=NewCharacter('Dietrich');
+end;
+
+// ziskani konstant z predchozich mizi
+EXPORT function GetConstants;
+begin
+  //VIDEL_MIKHAILA:=LoadVariable('videl_mikhaila',true);
+  VIDEL_MIKHAILA := LoadVariable('us2mikhail_state',5) = 5;
+
+  VI_O_GRANATECH:=LoadVariable('Stoupa9_informace',false);
+
+  ZIJE_MIKHAIL:=LoadVariable('us2mikhail_state',1);
+  if (ZIJE_MIKHAIL=5) or (ZIJE_MIKHAIL=4)
+    then ZIJE_MIKHAIL=true
+    else begin ZIJE_MIKHAIL=false;
+               if IsLive(Cornel) then KillUnit(Cornel);
+         end;
+
+  if CheckCharacterSet('other_survivors') then lidi_other_surv=CreateCharacterSet('other_survivors')
+                                          else lidi_other_surv=[];
+
+  if CheckCharacterSet('otherWithJMM') then lidi_with_JMM=CreateCharacterSet('otherWithJMM')
+                                       else lidi_with_JMM=[];
+
+
+  if TestVariable('Stoupa9_siberit') then MNOZSTVI_SIBERITU=LoadVariable('Stoupa9_siberit',200)
+                                     else MNOZSTVI_SIBERITU=200;
+
+  // locationy
+  CYRL:=LoadVariable('CyrusLoc',6);
+end;

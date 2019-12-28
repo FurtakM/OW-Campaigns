@@ -1,0 +1,143 @@
+export opravit;
+
+// doplnovani paliva v zakladne
+every 0$1 do
+var set_fuel, fuel;
+begin
+    for set_fuel in FilterUnitsInArea(near_base, [[f_type, unit_vehicle], [f_side, arabians]]) do begin
+      fuel:=GetFuel(set_fuel);
+      if fuel<100 then
+        SetFuel(set_fuel, 100);
+    end;
+    enable;//-----------
+end;
+
+//hledani budov na opravu
+every 0$10 + 0$8 do
+var zivoty,i;
+begin
+    opravit:=[];
+    for i in FilterAllUnits([[f_side,arabians],[f_type,unit_building]]) do begin
+        if GetLives(i)<950 then begin
+           opravit:=opravit ^ i;
+           zivoty:=zivoty ^ GetLives(i);
+        end;
+    end;
+    opravit:=SortListByListAsc(opravit, zivoty);
+
+    enable;
+end;
+
+//opravy budov
+every 0$20 trigger opravit do
+var tmp_eng;
+begin
+   while not eng do
+     wait(0$5);
+   tmp_eng:=eng;
+   eng:=[];
+
+   ComExitBuilding(tmp_eng);
+   AddComRepairBuilding(tmp_eng, opravit[1]);
+
+   wait(0$19.9);
+   eng:=eng union tmp_eng;
+
+   enable;
+end;
+
+//pomoc pri stavbe
+every 0$10 trigger stavi do
+var tmp_eng, tmp_sci;
+begin
+   tmp_eng:=eng;
+   eng:=[];
+   tmp_sci:=sci;
+   sci:=[];
+
+   ComExitBuilding(tmp_eng ^ tmp_sci);
+   AddComMoveXY(tmp_eng ^ tmp_sci, stavi[1], stavi[2]);
+
+   eng:=eng union tmp_eng;
+   sci:=sci union tmp_sci;
+
+   enable;
+end;
+
+
+export brk_cars;
+//posilani na opravu
+every 0$1 do
+var zivoty,i;
+begin
+    for i in attack do begin
+        if GetLives(i)<600 or GetFuel(i)<30 then begin
+           ComMoveXY(i, 141,72);
+           brk_cars:=brk_cars union i;
+        end
+        else if GetLives(i)>995 and GetFuel(i)>99 then
+           brk_cars:=brk_cars diff i;
+    end;
+
+    enable;
+end;
+every 0$10 do
+var zivoty,i;
+begin
+    for i in (defence diff mastodon) do begin
+        if GetLives(i)<400 and GetFuel(i)<15 then begin
+           ComMoveXY(i, 141,72);
+           brk_cars:=brk_cars union i;
+        end
+        else if GetLives(i)>995 and GetFuel(i)>99 then
+           brk_cars:=brk_cars diff i;
+    end;
+
+    enable;
+end;
+every 0$5 do
+var zivoty,i;
+begin
+    for i in cargo do begin
+        if GetLives(i)<800 then begin
+           ComMoveXY(i, 141,72);
+           brk_cars:=brk_cars union i;
+        end
+        else if GetLives(i)>995 then
+           brk_cars:=brk_cars diff i;
+    end;
+
+    enable;
+end;
+
+
+//hledani aut na opravu
+//opravy aut
+export rep_cars;
+every 0$10 do
+var zivoty,i,tmp_mec,nejhorsi, mytick;
+begin
+    rep_cars:=[];
+    zivoty:=[];
+    for i in UnitFilter(attack ^ (defence diff mastodon) ^ cargo, [[f_distxy,141,72,20]]) do begin
+        if GetLives(i)<1000 then begin
+           rep_cars:=rep_cars ^ i;
+           zivoty:=zivoty ^ GetLives(i);
+        end;
+    end;
+    if rep_cars then begin
+      nejhorsi:=WorstFromListByList(rep_cars, zivoty);
+
+      tmp_mec:=mec;
+      mec:=[];
+      ComExitBuilding(tmp_mec);
+      AddComRepairVehicle(tmp_mec, nejhorsi);
+
+      mytick:=tick+0$9.9;
+      while mytick>tick and GetLives(nejhorsi)<1000 do
+        wait(0$1);
+
+      mec:=mec union tmp_mec;
+    end;
+    enable;
+end;

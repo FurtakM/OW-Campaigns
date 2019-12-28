@@ -1,0 +1,240 @@
+export ru_lab1_queue,ru_lab2_queue;     // fronta planovaneho vyzkumu ruske baze
+export ru_lab1_upgrade,ru_lab2_upgrade; // fronta upgradu technologii v ruske bazi
+export research_1,research_2;           // posledni zkoumana technologie v lab 1 a lab 2
+
+var research_done,laboratory;           // promene pro ulozeni ukonceneho vyzkumu v laboratori
+var finished_1,finished_2;              // identifikatory ukonceni vyzkumu v lab 1 a lab 2
+var soucet1,soucet2;
+
+
+//-----  Scientistic progress in RU Base  -----//
+
+// Scientistic priorities in RU base
+export function ru_scientistic_priority;
+begin
+  // fronta ukolu v laboratori 1
+  ru_lab1_queue:=[tech_AdvRocket];
+  // fronta ukolu v laboratori 2
+  ru_lab2_queue:=[tech_TauRad,tech_SpacAnom,tech_LimTeleport,tech_MatPred,tech_TargTeleport];
+
+  // priority upgradu v laboratori 1
+  ru_lab1_upgrade:=[tech_Tech1,tech_Weap1,tech_Sib1,tech_Tech2,tech_Weap2,tech_Sib2,tech_Tech3,tech_Weap3,tech_Sib3];
+  // priotity upgradu v laboratori 2
+  ru_lab2_upgrade:=[tech_Comp1,tech_ST1,tech_Comp2,tech_ST2,tech_Comp3,tech_ST3];
+
+  research_1:=false;
+  research_2:=false;
+  finished_1:=false;
+  finished_2:=false;
+end;
+
+// odstraneni posledne vynalezene technologie z fronty vyzkumu
+function change_technology_lab1;
+var i,j,pom;
+begin
+  j:=1;
+  pom:=[];
+  for i in ru_lab1_queue do
+    begin
+      if j>1 then
+        pom:=pom^i;
+      j:=j+1;
+    end;
+  ru_lab1_queue:=pom;
+  if not ru_lab1_queue then
+    begin
+      ru_lab1_queue:=ru_lab1_upgrade;
+      ru_lab1_upgrade:=[];
+    end;
+end;
+
+function change_technology_lab2;
+var i,j,pom;
+begin
+  j:=1;
+  pom:=[];
+  for i in ru_lab2_queue do
+    begin
+      if j>1 then
+        pom:=pom^i;
+      j:=j+1;
+    end;
+  ru_lab2_queue:=pom;
+  if not ru_lab2_queue then
+    begin
+      ru_lab2_queue:=ru_lab2_upgrade;
+      ru_lab2_upgrade:=[];
+    end;
+end;
+
+// hledani ukonceni vyzkumu
+on ResearchComplete(research_done,laboratory) do
+begin
+    case laboratory of
+  ru_lab1: research_1:=false;         // posun vyzkumu k dalsi technologii v RU Lab 1
+  ru_lab2: research_2:=false;         // posun vyzkumu k dalsi technologii v RU Lab 2
+    end;
+end;
+
+// overovani necinosti laboratore
+
+
+// vyrovnani vedeckych sil
+function vyrovnej_vedecke_sily;
+var un,un1,un2,i,move_to,how_much;
+begin
+  un1:=0+UnitsInside(ru_lab1);
+  un2:=0+UnitsInside(ru_lab2);
+
+  if un1>=un2 then
+    begin
+      move_to:=ru_lab2;
+      how_much:=(un1-un2) div 2;
+      un:=UnitsInside(ru_lab1);
+    end;
+  if un1<un2 then
+    begin
+      move_to:=ru_lab1;
+      how_much:=(un2-un1) div 2;
+      un:=UnitsInside(ru_lab2);
+    end;
+
+  for i:=1 to how_much do
+    begin
+      ComExitBuilding(un[i]);
+      AddComEnterUnit(un[i],move_to);
+    end;
+end;
+
+// Vedeni vyzkumu - Lab 1
+every 0$15 trigger UnitsInside(ru_lab1) and not research_1 do
+var un,i,j;
+begin
+  un:=UnitsInside(ru_lab1);
+  SetClass(un,class_scientistic);                        // Change all units inside lab 1 into Scientistics
+
+  if (ru_lab1_queue) and (ru_lab1_upgrade) then
+    begin
+      ComResearch(ru_lab1,ru_lab1_queue[1]);
+      research_1:=true;
+    end;
+
+  if (ru_lab1_queue) and (not ru_lab1_upgrade) then      // Zbyvaji jenom upgrade technologie
+    begin
+      if (ru_lab2_queue) and (ru_lab2_upgrade) then      // Prevod vyzkumniku do laboratore se zakladnim vyzkumem
+        begin
+          un:=UnitsInside(ru_lab1);
+          ComExitBuilding(un);
+          AddComEnterUnit(un,ru_lab2);
+        end;
+      if (ru_lab2_queue) and (not ru_lab2_upgrade) then  // Zadna laborator uz nema zakladni vyzkum
+        begin
+          vyrovnej_vedecke_sily;
+          wait(0$5);
+          ComResearch(ru_lab1,ru_lab1_queue[1]);
+          research_1:=true;
+        end;
+      if not (ru_lab2_queue or ru_lab2_upgrade) then
+        begin
+          ComResearch(ru_lab1,ru_lab1_queue[1]);
+          research_1:=true;
+        end;
+    end;
+
+  if research_1 then
+    change_technology_lab1;
+
+  soucet1:=0+ru_lab1_queue+ru_lab1_upgrade;
+  if (soucet1=0) and (not research_1) then
+    begin
+      finished_1:=true;
+      un:=UnitsInside(ru_lab1);
+      ComExitBuilding(un);
+      AddComEnterUnit(un,ru_lab2);
+    end;
+
+  if (soucet1>0) or research_1 then
+    Enable;
+end;
+
+// Vedeni vyzkumu - Lab 2
+every 0$15 trigger UnitsInside(ru_lab2) and not research_2 do
+var un,i,j;
+begin
+  un:=UnitsInside(ru_lab2);
+  SetClass(un,class_scientistic);                        // Change all units inside lab 2 into Scientistics
+
+  if (ru_lab2_queue) and (ru_lab2_upgrade) then
+    begin
+      ComResearch(ru_lab2,ru_lab2_queue[1]);
+      research_2:=true;
+    end;
+
+  if (ru_lab2_queue) and (not ru_lab2_upgrade) then      // Zbyvaji jenom upgrade technologie
+    begin
+      if (ru_lab1_queue) and (ru_lab1_upgrade) then      // Prevod vyzkumniku do laboratore se zakladnim vyzkumem
+        begin
+          un:=UnitsInside(ru_lab2);
+          ComExitBuilding(un);
+          AddComEnterUnit(un,ru_lab1);
+        end;
+      if (ru_lab1_queue) and (not ru_lab1_upgrade) then  // Zadna laborator uz nema zakladni vyzkum
+        begin
+          vyrovnej_vedecke_sily;
+          wait(0$5);
+          ComResearch(ru_lab2,ru_lab2_queue[1]);
+          research_2:=true;
+        end;
+      if not (ru_lab1_queue or ru_lab1_upgrade) then
+        begin
+          ComResearch(ru_lab2,ru_lab2_queue[1]);
+          research_2:=true;
+        end;
+    end;
+
+  if research_2 then
+    change_technology_lab2;
+
+  soucet2:=0+ru_lab2_queue+ru_lab2_upgrade;
+  if (soucet2=0) and (not research_2) then
+    begin
+      finished_2:=true;
+      un:=UnitsInside(ru_lab2);
+      ComExitBuilding(un);
+      AddComEnterUnit(un,ru_lab1);
+    end;
+
+  if (soucet2>0) or research_2 then
+    Enable;
+end;
+
+
+// Zmena vsech vedcu na mechaniky po dokonceni veskereho vyzkumu
+every 0$10 trigger finished_1 and finished_2 do
+var un,sci,i,build;
+begin
+  sci:=FilterAllUnits([ [f_side,russians], [f_class,class_scientistic] ]);
+  ComExitBuilding(sci);
+
+  build:=FilterAllUnits([ [f_side,russians], [f_btype,b_factory] ]);
+  if build then
+    begin
+      i:=1;
+      for un in sci do
+        begin
+          ComEnterUnit(un,build[(i mod build)+1]);
+          i:=i+1;
+        end;
+    end
+  else
+    begin
+      build:=FilterAllUnits([ [f_side,russians], [ f_or, [f_btype,b_barracks], [f_btype,b_armoury] ] ]);
+      if build then
+        begin
+          ComEnterUnit(sci,build);
+          AddComChangeProfession(sci,class_soldier);
+          AddComChangeProfession(sci,class_bazooker);
+        end;
+    end;
+end;
+

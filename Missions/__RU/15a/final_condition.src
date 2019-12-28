@@ -1,0 +1,46 @@
+
+every 0$1 trigger finalize=2 and ( not OmarWillTryContaminateMotherlode or GetLives(Omar) = 0 ) do  //GetLives works even if Omar hasn't been placed yet
+begin
+  wait(0$1);
+  Konec_Mise;
+end;
+
+
+function Konec_Mise;
+var campaign_loading,
+    campaign_lost,
+    another_campaign;
+begin
+  lets_talking;
+
+  another_campaign:=true;
+  gained_medals:=[];
+  missing_medals:=[];
+
+  AddMedal('Hero',another_campaign);
+  AddMedal('Artefact',GetTag(81) and GetTag(181) and GetTag(281));
+    case camp of
+  4: AddMedal('ReconcileBurlak',IsOK(Burlak));
+  6: AddMedal('ReconcileJMM',IsOK(MacMillan));
+    end;
+
+  SA_OnMissionComplete;
+  GiveMedals('Main');
+
+//  RewardPeople
+
+  YouWin;
+
+  exit;
+end;
+
+export function Mission_Failed(how);
+begin
+    case how of
+  1: YouLost('JMM');
+  2: YouLost('Burlak');
+  3: YouLost('AmBomb');
+  4: YouLost('RuBomb');
+  5: YouLost('MothContaminate');
+    end;
+end;

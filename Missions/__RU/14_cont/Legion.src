@@ -1,0 +1,776 @@
+// Legie.
+
+
+// Promìnná.
+Export LegionOffer_Heike, LegionOffer_Accepted, LegionFugit_Accepted;
+// Postavy.
+Var LeSci1, LeSci2, LeMech1, LeMech2, LeEng;
+Var Obranci, Mechanici;
+Var Ridici;
+// Uprchlíci.
+Export Uprchlici;
+Var Uprchlici_JsouTam;
+// Kam mají uprchlíci dojít.
+Var Uprchlici_X, Uprchlici_Y;
+Var KonvojPopojizdi;
+// Nákladní konvoj.
+Var Nabidka_Nakladaky, Nabidka_Ridici, Nabidka_Cena, Nabidka_Lidi;
+Var Nabidka_Nalozeno, Nabidka_Vylozeno;
+// Kontrola jednotek.
+Var Makro;
+// Oprava.
+Var KdoLeci, KdoOpravuje;
+// Probíhá pøedávání surovin jako platba za lidi?
+Var ProbihaPredavaniSurovin;
+// Koho mám pozdìji pøebarvit na Legii.
+Var MamPrebarvit;
+
+
+Export Function init_legion;
+Var Base, Reg;
+Begin
+  Disable (11); Disable (12); Disable (13); Disable (14);
+  Disable (15); Disable (16);
+  // Sloitost.
+  If Difficulty = 1 then
+  Begin
+    DestroyUnit (LeBunk2);
+    DestroyUnit (LeBunk4);
+    DestroyUnit (LeBunk6);
+    PlaceWeaponTurret (LeBunk1, AR_FLAME_THROWER);
+    PlaceWeaponTurret (LeBunk5, AR_FLAME_THROWER);
+    PlaceWeaponTurret (LeBunk7, AR_GUN);
+  End else If Difficulty = 2 then
+  Begin
+    DestroyUnit (LeBunk2);
+  End;
+  // Promìnné.
+  LegionOffer_Heike = false; LegionOffer_Accepted = false;
+  LegionFugit_Accepted = false;
+  Uprchlici = []; Uprchlici_JsouTam = false;
+  Uprchlici_X = Uprchlici_Y = 0; KonvojPopojizdi = false;
+  Nabidka_Nakladaky = []; Nabidka_Ridici = [];
+  Nabidka_Cena = [0, 0]; Nabidka_Lidi = 0;
+  Nabidka_Nalozeno = false; Nabidka_Vylozeno = false;
+  KdoLeci = []; KdoOpravuje = [];
+  ProbihaPredavaniSurovin = false;
+  // Postavy.
+  vytvor_postavy;
+  // Suroviny v základnì.
+  Base = GetBase (LeDepot);
+  SetResourceType (Base, MAT_CANS, Rand (600, 700));
+  SetResourceType (Base, MAT_OIL, Rand (800, 1200));
+  SetResourceType (Base, MAT_SIBERIT, Rand (200, 300));
+  // Ovládání.
+  Reg = McRegistry (side_Le, [[MC_REG_AREA_TO_PROTECT, LegionObrana]]);
+  Makro = McDefend (0, Reg, Obranci union Mechanici union Ridici union [LeBunk1, LeBunk2, LeBunk3, LeBunk4, Lebunk5, LeBunk6, LeBunk7], [[MC_AREA_DONT_LEAVE, Legion]]);
+End;
+
+
+// Vytvoøí postavy a plácne je buï do budov, nebo na mapu.
+Function vytvor_postavy;
+Var Bunkry, B;
+Begin
+  // Obecné postavy.
+  LeSci1 = vytvor_postavu_B (LeLab, CLASS_SCIENTISTIC);
+  LeSci2 = vytvor_postavu_B (LeLab, CLASS_SCIENTISTIC);
+  LeMech1 = vytvor_postavu_B (LeFact, CLASS_MECHANIC);
+  LeMech2 = vytvor_postavu_B (LeFact, CLASS_MECHANIC);
+  vytvor_postavu_B (LeDepot, CLASS_ENGINEER);
+  LeEng = vytvor_postavu_A (Legion, CLASS_ENGINEER);
+  Obranci = vytvor_postavy_A (3, Legion, CLASS_SOLDIER);
+  Mechanici = vytvor_postavy_A (2, Legion, CLASS_MECHANIC);
+  Ridici = Mechanici union vytvor_postavy_A (dif_LegionRidici [Difficulty], Legion, CLASS_SOLDIER);
+  // Vojáci do bunkrù.
+  Bunkry = FilterAllUnits ([[F_SIDE, side_Le], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_BUNKER]]);
+  For B in Bunkry do vytvor_postavu_B (B, CLASS_SOLDIER);
+End;
+
+
+Function vytvor_postavu (Cls);
+Var X, Y;
+Begin
+  // Vytvoøit postavu.
+  UC_Side = side_Le; UC_Nation = NATION_ARABIAN;
+  HC_Sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_Class = Cls;
+  PrepareClassSkills (Cls, 7);
+  Result = CreateHuman;
+End;
+
+
+Function vytvor_postavu_B (Budova, Cls);
+Begin
+  Result = vytvor_postavu (Cls);
+  PlaceHumanInUnit (Result, Budova);
+End;
+
+
+Function vytvor_postavu_A (Area, Cls);
+Begin
+  Result = vytvor_postavu (Cls);
+  PlaceUnitArea (Result, Area, false);
+End;
+
+
+Function vytvor_postavy_A (Pocet, Area, Cls);
+Var I;
+Begin
+  Result = [];
+  For I = 1 to Pocet do Result = Result union [vytvor_postavu_A (Area, Cls)];
+End;
+
+
+Function zacni_vynalezat;
+Begin
+  AddComResearch (LeLab, TECH_ROCKET);
+  AddComResearch (LeLab, TECH_FLAME);
+  AddComResearch (LeLab, TECH_SIBCONTAM);
+  AddComResearch (LeLab, TECH_MORTAR);
+  AddComResearch (LeLab, TECH_EXPLOS);
+  AddComResearch (LeLab, TECH_SELFDEST);
+  AddComResearch (LeLab, TECH_TECH1);
+  AddComResearch (LeLab, TECH_WEAP1);
+  AddComResearch (LeLab, TECH_SIB1);
+  AddComResearch (LeLab, TECH_TECH2);
+  AddComResearch (LeLab, TECH_WEAP2);
+  AddComResearch (LeLab, TECH_SIB2);
+  AddComResearch (LeLab, TECH_TECH3);
+  AddComResearch (LeLab, TECH_WEAP3);
+  AddComResearch (LeLab, TECH_SIB3);
+End;
+
+
+// Vynalézání.
+Every 0$2.3 do
+Begin
+  zacni_vynalezat;
+End;
+
+
+// Sbírání beden.
+Every 1$28 do
+Var Inz;
+Begin
+  Inz = FilterAllUnits ([[F_SIDE, side_Le], [F_TYPE, UNIT_HUMAN], [F_CLASS, CLASS_ENGINEER]]);
+  sbirej_bedny (Inz, Legion);
+  opravuj_budovy (Inz, Legion, side_Le);
+  Enable;
+End;
+
+
+Function opravuj;
+Begin
+  If KdoOpravuje then Exit;
+  KdoOpravuje = opravuj_auta ([LeMech1, LeMech2], 113, Legion, side_Le, []);
+End;
+
+
+Function kuryruj;
+Begin
+  If KdoLeci then Exit;
+  KdoLeci = kuryruj_lidi ([LeSci1, LeSci2], 114, Legion, side_Le);
+End;
+
+
+Export Function event_LegionOprava (Event);
+Begin
+  Case Event of
+  113: Begin
+         ComEnterUnit (KdoOpravuje, LeFact);
+         KdoOpravuje = [];
+       End;
+  114: Begin
+         ComEnterUnit (KdoLeci, LeLab);
+         KdoLeci = [];
+       End;
+  End;
+End;
+
+
+// Oprava aut a lidí.
+Every 2$7 do
+Begin
+  opravuj;
+  kuryruj;
+  Enable;
+End;
+
+
+Function vyrob_autak;
+Var Chassis, Weapon, P;
+Begin
+  P = Rand (1, 100);
+  If (Difficulty = 1) and (P >= 75) then P = 74;
+  If P < 18 then Begin Weapon = AR_MULTIMISSILE_BALLISTA; Chassis = AR_HOVERCRAFT; End
+  else If P < 25 then Begin Weapon = AR_DOUBLE_MACHINE_GUN; Chassis = AR_HOVERCRAFT; End
+  else If P < 50 then Begin Weapon = AR_FLAME_THROWER; Chassis = AR_MEDIUM_TRIKE; End
+  else If P < 75 then Begin Weapon = AR_GUN; Chassis = AR_MEDIUM_TRIKE; End
+  else Begin Weapon = AR_ROCKET_LAUNCHER; Chassis = AR_MEDIUM_TRIKE; End;
+  // Dát náhodnı podvozek, ale aspoò tak dobrı jako je potøeba
+  Chassis = Rand (Chassis, AR_HALF_TRACKED);
+  // Zadat vırobu.
+  AddComConstruct (LeFact, Chassis, ENGINE_SIBERITE, CONTROL_MANUAL, Weapon);
+End;
+
+
+// Vıroba automobilù.
+Function vyrob_autaky;
+Var I;
+Begin
+  For I in Ridici do vyrob_autak;
+End;
+
+
+// Vıroba automobilù. Volá se jen jednou!
+Every 0$25 do
+Begin
+  vyrob_autaky;
+End;
+
+
+// Postavení auta.
+Export Function legion_VehicleConstructed (Veh, Fact);
+Var Ridic;
+Begin
+  If GetSide (Veh) = side_Le then
+  Begin
+    // Vystoupit mechanikem.
+    Wait (0$2.5);
+    Ridic = IsDrivenBy (Veh);
+    // Vystoupit.
+    Wait (0$3);
+    ComExitVehicle (Ridic);
+    Wait (0$1);
+    While IsDrivenBy (Veh) = Ridic do Wait (0$1);
+    // Nastoupit.
+    AddComEnterUnit (Ridic, Fact);
+    // Pøidat do obráncù.
+    AddMcUnits (Makro, [Veh]);
+  End;
+End;
+
+
+Function zarid_ridice (Veh);
+Var Lidi, I;
+Begin
+  // Jinak vezmu kohokoliv.
+  Lidi = UnitFilter (Ridici, [[F_OUTSIDE]]);
+  For I in Lidi do If not HasTask (I) then
+  Begin
+    ComEnterUnit (I, Veh);
+    Exit;
+  End;
+End;
+
+
+Function nastupuj_auta;
+Var Auta, I;
+Begin
+  // Zaøídí, aby do volného auta nìkdo nastoupil.
+  Auta = FilterUnitsInArea (LegionObrana, [[F_TYPE, UNIT_VEHICLE], [F_CONTROL, CONTROL_MANUAL], [F_EMPTY]]);
+  If not Auta then Exit;
+  For I in Auta do zarid_ridice (I);
+End;
+
+
+Every 0$18 do
+Begin
+  nastupuj_auta;
+  Enable;
+End;
+
+
+// Nabídka legie.
+Function zavolej;
+Var V, R;
+Begin
+  DialogueOn;
+  Nabidka_Cena = [0, 0]; Nabidka_Lidi = 0;
+  If HeikeKilled or not MercAccepted then
+  Begin
+    // Mluví Farmer.
+    LegionOffer_Heike = false;
+    dialog_LegionOfferFarmer;
+    V = query_LegionFarmer;
+    // Pøijal jsem?
+    If V < 4 then
+    Begin
+      LegionOffer_Accepted = true;
+      dialog_QrLegionFarmer13;
+      Nabidka_Cena = [[60, 15], [90, 25], [120, 30]] [V];
+      Nabidka_Lidi = [3, 5, 7] [V];
+    End else Begin
+      LegionOffer_Accepted = false;
+      dialog_QrLegionFarmer4;
+    End;
+  End else Begin
+    // Mluví Heike.
+    LegionOffer_Heike = true;
+    If MercPaid and OmarKilled then dialog_LegionOfferHeike1
+    else dialog_LegionOfferHeike2;
+    dialog_LegionOfferHeikeCont;
+    V = query_LegionHeike;
+    // Pøijal jsem?
+    If V < 4 then
+    Begin
+      LegionOffer_Accepted = true;
+      dialog_QrLegionHeike13;
+      Nabidka_Cena = [[50, 10], [75, 15], [100, 20]] [V];
+      Nabidka_Lidi = [3, 5, 7] [V];
+    End else Begin
+      LegionOffer_Accepted = false;
+      dialog_QrLegionHeike4;
+    End;
+  End;
+  // Odeèíst suroviny a vytvoøit lidi, které tam pošlu.
+  If LegionOffer_Accepted then
+  Begin
+    SA_OnLegionHired;
+    // Vytvoøit náklaïáky a poslat je k Rusovi.
+    Nabidka_Nakladaky = [vytvor_nakladak, vytvor_nakladak];
+    Nabidka_Ridici = [];
+    For V in Nabidka_Nakladaky do
+    Begin
+      PlaceUnitArea (V, LegionVstup, false);
+      Nabidka_Ridici = Nabidka_Ridici union [IsDrivenBy (V)];
+    End;
+    Hint ('LegionHelp');
+    Enable (12); Enable (15);
+    ProbihaPredavaniSurovin = true;
+  End else Begin
+    // Zaènu odpoèítávat na pøíchod uprchlíkù.
+    Enable (11);
+  End;
+  DialogueOff;
+End;
+
+
+Function ma_dost_materialu (Bud);
+Var Base, Cans, Sib;
+Begin
+  Base = GetBase (Bud);
+  Cans = Nabidka_Cena [1]; Sib = Nabidka_Cena [2];
+  Result = (GetResourceType (Base, MAT_CANS) >= Cans) and
+           (GetResourceType (Base, MAT_SIBERIT) >= Sib);
+End;
+
+
+Function naloz (Veh, Bud, Mat, Amount);
+Var Base, Res;
+Begin
+  Base = GetBase (Bud);
+  Result = CanCarryHowMuch (Veh);
+  If Result > Amount then Result = Amount;
+  Res = GetResourceType (Base, Mat);
+  If Result > Res then Result = Res;
+  SetResourceType (Base, Mat, Res - Amount);
+  AddCargo (Veh, Mat, Result);
+End;
+
+
+Every 0$11 Trigger KonvojPopojizdi and Nabidka_Nakladaky Marked 16 do
+Begin
+  popojizdej_konvoj;
+  Enable;
+End;
+
+
+Function popojizdej_konvoj;
+Var I, Hex;
+Begin
+  For I in Nabidka_Nakladaky do
+  Begin
+    // Dìlá náklaïák nìco?
+    If HasTask (I) then Continue;
+    If not IsDrivenBy (I) then Continue;
+    // Nechat ho trochu popojet.
+    Hex = RandHexXYR (Uprchlici_X, Uprchlici_Y, 8, false);
+    ComMoveXY (I, Hex [1], Hex [2]);
+    AddComHold (I);
+  End;
+End;
+
+
+Function zacni_popojizdet;
+Begin
+  If not KonvojPopojizdi then
+  Begin
+    Enable (16);
+    KonvojPopojizdi = true;
+  End;
+End;
+
+
+Function prestan_popojizdet;
+Begin
+  If KonvojPopojizdi then
+  Begin
+    Disable (16);
+    KonvojPopojizdi = false;
+  End;
+End;
+
+
+Function ovladani_nakladaku;
+Var RuDepot, Bud, J, I, Cans, Sib, N1, N2, Ok, Ridic, Nakladak;
+Begin
+  If not Nabidka_Nalozeno then
+  Begin
+    // Zjistím, zda není náklaïák poškozen.
+    Ok = true;
+    For I = 1 to Nabidka_Nakladaky do
+    Begin
+      Nakladak = Nabidka_Nakladaky [I];
+      Ridic = Nabidka_Ridici [I];
+      If GetLives (Nakladak) < HRANICE_ZDRAVI then
+      Begin
+        ComRepairVehicle (Ridic, Nakladak);
+        Ok = false;
+      End else Begin
+        If IsInUnit (Ridic) <> Nakladak then
+        Begin
+          ComEnterUnit (Ridic, Nakladak);
+          Ok = false;
+        End;
+      End;
+    End;
+    If not Ok then Exit;
+    // Zatím jsem nic nenaloil.
+    // Najít depot, kterı má dost materiálu.
+    Bud = FilterAllUnits ([[F_SIDE, side_Ru], [F_PLACED], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_DEPOT]]) union
+          FilterAllUnits ([[F_SIDE, side_Ru], [F_PLACED], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_WAREHOUSE]]);
+    RuDepot = 0;
+    For I in Bud do
+      If ma_dost_materialu (I) then
+      Begin
+        RuDepot = I;
+        Break;
+      End;
+    // Pokud nemám depot s materiálem, tak vezmu libovolnı. Jinak èekám.
+    If not RuDepot then
+      If Bud then RuDepot = Bud [1]
+      else Exit;
+    Uprchlici_X = GetX (RuDepot); Uprchlici_Y = GetY (RuDepot);
+    // Pokud nejsem u depotu, tak tam dojedu.
+    zacni_popojizdet;
+    // Pokud nìkdo jede k depotu, èekám, a tam dojede.
+    For I in Nabidka_Nakladaky do
+      If GetDistUnits (I, RuDepot) > 8 then Exit;
+    // Jsem u depotu. Zjistím, zda má dost materiálu.
+    If not ma_dost_materialu (RuDepot) then Exit;
+    // Pøestanu s popojídìním kolem depotu.
+    prestan_popojizdet;
+    // A naloím ho.
+    Cans = Nabidka_Cena [1]; Sib = Nabidka_Cena [2];
+    N1 = Nabidka_Nakladaky [1]; N2 = Nabidka_Nakladaky [2];
+    naloz (N1, RuDepot, MAT_SIBERIT, Sib);
+    I = naloz (N1, RuDepot, MAT_CANS, min (Cans, CanCarryHowMuch (N1)));
+    naloz (N2, RuDepot, MAT_CANS, Cans - I);
+    Nabidka_Nalozeno = true;
+    Wait (0$0.2);
+  End;
+  // Ukonèil jsem vykládání (moná u døív), zajistím, aby konvoj
+  // nepopojídìl kolem depotu.
+  prestan_popojizdet;
+  // Mám vykládat?
+  If not Nabidka_Vylozeno then
+  Begin
+    MamPrebarvit = [];
+    // Pøebarvím je na legii.
+    For I in Nabidka_Nakladaky do
+    Begin
+      MamPrebarvit = MamPrebarvit union [I];
+      J = IsDrivenBy (I);
+      If J then MamPrebarvit = MamPrebarvit union [J];
+    End;
+    // U mám naloeno, tak jedu zpátky.
+    Ok = true;
+    For I in Nabidka_Nakladaky do
+    Begin
+      If not IsInArea (I, Legion) then
+      Begin
+        If not HasTask (I) then
+        Begin
+          ComMoveUnit (I, LeDepot);
+          AddComSailEvent (I, 115);
+          AddComGive (I, LeDepot);
+        End;
+        Ok = false;
+      End;
+    End;
+    If not Ok then Exit;
+    Nabidka_Vylozeno = true;
+  End;
+  // U jsem dojel zpátky. Pošlu tedy lidi.
+  Uprchlici = [];
+  For I = 1 to Nabidka_Lidi do Uprchlici = Uprchlici union [vytvor_uprchlika];
+  For I in Uprchlici do PlaceUnitArea (I, LegionVstup, false);
+  // Poslat je k Rusákovi.
+  ComMoveXY (Uprchlici, Uprchlici_X, Uprchlici_Y);
+  AddComSailEvent (Uprchlici, 111);
+  // Poznaèím si, e u náklaïáky nejsou tøeba.
+  Nabidka_Nakladaky = []; Nabidka_Ridici = [];
+  // Konec.
+  Disable (12); Disable (15);
+  ProbihaPredavaniSurovin = false;
+End;
+
+
+Export Function event_KoupeniPrisli;
+Begin
+  If not Uprchlici_JsouTam then
+  Begin
+    DialogueOn;
+    CenterOnUnits (Uprchlici);
+    Uprchlici_JsouTam = true;
+    SetSide (Uprchlici, side_Ru); Rusove2 = Uprchlici;
+    uprchlik_jdi_k_labu;
+    Wait (0$5);
+    Hint ('Legion');
+    DialogueOff;
+  End;
+End;
+
+
+Function vytvor_uprchlika;
+Begin
+  // Vytvoøit postavu.
+  UC_Side = side_Upr; UC_Nation = NATION_ARABIAN;
+  HC_Sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_Class = CLASS_SOLDIER; PrepareSoldierSkills (6);
+  Result = CreateHuman;
+End;
+
+
+Function vytvor_nakladak;
+Var Ridic;
+Begin
+  // Vytvoøit auák.
+  UC_Side = side_Upr; UC_Nation = NATION_ARABIAN;
+  VC_Chassis = AR_HALF_TRACKED; VC_Control = CONTROL_MANUAL;
+  VC_Weapon = AR_CARGO_BAY; VC_Engine = ENGINE_SIBERITE;
+  Result = CreateVehicle;
+  // Vytvoøit øidièe.
+  HC_Sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_Class = CLASS_MECHANIC; PrepareMechanicSkills (4);
+  Ridic = CreateHuman;
+  PlaceHumanInUnit (Ridic, Result);
+End;
+
+
+// Pøíchod uprchlíkù.
+Function prchajici;
+Var I;
+Begin
+  // Vytvoøit uprchlíky.
+  Uprchlici = [Bergkamp];
+  For I = Difficulty to Rand (5, 6) do Uprchlici = Uprchlici union [vytvor_uprchlika];
+  // Prdnout je na mapu.
+  For I in Uprchlici do PlaceUnitArea (I, Legion, false);
+  // Poslat je k Rusùm.
+  ComMoveUnit (Uprchlici, Burlak);
+  AddComSailEvent (Uprchlici, 112);
+  Enable (14);
+End;
+
+
+// Pošle jednoho z uprchlíkù k labu, aby se tam trochu porozhlédl.
+Function uprchlik_jdi_k_labu;
+Var Laby, X, Y;
+Begin
+  Laby = FilterAllUnits ([[F_SIDE, side_Ru], [F_PLACED], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_LAB]]) union
+         FilterAllUnits ([[F_SIDE, side_Ru], [F_PLACED], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_LAB_HALF]]) union
+         FilterAllUnits ([[F_SIDE, side_Ru], [F_PLACED], [F_TYPE, UNIT_BUILDING], [F_BTYPE, B_LAB_FULL]]);
+  If Laby then
+  Begin
+    Laby = nahoda_seznam (Laby);
+    X = GetX (Laby); Y = GetY (Laby);
+    If Bergkamp in Uprchlici then AddComMoveXY (Bergkamp, X, Y)
+    else AddComMoveXY (Uprchlici [1], X, Y);
+  End;
+End;
+
+
+// Zeptá se hráèe, zda chce pøijmout uprchlíky.
+Function uprchlici_dotaz;
+Var Q;
+Begin
+  If Uprchlici_JsouTam then Exit;
+  Disable (14);
+  // Zeptat se hráèe, jestli pøijme uprchlíky.
+  Uprchlici_JsouTam = true;
+  DialogueOn;
+  CenterOnUnits (Uprchlici);
+  Wait (0$3);
+  dialog_LegionFugit;
+  Q = query_LegionBergkamp;
+  If Q = 1 then
+  Begin
+    // Pøijal, tak je dáme na jeho stranu.
+    LegionFugit_Accepted = true;
+    dialog_QrLegionBergkamp1;
+    SetSide (Uprchlici, side_Ru); Rusove2 = Uprchlici;
+    Hint ('Legion');
+    // A pošleme jednoho z nich do labu, aby se tam trochu porozhlédl.
+    uprchlik_jdi_k_labu;
+  End else Begin
+    // Vyhnal je, tak jdou pryè.
+    LegionFugit_Accepted = false;
+    dialog_QrLegionBergkamp2;
+    uprchlici_zacnete_odchazet;
+  End;
+  DialogueOff;
+End;
+
+
+// Zaène s odchodem uprchlíkù do arabské základny.
+Export Function uprchlici_zacnete_odchazet;
+Begin
+  ComMoveToArea (Uprchlici, Legion);
+  Enable (13);
+End;
+
+
+Export Function event_LegionPrebarvi;
+Begin
+  SetSide (MamPrebarvit, side_Le);
+  MamPrebarvit = [];
+End;
+
+
+Export Function event_UprchliciPrisli;
+Begin
+  uprchlici_dotaz;
+End;
+
+
+// Kontrola na odstraòování uprchlíkù.
+Every 0$3.9 Marked 13 do
+Var Tam, Kdo;
+Begin
+  If not Uprchlici then Exit;
+  Tam = Uprchlici isect FilterUnitsInArea (Legion, [[F_SIDE, side_Upr]]);
+  SetSide (Tam, side_Le);
+  Uprchlici = Uprchlici diff Tam; Rusove2 = Rusove2 diff Tam;
+  If Uprchlici then
+  Begin
+    ComMoveToArea (Uprchlici, Legion);
+    Enable;
+  End;
+End;
+
+
+// Kontrola, zda uprchlíci vidí Ruského èlovìka.
+Every 0$1.2 Trigger vidi_strana_cloveka (side_Upr, side_Ru) Marked 14 do
+Begin
+  ComCancel (Uprchlici); ComHold (Uprchlici);
+  uprchlici_dotaz;
+End;
+
+
+// Nabídka legie.
+Every 13$0 do
+Begin
+  // Poèkat na èas nabídky.
+  Wait (Rand (0$1, 2$0));
+  // Poèkat, a skonèí pøípadnı útok Arabù.
+  While ProbihaUtok do Wait (0$30);
+  // Zavolat nabídku.
+  zavolej;
+End;
+
+
+// Uprchlíci z legie.
+Every 3$0 Marked 11 do
+Begin
+  Wait (Rand (0$1, 2$0));
+  prchajici;
+End;
+
+
+// Ovládání náklaïákù na nákup lidí.
+Every 0$4.9 Marked 12 do
+Begin
+  Enable;
+  ovladani_nakladaku;
+End;
+
+
+Every 0$1 Marked 15 do
+Begin
+  Wait (dif_LegionTimeout [Difficulty]);
+  If not ProbihaPredavaniSurovin then Exit;
+  ukonci_nabidku;
+End;
+
+
+// Je voláno, pokud je tøeba odvolat první nabídku - pokud
+// jsou znièeny náklaïáky, pokud je Rus zajme apod.
+// Odstartuje pøíchod druhıch uprchlíkù.
+Function ukonci_nabidku;
+Var I;
+Begin
+  If Nabidka_Nalozeno then Exit;
+  If Nabidka_Vylozeno then Exit;
+  If not ProbihaPredavaniSurovin then Exit;
+  ProbihaPredavaniSurovin = false;
+  // Ukonèím ovládání náklaïákù.
+  prestan_popojizdet;
+  Disable (12); Disable (15);
+  // Pøebarvím je na legii, pokud je nezajal Rus.
+  For I in Nabidka_Nakladaky do
+  Begin
+    If (GetSide (I) = side_Ru) then Continue;
+    SetSide (I, side_Le);
+    SetSide (IsDrivenBy (I), side_Le);
+  End;
+  // Odvezu je do depotu Legie.
+  ComMoveToArea (Nabidka_Nakladaky, LeDepot);
+  Nabidka_Nakladaky = []; Nabidka_Ridici = [];
+  // Zaènu odpoèítávat na pøíchod uprchlíkù.
+  Enable (11);
+End;
+
+
+// Pokud je Un øidiè nebo náklaïák, zruší nabídku.
+Function testuj_konec_nabidky (Un);
+Begin
+  If (Un in Nabidka_Nakladaky) or (Un in Nabidka_Ridici) then
+    ukonci_nabidku;
+End;
+
+
+Export Function legion_Contact (Side1, Side2);
+Begin
+  If ((Side1 = side_Ru) and (Side2 = side_Le)) or
+     ((Side1 = side_Le) and (Side1 = side_Ru)) then
+       If ProbihaPredavaniSurovin then ukonci_nabidku;
+End;
+
+
+Export Function legion_VehicleCaptured (VewNew, VehOld, OrigSide, Hum);
+Begin
+  testuj_konec_nabidky (VehOld);
+End;
+
+
+Export Function legion_UnitDestroyed (Un);
+Var Cancel;
+Begin
+  // Další skupiny?
+  If Un in Obranci then Obranci = Obranci diff [Un];
+  If Un in Mechanici then Mechanici = Mechanici diff [Un];
+  If Un in Ridici then Ridici = Ridici diff [Un];
+  // Uprchlíci.
+  If Un in Uprchlici then Uprchlici = Uprchlici diff [Un];
+  // Léèení?
+  If Un in KdoLeci then KdoLeci = KdoLeci diff [Un];
+  If Un in KdoOpravuje then KdoOpravuje = KdoOpravuje diff [Un];
+  // Náklaïák?
+  testuj_konec_nabidky (Un);
+  If Un in Nabidka_Nakladaky then Nabidka_Nakladaky = Nabidka_Nakladaky diff [Un];
+  If Un in Nabidka_Ridici then Nabidka_Ridici = Nabidka_Ridici diff [Un];
+End;
+
+

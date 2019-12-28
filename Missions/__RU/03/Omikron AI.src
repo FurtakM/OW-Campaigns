@@ -1,0 +1,503 @@
+var stReady, stRepair, stInCombat, stHelp, stNotReady, ImpatienceTreshold;
+var vozKirov, vozKirovImpat, vozKirovState, vozKirovOut, vozHrace, mechKirov, mechKirovOut;
+var targHrace, targAcquired;
+
+// poslani ruskych posil do utoku
+{EXPORT function programovani_pomocneho_utoku;
+var
+ i, poc,
+ veh;
+begin
+  //deklarace konstant
+  stReady = 0;
+  stRepair = 1;
+  stInCombat = 2;
+  stHelp = 3;
+  stNotReady = 4;
+  ImpatienceTreshold = 3;  //kdyz netrpelivost presahne tuto hranici, sam zautoci;
+  //stvorime skutecny seznam ruskych posil pred Omikronem
+  vozKirov=FilterUnitsInArea(Om_attack1,[[f_side,You2],[f_type,unit_vehicle]]);
+  if vozKirov=0 then Msg('Malo posil');
+  //inicializujeme promenne: mechKirov je seznam ridicu, vozKirovImpat je netrpelivost
+  //vozKirovState je aktualni stav
+  mechKirov:=[];
+  vozKirovImpat:=[];
+  vozKirovState:=[];
+  for veh in vozKirov do
+  begin
+    mechKirov:=mechKirov ^ IsDrivenBy(veh);
+    vozKirovImpat:=vozKirovImpat ^ 0;
+    vozKirovState:=vozKirovState ^ stReady;
+  end;
+  vozHrace=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+  //a muzeme pustit trigger, ktery to bude vsechno ridit
+  enable(200);
+  //uzdravovaci trigger
+  enable(201);
+  //prazdna auta, mechanici bez aut
+  enable(202);     }
+
+{ // posily u omicronu
+  ComAttackUnit(RUSKE_POSILY_NA_OMICRON_LIST,Am_bu1);
+  wait(5);
+  AddComAttackUnit(RUSKE_POSILY_NA_OMICRON_LIST,Am_bu2);
+  wait(10);
+  AddComAttackUnit(RUSKE_POSILY_NA_OMICRON_LIST,Am_bar2);
+  wait(10);
+  AddComAgressiveMove(RUSKE_POSILY_NA_OMICRON_LIST,25,13);
+  wait(10);
+  AddComAgressiveMove(RUSKE_POSILY_NA_OMICRON_LIST,12,9);}
+
+  //nastoupeni ruskych ridicu do aut a utok na omicron    }
+ // enable(10);
+//end;
+ {
+//toto je hlavni ridici smycka kontrolujici vozidla pred Omikronem;
+every 0$2 marked 200 do
+var
+  veh, targ, vehHrace, posstarg,
+  vozReady;
+begin
+  enable;
+  vozReady:=[];
+  for veh:=1 to vozKirov do
+  begin
+    //po kazde kontrole musi byt exit, protoze kontrola muze zmenit vozKirov
+    //kontrola uplnosti
+    if IsDead(vozKirov[veh]) then
+    begin
+      vozRemove(veh,'dead');
+      exit;
+    end;
+    //kontrola obsazeni
+    if (IsDrivenBy(vozKirov[veh]) = 0) and (vozKirovState[veh]<>stRepair) then
+    begin
+      vozRemove(veh,'empty');
+      exit;
+    end;
+    //kontrola pozkozeni
+    if GetLives([vozKirov[veh]])<600 then
+    begin
+      vozRepair(veh);
+      exit;
+    end;
+    //pripravena vozidla
+    if vozKirovState[veh]=stReady then vozReady:=vozReady ^ vozKirov[veh];
+  end;
+  //pokud zadna vozidla nejsou Ready, muzeme hend skoncit
+  if vozReady = 0 then exit;
+  //kdyz nejaka mame, muzeme nekomu pomoci
+  //nejprve si vytvorime seznam cilu, na ktere hrac chce utocit
+  targHrace:=[];
+  for vehHrace:=1 to vozHrace do
+  begin
+    targ:=WantsToAttack(vozHrace[vehHrace]);
+    if (targ<>0) and (GetSide(targ)=Amici) then
+    begin
+      if InList(targHrace,targ)=0 then
+      begin
+        targHrace:=targHrace ^ [targ];
+      end;
+    end;
+  end;
+  //ted si ten seznam projdeme a pokud na tento cil jeste nikdo neutoci, zkusime tam nekoho poslat
+  for targ in targHrace do
+  begin
+    if InList(targAcquired,targ)=0 then
+    begin
+      veh:=NearestUnitToUnit(vozReady,targ);
+      if veh<>0 then
+      begin
+        vozReady:=vozReady diff veh;  //je treba ho hned vyradit ze seznamu pripravenych aut
+        veh:=InList(vozKirov,veh);
+        vozAttack(veh,targ);
+        targAcquired:=targAcquired ^ targ;      //target acquired
+        if vozReady = 0 then exit;  //pokud nam dosly ready vozitka, muzeme skoncit
+      end;
+    end;
+  end;
+  //kdyz jsme se dostali az sem, muzeme zkusit posledni vec, jestli bychom nekomu nemohli opravit vozidlo
+  //to zatim nebudu implementovat
+
+  //pak zvysime netrpelivost vsem, kdo nejsou v akci a pokud nekdo presahne
+  //prah netrpelivosti, posleme ho do akce
+
+  //napred sestavime seznam moznych cilu -- nejdrive bojove jednotky
+  posstarg:=FilterUnitsInArea(Am_base,[[f_side,Amici],[f_or,[f_type,unit_vehicle],[f_class,class_soldier],[f_btype,b_breastwork],[f_btype,b_bunker],[f_btype,b_armoury]]]);
+  //a kdyz uz zadny nejsou, tak kdokoliv
+  if posstarg = 0 then posstarg:=FilterUnitsInArea(Am_base,[[f_side,Amici]]);
+  for veh:=1 to vozKirov do
+  begin
+    if vozKirovState[veh] = stReady then vozKirovImpat:=replace(vozKirovImpat,veh,vozKirovImpat[veh]+1);
+    if (vozKirovState[veh] = stReady) and (vozKirovImpat[veh]>ImpatienceTreshold) then
+    begin
+      targ:=NearestUnitToUnit(posstarg,vozKirov[veh]);
+      vozAttack(veh,targ);
+    end;
+  end;
+end;
+
+//zde se opravuji vozidla
+every 0$5 marked 201 do
+var
+  veh, mech;
+begin
+
+  enable;
+  for veh:=1 to vozKirovState do
+  begin
+  Display_strings = veh;
+
+    //napred se podivame, jestli uz nekdo neni ready na boj
+    if (vozKirovState[veh]=stRepair) and (GetLives(vozKirov[veh]) = 1000) and (IsDrivenBy(vozKirov[veh])<>0) then
+    begin
+      vozKirovState:=replace(vozKirovState,veh,stReady);
+    end;
+    //pak se podivame, jestli se nam nekdo neuzdravil a pokud ano tak tam posleme mechanika
+    if (vozKirovState[veh]=stRepair) and (GetLives(vozKirov[veh]) = 1000) then
+    begin
+      ComEnterUnit(mechKirov[veh],vozKirov[veh]);
+    end;
+
+    //pak  zjistime, zda neprijela nejaka nova vozidla a kdyz tak jim dame prikaz opravovat
+    if (vozKirovState[veh] = stNotReady) and IsInArea(vozKirov[veh],CAuta) then
+    begin
+      vozKirovState:=replace(vozKirovState,veh,stRepair);
+      ComExitVehicle(mechKirov[veh]);
+      wait(5);
+      AddComRepairVehicle([mechKirov[veh]],vozKirov[veh]);
+    end;
+  end;  
+end;
+
+//obhospadaruje utocici jednotky
+every 0$4 marked 202 do
+var
+  veh,targ;
+begin
+  enable;
+  //rebuildujeme seznam cilu posil; nekdo se treba mohl odjet opravovat
+  targAcquired:=[];
+  for veh:=1 to vozKirov do
+  begin
+    if vozKirovState[veh] <> stInCombat then continue;
+    targ:=WantsToAttack(vozKirov[veh]);
+    if (targ=0) then
+    begin
+      ComStop(vozKirov[veh]);
+      vozKirovState:=replace(vozKirovState,veh,stReady);
+    end else
+    begin
+      targAcquired:=targAcquired ^ targ;
+    end;
+  end;
+end;
+
+//obhospodaruje mechaniky bez vozidel a vozidla bez mechniku
+every 0$6 marked 203 do
+var
+  veh, mech, mechHealth;
+begin
+  enable;
+   //tohle je ladici kontrola, casem se muze vyhodit   }
+{  if vozKirovState<>vozKirov then debug_strings:=debug_strings^'state <> voz';
+  if vozKirovImpat<>vozKirov then debug_strings:=debug_strings^'impat <> voz';
+  for veh:=1 to vozKirov do
+  begin
+    if (vozKirovState[veh]<>stRepair) and (IsDrivenBy(vozKirov[veh]) <> mechKirov[veh]) then debug_strings=debug_strings ^ 'Driver/Vehicle mismatch. Veh: ' & vozKirov[veh] & ' Mech: ' & mechKirov[veh];
+    if (GetType(vozKirov[veh]<>unit_vehicle)) then debug_strings:=debug_strings ^ vozKirov[veh] & ' is not a vehicle!';
+    if (GetType(mechKirov[veh]<>unit_human)) then debug_strings:=debug_strings ^ mechKirov[veh] & ' is not a mechanic!';
+  end;}   
+  //procistime Out seznamy od mrtvol
+  {for veh in vozKirovOut do
+  begin
+    if IsDead(veh) then vozKirovOut:=vozKirovOut diff veh;
+  end;
+  for mech in mechKirovOut do
+  begin
+    if not(IsOK(mech)) then mechKirovOut:=mechKirovOut diff mech;
+  end;
+  //podivame se na mechanika
+  for mech in mechKirovOut do
+  begin
+    //neni uz nahodou ve vozidle?
+    veh:=IsInUnit(mech);
+    if veh<> 0 then
+    begin
+      vozKirov:=vozKirov ^ veh;
+      mechKirov:=mechKirov ^ mech;
+      vozKirovState:=vozKirovState ^ stReady;
+      vozKirovImpat:=vozKirovImpat ^ 0;
+      vozKirovOut:=vozKirovOut diff veh;
+      mechKirovOut:=mechKirovOut diff mech;
+      continue;
+    end;
+    //nedeje se mu neco zleho?
+    mechHealth:=GetLives(mech);
+    wait(5);
+    if mechHealth>GetLives(mech) then
+    begin
+      ComMoveToArea([mech],CAuta);
+      continue;
+    end;
+    //tak ho posleme do vozidla
+    //tady se muze stat, ze pujde vic mechaniku do jednoho vozidla, ale zatim to nebudu osetrovat
+    if vozKirovOut>0 then
+    begin
+      veh:=NearestUnitToUnit(vozKirovOut,mech);
+      ComEnterUnit([mech],veh);
+    end;
+  end;
+end;
+
+//odstrani vozidlo (veh:integer) ze seznamu, typ='dead' => vozidlo je mrtvy, typ='empty' vozidlo je prazdny
+function vozRemove(veh,typ);
+begin
+  if IsLive(vozKirov[veh]) then vozKirovOut:=vozKirovOut ^ vozKirov[veh];
+  vozKirov:=delete(vozKirov,veh);
+  if IsOK(mechKirov[veh]) then mechKirovOut:=mechKirovOut ^ mechKirov[veh];
+  mechKirov:=delete(mechKirov,veh);
+  vozKirovState:=delete(vozKirovState,veh);
+  vozKirovImpat:=delete(vozKirovImpat,veh);
+end;
+
+//odveli vozidlo (veh:integer) z boje a necha ho opravovat; kdyz je v pohode, nastavi mu zpet stav na Ready
+function vozRepair(veh);
+var
+  tVeh, tMech, tMechHealth;
+begin
+  //pokud uz opravujeme, kasleme na nej
+  if vozKirovState[veh] = stRepair then exit;
+  //jinak pokracujem
+  tVeh:=[vozKirov[veh]];
+  tMech:=[mechKirov[veh]];
+  vozKirovState:=replace(vozKirovState,veh,stNotReady);
+  vozKirovImpat:=replace(vozKirovImpat,veh,0);
+  ComMoveToArea(tVeh,CAuta);
+end;
+
+//zada vozidlu (veh:integer) utok na nepritele (targ: unit)
+function vozAttack(veh,targ);
+begin
+  vozKirovState:=replace(vozKirovState,veh,stInCombat);
+  ComAttackUnit(vozKirov[veh],targ);
+end;
+
+function InList(ls,un);
+var
+  u;
+begin
+  result:=0;
+  for u:=1 to ls do
+    if un=ls[u] then
+    begin
+      result:=u;
+      exit;
+    end;
+end;
+
+function GetClosestUnit(un,ls);  //vraci integer, poradove cislo v liste, ne polozku;
+var
+  u, dist;
+begin
+  dist:=GetDistUnits(un,ls[1]);
+  result:=1;
+  for u:=1 to ls do
+  begin
+    if GetDistUnits(un,ls[u]) <  dist then
+    begin
+      result:=u;
+      dist:=GetDistUnits(un,ls[u]);
+    end;
+  end;
+end;  }
+
+// computer ridici, nastoupi do aut a zautoci na omicron
+EVERY 0$1 marked 10 DO
+VAR i;
+VAR auta,autapom;
+VAR poc;
+begin
+  auta=FilterUnitsInArea(RU2_base,[[f_type,unit_vehicle],[f_occupied]]);
+  for i in auta do
+    begin
+      ComMoveToArea(i,Zarea_utok);
+      AddComAgressiveMove(i,28,15);
+      AddComAttackUnit(i,Am_bu3);
+      AddComAgressiveMove(i,13,9);
+      RUSKE_POSILY_RIDICI_LIST=RUSKE_POSILY_RIDICI_LIST diff IsDrivenBy(i);
+    end;
+  auta=FilterUnitsInArea(RU2_base,[[f_type,unit_vehicle],f_not,[f_occupied]]);
+  poc=1;
+  for i in RUSKE_POSILY_RIDICI_LIST do
+    begin
+      if auta+0>=poc then ComEnterUnit(i,auta[poc]);
+      poc=poc+1;
+    end;
+  if RUSKE_POSILY_RIDICI_LIST<>0 then enable;
+end;
+
+     
+
+{//test only
+EXPORT You,You2,You3,Amici,Arabi;
+
+EXPORT function get_human(sex,clas,level,name);
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+  result:=CreateHuman;
+end;
+
+
+starting
+var
+  pom, ah, av, un, i;
+begin
+
+  You=3;
+  You2=6;
+  You3=5;
+  Amici=1;
+  Arabi=2;
+
+  pom=[];
+
+  uc_side=You2;
+  uc_nation=nation_russian;
+
+  vc_chassis=ru_heavy_wheeled;
+  vc_weapon=ru_gatling_gun;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+
+  // auta na posily
+  ah=get_human(1,class_mechanic,2,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitXY(av,58,15,false);
+
+  ah=get_human(1,class_mechanic,2+1,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitXY(av,58,20,false);
+
+  ah=get_human(1,class_mechanic,2,'');
+  vc_weapon=ru_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitXY(av,60,15,false);
+
+  ah=get_human(1,class_mechanic,2-1,'');
+  vc_chassis=ru_medium_tracked;
+  vc_weapon=ru_heavy_machine_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitXY(av,62,20,false);
+
+
+//  RUSKE_POSILY_NA_OMICRON_LIST=pom;
+
+  pom=[];
+
+  uc_side=You;
+  uc_nation=nation_russian;
+
+  vc_chassis=ru_medium_wheeled;
+  vc_weapon=ru_heavy_machine_gun;
+  vc_control=control_manual;
+  vc_engine=engine_combustion;
+
+  ah=get_human(1,class_mechanic,2,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitArea(av,Om_zone,false);
+
+  ah=get_human(1,class_mechanic,2,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitArea(av,Om_zone,false);
+
+  ah=get_human(1,class_mechanic,2,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitArea(av,Om_zone,false);
+
+  ah=get_human(1,class_mechanic,2,'');
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitArea(av,Om_zone,false);
+
+  programovani_pomocneho_utoku;
+end;
+//end of test
+}
+
+Every 0$1 trigger setkani_om do
+begin
+
+     RepairVehicles(6, Om_repair, 61, 9);
+     enable;
+
+end;
+
+Every 0$1 trigger setkani_om do
+begin
+
+
+     AttackVehicles(6);
+     enable;
+
+end;
+
+// ********************* Function to Kirov Base AI Repair - Attack by Nefarem ********************* \\
+// ********************* 02.12.2017 ********************* \\
+// Last update: 23.03.2019
+
+
+
+Export function AttackVehicles(side);
+var i, j, vehiclesOK, target1, target2, seeEnemy;
+begin
+
+    if FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000]]) >= 0 then
+        repeat
+            wait(0$1);
+
+            vehiclesOK = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 650], [f_or, [f_weapon, 42], [f_weapon, 43], [f_weapon, 44]]]);
+
+                for j in vehiclesOK do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([[f_side, 1]]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, 1], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), j);
+
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+
+
+        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000]]) = 0;
+end;
+
+Export function RepairVehicles(side, area, repX, repY);
+var i, j, damageVehicles;
+begin
+    damageVehicles = FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_not, [f_lives, 650]]]);
+
+    if damageVehicles > 0 then ComMoveXY(damageVehicles, repX, repY);
+
+    if UnitFilter(damageVehicles, [[f_inarea, area], [f_not, [f_empty]]]) > 0 then
+        for i in UnitFilter(damageVehicles, [[f_inarea, area], [f_not, [f_empty]]]) do ComExitVehicle(UnitsInside(i));
+end;
+
+
+On LeaveVehicle(vehicle, human) Do
+begin
+    If GetSide(vehicle) = 6 and GetSide(human) = 6 and IsOk(vehicle) then
+    if GetWeapon(vehicle) = 42 or GetWeapon(vehicle) = 43 or GetWeapon(vehicle) = 44 then
+    begin
+        ComRepairVehicle(human, vehicle);
+        AddComEnterUnit(human, vehicle);
+    end;
+
+end;

@@ -1,0 +1,172 @@
+var s_attackers,           // seznam utocniku v jizni casti
+    n_attackers;           // seznam utocniku v severni casti
+
+var too_close;             // identifikator pritomnosti ruskych parchantu v krasne arabske bazi
+
+// inicializace celeho tohodle pochybneho systemu flameru
+export function init_flamers;
+begin
+  too_close:=false;
+  s_attackers:=south_flamers_veh;
+  n_attackers:=north_flamers_veh;
+
+  enable(5);
+end;
+
+// utok jiznich flameru
+every 0$1 trigger FilterUnitsInArea(south_ford,[ [f_side,you] ]) Marked 5 do
+var un,
+    enemies,                 // nepratele na dohled
+    most_dammaged;           // nejoskozenejsi jednotka v zaberu flameru
+begin
+  enemies:=FilterUnitsInArea(south_ford, [ [f_side,you] ]);
+
+  // vyber nejposkozenejsi jednotky nad bazinama
+  if difficulty<3 then
+    most_dammaged:=enemies[Rand(1,0+enemies)]
+  else
+    begin
+      most_dammaged:=enemies[1];
+      for un in enemies do
+        if GetLives(un)<GetLives(most_dammaged) then
+          most_dammaged:=un;
+    end;
+
+  ComAttackUnit(s_attackers,most_dammaged);
+
+  if s_attackers then
+    enable;
+end;
+
+// utok severnich flameru
+every 0$1 trigger FilterUnitsInArea(hover_repair,[ [f_side,you] ]) Marked 5 do
+var un,
+    enemies,                 // nepratele na dohled
+    most_dammaged;           // nejoskozenejsi jednotka v zaberu flameru
+begin
+  enemies:=FilterUnitsInArea(hover_repair, [ [f_side,you] ]);
+
+  // vyber nejposkozenejsi jednotky nad bazinama
+  if difficulty<3 then
+    most_dammaged:=enemies[Rand(1,0+enemies)]
+  else
+    begin
+      most_dammaged:=enemies[1];
+      for un in enemies do
+        if GetLives(un)<GetLives(most_dammaged) then
+          most_dammaged:=un;
+    end;
+
+  ComAttackUnit(n_attackers,most_dammaged);
+
+  if n_attackers then
+    enable;
+end;
+
+// ustup jiznich a severnich flameru
+every 0$1 Marked 5 do
+var un;
+begin
+  for un in (s_attackers ^ n_attackers) do
+    if GetLives(un)<600 then
+      begin
+        s_attackers:=s_attackers diff un;
+        n_attackers:=n_attackers diff un;
+        ComMoveToArea(un,flamers_repair);
+      end;
+
+  if (s_attackers ^ n_attackers) then
+    enable;
+end;
+
+// opravovani flameru v arabske zakladne
+every 0$2 trigger not FilterUnitsInArea(ar_base,[ [f_side,you] ]) Marked 5 do
+var i,
+    veh;           // seznam flamerskych vozidel (south/north group)
+begin
+  veh:=north_flamers_veh;
+  for i=1 to veh do
+    if (GetLives(veh[i])<1000) and IsInArea(veh[i],flamers_repair) and not HasTask(veh[i]) then
+      begin
+        if IsInUnit(north_flamers[i]) then            // cerstve pristaveny hovercraft na opravu
+          begin
+            ComExitVehicle(north_flamers[i]);
+            wait(1);
+            AddComRepairVehicle(north_flamers[i],veh[i]);
+          end;
+
+        if GetLives(veh[i])=1000 then                 // zarazeni opraveneho hovercraftu do pripravene skupiny
+          repeat
+            ComEnterUnit(north_flamers[i],veh[i]);
+            wait(10);
+          until IsInUnit(north_flamers[i]);
+
+        wait(1);
+      end;
+
+  veh:=south_flamers_veh;
+  for i=1 to veh do
+    if (GetLives(veh[i])<1000) and IsInArea(veh[i],flamers_repair) and not HasTask(veh[i]) then
+      begin
+        if IsInUnit(south_flamers[i]) then            // cerstve pristaveny hovercraft na opravu
+          begin
+            ComExitVehicle(south_flamers[i]);
+            wait(1);
+            AddComRepairVehicle(south_flamers[i],veh[i]);
+          end;
+
+        if GetLives(veh[i])=1000 then                 // zarazeni opraveneho hovercraftu do pripravene skupiny
+          repeat
+            ComEnterUnit(south_flamers[i],veh[i]);
+            wait(10);
+          until IsInUnit(south_flamers[i]);
+
+        wait(1);
+      end;
+
+  enable;
+end;
+
+// zjistovani pritomnosti rusaku v arabske zakladne a nalodeni vsech opravujicich flameru
+every 0$2 trigger FilterUnitsInArea(ar_base,[ [f_side,you] ]) Marked 5 do
+var i;
+begin
+  too_close:=true;
+
+  for i=1 to north_flamers_veh do                     // nalodeni vsech vylodenych severnich flameru
+    if not UnitsInside(north_flamers_veh[i]) then
+      ComEnterUnit(north_flamers[i],north_flamers_veh[i]);
+
+  wait(1);
+
+  for i=1 to south_flamers_veh do                     // nalodeni vsech vylodenych jiznich flameru
+    if not UnitsInside(south_flamers_veh[i]) then
+      ComEnterUnit(south_flamers[i],south_flamers_veh[i]);
+
+  enable(6);
+end;
+
+// stahovani flameru z arabske zakladny
+every 0$1 trigger FilterUnitsInArea(ar_base, [ [f_side,you] ]) Marked 6 do
+var un;
+begin
+  for un in north_flamers_veh do
+    if GetLives(un)<700 then
+      ComMoveToArea(un,base_flee);
+
+  for un in north_flamers do
+    if not IsInUnit(un) then
+      ComMoveToArea(un,base_flee);
+
+  wait(1);
+
+  for un in south_flamers_veh do
+    if GetLives(un)<700 then
+      ComMoveToArea(un,base_flee);
+
+  for un in south_flamers do
+    if not IsInUnit(un) then
+      ComMoveToArea(un,base_flee);
+
+  enable;
+end;

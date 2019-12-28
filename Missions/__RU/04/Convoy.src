@@ -1,0 +1,409 @@
+export function prepare_convoy;
+var a,i,rand_convoy,rand_vehicle;
+begin
+  Convoy:=[];
+  rand_convoy:=[];
+
+  for i:=1 to number_of_trucks do
+  begin
+  // cargo_bay
+    uc_side:=ally;
+    uc_nation:=nation_russian;
+    uc_direction:=3;
+
+    vc_chassis:=ru_medium_wheeled;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_cargo_bay;
+    vc_control:=control_manual;
+
+    hc_name:='';
+
+    PrepareHuman(sex_male,0,0);
+    hc_basic_skills:=[0,0,0,0];
+    hc_skills:=[Rand(0,3),Rand(0,3),1,Rand(0,3)];
+
+    Convoy:=Convoy union CreateVehicle;
+
+    PlaceHumanInUnit(CreateHuman,Convoy[i]);
+    SetCargo(Convoy[i],mat_cans,100);
+    SetFuel(Convoy[i],Rand(70,95));
+  end;
+
+  for i:=number_of_trucks+1 to number_of_trucks+number_of_guns do
+  begin
+    // gun
+    uc_side:=ally;
+    uc_nation:=nation_russian;
+    uc_direction:=3;
+
+    vc_chassis:=ru_medium_wheeled;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_gun;
+    vc_control:=control_manual;
+
+    hc_name:='';
+
+    PrepareHuman(0,class_mechanic,0);
+    hc_basic_skills:=[0,0,0,0];
+    hc_skills:=[Rand(0,3),Rand(0,3),1,Rand(0,3)];
+
+    Convoy:=Convoy union CreateVehicle;
+
+    PlaceHumanInUnit(CreateHuman,Convoy[i]);
+    SetFuel(Convoy[i],Rand(70,95));
+  end;
+
+  for i:=number_of_trucks+number_of_guns+1 to number_of_trucks+number_of_guns+number_of_gatlings do
+  begin
+  // gatling_gun
+    uc_side:=ally;
+    uc_nation:=nation_russian;
+    uc_direction:=3;
+
+    vc_chassis:=ru_medium_wheeled;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_gatling_gun;
+    vc_control:=control_manual;
+
+    hc_name:='';
+
+    PrepareHuman(sex_male,0,0);
+    hc_basic_skills:=[0,0,0,0];
+    hc_skills:=[Rand(0,3),Rand(0,3),1,Rand(0,3)];
+
+    Convoy:=Convoy union CreateVehicle;
+
+    PlaceHumanInUnit(CreateHuman,Convoy[i]);
+    SetFuel(Convoy[i],Rand(70,95));
+  end;
+
+  for i:=number_of_trucks+number_of_guns+number_of_gatlings+1 to number_of_trucks+number_of_guns+number_of_gatlings+number_of_hv_guns do
+  begin
+  // heavy_gun
+    uc_side:=ally;
+    uc_nation:=nation_russian;
+    uc_direction:=3;
+
+    vc_chassis:=ru_heavy_wheeled;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_heavy_gun;
+    vc_control:=control_manual;
+
+    hc_name:='';
+
+    PrepareHuman(sex_male,0,0);
+    hc_basic_skills:=[0,0,0,0];
+    hc_skills:=[Rand(0,3),Rand(0,3),1,Rand(0,3)];
+
+    Convoy:=Convoy union CreateVehicle;
+
+    PlaceHumanInUnit(CreateHuman,Convoy[i]);
+    SetFuel(Convoy[i],Rand(70,95));
+    SetLives(Convoy[i],Rand(500,1000));
+  end;
+
+  for i:=number_of_trucks+number_of_guns+number_of_gatlings+number_of_hv_guns+1 to number_of_trucks+number_of_guns+number_of_gatlings+number_of_hv_guns+number_of_hv_mchn_gun do
+  begin
+  // heavy_machine_gun
+    uc_side:=ally;
+    uc_nation:=nation_russian;
+    uc_direction:=3;
+
+    vc_chassis:=ru_medium_wheeled;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ru_heavy_machine_gun;
+    vc_control:=control_manual;
+
+    hc_name:='';
+
+    PrepareHuman(sex_male,0,0);
+    hc_basic_skills:=[0,0,0,0];
+    hc_skills:=[Rand(0,3),Rand(0,3),1,Rand(0,3)];
+
+    Convoy:=Convoy union CreateVehicle;
+
+    PlaceHumanInUnit(CreateHuman,Convoy[i]);
+    SetFuel(Convoy[i],Rand(70,95));
+    SetLives(Convoy[i],Rand(500,1000));
+  end;
+
+  rand_convoy:=rand_convoy union Convoy[1];
+  Convoy:=Convoy diff Convoy[1];
+
+  Convoy_length:=0+Convoy;
+
+  for i:=1 to Convoy_length do
+  begin
+    rand_vehicle:=Rand(1,0+Convoy);
+
+    rand_convoy:=rand_convoy union Convoy[rand_vehicle];
+
+    Convoy:=Convoy diff Convoy[rand_vehicle];
+  end;
+
+  Convoy:=rand_convoy;
+  for i:=0+Convoy downto 1 do
+    if GetWeapon(Convoy[i])=ru_cargo_bay then FirstCargo:=Convoy[i];
+end;
+
+var field_pocet,field_mezera,field_delay;
+
+every 0$1 marked 2 do  // Tvorba convoye po postaveni depotu
+var g,h,delka;
+begin
+  enable(7);
+  enable(18);
+  delka:=number_of_trucks+number_of_guns+number_of_gatlings+number_of_hv_guns+number_of_hv_mchn_gun;
+
+  field_pocet:=[];
+  field_mezera:=[];
+  field_delay:=[];
+
+  repeat
+    h:=Rand(3,6);
+    delka:=delka-h;
+
+    if delka>0 then
+      field_pocet:=field_pocet^h
+    else
+      field_pocet:=field_pocet^(delka+h);
+  until delka<=0;
+
+  for g:=1 to field_pocet do
+  begin
+    h:=Rand(13,15);
+    field_mezera:=field_mezera^h;
+  end;
+
+  for g:=1 to field_pocet do
+  begin
+    h:=Rand(convoy_delay[1],convoy_delay[2]);
+    field_delay:=field_delay^h;
+  end;
+
+  for g:=1 to field_pocet do
+  begin
+    make_convoy(field_pocet[g],field_mezera[g],field_delay[g]);
+    if g=0+field_pocet then
+    begin
+      Wait(1$30);
+      disable(4);
+      Disabled4:=true;
+      Wait(0$1);
+      Dialogue4;
+      Wait(attack_offset);
+      enable(11);
+     end;
+  end;
+end;
+
+
+every 0$1+0$0.1 marked 7 do  // This is for our heroic rearguard.
+begin
+  enable;
+  if IsInArea(FirstCargo,KnollArea) then
+  begin
+    disable(7);
+    Dialogue2a;
+    Wait(2$20);
+    Dialogue2b;
+  end;
+end;
+
+export function make_convoy(trucks,delay,after_delay); // Tvorba convoye po urcitych mezerach
+var k,cargowaypoints1,cargowaypoints2,waypoints,points;
+begin
+  delay:=delay*35;
+
+  for k:=1 to trucks do
+  begin
+    pocet:=pocet+1;
+
+    waypoints:=[
+    [102,4],
+    [98,6],
+    [95,8],
+    [92,11],
+    [90,14],
+    [87,17],
+    [82,19],
+    [80,23],
+    [77,25],
+    [74,27],
+    [70,29],
+    [67,31],
+    [63,33],
+    [59,35],
+    [56,37],
+    [53,39],
+    [51,41],
+    [50,45],
+    [50,49],
+    [51,55],
+    [52,60],
+    [56,66],
+    [59,71],
+    [62,77],
+    [65,83],
+    [68,89],
+    [70,94],
+    [72,100],
+    [73,105],
+    [73,111],
+    [71,115],
+    [71,122],
+    [72,129],
+    [72,134],
+    [72,137]];
+
+    cargowaypoints1:=[
+    [102,4],
+    [98,6],
+    [95,8],
+    [92,11],
+    [90,14],
+    [87,17],
+    [82,19],
+    [80,23],
+    [77,25],
+    [74,27],
+    [70,29],
+    [67,31],
+    [63,33],
+    [59,35],
+    [56,37],
+    [53,39],
+    [51,41],
+    [50,45],
+    [50,49],
+    [51,55],
+    [52,60],
+    [56,66],
+    [59,71],
+    [62,77],
+    [88,85]];
+    cargowaypoints2:=[
+    [68,89],
+    [70,94],
+    [72,100],
+    [73,105],
+    [73,111],
+    [71,115],
+    [71,122],
+    [72,129],
+    [72,134],
+    [72,137]];
+
+    PlaceUnitXY(Convoy[pocet],103,2,false);
+
+    if Convoy[pocet]=FirstCargo then
+    begin
+      for points in cargowaypoints1 do AddComMoveXY(Convoy[pocet],points[1],points[2]);
+      AddComUnload(FirstCargo);
+      for points in cargowaypoints2 do AddComMoveXY(Convoy[pocet],points[1],points[2]);
+      enable(7);
+    end
+    else
+      for points in waypoints do AddComMoveXY(Convoy[pocet],points[1],points[2]);
+
+    Wait(delay);
+  end;
+
+  after_delay:=after_delay*35;
+
+  Wait(after_delay);
+end;
+
+every 0$1 marked 4 do // Pinching
+var un,car,cargos;
+begin
+  cargos:=FilterAllUnits([[f_weapon,ru_cargo_bay],[f_side,ally]]);
+  for car in cargos do
+  begin
+    Wait(1);
+    if (GetDistUnits(car,NearestUnitToUnit(player_units,car))<=5) And Not (car in trucks_diverted_list) then
+    begin
+      trucks_diverted_list:=trucks_diverted_list union car;
+      if Query('QQrSteal')=1 then
+      begin
+        trucks_diverted_count:=trucks_diverted_count+1;
+        DialogueOn;
+        Say(Burlak,'DQrSteal#1-Bur-1'); //- Hello comrade. We need the supplies in your truck.
+        DialogueOff;
+        ComMoveToArea(car,CansArea); Wait(1);
+        AddComUnload(car);           Wait(1);
+        AddComMoveXY(car,73,111);    Wait(1);
+        AddComMoveXY(car,71,115);    Wait(1);
+        AddComMoveXY(car,71,122);    Wait(1);
+        AddComMoveXY(car,72,129);    Wait(1);
+        AddComMoveXY(car,72,134);    Wait(1);
+        AddComMoveXY(car,72,138);    Wait(1);
+        AddComMoveToArea(car,ExitArea);
+        Wait(0$8);
+        if (RecklessAttack And BelkovFreed) then
+        begin
+          case trucks_diverted_count of
+            2:Dialogue3a;
+            4:Dialogue3b;
+            6:Dialogue3c;
+            7:Dialogue3d;
+            8:Dialogue3e;
+          end;
+        end
+        else
+        begin
+          if (Not RecklessAttack) And (Not BelkovFreed) then
+          begin
+            case trucks_diverted_count of
+              3:Dialogue3a;
+              6:Dialogue3b;
+              7:Dialogue3c;
+              9:Dialogue3d;
+              10:Dialogue3e;
+            end;
+          end
+          else
+          begin
+            case trucks_diverted_count of
+              2:Dialogue3a;
+              5:Dialogue3b;
+              7:Dialogue3c;
+              8:Dialogue3d;
+              9:Dialogue3e;
+            end;
+          end;
+        end;
+      end
+      else 
+      begin
+        Say(Burlak,'DQrSteal#2-Bur-1'); //- Nothing. Drive on, comrade.
+      end;
+    end;
+  end;
+  if Not Disabled4 then enable;
+end;
+
+every 0$10 marked 18 do // Convoy without task controling
+var un,filter_nottask;
+begin
+  filter_nottask:=FilterUnitsExceptArea(EnterArea,[[f_side,ally],[f_not,[f_hastask]]]);
+//  debug_strings:='filter_nottask '&filter_nottask;
+  for un in filter_nottask do
+  begin
+    ComMoveXY(un,72,137);
+    Wait(5);
+  end;
+    
+  enable;
+end;
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+export rus_mcrep_id,rus_mcrep_units,rus_mcrep_bui,rus_depot,rus_lab,rus;
+// rus !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+every 0$0.1 do
+begin
+  rus:=3; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  rus_mcrep_units:=[18,19,20,21,22,23];
+  rus_mcrep_bui:=FilterAllUnits([[f_side,rus],[f_type,unit_building]])^[14,15]; // 14,15 - 2 rus.soldiers
+  rus_depot:=FilterAllUnits([[f_side,rus],[f_btype,b_warehouse]])[1];
+  rus_lab:=FilterAllUnits([[f_side,rus],[f_btype,b_lab_full]])[1];
+
+  enable(401); // Russian McRepair
+end;
+
+every 0$3+0$0.5 marked 401 do // Russian McRepair
+var un,CanReturnToDepot,filter;
+begin
+// McRepair illl prior, units, others, options
+// runs McRepair macro and returns mcid
+// units will be maintain others (and extras from McWithdraw);
+// options - [[mcr_hum_area, area], [mcr_veh_area, area], (-)mcr_area_only, [mcr_safety, 7],
+// [mcr_hum_limit, 600], [mcr_veh_limit, 1000], [mcr_bui_limit, 1000],
+// [mcr_repv_area, area], [mcr_capv_area, area], [mcr_repb_area, area], [mcr_capb_area, area]]
+
+  if NOT ExistMc(rus_mcrep_id) then
+    rus_mcrep_id:=McRepair (100,rus_mcrep_units,
+                            rus_mcrep_bui^rus_mcrep_units,
+                            [[mcr_hum_area, BluekherArea],[mcr_bui_limit, 1000],
+                            mcr_area_only,[mcr_safety,7],[mcr_repb_area, BluekherArea]]);
+
+  if IsLive(rus_depot) OR IsLive(rus_lab) then
+  begin
+    for un in rus_mcrep_units do
+      if GetUnitMc(un)=0 then
+        if GetClass(un)=class_engineer then
+        begin
+          if IsLive(rus_depot) then
+            ComEnterUnit(un,rus_depot);
+        end
+        else
+          if IsLive(rus_lab) then
+            ComEnterUnit(un,rus_lab);
+  end;
+
+  filter:=FilterUnitsExceptArea(BluekherArea,[[f_side,rus],[f_or,[f_class,class_engineer],[f_class,class_scientistic]]]);
+  if filter then
+    ComMoveXY(filter,48,88);
+
+{
+  filter:=FilterAllUnits([[f_side,rus],[f_class,class_engineer],f_not,[f_lives,500]]);
+  if filter then
+  begin
+    ComEnterUnit(filter,1);
+  end;
+
+  GetMcUnits
+  RemoveMcUnits
+  AddMcUnits
+}
+  enable;
+end;
+
+

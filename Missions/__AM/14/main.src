@@ -1,0 +1,439 @@
+export MacMillan,Powell,Joan,Lisa,Anezka;          // VIP in game
+export survivor,who_survive;                       // idents of woman in US Base
+export truck1,ukradle_auto;                        // MacMillan's morphling vehicle
+export time_crates_us,time_crates_ru;              // variables for creating crates in US and RU bases
+export other_survivors;                            // variables for saving others VIP from Campaign file
+
+export on_optolab;                                 // variables for final rewards
+export you,russians,neutral;                       // sides in the game
+export double_laser,                               // amount of constructed double lasers
+       double_hint;                                // true when hint was send else false
+export selected_opto_lab;
+
+export veh_jmm,                                    // vozidla, ve kterych ti dva muzou opustit mapu
+       veh_surv;
+
+export fastEscape;                                 // Player decided to fast escape from map with Joan
+export kappa_saved;
+
+var russians_eliminated,
+    doublelasers_turrets;
+
+function prepare_units;
+var un,i;
+begin
+
+// prepares human unit  MacMillan
+  uc_nation:=nation_american;
+  uc_side:=you;
+
+  hc_class:=class_soldier;
+  MacMillan:=CreateCharacter('JMM');
+
+  Powell:=NewCharacter('Powell');
+
+  uc_side:=neutral;
+  if TestCharacters('Joan') and CheckCharacterSet('Joan') then
+    begin
+      hc_class:=class_scientistic;
+      Joan:=CreateCharacter('Joan');
+      survivor:=Joan;
+      who_survive:=1;
+    end
+  else
+    if TestCharacters('Lisa') and CheckCharacterSet('Lisa') then
+      begin
+        hc_class:=class_soldier;
+        Lisa:=CreateCharacter('Lisa');
+        survivor:=Lisa;
+        who_survive:=2;
+      end
+    else
+      begin                             // Vytvareni Anezky
+        Anezka:=NewCharacter('Coonie');
+        survivor:=Anezka;
+        who_survive:=3;
+      end;
+
+  uc_side:=you;
+  if TestCharacters('other_survivors') then
+    other_survivors:=CreateCharacterSet('other_survivors')
+  else
+    other_survivors:=[];
+
+  uc_direction:=1;
+  vc_chassis:=us_morphling;
+  vc_control:=control_manual;
+  vc_engine:=engine_siberite;
+  vc_weapon:=us_laser;
+  truck1:=CreateVehicle;
+
+  uc_direction=rand(0,5);
+
+  PlaceHumanInUnit(MacMillan,truck1);
+
+  uc_nation=nation_russian;
+  uc_side=russians;
+
+//  Place all units on the map
+  PlaceUnitXY(truck1,6,6,false);
+  PlaceUnitXY(survivor,65,108,false);
+
+  ComFree([MacMillan,survivor]);
+end;
+
+
+function prepare_sides;
+begin
+// who is who in this mission
+  you=1;
+  neutral=4;
+  russians=3;
+
+
+  visit_base:=false;
+  on_optolab:=false;
+  russians_eliminated:=false;
+  double_laser:=0;
+  double_hint:=false;
+  doublelasers_turrets:=[];
+  selected_opto_lab:=false;
+
+  SetAttitude(you,russians,att_enemy,true);
+  SetAttitude(you,neutral,att_friend,true);
+
+  Enable(1);
+  Disable(5);             // zjistovani, jestli MacMillan nevidi sve ukradene auto
+  Disable(11);            // rozhovory nad dalkove ovladanyma autama a opto laboratori
+end;
+
+
+
+//------------------------------------------------------------------------------------------------------
+//-------- Main Starting Block -------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+
+starting
+begin
+  RandomizeAll;
+
+  fastEscape = 0;
+
+  prepare_sides;
+  prepare_units;
+
+  starting_scene;
+  prepare_ru_base;
+  prepare_us_base;
+  ru_scientistic_priority;
+  startup_manufacturing;
+  startup_war_definition;
+
+  init_keep_base;
+  start_defend;
+
+  time_crates_us:=Rand(0$20,0$40);
+  time_crates_ru:=Rand(0$30,0$60);
+
+end;
+
+//  Loadin crates fo US Base
+every 0$5 trigger TICK>=time_crates_us do
+begin
+  CreateCratesArea(Rand(2,5),inner_base,true);
+  time_crates_us:=TICK+Rand(0$60,0$100);
+  enable;
+end;
+
+
+//  Loadin crates fo RU Base
+every 0$5 trigger TICK>=time_crates_ru do
+begin
+  CreateCratesArea(Rand(3,5),ru_crates,true);
+  time_crates_ru:=TICK+Rand(0$30,0$60);
+  enable;
+end;
+
+
+//-----  FINAL CONDITION  -----//
+export function konec_mise;
+var saved,un;
+begin
+  if IsOK(MacMillan) and not russians_eliminated then
+    begin
+      un:=IsInUnit(MacMillan);
+      if GetType(un)=unit_vehicle then
+        veh_jmm:=[GetChassis(un),GetEngine(un),GetControl(un),GetWeapon(un)];
+ //     RemoveUnit(MacMillan);
+      if GetType(un)=unit_vehicle then
+  //      RemoveUnit(un);
+    end;
+
+  // MacMillan died
+  if IsDead(MacMillan) or (GetLives(MacMillan)<250) then
+    begin
+      YouLost('JMM');
+      exit;
+    end;
+
+  // Joan (Lisa, other) survive (or not)
+  if (GetLives(survivor)>250) and visit_base then
+    AddMedal('protect',who_survive)
+  else
+      case who_survive of
+    1: AddMedal('protect',-1);
+    2: AddMedal('protect',-2);
+    3: AddMedal('protect',-3);
+      end;
+
+  if (GetLives(survivor)>250) and visit_base then
+    saved:=[MacMillan,survivor]
+  else
+    saved:=[MacMillan];
+
+  // double laser was constructed (or not)
+  double_laser:=double_laser + doublelasers_turrets;
+  if visit_base then
+    begin
+      if not selected_opto_lab then
+        AddMedal('double',-1)
+      else
+          case double_laser of
+        0: AddMedal('double',-2);
+        1: AddMedal('double',-3);
+      else Addmedal('double',1);
+          end;
+    end
+  else
+    AddMedal('double',-2);
+
+  if russians_eliminated then
+    begin
+      AddMedal('base',1);
+      GiveMedals('Eliminate');
+      RewardPeople(saved);
+    end
+  else
+    begin
+      if not visit_base then
+        AddMedal('base',-2)
+      else
+        AddMedal('base',-1);            // !!!!!!!!!!!   Musi se dopsat  (neco jako ze si vubec nenasel zakladnu)
+      GiveMedals('Reach');
+      RewardPeople(saved);
+    end;
+
+  kappa_saved:=false;
+  //if IsOK(us_depot) then
+ //   kappa_saved:=true;
+
+  SaveCharacters(MacMillan,'JMM');
+
+  if not visit_base then
+    KillUnit(survivor);
+    case who_survive of
+  1: SaveCharacters(Joan,'Joan');
+  2: SaveCharacters(Lisa,'Lisa');
+  3: SaveCharacters(Anezka,'Coonie');
+    end;
+  if GetLives(survivor)>250 and fastEscape = 0 then
+    SaveVariable(IsLive(survivor),'woman_saved');
+
+
+  if [GetSide(survivor) = 4 or IsDead(survivor)] and FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_ok]]) > 0 and FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 1 then
+      kappa_saved = false;
+
+  if GetDistUnits(IsInUnit(survivor), IsInUnit(Macmillan)) < 15 then kappa_saved = true;
+
+  SaveVariable(kappa_saved,'kappa_saved');
+  SaveVariable(visit_base,'kappa_delayed');
+
+  if GetLives(survivor)>250 and fastEscape = 0 then SaveVariable((visit_base and IsOK(survivor)),'woman_alive');
+  SaveVariable(who_survive,'woman_in_am14');
+
+  if not russians_eliminated then
+    begin
+      SaveVariable(veh_jmm,'veh_jmm');
+      SaveVariable(veh_surv,'veh_surv');
+    end;
+
+  YouWin;
+end;
+
+
+// MacMillan reach exit area
+function almost_done_macmillan;
+var odpoved,vysledek,un;
+begin
+  vysledek:=true;
+  un:=IsInUnit(MacMillan);
+  
+  if not IsOK(survivor) or (IsInArea(survivor,near_exit) and IsInUnit(survivor)) then
+    begin
+      fastEscape = 1;
+
+      SaveCharacters(MacMillan,'JMM');
+      CheckSurvivorStatus;
+
+      veh_jmm:=[GetChassis(un),GetEngine(un),GetControl(un),GetWeapon(un)];
+      //RemoveUnit(MacMillan);
+      //RemoveUnit(un);
+      
+      konec_mise;
+    end
+  else
+    begin
+        case who_survive of
+      1: odpoved:=Query('Q3bJ');
+      2: odpoved:=Query('Q3bL');
+      3: odpoved:=Query('Q3bX');
+        end;
+    end;
+  if odpoved=1 then
+    konec_mise
+  else
+    vysledek:=false;
+
+  result:=vysledek;
+end;    
+
+function almost_done_survivor;
+var odpoved,vysledek,un;
+begin
+  odpoved:=false;
+  vysledek:=true;
+  un:=IsInUnit(survivor);
+
+  if IsOK(MacMillan) then
+    odpoved:=Query('Q3b')
+  else
+    odpoved:=true;
+
+  if odpoved then
+    begin
+      CheckSurvivorStatus;
+    end
+  else
+    vysledek:=false;
+
+  result:=vysledek;
+end;
+
+// MacMillan reached exit area
+every 0$2 trigger IsInArea(MacMillan,exit_area) do
+var odpoved;
+begin
+  if IsInUnit(MacMillan) then
+    begin
+      if not almost_done_macmillan then
+        repeat
+          wait(0$1);
+        until not (IsInArea(MacMillan,exit_area) and IsInUnit(MacMillan));
+    end
+  else
+    begin
+      Query('Q3a');
+      repeat
+        wait(0$1);
+      until IsInUnit(MacMillan) or (not IsInArea(MacMillan,exit_area));
+    end;
+  Enable;
+end;
+
+// One Woman reached exit area
+every 0$2 trigger IsInArea(survivor,exit_area) do
+var odpoved,un;
+begin
+  if IsInUnit(survivor) then
+    begin
+      if not almost_done_survivor then
+        repeat
+          wait(0$1);
+        until not (IsInArea(survivor,exit_area) and IsInUnit(survivor));
+    end
+  else
+    begin
+        case who_survive of
+      1: Query('Q3aJ');
+      2: Query('Q3aL');
+      3: Query('Q3aX');
+        end;
+      repeat
+        wait(0$1);
+      until IsInUnit(survivor) or (not IsInArea(survivor,exit_area));
+    end;
+  if IsLive(survivor) then
+    Enable;
+end;
+
+
+//-----  Zjistovani eliminace ruske zakladny  -----//
+every 0$2 trigger not FilterAllUnits([ [f_side,russians], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]) do
+var vozidla,lide;
+begin
+  repeat
+    vozidla:=FilterAllUnits([ [f_side,russians], [[f_type,unit_vehicle],[f_control,control_computer]], [f_ok] ]);
+    lide:=FilterAllUnits([ [f_side,russians], [f_type,unit_human], [f_ok] ]);
+    if not (lide or vozidla) then
+      russians_eliminated:=true;
+    wait(0$1);
+  until {(not IsOK(MacMillan)) or} IsOk(MacMillan) and russians_eliminated;
+
+  DialogueOn;
+
+  Say(MacMillan,'DEnd-JMM-1');
+    case who_survive of
+  1: Say(Joan,'DEnd-Joan-1');
+  2: Say(Lisa,'DEnd-Lisa-1');
+  3: Say(Anezka,'DEnd-Con-1');
+    end;
+
+  DialogueOff;
+  konec_mise;
+end;
+
+// checking double lasers on bunkers and automatic turrets
+every 0$3 do
+var un,list;
+begin
+  list:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_bunker], [f_btype,b_turret]] ]);
+  for un in list do
+    if GetBWeapon(un)=us_double_laser then
+      begin
+        if not double_hint then
+          begin
+            Hint('DoubleLaser');
+            double_hint:=true;
+          end;
+        doublelasers_turrets:=doublelasers_turrets union un;
+      end;
+  enable;
+end;
+
+
+// ********************* Function to check survivor status before remove from map - Nefarem ********************* \\
+// ********************* 28.08.2018 ********************* \\
+Export function CheckSurvivorStatus;
+var un;
+begin
+
+  if IsOK(survivor) then
+  begin
+    repeat
+      un:=IsInUnit(survivor);
+      ComMoveXY(survivor,147,16);
+      wait(0$1);
+    until IsInArea(survivor,exit_area) or IsInArea(un, exit_area);
+
+    SaveVariable(IsLive(survivor),'woman_saved');
+    SaveVariable(IsLive(survivor),'woman_alive');
+    SaveVariable(who_survive,'woman_in_am14');
+    kappa_saved = 1;
+
+    un:=IsInUnit(survivor);
+    //RemoveUnit(survivor);
+    //RemoveUnit(un);
+    veh_surv:=[GetChassis(un),GetEngine(un),GetControl(un),GetWeapon(un)];
+  end;
+
+end;

@@ -1,0 +1,72 @@
+export function saveitall;
+begin
+  savevariable(legion_cheated,'legion_cheated');
+  savecharacters(john,'JMM');
+  savecharacters(lucy,'Donaldson');
+  if islive(lucy) then savevariable(6,'DonaldsonLoc')
+    else savevariable(0,'DonaldsonLoc');
+
+  savecharacters(bobby,'Bobby');
+  if bobby then
+    if isdead(bobby) then savevariable(0,'BobbyLoc')
+    else
+      if bobby in nepouzitvip then savevariable(7,'BobbyLoc')
+      else savevariable(6,'BobbyLoc');
+  savecharacters(cyrus,'Cyrus');
+  if cyrus then
+    if isdead(cyrus) then savevariable(0,'CyrusLoc')
+    else
+      if cyrus in nepouzitvip then savevariable(7,'CyrusLoc')
+      else savevariable(6,'CyrusLoc');
+  savecharacters(lisa,'Lisa');
+  if lisa then
+    if isdead(lisa) then savevariable(0,'LisaLoc')
+    else
+      if lisa in nepouzitvip then savevariable(7,'LisaLoc')
+      else savevariable(6,'LisaLoc');
+  savecharacters(cornel,'Cornell');
+  if cornel then
+    if isdead(cornel) then savevariable(0,'CornellLoc')
+    else
+      if cornel in nepouzitvip then savevariable(7,'CornellLoc')
+      else savevariable(6,'CornellLoc');
+  savecharacters(frank,'Frank');
+  if frank then
+    if isdead(frank) then savevariable(0,'FrankLoc')
+    else
+      if frank in nepouzitvip then savevariable(7,'FrankLoc')
+      else savevariable(6,'FrankLoc');
+  savecharacters(brown,'Brown');
+  if brown then
+    if isdead(brown) then savevariable(0,'BrownLoc')
+    else
+      if brown in nepouzitvip then savevariable(7,'BrownLoc')
+      else savevariable(6,'BrownLoc');
+  savecharacters(glad,'Gladstone');
+  if glad then
+    if isdead(glad) then savevariable(0,'GladstoneLoc')
+    else
+      if glad in nepouzitvip then savevariable(7,'GladstoneLoc')
+      else savevariable(6,'GladstoneLoc');
+  savecharacters(denis,'Denis');
+  if denis then
+    if isdead(denis) then savevariable(0,'DenisLoc')
+    else
+      if denis in nepouzitvip then savevariable(7,'DenisLoc')
+      else savevariable(6,'DenisLoc');
+  if yamoko then begin
+    savecharacters(yamoko,'Yamoko');
+    if isdead(yamoko) then savevariable(0,'YamokoLoc')
+    else
+      if yamoko in nepouzitvip then savevariable(7,'YamokoLoc')
+      else savevariable(6,'YamokoLoc');
+  end;
+  savecharacters(gary,'Gary');
+  if gary then
+    if isdead(gary) then savevariable(0,'GaryLoc')
+    else
+      if gary in nepouzitvip then savevariable(7,'GaryLoc')
+      else savevariable(6,'GaryLoc');
+  savecharacters((filterallunits([[f_side,am],[f_alive],[f_nation, 1],[f_type,unit_human]]) diff ([john,lucy,bobby,cyrus,lisa,cornel,frank,brown,glad,denis,yamoko,gary]^smejdi_ar)),'otherwithJMM');
+  savecharacters(nepouzitoth,'othernotJMM');
+end;

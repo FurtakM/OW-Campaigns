@@ -1,0 +1,1682 @@
+// var Burlak , Rus1 , Rus2 , Auto1 , Auto2 ; var Belkov , Gnyevko , Kirilenkova ; var Kovalyuk , Scholtze ; var Kuzmov ; var Karamazov , Petrovova , Gleb , Petrosyan ; var Lipshchin , Titov , Dolgov , Xavier ; var Oblukov , Kozlov , Kapitsova ; var Survivors4 ; var Vybrano ; var PrvniOK , DruhyOK ; on SailEvent ( Event ) do begin case Event of 1 :
+   0: LD_VAR 0 1
+   4: PUSH
+   5: LD_INT 1
+   7: DOUBLE
+   8: EQUAL
+   9: IFTRUE 13
+  11: GO 24
+  13: POP
+// PrvniOK = true ; 2 :
+  14: LD_ADDR_LOC 25
+  18: PUSH
+  19: LD_INT 1
+  21: ST_TO_ADDR
+  22: GO 44
+  24: LD_INT 2
+  26: DOUBLE
+  27: EQUAL
+  28: IFTRUE 32
+  30: GO 43
+  32: POP
+// DruhyOK = true ; end ;
+  33: LD_ADDR_LOC 26
+  37: PUSH
+  38: LD_INT 1
+  40: ST_TO_ADDR
+  41: GO 44
+  43: POP
+// if PrvniOK and DruhyOK then
+  44: LD_LOC 25
+  48: PUSH
+  49: LD_LOC 26
+  53: AND
+  54: IFFALSE 60
+// Intro2 ;
+  56: CALL 822 0 0
+// end ;
+  60: PPOPN 1
+  62: END
+// function load_char ( Ident ) ; begin
+  63: LD_INT 0
+  65: PPUSH
+// if TestCharacters ( Ident ) then
+  66: LD_VAR 0 1
+  70: PPUSH
+  71: CALL_OW 28
+  75: IFFALSE 122
+// begin Result = CreateCharacter ( Ident ) ;
+  77: LD_ADDR_VAR 0 2
+  81: PUSH
+  82: LD_VAR 0 1
+  86: PPUSH
+  87: CALL_OW 34
+  91: ST_TO_ADDR
+// if IsDead ( Result ) then
+  92: LD_VAR 0 2
+  96: PPUSH
+  97: CALL_OW 301
+ 101: IFFALSE 120
+// begin DestroyUnit ( Result ) ;
+ 103: LD_VAR 0 2
+ 107: PPUSH
+ 108: CALL_OW 65
+// Result = 0 ;
+ 112: LD_ADDR_VAR 0 2
+ 116: PUSH
+ 117: LD_INT 0
+ 119: ST_TO_ADDR
+// end ; end else
+ 120: GO 137
+// Result = NewCharacter ( Ident ) ;
+ 122: LD_ADDR_VAR 0 2
+ 126: PUSH
+ 127: LD_VAR 0 1
+ 131: PPUSH
+ 132: CALL_OW 25
+ 136: ST_TO_ADDR
+// if Result then
+ 137: LD_VAR 0 2
+ 141: IFFALSE 155
+// SetSide ( Result , 3 ) ;
+ 143: LD_VAR 0 2
+ 147: PPUSH
+ 148: LD_INT 3
+ 150: PPUSH
+ 151: CALL_OW 235
+// end ;
+ 155: LD_VAR 0 2
+ 159: RET
+// function load_set ( Ident ) ; begin
+ 160: LD_INT 0
+ 162: PPUSH
+// if TestCharacters ( Ident ) then
+ 163: LD_VAR 0 1
+ 167: PPUSH
+ 168: CALL_OW 28
+ 172: IFFALSE 203
+// begin Result = CreateCharacterSet ( Ident ) ;
+ 174: LD_ADDR_VAR 0 2
+ 178: PUSH
+ 179: LD_VAR 0 1
+ 183: PPUSH
+ 184: CALL_OW 31
+ 188: ST_TO_ADDR
+// SetSide ( Result , 3 ) ;
+ 189: LD_VAR 0 2
+ 193: PPUSH
+ 194: LD_INT 3
+ 196: PPUSH
+ 197: CALL_OW 235
+// end else
+ 201: GO 210
+// Result = [ ] ;
+ 203: LD_ADDR_VAR 0 2
+ 207: PUSH
+ 208: EMPTY
+ 209: ST_TO_ADDR
+// end ;
+ 210: LD_VAR 0 2
+ 214: RET
+// function load ; begin
+ 215: LD_INT 0
+ 217: PPUSH
+// InitUC ;
+ 218: CALL_OW 18
+// InitHC ;
+ 222: CALL_OW 19
+// UC_Side = 3 ;
+ 226: LD_ADDR_OWVAR 20
+ 230: PUSH
+ 231: LD_INT 3
+ 233: ST_TO_ADDR
+// Burlak = load_char ( Burlak ) ;
+ 234: LD_ADDR_LOC 1
+ 238: PUSH
+ 239: LD_STRING Burlak
+ 241: PPUSH
+ 242: CALL 63 0 1
+ 246: ST_TO_ADDR
+// Belkov = load_char ( Belkov ) ;
+ 247: LD_ADDR_LOC 6
+ 251: PUSH
+ 252: LD_STRING Belkov
+ 254: PPUSH
+ 255: CALL 63 0 1
+ 259: ST_TO_ADDR
+// Gnyevko = load_char ( Gnyevko ) ;
+ 260: LD_ADDR_LOC 7
+ 264: PUSH
+ 265: LD_STRING Gnyevko
+ 267: PPUSH
+ 268: CALL 63 0 1
+ 272: ST_TO_ADDR
+// Kirilenkova = load_char ( Kirilenkova ) ;
+ 273: LD_ADDR_LOC 8
+ 277: PUSH
+ 278: LD_STRING Kirilenkova
+ 280: PPUSH
+ 281: CALL 63 0 1
+ 285: ST_TO_ADDR
+// Kovalyuk = load_char ( Kovalyuk ) ;
+ 286: LD_ADDR_LOC 9
+ 290: PUSH
+ 291: LD_STRING Kovalyuk
+ 293: PPUSH
+ 294: CALL 63 0 1
+ 298: ST_TO_ADDR
+// Scholtze = load_char ( Scholtze ) ;
+ 299: LD_ADDR_LOC 10
+ 303: PUSH
+ 304: LD_STRING Scholtze
+ 306: PPUSH
+ 307: CALL 63 0 1
+ 311: ST_TO_ADDR
+// Kuzmov = load_char ( Kuzmov ) ;
+ 312: LD_ADDR_LOC 11
+ 316: PUSH
+ 317: LD_STRING Kuzmov
+ 319: PPUSH
+ 320: CALL 63 0 1
+ 324: ST_TO_ADDR
+// Karamazov = load_char ( Karamazov ) ;
+ 325: LD_ADDR_LOC 12
+ 329: PUSH
+ 330: LD_STRING Karamazov
+ 332: PPUSH
+ 333: CALL 63 0 1
+ 337: ST_TO_ADDR
+// Petrovova = load_char ( Petrovova ) ;
+ 338: LD_ADDR_LOC 13
+ 342: PUSH
+ 343: LD_STRING Petrovova
+ 345: PPUSH
+ 346: CALL 63 0 1
+ 350: ST_TO_ADDR
+// Gleb = load_char ( Gleb ) ;
+ 351: LD_ADDR_LOC 14
+ 355: PUSH
+ 356: LD_STRING Gleb
+ 358: PPUSH
+ 359: CALL 63 0 1
+ 363: ST_TO_ADDR
+// Petrosyan = load_char ( Petrosyan ) ;
+ 364: LD_ADDR_LOC 15
+ 368: PUSH
+ 369: LD_STRING Petrosyan
+ 371: PPUSH
+ 372: CALL 63 0 1
+ 376: ST_TO_ADDR
+// Lipshchin = load_char ( Lipshchin ) ;
+ 377: LD_ADDR_LOC 16
+ 381: PUSH
+ 382: LD_STRING Lipshchin
+ 384: PPUSH
+ 385: CALL 63 0 1
+ 389: ST_TO_ADDR
+// Titov = load_char ( Titov ) ;
+ 390: LD_ADDR_LOC 17
+ 394: PUSH
+ 395: LD_STRING Titov
+ 397: PPUSH
+ 398: CALL 63 0 1
+ 402: ST_TO_ADDR
+// Dolgov = load_char ( Dolgov ) ;
+ 403: LD_ADDR_LOC 18
+ 407: PUSH
+ 408: LD_STRING Dolgov
+ 410: PPUSH
+ 411: CALL 63 0 1
+ 415: ST_TO_ADDR
+// Xavier = load_char ( Xavier ) ;
+ 416: LD_ADDR_LOC 19
+ 420: PUSH
+ 421: LD_STRING Xavier
+ 423: PPUSH
+ 424: CALL 63 0 1
+ 428: ST_TO_ADDR
+// Oblukov = load_char ( Oblukov ) ;
+ 429: LD_ADDR_LOC 20
+ 433: PUSH
+ 434: LD_STRING Oblukov
+ 436: PPUSH
+ 437: CALL 63 0 1
+ 441: ST_TO_ADDR
+// Kozlov = load_char ( Kozlov ) ;
+ 442: LD_ADDR_LOC 21
+ 446: PUSH
+ 447: LD_STRING Kozlov
+ 449: PPUSH
+ 450: CALL 63 0 1
+ 454: ST_TO_ADDR
+// Kapitsova = load_char ( Kapitsova ) ;
+ 455: LD_ADDR_LOC 22
+ 459: PUSH
+ 460: LD_STRING Kapitsova
+ 462: PPUSH
+ 463: CALL 63 0 1
+ 467: ST_TO_ADDR
+// Survivors4 = load_set ( Survivors4 ) ;
+ 468: LD_ADDR_LOC 23
+ 472: PUSH
+ 473: LD_STRING Survivors4
+ 475: PPUSH
+ 476: CALL 160 0 1
+ 480: ST_TO_ADDR
+// end ;
+ 481: LD_VAR 0 1
+ 485: RET
+// function vytvor_rusaka ; begin
+ 486: LD_INT 0
+ 488: PPUSH
+// UC_Nation = NATION_RUSSIAN ;
+ 489: LD_ADDR_OWVAR 21
+ 493: PUSH
+ 494: LD_INT 3
+ 496: ST_TO_ADDR
+// UC_side = 3 ;
+ 497: LD_ADDR_OWVAR 20
+ 501: PUSH
+ 502: LD_INT 3
+ 504: ST_TO_ADDR
+// HC_name =  ;
+ 505: LD_ADDR_OWVAR 26
+ 509: PUSH
+ 510: LD_STRING 
+ 512: ST_TO_ADDR
+// HC_sex = Rand ( SEX_MALE , SEX_FEMALE ) ;
+ 513: LD_ADDR_OWVAR 27
+ 517: PUSH
+ 518: LD_INT 1
+ 520: PPUSH
+ 521: LD_INT 2
+ 523: PPUSH
+ 524: CALL_OW 12
+ 528: ST_TO_ADDR
+// HC_class = CLASS_SOLDIER ;
+ 529: LD_ADDR_OWVAR 28
+ 533: PUSH
+ 534: LD_INT 1
+ 536: ST_TO_ADDR
+// PrepareSoldierSkills ( 4 ) ;
+ 537: LD_INT 4
+ 539: PPUSH
+ 540: CALL_OW 375
+// Result = CreateHuman ;
+ 544: LD_ADDR_VAR 0 1
+ 548: PUSH
+ 549: CALL_OW 44
+ 553: ST_TO_ADDR
+// end ;
+ 554: LD_VAR 0 1
+ 558: RET
+// function vytvor_inzenyra ; begin
+ 559: LD_INT 0
+ 561: PPUSH
+// UC_Nation = NATION_RUSSIAN ;
+ 562: LD_ADDR_OWVAR 21
+ 566: PUSH
+ 567: LD_INT 3
+ 569: ST_TO_ADDR
+// UC_side = 3 ;
+ 570: LD_ADDR_OWVAR 20
+ 574: PUSH
+ 575: LD_INT 3
+ 577: ST_TO_ADDR
+// HC_name =  ;
+ 578: LD_ADDR_OWVAR 26
+ 582: PUSH
+ 583: LD_STRING 
+ 585: ST_TO_ADDR
+// HC_sex = Rand ( SEX_MALE , SEX_FEMALE ) ;
+ 586: LD_ADDR_OWVAR 27
+ 590: PUSH
+ 591: LD_INT 1
+ 593: PPUSH
+ 594: LD_INT 2
+ 596: PPUSH
+ 597: CALL_OW 12
+ 601: ST_TO_ADDR
+// HC_class = CLASS_ENGINEER ;
+ 602: LD_ADDR_OWVAR 28
+ 606: PUSH
+ 607: LD_INT 2
+ 609: ST_TO_ADDR
+// PrepareEngineerSkills ( 4 ) ;
+ 610: LD_INT 4
+ 612: PPUSH
+ 613: CALL_OW 376
+// Result = CreateHuman ;
+ 617: LD_ADDR_VAR 0 1
+ 621: PUSH
+ 622: CALL_OW 44
+ 626: ST_TO_ADDR
+// end ;
+ 627: LD_VAR 0 1
+ 631: RET
+// function Intro ; begin
+ 632: LD_INT 0
+ 634: PPUSH
+// PlaceUnitXYR ( Burlak , 30 , 29 , 3 , false ) ;
+ 635: LD_LOC 1
+ 639: PPUSH
+ 640: LD_INT 30
+ 642: PPUSH
+ 643: LD_INT 29
+ 645: PPUSH
+ 646: LD_INT 3
+ 648: PPUSH
+ 649: LD_INT 0
+ 651: PPUSH
+ 652: CALL_OW 50
+// if not IsPlaced ( Burlak ) then
+ 656: LD_LOC 1
+ 660: PPUSH
+ 661: CALL_OW 305
+ 665: NOT
+ 666: IFFALSE 689
+// PlaceUnitXYR ( Burlak , 30 , 29 , 10 , false ) ;
+ 668: LD_LOC 1
+ 672: PPUSH
+ 673: LD_INT 30
+ 675: PPUSH
+ 676: LD_INT 29
+ 678: PPUSH
+ 679: LD_INT 10
+ 681: PPUSH
+ 682: LD_INT 0
+ 684: PPUSH
+ 685: CALL_OW 50
+// PlaceUnitXYR ( Auto1 , 60 , 49 , 10 , false ) ;
+ 689: LD_LOC 4
+ 693: PPUSH
+ 694: LD_INT 60
+ 696: PPUSH
+ 697: LD_INT 49
+ 699: PPUSH
+ 700: LD_INT 10
+ 702: PPUSH
+ 703: LD_INT 0
+ 705: PPUSH
+ 706: CALL_OW 50
+// PlaceUnitXYR ( Auto2 , 56 , 40 , 10 , false ) ;
+ 710: LD_LOC 5
+ 714: PPUSH
+ 715: LD_INT 56
+ 717: PPUSH
+ 718: LD_INT 40
+ 720: PPUSH
+ 721: LD_INT 10
+ 723: PPUSH
+ 724: LD_INT 0
+ 726: PPUSH
+ 727: CALL_OW 50
+// CenterNowOnUnits ( Burlak ) ;
+ 731: LD_LOC 1
+ 735: PPUSH
+ 736: CALL_OW 87
+// ComTurnUnit ( Burlak , Auto1 ) ;
+ 740: LD_LOC 1
+ 744: PPUSH
+ 745: LD_LOC 4
+ 749: PPUSH
+ 750: CALL_OW 119
+// AddComHold ( Burlak ) ;
+ 754: LD_LOC 1
+ 758: PPUSH
+ 759: CALL_OW 200
+// ComMoveXY ( Auto1 , 30 , 33 ) ;
+ 763: LD_LOC 4
+ 767: PPUSH
+ 768: LD_INT 30
+ 770: PPUSH
+ 771: LD_INT 33
+ 773: PPUSH
+ 774: CALL_OW 111
+// ComMoveXY ( Auto2 , 34 , 30 ) ;
+ 778: LD_LOC 5
+ 782: PPUSH
+ 783: LD_INT 34
+ 785: PPUSH
+ 786: LD_INT 30
+ 788: PPUSH
+ 789: CALL_OW 111
+// AddComSailEvent ( Auto1 , 1 ) ;
+ 793: LD_LOC 4
+ 797: PPUSH
+ 798: LD_INT 1
+ 800: PPUSH
+ 801: CALL_OW 224
+// AddComSailEvent ( Auto2 , 2 ) ;
+ 805: LD_LOC 5
+ 809: PPUSH
+ 810: LD_INT 2
+ 812: PPUSH
+ 813: CALL_OW 224
+// end ;
+ 817: LD_VAR 0 1
+ 821: RET
+// function Intro2 ; var Hlavni , Vedlejsi , I ; begin
+ 822: LD_INT 0
+ 824: PPUSH
+ 825: PPUSH
+ 826: PPUSH
+ 827: PPUSH
+// ComExitVehicle ( Rus1 ) ;
+ 828: LD_LOC 2
+ 832: PPUSH
+ 833: CALL_OW 121
+// ComExitVehicle ( Rus2 ) ;
+ 837: LD_LOC 3
+ 841: PPUSH
+ 842: CALL_OW 121
+// Wait ( 0 0$0.5 ) ;
+ 846: LD_INT 18
+ 848: PPUSH
+ 849: CALL_OW 67
+// AddComMoveUnit ( [ Rus1 , Rus2 ] , Burlak ) ;
+ 853: LD_LOC 2
+ 857: PUSH
+ 858: LD_LOC 3
+ 862: PUSH
+ 863: EMPTY
+ 864: LIST
+ 865: LIST
+ 866: PPUSH
+ 867: LD_LOC 1
+ 871: PPUSH
+ 872: CALL_OW 172
+// AddComTurnUnit ( [ Rus1 , Rus2 ] , Burlak ) ;
+ 876: LD_LOC 2
+ 880: PUSH
+ 881: LD_LOC 3
+ 885: PUSH
+ 886: EMPTY
+ 887: LIST
+ 888: LIST
+ 889: PPUSH
+ 890: LD_LOC 1
+ 894: PPUSH
+ 895: CALL_OW 179
+// Wait ( 0 0$3 ) ;
+ 899: LD_INT 105
+ 901: PPUSH
+ 902: CALL_OW 67
+// AddComTurnUnit ( [ Rus1 , Rus2 ] , Burlak ) ;
+ 906: LD_LOC 2
+ 910: PUSH
+ 911: LD_LOC 3
+ 915: PUSH
+ 916: EMPTY
+ 917: LIST
+ 918: LIST
+ 919: PPUSH
+ 920: LD_LOC 1
+ 924: PPUSH
+ 925: CALL_OW 179
+// AddComTurnUnit ( Burlak , Rus1 ) ;
+ 929: LD_LOC 1
+ 933: PPUSH
+ 934: LD_LOC 2
+ 938: PPUSH
+ 939: CALL_OW 179
+// AddComHold ( [ Rus1 , Rus2 , Burlak ] ) ;
+ 943: LD_LOC 2
+ 947: PUSH
+ 948: LD_LOC 3
+ 952: PUSH
+ 953: LD_LOC 1
+ 957: PUSH
+ 958: EMPTY
+ 959: LIST
+ 960: LIST
+ 961: LIST
+ 962: PPUSH
+ 963: CALL_OW 200
+// Wait ( 0 0$0.25 ) ;
+ 967: LD_INT 9
+ 969: PPUSH
+ 970: CALL_OW 67
+// Say ( Burlak , DBriefing-Bur-1 ) ;
+ 974: LD_LOC 1
+ 978: PPUSH
+ 979: LD_STRING DBriefing-Bur-1
+ 981: PPUSH
+ 982: CALL_OW 88
+// Say ( Rus1 , DBriefing-RSol1-1 ) ;
+ 986: LD_LOC 2
+ 990: PPUSH
+ 991: LD_STRING DBriefing-RSol1-1
+ 993: PPUSH
+ 994: CALL_OW 88
+// Say ( Rus2 , DBriefing-RSol2-1 ) ;
+ 998: LD_LOC 3
+1002: PPUSH
+1003: LD_STRING DBriefing-RSol2-1
+1005: PPUSH
+1006: CALL_OW 88
+// Say ( Burlak , DBriefing-Bur-2 ) ;
+1010: LD_LOC 1
+1014: PPUSH
+1015: LD_STRING DBriefing-Bur-2
+1017: PPUSH
+1018: CALL_OW 88
+// Wait ( 0 0$1 ) ;
+1022: LD_INT 35
+1024: PPUSH
+1025: CALL_OW 67
+// ComEnterUnit ( Rus1 , Auto1 ) ;
+1029: LD_LOC 2
+1033: PPUSH
+1034: LD_LOC 4
+1038: PPUSH
+1039: CALL_OW 120
+// ComEnterUnit ( Rus2 , Auto2 ) ;
+1043: LD_LOC 3
+1047: PPUSH
+1048: LD_LOC 5
+1052: PPUSH
+1053: CALL_OW 120
+// ComMoveXY ( Auto1 , 60 , 44 ) ;
+1057: LD_LOC 4
+1061: PPUSH
+1062: LD_INT 60
+1064: PPUSH
+1065: LD_INT 44
+1067: PPUSH
+1068: CALL_OW 111
+// ComMoveXY ( Auto2 , 62 , 48 ) ;
+1072: LD_LOC 5
+1076: PPUSH
+1077: LD_INT 62
+1079: PPUSH
+1080: LD_INT 48
+1082: PPUSH
+1083: CALL_OW 111
+// Wait ( 0 0$3 ) ;
+1087: LD_INT 105
+1089: PPUSH
+1090: CALL_OW 67
+// Hlavni = [ Belkov , Gnyevko , Kirilenkova , Kovalyuk , Scholtze , Kuzmov , Karamazov , Petrovova , Gleb , Petrosyan , Lipshchin , Titov , Dolgov , Xavier , Oblukov , Kozlov , Kapitsova ] diff [ 0 ] ;
+1094: LD_ADDR_VAR 0 2
+1098: PUSH
+1099: LD_LOC 6
+1103: PUSH
+1104: LD_LOC 7
+1108: PUSH
+1109: LD_LOC 8
+1113: PUSH
+1114: LD_LOC 9
+1118: PUSH
+1119: LD_LOC 10
+1123: PUSH
+1124: LD_LOC 11
+1128: PUSH
+1129: LD_LOC 12
+1133: PUSH
+1134: LD_LOC 13
+1138: PUSH
+1139: LD_LOC 14
+1143: PUSH
+1144: LD_LOC 15
+1148: PUSH
+1149: LD_LOC 16
+1153: PUSH
+1154: LD_LOC 17
+1158: PUSH
+1159: LD_LOC 18
+1163: PUSH
+1164: LD_LOC 19
+1168: PUSH
+1169: LD_LOC 20
+1173: PUSH
+1174: LD_LOC 21
+1178: PUSH
+1179: LD_LOC 22
+1183: PUSH
+1184: EMPTY
+1185: LIST
+1186: LIST
+1187: LIST
+1188: LIST
+1189: LIST
+1190: LIST
+1191: LIST
+1192: LIST
+1193: LIST
+1194: LIST
+1195: LIST
+1196: LIST
+1197: LIST
+1198: LIST
+1199: LIST
+1200: LIST
+1201: LIST
+1202: PUSH
+1203: LD_INT 0
+1205: PUSH
+1206: EMPTY
+1207: LIST
+1208: DIFF
+1209: ST_TO_ADDR
+// Vedlejsi = Survivors4 diff 0 ;
+1210: LD_ADDR_VAR 0 3
+1214: PUSH
+1215: LD_LOC 23
+1219: PUSH
+1220: LD_INT 0
+1222: DIFF
+1223: ST_TO_ADDR
+// for I = Hlavni to 5 do
+1224: LD_ADDR_VAR 0 4
+1228: PUSH
+1229: DOUBLE
+1230: LD_VAR 0 2
+1234: DEC
+1235: ST_TO_ADDR
+1236: LD_INT 5
+1238: PUSH
+1239: FOR_TO
+1240: IFFALSE 1263
+// Vedlejsi = Vedlejsi union [ vytvor_rusaka ] ;
+1242: LD_ADDR_VAR 0 3
+1246: PUSH
+1247: LD_VAR 0 3
+1251: PUSH
+1252: CALL 486 0 0
+1256: PUSH
+1257: EMPTY
+1258: LIST
+1259: UNION
+1260: ST_TO_ADDR
+1261: GO 1239
+1263: POP
+1264: POP
+// Vybrano = CharacterSelection ( 1 , 3 , 5 , [ SEL_CHANGE_CLASS , Burlak , SEL_NOT_HIRED , SEL_CHANGEABLE ] ^ Hlavni ^ Vedlejsi , [ CLASS_SOLDIER , [ CLASS_ENGINEER , 1 ] , CLASS_MECHANIC , CLASS_SCIENTISTIC , [ CLASS_BAZOOKER , 0 , 2 ] ] ) ;
+1265: LD_ADDR_LOC 24
+1269: PUSH
+1270: LD_STRING 1
+1272: PPUSH
+1273: LD_INT 3
+1275: PPUSH
+1276: LD_INT 5
+1278: PPUSH
+1279: LD_INT -5
+1281: PUSH
+1282: LD_LOC 1
+1286: PUSH
+1287: LD_INT -2
+1289: PUSH
+1290: LD_INT -3
+1292: PUSH
+1293: EMPTY
+1294: LIST
+1295: LIST
+1296: LIST
+1297: LIST
+1298: PUSH
+1299: LD_VAR 0 2
+1303: ADD
+1304: PUSH
+1305: LD_VAR 0 3
+1309: ADD
+1310: PPUSH
+1311: LD_INT 1
+1313: PUSH
+1314: LD_INT 2
+1316: PUSH
+1317: LD_INT 1
+1319: PUSH
+1320: EMPTY
+1321: LIST
+1322: LIST
+1323: PUSH
+1324: LD_INT 3
+1326: PUSH
+1327: LD_INT 4
+1329: PUSH
+1330: LD_INT 9
+1332: PUSH
+1333: LD_INT 0
+1335: PUSH
+1336: LD_INT 2
+1338: PUSH
+1339: EMPTY
+1340: LIST
+1341: LIST
+1342: LIST
+1343: PUSH
+1344: EMPTY
+1345: LIST
+1346: LIST
+1347: LIST
+1348: LIST
+1349: LIST
+1350: PPUSH
+1351: CALL_OW 42
+1355: ST_TO_ADDR
+// SaveCharacters ( [ Burlak ] , Burlak ) ;
+1356: LD_LOC 1
+1360: PUSH
+1361: EMPTY
+1362: LIST
+1363: PPUSH
+1364: LD_STRING Burlak
+1366: PPUSH
+1367: CALL_OW 38
+// if Belkov in Vybrano then
+1371: LD_LOC 6
+1375: PUSH
+1376: LD_LOC 24
+1380: IN
+1381: IFFALSE 1393
+// SaveVariable ( 14 , BelkovLoc ) ;
+1383: LD_INT 14
+1385: PPUSH
+1386: LD_STRING BelkovLoc
+1388: PPUSH
+1389: CALL_OW 39
+// if Belkov then
+1393: LD_LOC 6
+1397: IFFALSE 1414
+// SaveCharacters ( [ Belkov ] , Belkov ) ;
+1399: LD_LOC 6
+1403: PUSH
+1404: EMPTY
+1405: LIST
+1406: PPUSH
+1407: LD_STRING Belkov
+1409: PPUSH
+1410: CALL_OW 38
+// if Gnyevko in Vybrano then
+1414: LD_LOC 7
+1418: PUSH
+1419: LD_LOC 24
+1423: IN
+1424: IFFALSE 1436
+// SaveVariable ( 14 , GnyevkoLoc ) ;
+1426: LD_INT 14
+1428: PPUSH
+1429: LD_STRING GnyevkoLoc
+1431: PPUSH
+1432: CALL_OW 39
+// if Gnyevko then
+1436: LD_LOC 7
+1440: IFFALSE 1457
+// SaveCharacters ( [ Gnyevko ] , Gnyevko ) ;
+1442: LD_LOC 7
+1446: PUSH
+1447: EMPTY
+1448: LIST
+1449: PPUSH
+1450: LD_STRING Gnyevko
+1452: PPUSH
+1453: CALL_OW 38
+// if Kirilenkova in Vybrano then
+1457: LD_LOC 8
+1461: PUSH
+1462: LD_LOC 24
+1466: IN
+1467: IFFALSE 1479
+// SaveVariable ( 14 , KirilenkovaLoc ) ;
+1469: LD_INT 14
+1471: PPUSH
+1472: LD_STRING KirilenkovaLoc
+1474: PPUSH
+1475: CALL_OW 39
+// if Kirilenkova then
+1479: LD_LOC 8
+1483: IFFALSE 1500
+// SaveCharacters ( [ Kirilenkova ] , Kirilenkova ) ;
+1485: LD_LOC 8
+1489: PUSH
+1490: EMPTY
+1491: LIST
+1492: PPUSH
+1493: LD_STRING Kirilenkova
+1495: PPUSH
+1496: CALL_OW 38
+// if Kovalyuk in Vybrano then
+1500: LD_LOC 9
+1504: PUSH
+1505: LD_LOC 24
+1509: IN
+1510: IFFALSE 1522
+// SaveVariable ( 14 , KovalyukLoc ) ;
+1512: LD_INT 14
+1514: PPUSH
+1515: LD_STRING KovalyukLoc
+1517: PPUSH
+1518: CALL_OW 39
+// if Kovalyuk then
+1522: LD_LOC 9
+1526: IFFALSE 1543
+// SaveCharacters ( [ Kovalyuk ] , Kovalyuk ) ;
+1528: LD_LOC 9
+1532: PUSH
+1533: EMPTY
+1534: LIST
+1535: PPUSH
+1536: LD_STRING Kovalyuk
+1538: PPUSH
+1539: CALL_OW 38
+// if Scholtze in Vybrano then
+1543: LD_LOC 10
+1547: PUSH
+1548: LD_LOC 24
+1552: IN
+1553: IFFALSE 1565
+// SaveVariable ( 14 , ScholtzeLoc ) ;
+1555: LD_INT 14
+1557: PPUSH
+1558: LD_STRING ScholtzeLoc
+1560: PPUSH
+1561: CALL_OW 39
+// if Scholtze then
+1565: LD_LOC 10
+1569: IFFALSE 1586
+// SaveCharacters ( [ Scholtze ] , Scholtze ) ;
+1571: LD_LOC 10
+1575: PUSH
+1576: EMPTY
+1577: LIST
+1578: PPUSH
+1579: LD_STRING Scholtze
+1581: PPUSH
+1582: CALL_OW 38
+// if Kuzmov in Vybrano then
+1586: LD_LOC 11
+1590: PUSH
+1591: LD_LOC 24
+1595: IN
+1596: IFFALSE 1608
+// SaveVariable ( 14 , KuzmovLoc ) ;
+1598: LD_INT 14
+1600: PPUSH
+1601: LD_STRING KuzmovLoc
+1603: PPUSH
+1604: CALL_OW 39
+// if Kuzmov then
+1608: LD_LOC 11
+1612: IFFALSE 1629
+// SaveCharacters ( [ Kuzmov ] , Kuzmov ) ;
+1614: LD_LOC 11
+1618: PUSH
+1619: EMPTY
+1620: LIST
+1621: PPUSH
+1622: LD_STRING Kuzmov
+1624: PPUSH
+1625: CALL_OW 38
+// if Karamazov in Vybrano then
+1629: LD_LOC 12
+1633: PUSH
+1634: LD_LOC 24
+1638: IN
+1639: IFFALSE 1651
+// SaveVariable ( 14 , KaramazovLoc ) ;
+1641: LD_INT 14
+1643: PPUSH
+1644: LD_STRING KaramazovLoc
+1646: PPUSH
+1647: CALL_OW 39
+// if Karamazov then
+1651: LD_LOC 12
+1655: IFFALSE 1672
+// SaveCharacters ( [ Karamazov ] , Karamazov ) ;
+1657: LD_LOC 12
+1661: PUSH
+1662: EMPTY
+1663: LIST
+1664: PPUSH
+1665: LD_STRING Karamazov
+1667: PPUSH
+1668: CALL_OW 38
+// if Petrovova in Vybrano then
+1672: LD_LOC 13
+1676: PUSH
+1677: LD_LOC 24
+1681: IN
+1682: IFFALSE 1694
+// SaveVariable ( 14 , PetrovovaLoc ) ;
+1684: LD_INT 14
+1686: PPUSH
+1687: LD_STRING PetrovovaLoc
+1689: PPUSH
+1690: CALL_OW 39
+// if Petrovova then
+1694: LD_LOC 13
+1698: IFFALSE 1715
+// SaveCharacters ( [ Petrovova ] , Petrovova ) ;
+1700: LD_LOC 13
+1704: PUSH
+1705: EMPTY
+1706: LIST
+1707: PPUSH
+1708: LD_STRING Petrovova
+1710: PPUSH
+1711: CALL_OW 38
+// if Gleb in Vybrano then
+1715: LD_LOC 14
+1719: PUSH
+1720: LD_LOC 24
+1724: IN
+1725: IFFALSE 1737
+// SaveVariable ( 14 , GlebLoc ) ;
+1727: LD_INT 14
+1729: PPUSH
+1730: LD_STRING GlebLoc
+1732: PPUSH
+1733: CALL_OW 39
+// if Gleb then
+1737: LD_LOC 14
+1741: IFFALSE 1758
+// SaveCharacters ( [ Gleb ] , Gleb ) ;
+1743: LD_LOC 14
+1747: PUSH
+1748: EMPTY
+1749: LIST
+1750: PPUSH
+1751: LD_STRING Gleb
+1753: PPUSH
+1754: CALL_OW 38
+// if Petrosyan in Vybrano then
+1758: LD_LOC 15
+1762: PUSH
+1763: LD_LOC 24
+1767: IN
+1768: IFFALSE 1780
+// SaveVariable ( 14 , PetrosyanLoc ) ;
+1770: LD_INT 14
+1772: PPUSH
+1773: LD_STRING PetrosyanLoc
+1775: PPUSH
+1776: CALL_OW 39
+// if Petrosyan then
+1780: LD_LOC 15
+1784: IFFALSE 1801
+// SaveCharacters ( [ Petrosyan ] , Petrosyan ) ;
+1786: LD_LOC 15
+1790: PUSH
+1791: EMPTY
+1792: LIST
+1793: PPUSH
+1794: LD_STRING Petrosyan
+1796: PPUSH
+1797: CALL_OW 38
+// if Lipshchin in Vybrano then
+1801: LD_LOC 16
+1805: PUSH
+1806: LD_LOC 24
+1810: IN
+1811: IFFALSE 1823
+// SaveVariable ( 14 , LipshchinLoc ) ;
+1813: LD_INT 14
+1815: PPUSH
+1816: LD_STRING LipshchinLoc
+1818: PPUSH
+1819: CALL_OW 39
+// if Lipshchin then
+1823: LD_LOC 16
+1827: IFFALSE 1844
+// SaveCharacters ( [ Lipshchin ] , Lipshchin ) ;
+1829: LD_LOC 16
+1833: PUSH
+1834: EMPTY
+1835: LIST
+1836: PPUSH
+1837: LD_STRING Lipshchin
+1839: PPUSH
+1840: CALL_OW 38
+// if Titov in Vybrano then
+1844: LD_LOC 17
+1848: PUSH
+1849: LD_LOC 24
+1853: IN
+1854: IFFALSE 1866
+// SaveVariable ( 14 , TitovLoc ) ;
+1856: LD_INT 14
+1858: PPUSH
+1859: LD_STRING TitovLoc
+1861: PPUSH
+1862: CALL_OW 39
+// if Titov then
+1866: LD_LOC 17
+1870: IFFALSE 1887
+// SaveCharacters ( [ Titov ] , Titov ) ;
+1872: LD_LOC 17
+1876: PUSH
+1877: EMPTY
+1878: LIST
+1879: PPUSH
+1880: LD_STRING Titov
+1882: PPUSH
+1883: CALL_OW 38
+// if Dolgov in Vybrano then
+1887: LD_LOC 18
+1891: PUSH
+1892: LD_LOC 24
+1896: IN
+1897: IFFALSE 1909
+// SaveVariable ( 14 , DolgovLoc ) ;
+1899: LD_INT 14
+1901: PPUSH
+1902: LD_STRING DolgovLoc
+1904: PPUSH
+1905: CALL_OW 39
+// if Dolgov then
+1909: LD_LOC 18
+1913: IFFALSE 1930
+// SaveCharacters ( [ Dolgov ] , Dolgov ) ;
+1915: LD_LOC 18
+1919: PUSH
+1920: EMPTY
+1921: LIST
+1922: PPUSH
+1923: LD_STRING Dolgov
+1925: PPUSH
+1926: CALL_OW 38
+// if Xavier in Vybrano then
+1930: LD_LOC 19
+1934: PUSH
+1935: LD_LOC 24
+1939: IN
+1940: IFFALSE 1952
+// SaveVariable ( 14 , XavierLoc ) ;
+1942: LD_INT 14
+1944: PPUSH
+1945: LD_STRING XavierLoc
+1947: PPUSH
+1948: CALL_OW 39
+// if Xavier then
+1952: LD_LOC 19
+1956: IFFALSE 1973
+// SaveCharacters ( [ Xavier ] , Xavier ) ;
+1958: LD_LOC 19
+1962: PUSH
+1963: EMPTY
+1964: LIST
+1965: PPUSH
+1966: LD_STRING Xavier
+1968: PPUSH
+1969: CALL_OW 38
+// if Oblukov in Vybrano then
+1973: LD_LOC 20
+1977: PUSH
+1978: LD_LOC 24
+1982: IN
+1983: IFFALSE 1995
+// SaveVariable ( 14 , OblukovLoc ) ;
+1985: LD_INT 14
+1987: PPUSH
+1988: LD_STRING OblukovLoc
+1990: PPUSH
+1991: CALL_OW 39
+// if Oblukov then
+1995: LD_LOC 20
+1999: IFFALSE 2016
+// SaveCharacters ( [ Oblukov ] , Oblukov ) ;
+2001: LD_LOC 20
+2005: PUSH
+2006: EMPTY
+2007: LIST
+2008: PPUSH
+2009: LD_STRING Oblukov
+2011: PPUSH
+2012: CALL_OW 38
+// if Kozlov in Vybrano then
+2016: LD_LOC 21
+2020: PUSH
+2021: LD_LOC 24
+2025: IN
+2026: IFFALSE 2038
+// SaveVariable ( 14 , KozlovLoc ) ;
+2028: LD_INT 14
+2030: PPUSH
+2031: LD_STRING KozlovLoc
+2033: PPUSH
+2034: CALL_OW 39
+// if Kozlov then
+2038: LD_LOC 21
+2042: IFFALSE 2059
+// SaveCharacters ( [ Kozlov ] , Kozlov ) ;
+2044: LD_LOC 21
+2048: PUSH
+2049: EMPTY
+2050: LIST
+2051: PPUSH
+2052: LD_STRING Kozlov
+2054: PPUSH
+2055: CALL_OW 38
+// if Kapitsova in Vybrano then
+2059: LD_LOC 22
+2063: PUSH
+2064: LD_LOC 24
+2068: IN
+2069: IFFALSE 2081
+// SaveVariable ( 14 , KapitsovaLoc ) ;
+2071: LD_INT 14
+2073: PPUSH
+2074: LD_STRING KapitsovaLoc
+2076: PPUSH
+2077: CALL_OW 39
+// if Kapitsova then
+2081: LD_LOC 22
+2085: IFFALSE 2102
+// SaveCharacters ( [ Kapitsova ] , Kapitsova ) ;
+2087: LD_LOC 22
+2091: PUSH
+2092: EMPTY
+2093: LIST
+2094: PPUSH
+2095: LD_STRING Kapitsova
+2097: PPUSH
+2098: CALL_OW 38
+// Vedlejsi = Vybrano diff Hlavni ;
+2102: LD_ADDR_VAR 0 3
+2106: PUSH
+2107: LD_LOC 24
+2111: PUSH
+2112: LD_VAR 0 2
+2116: DIFF
+2117: ST_TO_ADDR
+// if Vedlejsi then
+2118: LD_VAR 0 3
+2122: IFFALSE 2136
+// SaveCharacters ( Vedlejsi , Others_Ru14 ) ;
+2124: LD_VAR 0 3
+2128: PPUSH
+2129: LD_STRING Others_Ru14
+2131: PPUSH
+2132: CALL_OW 38
+// Survivors4 = Survivors4 diff Vybrano ;
+2136: LD_ADDR_LOC 23
+2140: PUSH
+2141: LD_LOC 23
+2145: PUSH
+2146: LD_LOC 24
+2150: DIFF
+2151: ST_TO_ADDR
+// SaveCharacters ( Survivors4 , Survivors4 ) ;
+2152: LD_LOC 23
+2156: PPUSH
+2157: LD_STRING Survivors4
+2159: PPUSH
+2160: CALL_OW 38
+// Wait ( 0 0$2 ) ;
+2164: LD_INT 70
+2166: PPUSH
+2167: CALL_OW 67
+// InGameOff ;
+2171: CALL_OW 9
+// ChangeMap ( %_Cont , %_Cont ) ;
+2175: LD_STRING %_Cont
+2177: PPUSH
+2178: LD_STRING %_Cont
+2180: PPUSH
+2181: CALL_OW 340
+// end ;
+2185: LD_VAR 0 1
+2189: RET
+// function vojak ; begin
+2190: LD_INT 0
+2192: PPUSH
+// UC_Side = 3 ;
+2193: LD_ADDR_OWVAR 20
+2197: PUSH
+2198: LD_INT 3
+2200: ST_TO_ADDR
+// UC_Nation = NATION_RUSSIAN ;
+2201: LD_ADDR_OWVAR 21
+2205: PUSH
+2206: LD_INT 3
+2208: ST_TO_ADDR
+// HC_Sex = SEX_MALE ;
+2209: LD_ADDR_OWVAR 27
+2213: PUSH
+2214: LD_INT 1
+2216: ST_TO_ADDR
+// HC_Class = CLASS_SOLDIER ;
+2217: LD_ADDR_OWVAR 28
+2221: PUSH
+2222: LD_INT 1
+2224: ST_TO_ADDR
+// PrepareSoldierSkills ( Rand ( 4 , 8 ) ) ;
+2225: LD_INT 4
+2227: PPUSH
+2228: LD_INT 8
+2230: PPUSH
+2231: CALL_OW 12
+2235: PPUSH
+2236: CALL_OW 375
+// Result = CreateHuman ;
+2240: LD_ADDR_VAR 0 1
+2244: PUSH
+2245: CALL_OW 44
+2249: ST_TO_ADDR
+// end ;
+2250: LD_VAR 0 1
+2254: RET
+// function autak ; begin
+2255: LD_INT 0
+2257: PPUSH
+// UC_Side = 3 ;
+2258: LD_ADDR_OWVAR 20
+2262: PUSH
+2263: LD_INT 3
+2265: ST_TO_ADDR
+// UC_Nation = NATION_RUSSIAN ;
+2266: LD_ADDR_OWVAR 21
+2270: PUSH
+2271: LD_INT 3
+2273: ST_TO_ADDR
+// VC_Chassis = RU_MEDIUM_WHEELED ;
+2274: LD_ADDR_OWVAR 37
+2278: PUSH
+2279: LD_INT 21
+2281: ST_TO_ADDR
+// VC_Weapon = RU_CARGO_BAY ;
+2282: LD_ADDR_OWVAR 40
+2286: PUSH
+2287: LD_INT 51
+2289: ST_TO_ADDR
+// VC_Engine = ENGINE_SIBERITE ;
+2290: LD_ADDR_OWVAR 39
+2294: PUSH
+2295: LD_INT 3
+2297: ST_TO_ADDR
+// VC_Control = CONTROL_MANUAL ;
+2298: LD_ADDR_OWVAR 38
+2302: PUSH
+2303: LD_INT 1
+2305: ST_TO_ADDR
+// Result = CreateVehicle ;
+2306: LD_ADDR_VAR 0 1
+2310: PUSH
+2311: CALL_OW 45
+2315: ST_TO_ADDR
+// end ;
+2316: LD_VAR 0 1
+2320: RET
+// function zakladna ; var Bluekher , Spec , Tmp ; begin
+2321: LD_INT 0
+2323: PPUSH
+2324: PPUSH
+2325: PPUSH
+2326: PPUSH
+// Bluekher = LoadVariable ( Bluekher , [ ] ) ;
+2327: LD_ADDR_VAR 0 2
+2331: PUSH
+2332: LD_STRING Bluekher
+2334: PPUSH
+2335: EMPTY
+2336: PPUSH
+2337: CALL_OW 30
+2341: ST_TO_ADDR
+// SetResourceVisibility ( 20 , 34 , 3 ) ;
+2342: LD_INT 20
+2344: PPUSH
+2345: LD_INT 34
+2347: PPUSH
+2348: LD_INT 3
+2350: PPUSH
+2351: CALL_OW 441
+// SetResourceVisibility ( 14 , 23 , 3 ) ;
+2355: LD_INT 14
+2357: PPUSH
+2358: LD_INT 23
+2360: PPUSH
+2361: LD_INT 3
+2363: PPUSH
+2364: CALL_OW 441
+// if not Bluekher then
+2368: LD_VAR 0 2
+2372: NOT
+2373: IFFALSE 2522
+// Bluekher = [ [ 20 , 34 , 5 , B_SIBERITE_MINE , 5 , NATION_RUSSIAN , 0 , 0 ] , [ 23 , 27 , 1 , B_DEPOT , 5 , NATION_RUSSIAN , 0 , 0 ] , [ 14 , 23 , 0 , B_OIL_MINE , 5 , NATION_RUSSIAN , 0 , 0 ] , [ 36 , 28 , 2 , B_LAB_FULL , 5 , NATION_RUSSIAN , B_LAB_SPACETIME , B_LAB_SIBERIUM ] ] ;
+2375: LD_ADDR_VAR 0 2
+2379: PUSH
+2380: LD_INT 20
+2382: PUSH
+2383: LD_INT 34
+2385: PUSH
+2386: LD_INT 5
+2388: PUSH
+2389: LD_INT 30
+2391: PUSH
+2392: LD_INT 5
+2394: PUSH
+2395: LD_INT 3
+2397: PUSH
+2398: LD_INT 0
+2400: PUSH
+2401: LD_INT 0
+2403: PUSH
+2404: EMPTY
+2405: LIST
+2406: LIST
+2407: LIST
+2408: LIST
+2409: LIST
+2410: LIST
+2411: LIST
+2412: LIST
+2413: PUSH
+2414: LD_INT 23
+2416: PUSH
+2417: LD_INT 27
+2419: PUSH
+2420: LD_INT 1
+2422: PUSH
+2423: LD_INT 0
+2425: PUSH
+2426: LD_INT 5
+2428: PUSH
+2429: LD_INT 3
+2431: PUSH
+2432: LD_INT 0
+2434: PUSH
+2435: LD_INT 0
+2437: PUSH
+2438: EMPTY
+2439: LIST
+2440: LIST
+2441: LIST
+2442: LIST
+2443: LIST
+2444: LIST
+2445: LIST
+2446: LIST
+2447: PUSH
+2448: LD_INT 14
+2450: PUSH
+2451: LD_INT 23
+2453: PUSH
+2454: LD_INT 0
+2456: PUSH
+2457: LD_INT 29
+2459: PUSH
+2460: LD_INT 5
+2462: PUSH
+2463: LD_INT 3
+2465: PUSH
+2466: LD_INT 0
+2468: PUSH
+2469: LD_INT 0
+2471: PUSH
+2472: EMPTY
+2473: LIST
+2474: LIST
+2475: LIST
+2476: LIST
+2477: LIST
+2478: LIST
+2479: LIST
+2480: LIST
+2481: PUSH
+2482: LD_INT 36
+2484: PUSH
+2485: LD_INT 28
+2487: PUSH
+2488: LD_INT 2
+2490: PUSH
+2491: LD_INT 8
+2493: PUSH
+2494: LD_INT 5
+2496: PUSH
+2497: LD_INT 3
+2499: PUSH
+2500: LD_INT 14
+2502: PUSH
+2503: LD_INT 11
+2505: PUSH
+2506: EMPTY
+2507: LIST
+2508: LIST
+2509: LIST
+2510: LIST
+2511: LIST
+2512: LIST
+2513: LIST
+2514: LIST
+2515: PUSH
+2516: EMPTY
+2517: LIST
+2518: LIST
+2519: LIST
+2520: LIST
+2521: ST_TO_ADDR
+// UC_Side = 3 ;
+2522: LD_ADDR_OWVAR 20
+2526: PUSH
+2527: LD_INT 3
+2529: ST_TO_ADDR
+// Result = [ ] ;
+2530: LD_ADDR_VAR 0 1
+2534: PUSH
+2535: EMPTY
+2536: ST_TO_ADDR
+// for Spec in Bluekher do
+2537: LD_ADDR_VAR 0 3
+2541: PUSH
+2542: LD_VAR 0 2
+2546: PUSH
+2547: FOR_IN
+2548: IFFALSE 2758
+// begin BC_Type = Spec [ 4 ] ;
+2550: LD_ADDR_OWVAR 42
+2554: PUSH
+2555: LD_VAR 0 3
+2559: PUSH
+2560: LD_INT 4
+2562: ARRAY
+2563: ST_TO_ADDR
+// BC_Level = Spec [ 5 ] ;
+2564: LD_ADDR_OWVAR 43
+2568: PUSH
+2569: LD_VAR 0 3
+2573: PUSH
+2574: LD_INT 5
+2576: ARRAY
+2577: ST_TO_ADDR
+// UC_Nation = Spec [ 6 ] ;
+2578: LD_ADDR_OWVAR 21
+2582: PUSH
+2583: LD_VAR 0 3
+2587: PUSH
+2588: LD_INT 6
+2590: ARRAY
+2591: ST_TO_ADDR
+// if BC_Type in [ B_LAB , B_LAB_HALF , B_LAB_FULL ] then
+2592: LD_OWVAR 42
+2596: PUSH
+2597: LD_INT 6
+2599: PUSH
+2600: LD_INT 7
+2602: PUSH
+2603: LD_INT 8
+2605: PUSH
+2606: EMPTY
+2607: LIST
+2608: LIST
+2609: LIST
+2610: IN
+2611: IFFALSE 2643
+// begin BC_Kind1 = Spec [ 7 ] ;
+2613: LD_ADDR_OWVAR 44
+2617: PUSH
+2618: LD_VAR 0 3
+2622: PUSH
+2623: LD_INT 7
+2625: ARRAY
+2626: ST_TO_ADDR
+// BC_Kind2 = Spec [ 8 ] ;
+2627: LD_ADDR_OWVAR 45
+2631: PUSH
+2632: LD_VAR 0 3
+2636: PUSH
+2637: LD_INT 8
+2639: ARRAY
+2640: ST_TO_ADDR
+// end else
+2641: GO 2659
+// begin BC_Kind1 = 0 ;
+2643: LD_ADDR_OWVAR 44
+2647: PUSH
+2648: LD_INT 0
+2650: ST_TO_ADDR
+// BC_Kind2 = 0 ;
+2651: LD_ADDR_OWVAR 45
+2655: PUSH
+2656: LD_INT 0
+2658: ST_TO_ADDR
+// end ; Tmp = CreateAndPlaceBuildingXYD ( Spec [ 1 ] , Spec [ 2 ] , Spec [ 3 ] ) ;
+2659: LD_ADDR_VAR 0 4
+2663: PUSH
+2664: LD_VAR 0 3
+2668: PUSH
+2669: LD_INT 1
+2671: ARRAY
+2672: PPUSH
+2673: LD_VAR 0 3
+2677: PUSH
+2678: LD_INT 2
+2680: ARRAY
+2681: PPUSH
+2682: LD_VAR 0 3
+2686: PUSH
+2687: LD_INT 3
+2689: ARRAY
+2690: PPUSH
+2691: CALL_OW 47
+2695: ST_TO_ADDR
+// if not Tmp then
+2696: LD_VAR 0 4
+2700: NOT
+2701: IFFALSE 2705
+// continue ;
+2703: GO 2547
+// if BC_Type in [ B_TURRET , B_BUNKER ] then
+2705: LD_OWVAR 42
+2709: PUSH
+2710: LD_INT 33
+2712: PUSH
+2713: LD_INT 32
+2715: PUSH
+2716: EMPTY
+2717: LIST
+2718: LIST
+2719: IN
+2720: IFFALSE 2740
+// PlaceWeaponTurret ( Tmp , Spec [ 7 ] ) ;
+2722: LD_VAR 0 4
+2726: PPUSH
+2727: LD_VAR 0 3
+2731: PUSH
+2732: LD_INT 7
+2734: ARRAY
+2735: PPUSH
+2736: CALL_OW 431
+// Result = Result ^ Tmp ;
+2740: LD_ADDR_VAR 0 1
+2744: PUSH
+2745: LD_VAR 0 1
+2749: PUSH
+2750: LD_VAR 0 4
+2754: ADD
+2755: ST_TO_ADDR
+// end ;
+2756: GO 2547
+2758: POP
+2759: POP
+// Tmp = UnitFilter ( Result , [ [ F_BTYPE , B_DEPOT ] ] ) union UnitFilter ( Result , [ [ F_BTYPE , B_WAREHOUSE ] ] ) ;
+2760: LD_ADDR_VAR 0 4
+2764: PUSH
+2765: LD_VAR 0 1
+2769: PPUSH
+2770: LD_INT 30
+2772: PUSH
+2773: LD_INT 0
+2775: PUSH
+2776: EMPTY
+2777: LIST
+2778: LIST
+2779: PUSH
+2780: EMPTY
+2781: LIST
+2782: PPUSH
+2783: CALL_OW 72
+2787: PUSH
+2788: LD_VAR 0 1
+2792: PPUSH
+2793: LD_INT 30
+2795: PUSH
+2796: LD_INT 1
+2798: PUSH
+2799: EMPTY
+2800: LIST
+2801: LIST
+2802: PUSH
+2803: EMPTY
+2804: LIST
+2805: PPUSH
+2806: CALL_OW 72
+2810: UNION
+2811: ST_TO_ADDR
+// SetBName ( Tmp , bluekher ) ;
+2812: LD_VAR 0 4
+2816: PPUSH
+2817: LD_STRING bluekher
+2819: PPUSH
+2820: CALL_OW 500
+// end ;
+2824: LD_VAR 0 1
+2828: RET
+// starting begin RandomizeAll ;
+2829: CALL_OW 11
+// load ;
+2833: CALL 215 0 0
+// zakladna ;
+2837: CALL 2321 0 0
+// Rus1 = vojak ;
+2841: LD_ADDR_LOC 2
+2845: PUSH
+2846: CALL 2190 0 0
+2850: ST_TO_ADDR
+// Rus2 = vojak ;
+2851: LD_ADDR_LOC 3
+2855: PUSH
+2856: CALL 2190 0 0
+2860: ST_TO_ADDR
+// Auto1 = autak ;
+2861: LD_ADDR_LOC 4
+2865: PUSH
+2866: CALL 2255 0 0
+2870: ST_TO_ADDR
+// Auto2 = autak ;
+2871: LD_ADDR_LOC 5
+2875: PUSH
+2876: CALL 2255 0 0
+2880: ST_TO_ADDR
+// PlaceHumanInUnit ( Rus1 , Auto1 ) ;
+2881: LD_LOC 2
+2885: PPUSH
+2886: LD_LOC 4
+2890: PPUSH
+2891: CALL_OW 52
+// PlaceHumanInUnit ( Rus2 , Auto2 ) ;
+2895: LD_LOC 3
+2899: PPUSH
+2900: LD_LOC 5
+2904: PPUSH
+2905: CALL_OW 52
+// FogOff ( true ) ;
+2909: LD_INT 1
+2911: PPUSH
+2912: CALL_OW 344
+// InGameOn ;
+2916: CALL_OW 8
+// Intro ;
+2920: CALL 632 0 0
+// end ;
+2924: END

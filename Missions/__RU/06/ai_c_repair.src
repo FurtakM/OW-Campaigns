@@ -1,0 +1,68 @@
+export opravovat;
+// doplnovani paliva v zakladne
+every 0$1.0 do
+var set_fuel, fuel;
+begin
+    for set_fuel in FilterUnitsInArea(near_base, [[f_type, unit_vehicle], [f_side, ai]]) do begin
+        fuel:=GetFuel(set_fuel);
+        if fuel<=80 then
+            SetFuel(set_fuel, fuel+20);
+    end;
+    enable;//-----------
+end;
+
+export rep_cars;
+export brk_cars;
+//posilani na opravu
+every 0$5 do
+var i;
+begin
+
+    for i in FilterAllUnits([[f_side,ai],[f_type,unit_vehicle]]) do begin
+        if GetLives(i)<600 then begin
+           ComMoveXY(i, 37,59);
+           brk_cars:=brk_cars union i;
+        end
+        else if GetLives(i)>950 then begin
+           brk_cars:=brk_cars diff i;
+        end;
+    end;
+
+    enable;
+end;
+
+//hledani aut na opravu
+every 0$5 + 0$2 do
+var zivoty,i;
+begin
+    rep_cars:=[];
+    for i in FilterUnitsInArea(repair_bay1, [[f_side,ai],[f_type,unit_vehicle]]) do begin
+        if GetLives(i)<1000 then begin
+           rep_cars:=rep_cars ^ i;
+           zivoty:=zivoty ^ GetLives(i);
+        end;
+    end;
+    SortListByListAsc(rep_cars, zivoty);
+
+    enable;
+end;
+
+export opr_mec;
+//opravy aut
+every 0$5 + 0$4 trigger opravovat do
+var a;
+begin
+     a:=UnitFilter(mec, [f_not,[f_hastask]]);
+     ComStop(a);
+     ComReturn(a);
+     opr_mec:=opr_mec diff a;
+
+    if rep_cars then begin
+       a:=get_x_best(UnitFilter(mec, [[f_dist, rep_cars[1], 20]]), 2, skill_mechanical, 0, false);
+       opr_mec:=opr_mec union a;
+       ComExitBuilding(a);
+       AddComRepairVehicle(a, rep_cars[1]);
+    end;
+
+    enable;
+end;

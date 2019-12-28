@@ -1,0 +1,111 @@
+
+on DestinationUnreachable(un) do
+begin
+   if GetSide(un)=russians then
+      ComMoveToArea(un, before_base);
+end;
+
+on UnitGoesToRed(un) do
+begin
+{   if GetSide(un)=russians and GetType(un)=unit_vehicle then begin
+      ComAttackUnit(FilterAllUnits([[f_side,russians],[f_dist,un,9]]), un);
+   end;
+}   if GetSide(un)=russians and GetType(un)=unit_human then begin
+      ComMoveToArea(un, border);
+   end;
+end;
+
+on VehicleCaptured(vehnew, vehold, origside, hum) do
+begin
+end;
+
+on BuildingComplete(build) do
+begin
+    if UnitFilter(build, [[f_btype, b_armoury],[f_nation,nation_arabian]]) then
+       ArmBuild:=true;
+    if IsDead(rudepot1) and IsInArea(build, base) and GetBType(build)=b_depot then
+       rudepot1:=build;
+    if IsInArea(build, base) and GetBType(build)=b_siberite_mine then
+       rumine1:=build;
+    if IsDead(depot1) and IsInArea(build, top_half) and GetBType(build)=b_depot then
+       depot1:=build;
+    if GetBType(build)=b_workshop then
+       MyHint('Tracks');
+end;
+
+on UpgradeComplete(build) do
+begin
+    if UnitFilter(build, [[f_btype, b_barracks],[f_nation,nation_arabian]]) then begin
+       ArmUpgraded:=true;
+       MyHint('MortarMen');
+    end;
+end;
+
+on ResearchComplete(tech, lab) do
+begin
+     if tech=tech_SibDet then begin
+        if SayAny(all_units, 'D13-Sci1-1', you, 0, class_scientistic, 0) then
+        if Say(JMM, 'D13-JMM-1') then
+           SayAny(all_units, 'D13-Sci1-2', you, 0, class_scientistic, 0);
+        disable(20);
+     end;
+end;
+
+on BuildingCaptured(build, origside, eng) do
+begin
+     if not byld2a and origside=you2 then
+        dialog2a;
+     if EndEnable and (build=rudepot1) and origside=you then begin
+       TimerEnable:=true;
+       TimerCas:=ContactTime(russians);
+       SetSideBase(GetBase(rudepot1),russians);
+     end;
+end;
+
+on UnitDestroyed(un) do
+begin
+     if un=JMM then begin
+       Disable(0);
+       YouLost('JMM');
+     end;
+end;
+
+on SailEvent(num) do
+begin
+   if (num div 1000)=1 then
+      rep_car(num-1000);
+   if (num div 1000)=2 then
+      ret_car(num-2000);
+   case num of
+     1: begin using1:=true; Attack(kdo1, path1); using1:=false; end;
+     2: begin using2:=true; Attack(kdo2, path2); using2:=false; end;
+     3: begin using3:=true; Attack(kdo3, path3); using3:=false; end;
+     4: begin using4:=true; Attack(kdo4, path4); using4:=false; end;
+     5: begin using5:=true; Attack(kdo5, path5); using5:=false; end;
+     6: begin using6:=true; Attack(kdo6, path6); using6:=false; end;
+     7: begin using7:=true; Attack(kdo7, path7); using7:=false; end;
+     8: begin using8:=true; Attack(kdo8, path8); using8:=false; end;
+     else Msg('neni thread na utok');
+   end;
+end;
+
+on BuildingStarted(b, hum) do
+begin
+  if hum=ara2 then
+    if GetBType(b)=b_armoury then
+      ArmStarted:=true;
+    if GetBType(b)=b_armoury then
+      BarStarted:=true;
+end;
+
+on EndTheMissionRaised(a) do
+begin
+  Vyhra;
+end;
+
+
+
+
+
+
+

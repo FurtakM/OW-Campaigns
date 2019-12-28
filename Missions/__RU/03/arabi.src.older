@@ -1,0 +1,157 @@
+VAR arabsky_utok_zacal;
+EXPORT posilani_arabskych_hlidek;
+
+// nastaveni pocatecnich jednotek
+EVERY 0$0.1 DO
+begin                                              
+  posilani_arabskych_hlidek=false;
+end;
+
+// arabi utoci na kirov
+EXPORT function utok_arabu;
+VAR i,pom;
+begin
+  pom=FilterAllUnits([[f_side,You]]);
+  ComStop(pom);
+  InGameOn;
+  CenterNowOnXY(142,80);
+  arabsky_utok_zacal=true;
+  posli_rusy_pryc;
+  schovej_kurina;
+
+  // kamikadze
+  PlaceUnitArea(ARABI_KAMIKADZE_LIST[1],Opoce1,false);
+  PlaceUnitArea(ARABI_KAMIKADZE_LIST[2],Opoce2,false);
+  PlaceUnitArea(ARABI_KAMIKADZE_LIST[3],Opoce2,false);
+  ComMoveXY(ARABI_KAMIKADZE_LIST[1],134,62);
+  AddComMoveXY(ARABI_KAMIKADZE_LIST[1],133,69);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[1],RU1_bu1);
+  ComMoveXY(ARABI_KAMIKADZE_LIST[2],142,94);
+  AddComMoveXY(ARABI_KAMIKADZE_LIST[2],140,90);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[2],RU1_el1);
+  ComMoveXY(ARABI_KAMIKADZE_LIST[3],143,94);
+  AddComMoveXY(ARABI_KAMIKADZE_LIST[3],141,90);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[3],RU1_el1);
+
+  // self vybuchujici auto na baraky 1
+  for i in ARABI_SELF_AUTA do PlaceUnitArea(i,Arabi2,false);
+  ComAttackUnit(ARABI_SELF_AUTA[1],RU1_bar2);
+  ComWait(ARABI_SELF_AUTA[2],0$3);
+  AddComAttackUnit(ARABI_SELF_AUTA[2],RU1_bar2);
+
+  // prvni vlna
+  for i in ARABI_PRVNI_VLNA do PlaceUnitArea(i,Arabi1,false);
+  ComMoveXY(ARABI_PRVNI_VLNA,139,78);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_bar1);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_bu2);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_bu1);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_lab2);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_dep);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_lab1);
+  AddComAttackUnit(ARABI_PRVNI_VLNA,RU1_fac);
+  AddComAgressiveMove(ARABI_PRVNI_VLNA,143,79);
+
+  InGameOff;                        
+  kecy_behem_utoku_arabu;
+  InGameOn;
+
+  wait(0$4);
+  posli_kurina_na_smrt;
+
+  // plamenomety
+  for i in ARABI_FLAME_LIST do PlaceUnitArea(i,Arabi2,false);
+  ComMoveXY(ARABI_FLAME_LIST,139,78);
+  AddComAttackUnit(ARABI_FLAME_LIST,RU1_bar1);
+
+  // vojaci
+  for i in ARABI_VOJACI do PlaceUnitArea(i,Arabi1,false);
+  ComMoveXY(ARABI_VOJACI,153,84);
+  AddComAgressiveMove(ARABI_VOJACI,150,83);
+  AddComAgressiveMove(ARABI_VOJACI,141,78);
+  AddComAgressiveMove(ARABI_VOJACI,141,86);
+
+  wait(0$5);
+  // dorazeci skupina
+  for i in ARABI_doraz do PlaceUnitArea(i,Arabi1,false);
+  ComMoveXY(ARABI_doraz,153,85);
+  AddComAttackUnit(ARABI_doraz,RU1_dep);
+  AddComAttackUnit(ARABI_doraz,RU1_lab1);
+  AddComAttackUnit(ARABI_doraz,RU1_lab2);
+end;
+
+// odchod arabaku
+EVERY 0$5 TRIGGER arabsky_utok_zacal DO
+VAR pom,pom1,i;
+VAR utek;
+begin
+  utek=[];
+  pom=FilterUnitsInArea(RU1_base,[[f_side,You2],[f_ok]]);
+  if pom<2 then
+    begin
+      pom1=FilterAllUnits([[f_side,Arabi],[f_ok]]);
+      if pom1>0
+        then for i in pom1 do if utek<3 then utek=utek^i
+        else arabsky_utok_zacal=false;
+    end;
+  if utek>0 then ComMoveXY(utek,166,95);
+  enable;
+end;
+
+// odebirani arabu
+EVERY 0$3 TRIGGER FilterUnitsInArea(RU1_base,[[f_side,You2],[f_ok]])<2 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Arabi2,[[f_side,Arabi]]);
+  for i in pom do RemoveUnit(i);
+  enable;
+end;
+
+// zniceni elektraren !!
+EVERY 0$4 TRIGGER arabsky_utok_zacal DO
+begin
+  if GetLives(RU1_el1)<1000 and GetLives(RU1_el1)<150 then SetLives(RU1_el1,150);
+  if GetLives(RU1_el2)<1000 and GetLives(RU1_el2)<150 then SetLives(RU1_el2,150);
+  if IsOK(RU1_el1) or IsOK(RU1_el2) then enable;
+end;
+
+// konec ingame videa
+EVERY 0$5 TRIGGER FilterUnitsInArea(RU1_base,[[f_side,You2],[f_type,unit_human],[f_ok]])=0 DO
+begin
+  arabi_kirov_posily_posli;
+  chmo_6;
+  InGameOff;
+end;
+
+// dobijeni budov
+EVERY 0$3 TRIGGER FilterUnitsInArea(RU1_base,[[f_side,You2]])>2 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU1_base,[[f_side,You2]]);
+  ComAttackUnit(ARABI_doraz,pom[1]);
+  enable;
+end;
+
+// posilani arabskych komand na proheldavani okoli
+EVERY 0$3 TRIGGER posilani_arabskych_hlidek DO
+VAR i;
+begin
+  wait(6$0);
+  for i in Arabi_komanda1 do PlaceUnitArea(i,posily_3,false);
+  McMove(1,Arabi_komanda1,[[113,17],[105,25],[87,19],[66,14],[56,12],[44,13],[37,13],[21,13]],[mc_move_waitwp,mc_move_agressive]);
+  wait(3$0);
+  for i in Arabi_komanda2 do PlaceUnitArea(i,Kom_RU2,false);
+  McMove(1,Arabi_komanda2,[[142,79],[128,75],[116,59],[101,68]],[mc_move_wait,mc_move_waitwp,mc_move_agressive]);
+  for i in Arabi_komanda3 do PlaceUnitArea(i,posily_3,false);
+  McMove(1,Arabi_komanda3,[[113,17],[105,25],[87,19],[66,14],[56,12],[82,30],[75,27],[91,36]],[mc_move_waitwp,mc_move_agressive]);
+  wait(2$0);
+  for i in Arabi_komanda4 do PlaceUnitArea(i,Kom_RU2,false);
+  McMove(1,Arabi_komanda4,[[141,78],[123,72],[111,57],[107,43],[104,32],[82,31],[63,59],[50,61],[58,86],[55,88]],[mc_move_waitwp,mc_move_agressive]);
+end;
+
+// arabske posily po zniceni kirova
+function arabi_kirov_posily_posli;
+VAR i;
+begin
+  for i in ARABI_KIROV_POSILY do PlaceUnitArea(i,Arabi3,false);
+  ComAgressiveMove(ARABI_KIROV_POSILY,142,84);
+end;

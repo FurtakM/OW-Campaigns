@@ -1,0 +1,494 @@
+export abdul;
+export arv1,arm1,arv2,arm2,arv3,arm3,arv4,arm4,arv5,arm5,arv6,arm6,arv7,arv8,arv9,arv10;
+
+var inzinyrka,mechanic,ar_mech_ctrl,typitomybudovy;
+export function prepare_arabians;
+var tmp;
+begin
+//osadky bunkru
+  uc_side=ar;
+  uc_nation=nation_arabian;
+  preparesoldier(sex_male,ars0);
+  tmp=createhuman;
+  placeunitxy(tmp,135,91,false);
+  comenterunit(tmp,arbunk0);
+  preparesoldier(sex_male,ars1);
+  tmp=createhuman;
+  placeunitxy(tmp,138,85,false);
+  comenterunit(tmp,arbunk1);
+  preparesoldier(sex_male,ars2);
+  tmp=createhuman;
+  placeunitxy(tmp,129,78,false);
+  comenterunit(tmp,arbunk2);
+  preparesoldier(sex_male,ars3);
+  tmp=createhuman;
+  placeunitxy(tmp,115,44,false);
+  comenterunit(tmp,arbunk3);
+  preparesoldier(sex_male,ars4);
+  tmp=createhuman;
+  placeunitxy(tmp,125,37,false);
+  comenterunit(tmp,arbunk4);
+  preparesoldier(sex_male,ars5);
+  tmp=createhuman;
+  placeunitxy(tmp,132,33,false);
+  comenterunit(tmp,arbunk5);
+//lidi v barracksech
+  if difficulty=1 then begin
+    preparehuman(sex_male,class_mortar,ars6);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    preparehuman(sex_male,class_soldier,ars7);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    preparehuman(sex_male,class_soldier,ars8);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    preparehuman(sex_male,class_soldier,ars9);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    preparehuman(sex_male,class_soldier,ars10);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+  end
+  else begin
+    preparehuman(sex_male,class_mortar,ars6);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    preparehuman(sex_male,class_mortar,ars7);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    preparehuman(sex_male,class_soldier,ars8);
+    tmp=createhuman;
+    placeunitxyr(tmp,134,75,1,false);
+    comenterunit(tmp,arbarr);
+    if difficulty>2 then begin
+      preparehuman(sex_male,class_mortar,ars9);
+      tmp=createhuman;
+      placeunitxyr(tmp,134,75,1,false);
+      comenterunit(tmp,arbarr);
+      preparehuman(sex_male,class_mortar,ars10);
+      tmp=createhuman;
+      placeunitxyr(tmp,134,75,1,false);
+      comenterunit(tmp,arbarr);
+    end
+    else begin
+      preparehuman(sex_male,class_mortar,ars9);
+      tmp=createhuman;
+      placeunitxyr(tmp,134,75,1,false);
+      comenterunit(tmp,arbarr);
+      preparehuman(sex_male,class_soldier,ars10);
+      tmp=createhuman;
+      placeunitxyr(tmp,134,75,1,false);
+      comenterunit(tmp,arbarr);
+    end;
+  end;
+//mechanik do factory
+  preparemechanic(sex_female,8);
+  mechanic=createhuman;
+  placeunitxy(mechanic,133,54,false);
+  comenterunit(mechanic,arfact00);
+//inzinyrka v depotu
+  prepareengineer(sex_female,7);
+  inzinyrka=createhuman;
+  placeunitxy(inzinyrka,134,61,false);
+  comenterunit(inzinyrka,ar_depot);
+//ten zatr. sheik
+  if checkcharacterset('Abdul') then abdul=createcharacterwithclass('Abdul',class_desert_warior)
+  else buildquery('neny Abdul',['OK']);
+  placeunitxyr(abdul,140,65,3,false);
+  addcomenterunit(abdul,abduluv);
+//control tower
+  preparemechanic(sex_female,arm0);
+  tmp=createhuman;
+  ar_mech_ctrl=tmp;
+  placehumaninunit(tmp,ctrl_twr);      //na tmp bych prosil nehrabat, o kus dal to pouzivam!
+  //linkvehicletohuman(nakladak,tmp);
+//artefakt do auticka
+  setcargo(nakladak,mat_artefact,50);
+  preparemechanic(sex_male,7);
+  placehumaninunit(createhuman,nakladak);
+//nejaky auticka
+  vc_engine=engine_siberite;
+  vc_control=control_manual;
+  vc_chassis=arv1_ch;
+  vc_weapon=arv1_wp;
+  arv1=createvehicle;
+  setdir(arv1,5);
+//  placeunitxy(arv1,141,92,false);
+  placeunitxy(arv1,128,38,false);
+  preparemechanic(sex_male,arm1_sk);
+  arm1=createhuman;
+  placehumaninunit(arm1,arv1);
+  vc_chassis=arv2_ch;
+  vc_weapon=arv2_wp;
+  arv2=createvehicle;
+  setdir(arv2,4);
+  placeunitxy(arv2,141,89,false);
+  preparemechanic(sex_male,arm2_sk);
+  arm2=createhuman;
+  placehumaninunit(arm2,arv2);
+  if difficulty=2 then begin
+    vc_chassis=arv3_ch;
+    vc_weapon=arv3_wp;
+    arv3=createvehicle;
+    setdir(arv3,3);
+    placeunitxy(arv3,126,74,false);
+    preparemechanic(sex_male,arm3_sk);
+    arm3=createhuman;
+    placehumaninunit(arm3,arv3);
+  end;
+  vc_chassis=arv4_ch;
+  vc_weapon=arv4_wp;
+  arv4=createvehicle;
+  setdir(arv4,5);
+  placeunitxy(arv4,121,41,false);
+  preparemechanic(sex_male,arm4_sk);
+  arm4=createhuman;
+  placehumaninunit(arm4,arv4);
+  vc_engine=engine_solar;
+  vc_chassis=arv5_ch;
+  vc_weapon=arv5_wp;
+  arv5=createvehicle;
+  setdir(arv5,0);
+  placeunitxy(arv5,118,44,false);
+  preparemechanic(sex_male,arm5_sk);
+  arm5=createhuman;
+  placehumaninunit(arm5,arv5);
+  vc_engine=engine_siberite;
+  vc_chassis=arv6_ch;
+  vc_weapon=arv6_wp;
+  arv6=createvehicle;
+  setdir(arv6,5);
+  placeunitxy(arv6,129,35,false);
+  preparemechanic(sex_male,arm6_sk);
+  arm6=createhuman;
+  placehumaninunit(arm6,arv6);
+  comremember([arv1,arv2,arv3,arv4,arv5,arv6]);
+  vc_control=control_remote;
+  if difficulty>{=}2 then begin
+    vc_chassis=arv7_ch;
+    vc_weapon=arv7_wp;
+    arv7=createvehicle;
+    setdir(arv7,4);
+    placeunitxy(arv7,136,88,false);
+    linkvehicletohuman(arv7,tmp);
+    vc_chassis=arv8_ch;
+    vc_weapon=arv8_wp;
+    arv8=createvehicle;
+    setdir(arv8,3);
+    placeunitxy(arv8,132,81,false);
+    linkvehicletohuman(arv8,tmp);
+    comremember([arv7,arv8]);
+  end;
+  if difficulty>2 then begin
+{    vc_chassis=arv9_ch;
+    vc_weapon=arv9_wp;
+    arv9=createvehicle;
+    setdir(arv9,4);
+    placeunitxy(arv9,137,83,false);
+    linkvehicletohuman(arv9,tmp);  }
+    vc_chassis=arv10_ch;
+    vc_weapon=arv10_wp;
+    arv10=createvehicle;
+    setdir(arv10,5);
+    placeunitxy(arv10,125,40,false);
+    linkvehicletohuman(arv10,tmp);
+    comremember([arv9,arv10]);
+  end;
+
+  typitomybudovy=filterallunits([[f_side,ar],[f_type,unit_building]]);
+
+  hiddencamera(117,15,ar);
+  hiddencamera(111,18,ar);
+  hiddencamera(107,18,ar);
+  hiddencamera(108,23,ar);
+  hiddencamera(122,18,ar);
+  hiddencamera(102,22,ar);
+  hiddencamera(107,29,ar);
+
+  regid=mcregistry(ar,[[mc_reg_area_to_guard,area4reg],[mc_reg_refresh_time,13]]);
+  defid=mcdefend(100,regid,[ars3,ars4,ars5,arm1,arm4,arm5,arm6,ars9,ars10],[[mc_area_dont_leave,area4reg]]);
+
+end;
+var regid,defid;
+
+var act_time;
+export function update_display(flag);
+var tmp;
+begin
+  tmp=tick div (35*60);
+  act_time=tmp*35*60;
+  display_strings=['#Am17-1',arab_artef_zdrh+25$0-act_time];
+  if flag then enable(37);
+end;
+
+every 1$0 marked 37 do
+begin
+  update_display(0);
+  enable;
+end;
+
+
+function isinareaex(list,area);  //true kdyz jsou vsici v te oblasti
+var tmp;
+begin
+  for tmp in list do
+    if not isinarea(tmp,area) then begin result=false;exit;end;
+  result=true;
+end;
+
+//pokud se john pokusil o vyjednavani a nejakou dobu (7min) nic hrac nepodnikl tak utok
+every 0$1 marked 07 do
+var tmp,tmp2;
+begin
+//  tmp=[arv1,arv2,arv3,arv4,arv5,arv6,arv7,arv8,arv9,arv10];
+//  comagressivemove(tmp,61,50);
+  wait(7$0);
+
+  uc_side=ar;
+  uc_nation=nation_arabian;
+   vc_engine=engine_siberite;
+  vc_control=control_manual;
+  tmp2=[];
+
+  vc_chassis=arv1_ch;
+  vc_weapon=arv1_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,ar_place,false);
+  preparemechanic(sex_male,arm1_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=arv2_ch;
+  vc_weapon=arv2_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitarea(tmp,ar_place,false);
+  preparemechanic(sex_male,arm2_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=arv3_ch;
+  vc_weapon=arv3_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,ar_place,false);
+  preparemechanic(sex_male,arm3_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=arv4_ch;
+  vc_weapon=arv4_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,ar_place,false);
+  preparemechanic(sex_male,arm4_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=arv5_ch;
+  vc_weapon=arv5_wp;
+  tmp=createvehicle;
+  setdir(tmp,4);
+  placeunitarea(tmp,ar_place,false);
+  preparemechanic(sex_male,arm5_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_chassis=arv6_ch;
+  vc_weapon=arv6_wp;
+  tmp=createvehicle;
+  setdir(tmp,5);
+  placeunitarea(tmp,ar_place,false);
+  preparemechanic(sex_male,arm6_sk);
+  placehumaninunit(createhuman,tmp);
+  tmp2=tmp2^[tmp];
+
+  vc_control=control_remote;
+  if difficulty>=2 then begin
+    vc_chassis=arv7_ch;
+    vc_weapon=arv7_wp;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitarea(tmp,ar_place,false);
+    linkvehicletohuman(tmp,ar_mech_ctrl);
+    tmp2=tmp2^[tmp];
+
+    vc_chassis=arv8_ch;
+    vc_weapon=arv8_wp;
+    tmp=createvehicle;
+    setdir(tmp,5);
+    placeunitarea(tmp,ar_place,false);
+    linkvehicletohuman(tmp,ar_mech_ctrl);
+    tmp2=tmp2^[tmp];
+  end;
+  if difficulty>2 then begin
+    vc_chassis=arv9_ch;
+    vc_weapon=arv9_wp;
+    tmp=createvehicle;
+    setdir(tmp,4);
+    placeunitarea(tmp,ar_place,false);
+    linkvehicletohuman(tmp,ar_mech_ctrl);
+    tmp2=tmp2^[tmp];
+
+    vc_chassis=arv10_ch;
+    vc_weapon=arv10_wp;
+    tmp=createvehicle;
+    setdir(tmp,5);
+    placeunitarea(tmp,ar_place,false);
+    linkvehicletohuman(tmp,ar_mech_ctrl);
+    tmp2=tmp2^[tmp];
+  end;
+
+  commovetoarea(tmp2,wayp);
+  tmp=1;
+  while not isinareaex(tmp2,wayp) do begin
+    wait(0$1);
+    tmp=tmp+1;
+    if (tmp mod 5)=0 then commovetoarea(tmp2,wayp);
+  end;
+
+  comagressivemove(tmp2,61,50);
+
+end;
+
+
+//zrha s artefucktem
+every 25$0 do  //45$0
+begin
+  wait(arab_artef_zdrh);
+  commovexy(nakladak,161,87);
+  wait(0$5);
+  destroyunit(nakladak);
+  youlost('Destroyed');
+end;
+
+//aliance ziskala artefuckt
+on vehiclecaptured(vehnew,vehold,origside,hum) do
+  if vehold=nakladak then koncime=true;
+
+on artifactloaded(un,size) marked 15 do
+  if getside(un)=al then koncime=true;
+
+every 0$1 trigger koncime or base_out or artef_out do
+var un;
+begin
+  //Abdul attemps to escape
+  wait([0$10,0$5,0$0][difficulty]);
+  if IsPlaced(Abdul) and IsLive(Abdul) then
+       begin
+            repeat
+            wait(0$1);
+
+            if IsDead(Abdul) then
+                 break;
+
+            if IsInUnit(Abdul) > 0 then
+                 un = IsInUnit(Abdul)
+            else
+                 un = Abdul;
+
+            if GetDistUnitXY(un,167,97) <= 2 then
+                 begin
+                      RemoveUnit(un);
+                      break;
+                 end
+            else
+                 ComMoveXY(un,167,97);
+
+            until false;
+
+            wait(0$2);
+       end;
+
+  while IsPlaced(abduluv) and IsLive(abduluv) do
+       wait(0$1);
+
+  if isdead(abdul) then addmedal('Abdul',1)
+  else addmedal('Abdul',-1);
+  if isdead(abduluv) then addmedal('Mast',1)
+  else addmedal('Mast',-1);
+  if gettech(tech_laser,al)=state_researched then addmedal('Laser',1)
+  else addmedal('Laser',-1);
+  givemedals('Main');
+  rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human],f_not,[f_nation,nation_nature]]));
+  saveitall;
+  youwin;
+end;
+
+
+export function saveitall;
+var bz,tmz,tmzo,smejdi;
+begin
+//NegotiationsOffered,MashaSaved,AbdulKilled
+  savevariable(vyjednavalo_se,'NegotiationsOffered');
+
+  smejdi=[burlak,belkov,gnyevko,kiril,kovalyuk,scholtze,kuzmov,karam,petrov,gleb,petros,lipshchin,
+          titov,dolgov,xavier,oblukov,kozlov,kapitsova,gossud,
+          glad,jmm,roth,bobby,brown,connie,cornel,cyrus,denis,lucy,frank,gary,lisa,simms,yamoko];
+
+  savecharacters(glad,'Gladstone');
+  savecharacters(jmm,'JMM');
+  savecharacters(roth,'Roth');
+  savecharacters(bobby,'Bobby');
+  savecharacters(brown,'Brown');
+  savecharacters(connie,'Connie');
+  savecharacters(cornel,'Cornell');
+  savecharacters(cyrus,'Cyrus');
+  savecharacters(denis,'Peterson');
+  savecharacters(lucy,'Donaldson');
+  savecharacters(frank,'Frank');
+  savecharacters(gary,'Gary');
+  savecharacters(lisa,'Lisa');
+  savecharacters(simms,'Simms');
+  savecharacters(yamoko,'Yamoko');
+
+  savecharacters(burlak,'Burlak');
+  if belkov then savecharacters(belkov,'Belkov');
+  if gnyevko then savecharacters(gnyevko,'Gnyevko');
+  if kiril then savecharacters(kiril,'Kirilenkova');
+  if kovalyuk then savecharacters(kovalyuk,'Kovalyuk');
+  if scholtze then savecharacters(scholtze,'Scholtze');
+  if kuzmov then savecharacters(kuzmov,'Kuzmov');
+  if karam then savecharacters(karam,'Karamazov');
+  if petrov then savecharacters(petrov,'Petrovova');
+  if gleb then savecharacters(gleb,'Gleb');
+  if petros then savecharacters(petros,'Petrosyan');
+  if lipshchin then savecharacters(lipshchin,'Lipshchin');
+  if titov then savecharacters(titov,'Titov');
+  if dolgov then savecharacters(dolgov,'Dolgov');
+  if xavier then savecharacters(xavier,'Xavier');
+  if oblukov then savecharacters(oblukov,'Oblukov');
+  if kozlov then savecharacters(kozlov,'Kozlov');
+  if kapitsova then savecharacters(kapitsova,'Kapitsova');
+  if gossud then savecharacters(gossud,'Gossudarov');
+
+  bz=filterallunits([[f_alive],[f_side,al],[f_type,unit_human],f_not,[f_nation,nation_nature]]);
+  savecharacters(bz diff smejdi,'survivors5');
+
+  tmz=filterunitsinarea(stred,[[f_side,al],f_not,[f_nation,nation_arabian],[f_btype,b_factory]]);
+  tmz=tmz^filterunitsinarea(stred,[[f_side,al],f_not,[f_nation,nation_arabian],[f_type,unit_building],f_not,[f_btype,b_factory]]);
+  tmzo=[];
+  for bz in tmz do
+    case getbtype(bz) of
+      b_lab_basic,b_lab_weapon,b_lab_siberium,b_lab_computer,b_lab_biological,b_lab_spacetime,b_lab_opto:begin end;
+      b_lab,b_lab_half,b_lab_full:tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz),getlabkind(bz,1),getlabkind(bz,2)]];
+      b_bunker,b_turret:tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz),getbweapon(bz)]];
+      else tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz)]];
+    end;
+  savevariable(tmzo,'Freedom');
+
+end;
+
+
+
+
+

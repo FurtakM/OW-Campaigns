@@ -1,0 +1,795 @@
+EXPORT A1, A2, A3, A4, A5, A6;
+var enemies;
+////////////   Support functions   //////////////
+
+// Superposition of moves of one unit
+Function AddSupComMoveXY(un, position_list, reverse);
+var i;
+ begin
+   case reverse of
+    0: begin
+         if position_list <> 0 then
+           begin
+             i= 1;
+             repeat
+               AddComMoveXY(un, position_list[i], position_list[i+1]);
+               i=i+2;
+             until i > position_list;
+           end;
+       end;
+
+    1: begin
+         if position_list <> 0 then
+           begin
+             i= position_list+0;
+             repeat
+               AddComMoveXY(un, position_list[i-1], position_list[i]);
+               i=i-2;
+             until i < 0;
+           end;
+       end;
+   end;
+ end;
+
+// Waits until no of units from list_of_units is busy
+EXPORT Function WaitJob(list_of_units, reaction);
+var i, busy;
+ begin
+  wait(2);
+  repeat
+   busy= false;
+   for i in list_of_units do
+    if IsOk(i) then
+     if IsBusy(i) then busy= true;
+   if busy then wait(0$1*reaction);
+  until not(busy);
+ end;
+
+
+Function WaitPos(x_pos, y_pos, dist, list_of_units, reaction);
+var i, are_at_position;
+ begin
+  wait(2);
+  repeat
+   are_at_position= true;
+   for i in list_of_units do
+    if IsOk(i) then
+     if GetDistUnitXY(i, x_pos, y_pos) > dist then are_at_position= false;
+   if not(are_at_position) then wait(0$1*reaction);
+  until are_at_position;
+ end;
+
+Function WaitArea(area, list_of_units, reaction);
+var i, are_at_area;
+ begin
+  wait(2);
+  repeat
+   are_at_area= true;
+   for i in list_of_units do
+    if IsOk(i) then
+     if not(IsInArea(area, i)) then are_at_area= false;
+   if not(are_at_area) then wait(0$1*reaction);
+  until are_at_area;
+ end;
+
+// Waits until units from list_of_units are near then dist from target_unit
+Function WaitNearUnit(target_unit, dist, list_of_units, reaction);
+var i, are_near;
+ begin
+   wait(2);
+   repeat
+     are_near= true;
+     for i in list_of_units do
+       if IsOk(i) and IsOk(target_unit) then
+         if GetDistUnits(target_unit, i) > dist then are_near= false;
+     if not(are_near) then wait(0$1*reaction);
+   until are_near;
+ end;
+
+// Unit ill_units go to physician and then return back
+Function Go_to_physician(ill_unit, way);
+var start_posX, start_posY, i;
+ begin
+   if IsOk(physician) then
+     begin
+       start_posX= GetX(ill_unit);
+       start_posY= GetY(ill_unit);
+
+       AddSupComMoveXY(ill_unit, way, false);
+       AddComMoveUnit([ill_unit], physician);
+       WaitNearUnit(physician, 2, [ill_unit], 0.5);
+
+       while(State_physician <> 0) do wait(1);
+       State_physician= 1; // working
+
+       ComHeal([physician], ill_unit);
+       WaitJob([physician], 0.5);
+
+       AddComReturn([physician]);
+       AddComHold([physician]);
+
+       State_physician= 0;
+       AddSupComMoveXY(ill_unit, way, true);
+       AddComMoveXY(ill_unit, start_posX, start_posY);
+     end;
+ end;
+
+// Unit must have at least min hitpoints
+// Returns order of the selected unit.
+Function Select_Unit_With_Min_Lives(list_of_units, at_least);
+var i, j, lives, selected_unit, min;
+ begin
+  selected_unit= 0;
+  j= 0;
+  min= 1000;
+  for i in list_of_units do
+    begin
+      j= j+1;                   
+      lives= GetLives(i);
+      if (lives > at_least) and (lives < min) then
+        begin
+          min= lives;
+          selected_unit=j;
+        end;
+    end;
+  result= selected_unit;
+ end;
+
+Function Healing_Engineer(eng);
+ begin
+  if GetLives(eng) < 600 then  // Go to physician
+    begin
+      if eng = EngWL then State_EngWL= 2          // Set state to 'going to physician'
+      else if eng = EngWR then State_EngWR= 2
+      else if eng = EngE then State_EngE= 2;
+      ComStop(eng);
+      Go_to_physician(eng, []);
+      ComReturn(eng);
+      if eng = EngWL then State_EngWL= 0          // Set state to 'free'
+      else if eng = EngWR then State_EngWR= 0
+      else if eng = EngE then State_EngE= 0
+    end;
+ end;
+
+////////////////////////////////////////////////////
+////////////////   Dirver of units   ///////////////
+////////////////////////////////////////////////////
+
+
+////////////////   Guards   ////////////////////////
+
+
+// Soldier GuardN1
+EVERY 0$1 DO
+ begin
+    case State_GuardN1 of
+     0: begin
+          if not(IsOk(BunkerN1)) then
+            begin
+              State_GuardN1=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardN1);
+              Run_Southward_dial(GuardN1);
+              AddSupComMoveXY(GuardN1, [30,45, 47,65, 63,86, 82,112, 104,142, 84,141], false);
+              WaitJob([GuardN1], 5);
+              State_GuardN1=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardN1]) < 500 then
+            begin
+              State_GuardN1=1;
+              Go_to_physician(GuardN1, []);
+              State_GuardN1=2;
+            end;
+        end;
+    end;
+               
+  if IsLive(GuardN1) then enable;
+ end;
+
+// Soldier GuardN2
+EVERY 0$1 DO
+ begin
+    case State_GuardN2 of
+     0: begin
+          if not(IsOk(BunkerN2)) then
+            begin
+              State_GuardN2=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardN2);
+              Run_Southward_dial(GuardN2);
+              AddSupComMoveXY(GuardN2, [52,41, 72,63, 70,87, 87,116, 85,141], false);
+              WaitJob([GuardN2], 5);
+              State_GuardN2=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardN2]) < 500 then
+            begin
+              State_GuardN2=1;
+              ComStop(GuardN2);
+              Go_to_physician(GuardN2, []);
+              State_GuardN2=2;
+            end;
+        end;
+    end;
+
+  if IsLive(GuardN2) then enable;
+ end;
+
+// Soldier GuardN3
+EVERY 0$1 DO
+ begin
+    case State_GuardN3 of
+     0: begin
+          if not(IsOk(BunkerN3)) then
+            begin
+              State_GuardN3=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardN3);
+              Run_Southward_dial(GuardN3);
+              AddSupComMoveXY(GuardN3, [52,41, 72,63, 70,87, 87,116, 102,108], false);
+              WaitJob([GuardN3], 5);
+              State_GuardN3=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardN3]) < 500 then
+            begin
+              State_GuardN3=1;
+              ComStop(GuardN3);
+              Go_to_physician(GuardN3, []);
+              State_GuardN3=2;
+            end;
+        end;
+    end;
+
+  if IsLive(GuardN3) then enable;
+ end;
+
+// Soldier GuardN4
+EVERY 0$1 DO
+ begin
+    case State_GuardN4 of
+     0: begin
+          if not(IsOk(BwN4)) then
+            begin
+              State_GuardN4=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardN4);
+              Run_Southward_dial(GuardN4);
+              AddSupComMoveXY(GuardN4, [71,28, 90,52, 132,103, 102,107, 102,108], false);
+              WaitJob([GuardN4], 5);
+              State_GuardN4=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardN4]) < 500 then
+            begin
+              State_GuardN4=1;
+              ComStop(GuardN4);
+              Go_to_physician(GuardN4, []);                 
+              State_GuardN4=2;
+            end;
+        end;
+    end;
+
+   if IsLive(GuardN4) then enable;
+ end;
+
+// Soldier GuardN5
+EVERY 0$1 DO
+ begin
+    case State_GuardN5 of
+     0: begin
+          if not(IsOk(BwN5)) then
+            begin
+              State_GuardN5=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardN5);
+              Run_Southward_dial(GuardN5);
+              AddSupComMoveXY(GuardN5, [90,52, 132,103, 102,107, 102,108], false);
+              WaitJob([GuardN5], 5);
+              State_GuardN5=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardN5]) < 500 then
+            begin
+              State_GuardN5=1;
+              ComStop(GuardN5);
+              Go_to_physician(GuardN5, []);
+              State_GuardN5=2;
+            end;
+        end;
+    end;
+
+  if IsLive(GuardN5) then enable;
+ end;
+
+// Soldier GuardE1
+EVERY 0$1 DO
+ begin
+    case State_GuardE1 of
+     0: begin
+          if not(IsOk(BwE1)) then
+            begin
+              State_GuardE1=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardE1);
+              AddComMoveXY(GuardE1, 101, 107);
+              WaitJob([GuardE1], 5);
+              State_GuardE1=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardE1]) < 500 then
+            begin
+              State_GuardE1=1;
+              ComStop(GuardE1);
+              Go_to_physician(GuardE1, []);
+              State_GuardE1=2;
+            end;
+        end;
+    end;
+
+  if IsLive(GuardE1) then enable;
+ end;
+
+// Soldier GuardE2
+EVERY 0$1 DO
+ begin
+    if State_GuardE2 = 0 then
+      begin
+        if not(IsOk(BwE2)) then
+          begin
+            if Difficulty = 1 then
+              State_GuardE2 = 2
+            else
+              begin
+                if Difficulty = 2 then wait(0$3);
+                State_GuardE2=1;   // Guard is going
+                ComStop(GuardE2);
+                AddSupComMoveXY(GuardE2, [137,109], false);
+                WaitJob([GuardE2], 0.5);
+                ComEnterUnit(GuardE2, v4);
+                ComAgressiveMove(v4, 134, 94);
+                State_GuardE2=2;
+              end;
+          end;
+      end;
+
+  if IsLive(GuardE2) then enable;
+ end;
+
+// Soldier GuardW1
+EVERY 0$1 DO
+ begin
+    case State_GuardW1 of
+     0: begin
+          if not(IsOk(BwW1)) then
+            begin
+              State_GuardW1=1;   // Guard is going
+              Wait(time_of_waiting[difficulty]);
+              ComStop(GuardW1);
+              AddComMoveXY(GuardW1, 84, 141);
+              WaitJob([GuardW1], 3);
+              State_GuardW1=2;
+            end;
+        end;
+     2: begin
+          if GetLives([GuardW1]) < 500 then
+            begin
+              State_GuardW1=1;
+              ComStop(GuardW1);
+              Go_to_physician(GuardW1, []);
+              State_GuardW1=2;
+            end;
+        end;
+    end;
+
+  if IsLive(GuardW1) then enable;
+ end;
+
+/////////////////////   Engineers   ////////////////////
+
+
+// Engineer EngWL
+EVERY 0$1 DO
+var un_min_lives;
+ begin
+    case State_EngWL of
+     0: begin  // Free
+          Healing_Engineer(EngWL);          
+
+          if count5= 0 then  // every 5 sec. test of buildings lives
+            begin
+              un_min_lives= Select_Unit_With_Min_Lives(Units_WL, 100);  // At least 100 hitpoints
+              if GetLives(Units_WL[un_min_lives]) < 1000 then
+                begin
+                  ComStop(EngWL);
+                  ComRepairBuilding(EngWL, Units_WL[un_min_lives]);
+                  State_EngWL=1;
+                end;
+            end;
+        end;
+
+     1: begin  // Busy
+          Healing_Engineer(EngWL);
+          if not(IsBusy(EngWL)) then
+            begin
+              ComReturn(EngWL);
+              State_EngWL=0;
+            end;
+        end;
+    end;
+
+  if IsLive(EngWL) then enable;
+ end;
+
+
+// Engineer EngWR
+EVERY 0$1 DO
+var un_min_lives;
+ begin
+    case State_EngWR of
+     0: begin  // Free
+          Healing_Engineer(EngWR);
+
+          if count5= 0 then  // every 5 sec. test of buildings lives
+            begin
+              un_min_lives= Select_Unit_With_Min_Lives(Units_WR, 100);  // At least 100 hitpoints
+              if GetLives(Units_WR[un_min_lives]) < 1000 then
+                begin
+                  ComStop(EngWR);
+                  ComRepairBuilding(EngWR, Units_WR[un_min_lives]);
+                  State_EngWR=1;
+                end;
+            end;
+        end;
+
+     1: begin  // Busy
+          Healing_Engineer(EngWR);
+          if not(IsBusy(EngWR)) then
+            begin
+              ComReturn(EngWR);
+              State_EngWR=0;
+            end;
+        end;
+    end;
+
+  if IsLive(EngWR) then enable;
+ end;
+
+
+// Engineer EngE
+EVERY 0$1 DO
+var un_min_lives;
+ begin
+    case State_EngE of
+     0: begin  // Free
+          Healing_Engineer(EngE);
+
+          if count5= 0 then  // every 5 sec. test of buildings lives
+            begin
+              un_min_lives= Select_Unit_With_Min_Lives(Units_E, 100);  // At least 100 hitpoints
+              if GetLives(Units_E[un_min_lives]) < 1000 then
+                begin
+                  ComStop(EngE);
+                  ComRepairBuilding(EngE, Units_E[un_min_lives]);
+                  State_EngE=1;
+                end;
+            end;
+        end;
+
+     1: begin  // Busy
+          Healing_Engineer(EngE);
+          if not(IsBusy(EngE)) then
+            begin
+              ComReturn(EngE);
+              State_EngE=0;
+            end;
+        end;
+    end;
+
+    if IsLive(EngE) then enable;
+ end;
+
+//////////////////////   Mechanics   ///////////////////
+
+// Mechanic West_mech
+// Vehicle  West_veh
+
+EVERY 0$1 DO                                      
+ begin
+  case State_MechW of
+   0: begin
+        if count5 = 0 then
+          if (FilterUnitsInArea(arrival1, [[f_side, americans], [f_ok]]) = 0) then
+            begin
+              A1= GetLives(West_veh); A2= GetLives(West_mech); A3= IsDrivenBy(West_veh); A4= West_mech;
+
+              if (GetLives(West_mech) < 600) and (IsDrivenBy(West_veh) = West_mech) then
+                begin
+                  if IsOk(Center_mech) and IsOk(Center_veh) and (State_MechC = 0) then  // goes to help
+                    begin
+                     State_MechC= 4;
+                     ComMoveXY(Center_veh, GetRememberedX(West_veh), GetRememberedY(West_veh));
+                     AddComHold(Center_veh);
+                    end;
+
+                  State_MechW= 2; // going to physician
+
+                  ComMoveXY(West_veh, 121, 146);
+                  WaitJob(West_veh, 0.3);
+
+                  ComExitVehicle(West_veh);
+                  WaitJob(West_veh, 0.1);
+                  AddComRepairVehicle(West_mech, West_veh);
+                  AddComEnterUnit(West_mech, West_veh);
+
+                  while ((State_physician <> 0) or not(IsOk(physician))) do Wait(0.5);
+                  if IsOk(physician) then
+                   begin
+                      State_physician= 1;
+                      ComHeal(physician, West_mech);
+                      WaitJob(physician, 0.3);
+                      ComReturn(physician);
+                      State_physician= 0;
+                    end;
+                  WaitJob(West_mech, 0.3);
+
+                  ComReturn(West_veh);
+                  if (State_MechC = 4) then   // end of help
+                    begin
+                      ComReturn(Center_veh);
+                      State_MechC = 0;
+                    end;
+                  WaitJob(West_veh, 0.5);
+                  ComHold(West_veh);
+                  State_MechW= 0;
+                end
+
+              else if (GetLives(West_veh) < 1000) and (IsDrivenBy(West_veh) = West_mech) then
+                begin
+                  State_MechW= 3;  // repairing vehicle
+
+                  ComExitVehicle(West_veh);
+                  WaitJob(West_veh, 0.1);
+                  AddComRepairVehicle(West_mech, West_veh);
+                  AddComEnterUnit(West_mech, West_veh);
+                  WaitJob(West_veh, 0.3);
+                  AddComHold(West_veh);
+                  State_MechW= 0;
+                end;
+
+            end;
+      end;
+
+   1: begin
+      end;
+
+   2: begin
+       if (FilterUnitsInArea(arrival1, [[f_side, americans], [f_ok]]) <> 0) then
+         begin
+           AddComEnterUnit(West_mech, West_veh);
+           WaitJob(West_veh, 0.3);
+           AddComHold(West_veh);
+           State_MechW= 0;
+         end;
+      end;
+
+   3: begin
+      end;
+  end;
+
+  if IsLive(West_mech) then enable
+                       else State_MechW= 4; // death
+ end;
+
+
+
+
+// Mechanic East_mech
+// Vehicle  East_veh
+
+EVERY 0$1 DO
+ begin
+  case State_MechE of
+   0: begin
+        if count5 = 0 then
+          if (FilterUnitsInArea(arrival1, [[f_side, americans], [f_ok]]) = 0) then
+            begin
+              if (GetLives(East_mech) < 600) and (IsDrivenBy(East_veh) = East_mech) then
+                begin
+                  if IsOk(Center_mech) and IsOk(Center_veh) and (State_MechC = 0) then  // goes to help
+                    begin
+                     State_MechC= 4;
+                     ComMoveXY(Center_veh, GetRememberedX(East_veh), GetRememberedY(East_veh));
+                     AddComHold(Center_veh);
+                     Wait(0$6);
+                    end;
+
+                  State_MechE= 2; // going to physician
+
+                  ComMoveXY(East_veh, 121, 146);
+                  WaitJob(East_veh, 0.3);
+
+                  ComExitVehicle(East_veh);
+                  WaitJob(East_veh, 0.1);
+                  AddComRepairVehicle(East_mech, East_veh);
+                  AddComEnterUnit(East_mech, East_veh);
+
+                  while ((State_physician <> 0) or not(IsOk(physician))) do Wait(0.5);
+                  if IsOk(physician) then
+                   begin
+                      State_physician= 1;
+                      ComHeal(physician, East_mech);
+                      WaitJob(physician, 0.3);
+                      ComReturn(physician);
+                      State_physician= 0;
+                    end;
+                  WaitJob(East_mech, 0.3);
+
+                  ComReturn(East_veh);
+                  Wait(0$5);
+                  if (State_MechC = 4) then   // end of help
+                    begin
+                      ComReturn(Center_veh);
+                      State_MechC = 0;
+                    end;
+                  WaitJob(East_veh, 0.5);
+                  ComHold(East_veh);
+                  State_MechE= 0;
+                end
+
+              else if (GetLives(East_veh) < 1000) and (IsDrivenBy(East_veh) = East_mech) then
+                begin
+                  State_MechE= 3;  // repairing vehicle
+
+                  ComExitVehicle(East_veh);
+                  WaitJob(East_veh, 0.1);
+                  AddComRepairVehicle(East_mech, East_veh);
+                  AddComEnterUnit(East_mech, East_veh);
+                  WaitJob(East_veh, 0.3);                         
+                  AddComHold(East_veh);
+                  State_MechE= 0;
+                end;
+
+            end;
+      end;
+
+   1: begin
+      end;                                                        
+
+   2: begin
+       if (FilterUnitsInArea(arrival2, [[f_side, americans], [f_ok]]) <> 0) then
+         begin
+           AddComEnterUnit(East_mech, East_veh);
+           WaitJob(East_veh, 0.3);
+           AddComHold(East_veh);
+           State_MechE= 0;
+         end;
+      end;
+
+   3: begin
+      end;
+  end;
+
+  if IsLive(East_mech) then enable
+                       else State_MechE= 4; // death
+ end;
+
+
+
+// Mechanic Center_mech
+// Vehicle  Center_veh
+
+EVERY 0$1 DO
+ begin
+  case State_MechC of
+   0: begin
+        if count10 = 0 then
+          begin
+            enemies= FilterUnitsInArea(base, [[f_side, americans], [f_ok]]);
+            if enemies <> 0 then
+              begin
+                State_MechC= 1;
+                ComAgressiveMove(Center_veh, GetX(enemies[1]), GetY(enemies[1]));
+              end;
+          end;
+
+        if GetLives(Center_mech) < 600 then
+          begin
+            State_MechC=2;
+
+            ComMoveXY(Center_veh, 121, 146);
+            WaitJob(Center_veh, 0.3);
+
+            ComExitVehicle(Center_veh);
+            WaitJob(Center_veh, 0.1);
+            AddComRepairVehicle(Center_mech, Center_veh);
+            AddComEnterUnit(Center_mech, Center_veh);
+
+            while ((State_physician <> 0) or not(IsOk(physician))) do Wait(0.5);
+            if IsOk(physician) then
+              begin
+                State_physician= 1;
+                ComHeal(physician, Center_mech);
+                WaitJob(physician, 0.3);
+                ComReturn(physician);
+                State_physician= 0;
+              end;
+            WaitJob(Center_mech, 0.3);
+
+            ComReturn(Center_veh);
+            State_MechC= 0;
+          end;
+
+        if GetLives(Center_veh) < 1000 then
+          begin
+            State_MechC=3;
+
+            ComReturn(Center_veh);
+            WaitJob(Center_veh, 0.5);
+            ComExitVehicle(Center_veh);
+            WaitJob(Center_veh, 0.1);
+            AddComRepairVehicle(Center_mech, Center_veh);
+            AddComEnterUnit(Center_mech, Center_veh);
+            WaitJob(Center_veh, 0.3);
+            State_MechC= 0;
+          end;
+
+      end;
+
+   1: begin
+       if (count10 = 0) and IsIdle(Center_veh) then
+         begin
+           enemies= FilterUnitsInArea(base, [[f_side, americans], [f_ok]]);
+            if enemies <> 0 then
+                ComAgressiveMove(Center_veh, GetX(enemies[1]), GetX(enemies[1]))
+            else
+              begin
+                State_MechC= 0;
+                ComReturn(Center_veh);
+              end;
+         end;
+      end;
+
+   2: begin
+      end;
+
+   3: begin
+      end;
+  end;
+
+  if IsLive(Center_mech) then enable
+                         else State_MechC= 4; // death
+ end;
+
+//}
+
+
+////////////////   Timers   //////////////////
+
+EVERY 0$1 + 0$0.5 DO
+ begin
+   count5= (count5 +1) mod 5;
+   A5= count5;
+   enable;
+ end;
+
+EVERY 0$1 +0$0.5 DO
+ begin
+   count10= (count10 +1) mod 10;
+   enable
+ end;
+
+////////////////   Debuging variables   ////////////////
+
+EVERY 0$1 DO
+ begin
+  debug_strings=[[A1], [A2], [A3], [A4], [A5], [State_MechW]];
+  enable;
+ end;

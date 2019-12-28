@@ -1,0 +1,295 @@
+export Burlak,
+       Platonov,
+
+       Karamazov,
+       Petrovova,
+       Gleb,
+       Petrosyan,
+
+       Titov,
+       Dolgov,
+       Lipshchin;
+export Vsevolod,Vsevolod2;
+
+export used, ru_cars, cars, other_ru_5_6, stevens_killed, sli_pryc;
+export fast_braketrough;
+
+export function Load;
+var i, k1,k2;
+begin
+     belkovfreed:=LoadVariable('belkovfreed', true);
+     cars:=LoadVariable('cars_ru_6', [[ru_heavy_wheeled,ru_gatling_gun,nation_russian,0,0],
+               [ru_heavy_wheeled,ru_heavy_gun,nation_russian,0,0],
+               [ru_heavy_wheeled,ru_heavy_gun,nation_russian,0,0],
+               [ru_heavy_tracked,ru_heavy_gun,nation_russian,0,0],
+               [ru_heavy_tracked,ru_gatling_gun,nation_russian,0,0],
+               [ru_heavy_tracked,ru_gatling_gun,nation_russian,0,0],
+               [ru_heavy_tracked,ru_gatling_gun,nation_russian,0,0],
+               [ru_heavy_tracked,ru_gatling_gun,nation_russian,0,0]]);
+     stevens_killed:=LoadVariable('stevens_killed', false);
+
+     fast_braketrough:=LoadVariable('OvesyenkoTime', false);
+     InitUc;
+     InitHc;
+     uc_side:=you;
+     uc_nation:=nation_russian;
+// pouze radio
+     Platonov:=MyCreateCharacter('Platonov', 0, class_soldier, true);
+
+// nas hrdina
+     if difficulty=3 then
+       Burlak:=MyCreateCharacter('Burlak', 0, class_mechanic, false);
+// stari v misi
+     Titov:=MyCreateCharacter('Titov', 0, class_soldier, false);
+     Dolgov:=MyCreateCharacter('Dolgov', 0, class_scientistic, false);
+     Lipshchin:=MyCreateCharacter('Lipshchin', 0, class_soldier, false);
+     Karamazov:=MyCreateCharacter('Karamazov', 0, class_engineer, false);
+     Petrovova:=MyCreateCharacter('Petrovova', 0, class_soldier, false);
+     Gleb:=MyCreateCharacter('Gleb', 0, class_soldier, false);
+     Petrosyan:=MyCreateCharacter('Petrosyan', 0, class_scientistic, false);
+     if difficulty<3 then
+       Burlak:=MyCreateCharacter('Burlak', 0, class_mechanic, false);
+
+     used:=[Burlak,Lipshchin,Titov,Dolgov,Karamazov,Petrovova,Gleb,Petrosyan] diff 0;
+     other_ru_5_6:=CreateCharacterSet('other_ru_5_6');
+     used:=used ^ other_ru_5_6;
+
+     rulive:=used;
+     k1:=Rand(1,used);
+     if not UnitFilter(used, [[f_class,class_engineer]]) then
+       SetClass(used[k1], class_engineer);
+     k2:=Rand(1,used);
+     while k1=k2 do
+       k2:=Rand(1,used);
+
+     if difficulty=1 and not UnitFilter(used, [[f_class,class_scientistic]]) then
+       SetClass(used[k2], class_scientistic);
+
+     uc_side:=you2;
+     Vsevolod:=MyCreateCharacter('Vsevolod', 0, class_soldier, true);
+     Vsevolod2:=MyCreateCharacter('Vsevolod', 0, class_soldier, true);
+     for i:=1 to 3 do begin
+         PrepareSoldier(sex_male, 3);
+         vsevolod_uderna_group:=vsevolod_uderna_group ^ [CreateHuman];
+     end;
+     SetClass(vsevolod_uderna_group[1], class_engineer);
+     vsevolod_uderna_group:=vsevolod_uderna_group;  //???
+end;
+export function place_in_ru_cars;
+var car, i;
+begin
+     InitUc;
+     InitVc;
+     vc_control:=control_manual;
+     vc_engine:=engine_combustion;
+     uc_side:=you;
+
+     ru_cars:=[];
+     if ((cars+0)<(used+0)) or ((used+0)<6) then begin
+        Msg('spatny save');
+     end;
+     for i:=1 to used do begin
+         uc_nation:=cars[i][3];
+         vc_chassis:=cars[i][1];
+         vc_weapon:=cars[i][2];
+         uc_direction:=Rand(3,4);
+         vc_fuel_battery:=Rand(3,6);
+         uc_direction:=5;
+         car:=CreateVehicle;
+         if (cars[i][2] in [ar_cargo_bay,ru_cargo_bay,us_cargo_bay]) then
+           if (cars[i][4]<>0) then
+             SetCargo(car,cars[i][4],cars[i][5]);
+         ru_cars:=ru_cars ^ car;
+         PlaceHumanInUnit(used[i], car);
+     end;
+end;                      
+
+export function place_ru_cars;
+var i;
+begin
+     for i in ru_cars do
+         PlaceUnitArea(i, ru_place, false);
+end;
+
+function MyCreateCharacter(name, unclass, unclass_gen, new);
+begin
+///////////////// load verze /////////////////////////
+    if new or TestCharacters(name) then begin
+      if new then
+         result:=NewCharacter(name)
+      else begin
+         if CheckCharacterSet(name) then
+            result:=CreateCharacter(name)
+         else
+            result:=0;
+      end;
+
+      if unclass then SetClass(result,unclass);
+    end
+////////////// generate verze /////////////////////////
+    else begin
+       Msg('Chybi '& name &'!');
+       hc_name:=name;
+       PrepareHuman(sex_male,0,3);
+       if unclass_gen then hc_class:=unclass_gen
+                  else hc_class:=class_soldier;
+       result:=CreateHuman;
+    end;
+{    if not result then begin
+       Msg('Chybi '& name &'!');
+       hc_name:=name;
+       PrepareHuman(sex_male,0,3);
+       if unclass_gen then hc_class:=unclass_gen
+                  else hc_class:=class_soldier;
+       result:=CreateHuman;
+    end;}
+end;
+
+
+export convoy_06;
+export function Save;
+var i,zustali,tmp_conv;
+begin
+     DeleteVariable('cars_ru_6');
+     DeleteVariable('other_ru_5_6');
+// nas hrdina
+     SaveCharacters(Burlak, 'Burlak');
+// 
+     if Titov then
+       if IsDead(titov) then
+         SaveVariable(0, 'TitovLoc')
+       else
+         if titov in sli_pryc then
+           SaveVariable(-7, 'TitovLoc')
+         else
+           SaveVariable(7, 'TitovLoc');
+     SaveCharacters(Titov, 'Titov');
+     if Dolgov then
+       if IsDead(Dolgov) then
+         SaveVariable(0, 'DolgovLoc')
+       else
+         if Dolgov in sli_pryc then
+           SaveVariable(-7, 'DolgovLoc')
+         else
+           SaveVariable(7, 'DolgovLoc');
+     if Dolgov then SaveCharacters(Dolgov, 'Dolgov');
+     if Lipshchin then
+       if IsDead(Lipshchin) then
+         SaveVariable(0, 'LipshchinLoc')
+       else
+         if Lipshchin in sli_pryc then
+           SaveVariable(-7, 'LipshchinLoc')
+         else
+           SaveVariable(7, 'LipshchinLoc');
+     if Lipshchin then SaveCharacters(Lipshchin, 'Lipshchin');
+     if Karamazov then
+       if IsDead(Karamazov) then
+         SaveVariable(0, 'KaramazovLoc')
+       else
+         if Karamazov in sli_pryc then
+           SaveVariable(-7, 'KaramazovLoc')
+         else
+           SaveVariable(7, 'KaramazovLoc');
+     if Karamazov then SaveCharacters(Karamazov, 'Karamazov');
+     if Petrovova then
+       if IsDead(Petrovova) then
+         SaveVariable(0, 'PetrovovaLoc')
+       else
+         if Petrovova in sli_pryc then
+           SaveVariable(-7, 'PetrovovaLoc')
+         else
+           SaveVariable(7, 'PetrovovaLoc');
+     if Petrovova then SaveCharacters(Petrovova, 'Petrovova');
+     if Gleb then
+       if IsDead(Gleb) then
+         SaveVariable(0, 'GlebLoc')
+       else
+         if Gleb in sli_pryc then
+           SaveVariable(-7, 'GlebLoc')
+         else
+           SaveVariable(7, 'GlebLoc');
+     if Gleb then SaveCharacters(Gleb, 'Gleb');
+     if Petrosyan then
+       if IsDead(Petrosyan) then
+         SaveVariable(0, 'PetrosyanLoc')
+       else
+         if Petrosyan in sli_pryc then
+           SaveVariable(-7, 'PetrosyanLoc')
+         else
+           SaveVariable(7, 'PetrosyanLoc');
+     if Petrosyan then SaveCharacters(Petrosyan, 'Petrosyan');
+
+
+     SaveCharacters(Vsevolod, 'Vsevolod');
+     SaveVariable(not IsDead(vsevolod), 'VsevSaved');
+     zustali:=FilterAllUnits([[f_type,unit_human],[f_side,you],[f_nation,nation_russian]]);
+     SaveCharacters(zustali diff [Burlak,Titov,Dolgov,Lipshchin,Karamazov,Petrovova,Gleb,Petrosyan,Vsevolod], 'survivors2');
+     SaveCharacters(sli_pryc diff [Burlak,Titov,Dolgov,Lipshchin,Karamazov,Petrovova,Gleb,Petrosyan,Vsevolod], 'WithVsevolod');
+
+// convoy_06-----[[NATION_RUSSIAN, RU_CARGO_BAY, CONTROL_MANUAL, ENGINE_COMBUSTION, RU_MEDIUM_WHEELED, 100, 0, 0], [NATION_RUSSIAN, RU_CARGO_BAY, CONTROL_MANUAL, ENGINE_COMBUSTION, RU_MEDIUM_WHEELED, 50, 50, 0], [NATION_RUSSIAN, RU_CARGO_BAY, CONTROL_MANUAL, ENGINE_COMBUSTION, RU_MEDIUM_WHEELED, 50, 50, 0]];
+     convoy_06:=[];
+     tmp_conv:=FilterUnitsInArea(ru_exit, [[f_occupied],[f_type,unit_vehicle],[f_side,you]])^FilterUnitsInArea(ru_exit, [[f_not,[f_occupied]],[f_type,unit_vehicle],[f_side,you]]);
+     for i in tmp_conv do begin
+       convoy_06:=convoy_06 ^ [[GetNation(i), GetWeapon(i), GetControl(i), GetEngine(i), GetChassis(i), GetCargo(i, mat_cans), GetCargo(i, mat_oil), GetCargo(i, mat_siberit)]];
+       if (convoy_06+0)=(zustali+0) then break;
+     end;
+     SaveVariable(convoy_06, 'Convoy_06');
+end;
+
+export accar1, accar2, acman1, acman2;
+export function nakladaky;
+begin
+   InitUc;
+   InitHc;
+   InitVc;
+   uc_side:=ai;
+   uc_nation:=nation_american;
+
+   vc_chassis:=us_medium_tracked;
+   vc_weapon:=us_cargo_bay;
+   vc_control:=control_manual;
+   vc_engine:=engine_solar;
+   uc_direction:=3;
+   vc_fuel_battery:=80;
+   accar1:=CreateVehicle;
+   accar2:=CreateVehicle;
+   PrepareSoldier(sex_male, 2);
+   acman1:=CreateHuman;
+   acman2:=CreateHuman;
+   PlaceHumanInUnit(acman1, accar1);
+   PlaceHumanInUnit(acman2, accar2);
+   SetCargo([accar1,accar2], mat_cans, 100);
+   PlaceUnitArea(accar1, vsevolod_in, false);
+   PlaceUnitArea(accar2, vsevolod_in, false);
+end;
+
+export rccar1, rccar2, rccar3, rcman1, rcman2, rcman3;
+export function convoy;
+begin
+   InitUc;
+   InitHc;
+   InitVc;
+   uc_side:=you;
+   uc_nation:=nation_russian;
+
+   vc_chassis:=ru_medium_tracked;
+   vc_weapon:=ru_cargo_bay;
+   vc_control:=control_manual;
+   vc_engine:=engine_combustion;
+   uc_direction:=3;
+   vc_fuel_battery:=60;
+   rccar1:=CreateVehicle;
+   rccar2:=CreateVehicle;
+   rccar2:=CreateVehicle;
+   PrepareSoldier(sex_male, 3);
+   rcman1:=CreateHuman;
+   rcman2:=CreateHuman;
+   rcman2:=CreateHuman;
+   PlaceHumanInUnit(rcman1, rccar1);
+   PlaceHumanInUnit(rcman2, rccar2);
+   PlaceHumanInUnit(rcman3, rccar3);
+   SetCargo([rccar1,rccar2,rccar3], mat_cans, 90);
+   PlaceUnitArea(rccar1,exit_a, false);
+   PlaceUnitArea(rccar2,exit_a, false);
+   PlaceUnitArea(rccar3,exit_a, false);
+end;

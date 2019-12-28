@@ -1,0 +1,52 @@
+var mc_list;                           // seznam mcid pro vsechny strany
+
+var b_list;                            // seznam seznamu budov v zakladnach jednotlivych stran
+
+//--------------------------------------------------------//
+//-----  NACTENI JEDNOTLIVYCH POCITACOVYCH ZAKLADEN  -----//
+export function init_keep_base;
+var un,build,side;
+begin
+  b_list:=[];
+  mc_list:=[0,0,0,0,0,0,0,0];
+
+  for side=1 to 8 do
+    if side in cpu_list then
+      begin
+        un:=FilterAllUnits([ [f_side,side], [f_type,unit_building] ]);
+        if un then
+          b_list:=Insert(b_list,side,GetBuildList(GetBase(un[1])));
+      end
+    else
+      b_list:=b_list ^ [[]];
+end;
+
+
+//----------------------------------------------------//
+//-----  ZPOUSTENI MAKRA PRO UDRZOVANI ZAKLADNY  -----//
+every 0$5.2 trigger us in cpu_list do
+var side,list,
+    engineers;
+begin
+  list:=[];
+  for side=1 to 8 do
+    if (side in cpu_list) then
+      begin
+        if not ExistMc(mc_list[side]) then
+          begin
+            engineers:=request_people(side,class_engineer,5);
+            if engineers then
+              list:=list ^ McBase(3,engineers,b_list[side],0,0,0)
+            else
+              list:=list ^ 0
+          end
+        else
+          list:=list ^ mc_list[side];
+      end
+    else
+      list:=list ^ 0;
+
+  mc_list:=list;
+
+  enable;
+end;

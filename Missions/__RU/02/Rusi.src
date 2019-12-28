@@ -1,0 +1,501 @@
+EXPORT Gny;
+EXPORT bur;
+EXPORT Kov;
+EXPORT bel;
+EXPORT kurin;
+EXPORT plat;
+
+EXPORT Rusi_enter;
+EXPORT Rusi_sever;
+EXPORT Rusi_01;
+EXPORT rusi_survivors;
+
+EXPORT stav_utoku;
+                      
+EXPORT stav;                       // momentalni stav v misi
+EXPORT venku;
+
+EXPORT videli_w;                    // videli bw ma zapade
+EXPORT videli_e;                    // videli bw na vychode
+
+EXPORT bedny;                       // kde jsou v aree spadnute bedny
+EXPORT bedny_hint;
+EXPORT videne;                      // bedny, ktere byly uz videny platonovem
+EXPORT zasilek;                     // kolik uz bylo beden
+
+EXPORT posily_go;                   // posily mozou vyrazit
+
+EXPORT saved_bel;                   // je belkov zachranen
+
+EXPORT auto_belkov;                 // auto, ktere jde belkovovi
+
+VAR pocet_uukazani;
+
+VAR BurSk;
+VAR BelSk;
+VAR GnySk;
+
+// nastaveni pocatecnich hodnot
+EVERY 0$0.1 DO
+VAR i;
+begin
+  zasilek=0;
+  bedny_hint=false;
+  stav=0;
+  Rusi_enter=FilterUnitsInArea(RU1_base,[[f_side,You]]);
+  BurlakComp=Rusi_enter;
+  venku=false;
+  stav_utoku=0;
+  videli_w=false;
+  videli_e=false;
+  bedny=[];
+  videne=[];
+  Rusi_sever=[bel];
+  Rusi_01=[];
+  posily_go=false;
+  saved_bel=false;
+  pocet_uukazani=0;
+  for i in [501,502,503,599] do disable(i);
+  nastaveni_zacatku_skillu;
+end;
+
+// nastaveni skilu peopliku na zacatku
+function nastaveni_zacatku_skillu;
+begin
+  if IsOK(bur) then BurSk:=[GetSkill(bur,1),GetSkill(bur,2),GetSkill(bur,3),GetSkill(bur,4)];
+  if IsOK(Gny) then GnySk:=[GetSkill(Gny,1),GetSkill(Gny,2),GetSkill(Gny,3),GetSkill(Gny,4)];
+  if IsOK(bel) then BelSk:=[GetSkill(bel,1),GetSkill(bel,2),GetSkill(bel,3),GetSkill(bel,4)];
+end;
+
+// uklid rusu
+EXPORT function uklid_rusu;
+begin
+  // 1. base
+  ComEnterUnit(RU1_vb1,RU1_bu1);
+  ComEnterUnit(RU1_vb2,RU1_bu2);
+  ComEnterUnit(bel,RU1_bar);
+  ComEnterUnit(RU1_sol1,RU1_bar);
+  ComEnterUnit(RU1_sol2,RU1_bar);
+  ComEnterUnit(RU1_vo1,RU1_bar);
+  ComEnterUnit(RU1_sci1,RU1_lab);
+  ComEnterUnit(RU1_sci2,RU1_lab);
+  ComEnterUnit(RU1_eng1,RU1_dep);
+  ComEnterUnit(RU1_me1,RU1_tov);
+
+  // 2. base
+  ComMoveXY(plat,67,90);
+  AddComHold(plat);
+  ComEnterUnit(Ru2_vb1,Ru2_bu1);
+  ComEnterUnit(Ru2_vb2,Ru2_bu2);
+end;
+
+// pobihani platonova
+EVERY 0$30 TRIGGER stav>2 and stav<7 DO
+VAR pom;
+begin
+  ComFree(plat);
+  pom=RandHexArea(RU2_base,true);
+  AddComMoveXY(plat,pom[1],pom[2]);
+  enable;
+end;
+
+// zjisteni, jestli uz je burlak venku z base
+EVERY 0$1 TRIGGER not venku and not test_is_in_area_burlak DO
+begin
+  venku=true;
+  enable;
+end;
+
+// test, jestli je burlak v RU1_base
+EXPORT function test_is_in_area_burlak;
+VAR a;
+VAR pom,i;
+begin
+  a=false;
+  if IsInArea(bur,RU1_base) then a=true;
+  pom=FilterUnitsInArea(RU1_base,[[f_side,You],[f_type,unit_vehicle]]);
+  if pom>0 then for i in pom do if IsDrivenBy(i)=bur then a=true;
+  result=a;
+end;                                         
+
+// boreni jinych budov
+EVERY 0$7 DO
+VAR pom;
+begin
+  //pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_breastwork]]);
+  pom = FilterAllUnits([[f_side,You],[f_btype,b_breastwork],[f_nation,nation_russian]]);  //In case the player captures an American building
+  if pom>0 then destroy(pom,b_breastwork);
+  //pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_armoury]]);
+  pom = FilterAllUnits([[f_side,You],[f_btype,b_armoury],[f_nation,nation_russian]]);  //In case the player captures an American building
+  if pom>0 then destroy(pom,b_armoury);
+  //pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_btype,b_oil_power]]);
+  pom = FilterAllUnits([[f_side,You],[f_btype,b_oil_power],[f_nation,nation_russian]]);  //In case the player captures an American building
+  if pom>0 then destroy(pom,b_oil_power);
+  enable;
+end;
+
+// vlastni zboreni budovy
+function destroy(sez,typ);
+VAR i,j;
+VAR pom;
+VAR res;
+begin
+  InGameOn;
+  dialog_boreni;
+  for i in sez do
+    begin
+      pom=UnitsInside(i);
+      ComExitBuilding(pom);
+      wait(0$2);
+      DestroyUnit(i);
+      case typ of
+       b_breastwork:res=[[mat_cans,10]];
+       b_armoury:res=[[mat_cans,30]];
+       b_oil_power:res=[[mat_cans,20]];
+      end;
+      for j in res do AddResourceType(GetBase(RU2_dep),j[1],j[2]);
+    end;
+  InGameOff;
+end;
+
+on McDone(ID,state) do
+var
+  u,w,dist,tol,Arrived;
+begin
+  tol:=8;
+  if ID<>McCestaNaSever then exit;
+  repeat
+    Arrived:=true;
+    for u in Rusi_sever do
+      if GetDistUnitXY(u,wptCestaNaSever[wptCestaNaSever][1],wptCestaNaSever[wptCestaNaSever][2]) > tol then
+        begin
+          Arrived:=False;
+          ComStop(u);
+          for w in wptCestaNaSever do
+            begin
+              if GetY(u) > w[2] + tol then  //tj. jednotka je niz nez waypoint
+                begin
+                  AddComMoveXY(u,w[1],w[2]);
+                end;
+            end;
+        end;
+    wait(0$15)
+  until Arrived;
+end;
+
+// cesta rusu na sever
+export wptCestaNaSever;
+EXPORT function rusi_cesta_na_sever;
+VAR pom;
+begin
+  if rusi_survivors<3 then rusi_survivors=rusi_survivors^[RU1_sol1,RU1_sol2,RU1_sci1];
+  Rusi_01=rusi_survivors;
+  pom=[IsInUnit(bel),Rusi_01[1],Rusi_01[2],Rusi_01[3]];
+  ComExitBuilding([Rusi_01[1],Rusi_01[2],Rusi_01[3]]);
+  wptCestaNaSever:=[[87,93],[77,74],[68,58],[66,46],[59,28],[59,12]];
+  mcCestaNaSever=McMove(1,pom,wptCestaNaSever,[mc_move_waitwp]);
+  Rusi_sever=pom;
+  rusi_survivors=Rusi_01 diff pom;
+  repeat
+    wait(0$5)
+  until (FilterUnitsInArea(RU1_base,[]) isect Rusi_sever) = 0;
+  wait(1$0);
+  stavba_am_baze;
+end;
+
+// test, jestli maji vsichni auto
+{EVERY 0$5 TRIGGER stav=6 DO
+VAR splneno_m5;
+VAR i;
+VAR pom;
+VAR zijou;
+begin
+  zijou=[];
+  for i in Rusi_enter do if IsLive(i) then zijou=zijou^i;
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_type,unit_vehicle]]);
+  if pom>=zijou+0 then splneno_m5=true
+                 else zijou=false;
+  if splneno_m5 then begin
+                       rozhovor_ukonceni_m5;
+                       stav=7;
+                     end
+                else enable;
+end;
+}
+// test, jestli jsou belkov a vyprava na jih uz nahore
+EVERY 0$4 DO
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Test2,[[f_side,You2]]);
+  if pom+0=Rusi_sever+0 then begin
+                               manage_rusi_sever;
+                               disable;
+                             end
+                        else enable;
+end;
+
+// platonov ukazuje bedny
+EVERY 0$20 TRIGGER stav>2 and stav<7 DO
+VAR i;
+VAR misto;
+begin
+  misto=[];
+  for i in bedny do
+    if SeeXY(You2,i[1],i[2])
+      then if i in videne then misto=misto
+                          else begin
+                                 misto=i;
+                                 videne=videne^[i];
+                               end;
+  if misto<>0 then
+    begin
+      bedny_hint=true;
+      ComMoveXY(plat,misto[1],misto[2]);
+      wait(0$5);
+      if HexInfo(misto[1],misto[2])<>0 or HexInfo(misto[1],misto[2])<>plat
+        then begin
+               hlaska_platonov_bedny;
+               pocet_uukazani=pocet_uukazani+1;
+               debug_strings=['Platonov bvedny',pocet_uukazani];
+             end;
+    end;
+  debug_strings=['Platonov bvedny',pocet_uukazani];
+  if pocet_uukazani<6 then enable;
+end;
+
+// odpis beden
+EVERY 0$13 TRIGGER stav>2 and stav<7 Do
+VAR i;
+VAR a;                                          
+begin
+  a=[];
+  for i in bedny do if GetResourceAmountXY(i[1],i[2])<>0 then a=a^[i];
+  bedny=a;
+  enable;
+end;
+
+// pad beden pri stavbe 1
+EVERY 0$10 TRIGGER stav=3 DO
+VAR hex;
+begin
+  wait(Rand(0$30,1$0));
+  hex=RandHexArea(bedny_ar,true);
+  while HexInfo(hex[1],hex[2])<>0 do hex=RandHexArea(bedny_ar,true);
+  CreateCratesXY(4,hex[1],hex[2],true);
+  bedny=bedny^[hex];
+end;
+
+// bedny pad behem hry - pokud zasilka<3
+EVERY 0$10 TRIGGER stav>=6 and stav<7 DO
+VAR hex;
+begin
+  wait(Rand(0$30,1$30));
+  hex=RandHexArea(bedny_ar,true);
+  while HexInfo(hex[1],hex[2])<>0 do hex=RandHexArea(bedny_ar,true);
+  CreateCratesXY(Rand(3,5),hex[1],hex[2],true);
+  bedny=bedny^[hex];
+  zasilek=zasilek+1;
+  enable;
+end;
+
+
+// bedny pad behem hry - pokud zasilka>3
+EVERY 0$10 TRIGGER stav>=5 and stav<7 marked 503 DO
+VAR hex;
+begin
+  wait(Rand(0$30,1$30));
+  hex=RandHexArea(RU2_base,true);
+  while HexInfo(hex[1],hex[2])<>0 do hex=RandHexArea(RU2_base,true);
+  CreateCratesXY(Rand(3,5),hex[1],hex[2],true);
+  bedny=bedny^[hex];
+  zasilek=zasilek+1;
+  if zasilek<4 then enable;
+end;
+
+// testovani, jestli je auto s nejakym rusem v Ru1_zakladne
+EXPORT function test_is_auto_in_area;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(RU1_base,[[f_side,You],[f_type,unit_vehicle]]);
+  if pom>0 then result=true
+           else result=false;
+end;
+
+// ruska vyprava na sever
+function manage_rusi_sever;
+begin
+  wait(0$20);
+  ComMoveXY(Rusi_sever,90,25);
+end;
+
+// odebirani rusu na severni ceste
+EVERY 0$1 TRIGGER FilterUnitsInArea(Odber_bel,[[f_side,You2]])>0 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(Odber_bel,[[f_side,You2]]);
+  for i in pom do if i in Rusi_sever then RemoveUnit(i);
+  pom=UnitFilter(Rusi_sever,[[f_OK]]);
+  if pom>0 then enable;
+end;
+
+// zacatek americke pasti
+EVERY 0$1 trigger belkov_returns DO  //TRIGGER FilterUnitsInArea(RU2_base,[[f_side,You],[f_type,unit_vehicle]])>1
+begin
+  placni_amiky_past;
+  placni_zpet_rusy_sever;
+//  dialog_past_amici;
+end;
+
+// opetovne placnuti rusu ze severu zpet
+function placni_zpet_rusy_sever;
+var i;
+begin
+  for i in Rusi_sever do PlaceUnitArea(i,Zpet_bel,false);
+  ComMoveXY(Rusi_sever,56,9);
+  AddComHold(Rusi_sever); //Don't shoot at Americans you may spot
+end;
+
+// poslani lidicek zpatky, kdyz vyjdou do Upozaree
+EXPORT function posli_lidi_zpet;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Upozarea,[[f_side,You]]);
+  ComMoveToArea(pom,RU2_base);
+{  pom=FilterUnitsInArea(UA1,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,51,84);
+  pom=FilterUnitsInArea(UA2,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,65,74);
+  pom=FilterUnitsInArea(UA3,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,81,77);
+  pom=FilterUnitsInArea(UA4,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,105,86);}
+end;
+
+// posilani jednotek zpatky kdyz vypadnou ze zakladny outbase
+EXPORT function posli_rusi_zpet_out_base;
+VAR pom;
+begin
+  pom=FilterUnitsInArea(Out_base,[[f_side,You]]);
+  ComMoveToArea(pom,RU2_base);
+{  pom=FilterUnitsInArea(OB1,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,54,87);
+  pom=FilterUnitsInArea(OB2,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,66,77);
+  pom=FilterUnitsInArea(OB3,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,82,90);
+  pom=FilterUnitsInArea(OB4,[[f_side,You]]);
+  if pom>0 then ComMoveXY(pom,87,102);}
+end;
+
+// priprava na enable na zachranovani belkova
+EXPORT function rusi_save_belkov;
+begin
+  enable(501);
+  enable(502);
+  enable(599);
+end;
+
+// zachranovani belkova
+EVERY 0$1 TRIGGER GetLives(bel)<800 marked 501 DO
+begin
+  SetLives(bel,800);
+  enable;
+end;
+
+// vypnuti zachranovani belkova
+EVERY 0$1 TRIGGER saved_bel DO
+begin
+   disable(501);
+end;
+
+// vypnuti zachranovani tim, ze je prebarveny
+EVERY 0$1 TRIGGER GetSide(bel)=You marked 599 DO
+begin
+  disable(501);
+end;
+
+// zabiti belkova - vyslani amiku po urcite dobe a death
+EVERY 0$1 marked 502 DO
+VAR i;
+VAR pom;
+begin
+  pom=false;
+  wait(cas_na_zachranu_belkova[difficulty]);
+  disable(501);
+  if IsOK(bel) and (not saved_bel) then
+    amici_attack_belkov;
+  while (FilterUnitsInArea(Belkov_kop,[f_side,You2])+0 > 0) and
+        (UnitFilter(AMICI_UTOK_BELKOV_LIST,[f_OK])+0 > 0) do
+    begin
+      wait(0$1);
+      if objBelkov and IsDead(bel) and GetSide(bel) = 6 then
+        begin
+          belkovSave = false;
+          wait(1);
+          exit;
+        end;
+    end;
+  amici_retreat;
+//  dialog_belkov_smrt;
+end;
+
+// ukonceni lovu belkova
+EVERY 0$2 TRIGGER saved_bel DO
+begin
+  disable(502);
+end;
+
+// rusi z minule mise od belkova navic
+EXPORT function create_rusi_navic;
+VAR pom,i;
+begin
+  if CheckCharacterSet('survivors1') then pom=CreateCharacterSet('survivors1')
+                                     else pom=[];
+  for i in pom do
+    begin
+      SetSide(i,You2);
+      PlaceUnitXYR(i,129,111,5,false);
+    end;
+  if pom<>0 then ComEnterUnit(pom,RU1_tov);
+  rusi_survivors=pom;
+end;
+
+// pocitani skilu a hint
+EVERY 0$5 DO
+VAR zmena;
+begin
+  zmena=false;
+  if IsOk(bur) then
+    if ( (GetSkill(bur,1)<>BurSk[1])
+       or(GetSkill(bur,2)<>BurSk[2])
+       or(GetSkill(bur,3)<>BurSk[3])
+       or(GetSkill(bur,4)<>BurSk[4])) then zmena=true;
+
+  if IsOk(Gny) then
+    if ( (GetSkill(Gny,1)<>GnySk[1])
+       or(GetSkill(Gny,2)<>GnySk[2])
+       or(GetSkill(Gny,3)<>GnySk[3])
+       or(GetSkill(Gny,4)<>GnySk[4])) then zmena=true;
+
+  if IsOk(bel) then
+    if ( (GetSkill(bel,1)<>BelSk[1])
+       or(GetSkill(bel,2)<>BelSk[2])
+       or(GetSkill(bel,3)<>BelSk[3])
+       or(GetSkill(bel,4)<>BelSk[4])) then zmena=true;
+
+  if zmena then hint_skilly
+           else enable;
+end;
+
+// Invincible Platonov
+// added by Serpent 25.12.19
+Every 0$3 trigger IsOk(plat) do
+begin
+enable;
+
+if GetLives(plat) < 1000 then
+   SetLives(plat, 1000);
+
+if IsInArea(plat, Out_base) then
+   ComMoveXY(plat, 66, 92);
+End;

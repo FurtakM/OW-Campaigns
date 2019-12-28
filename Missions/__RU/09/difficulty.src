@@ -1,0 +1,31 @@
+EXPORT CHASSIS_FOR_VEHICLE;
+EXPORT GUN_FOR_VEHICLE;
+EXPORT pocet_lidi_na_zacatku;
+EXPORT levely_arabi;
+EXPORT levely_budovy_arabi;
+EXPORT levely_budovy_amici;
+EXPORT levely_amici;
+EXPORT cas_utoku_amiku;
+EXPORT max_pocet_aut;
+EXPORT delay_beden;
+EXPORT cas_prvniho_utoku;
+
+EXPORT masha_l;
+EXPORT maccepted;
+EXPORT mhandedover;
+
+// nastaveni obtiznosti a load nekterych veci z predesle mise
+EXPORT function SET_DIFFICULTY;
+begin
+  GUN_FOR_VEHICLE=[ru_heavy_gun,ru_gun,ru_gatling_gun];
+  CHASSIS_FOR_VEHICLE=[ru_heavy_tracked,ru_medium_tracked,ru_heavy_wheeled];
+  pocet_lidi_na_zacatku=[6,5,4];
+  levely_arabi=[6,7,8];
+  levely_budovy_arabi=[7,8,9];
+  levely_budovy_amici=[7,8,9];
+  levely_amici=[6,7,8];
+  cas_utoku_amiku=[5$0,4$0,3$0];
+  max_pocet_aut=[3,4,5];
+  delay_beden=[0$30,0$50,1$10];
+  cas_prvniho_utoku=[7$0,6$0,5$0];
+end;

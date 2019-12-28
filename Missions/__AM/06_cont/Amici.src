@@ -1,0 +1,65 @@
+
+
+// doplnovani paliva v zakladne
+var BaseBuild;
+
+every 0$1.0 do
+var set_fuel, fuel, depot;
+begin
+    for depot in FilterAllUnits([[f_btype, b_depot],[f_side,you]]) do
+      for set_fuel in FilterAllUnits([[f_type, unit_vehicle], [f_side, you], [f_dist, depot, 8]]) do begin
+          fuel:=GetFuel(set_fuel);
+          if fuel<=80 then
+              SetFuel(set_fuel, fuel+20);
+      end;
+    enable;//-----------
+end;
+
+export maj_ct;
+on BuildingComplete(build) do
+begin
+  if UnitFilter(build, [[f_side,you],[f_btype,b_depot]]) then begin
+    BaseBuild:=true;
+    ChangeMissionObjectives('M1a');
+    Setbname(UnitFilter(build, [[f_side,you],[f_btype,b_depot]])[1], 'epsilon');
+  end;
+  if GetBType(build)=b_control_tower then
+    maj_ct:=true;
+end;
+
+on UpgradeComplete(build) do
+begin
+  if UnitFilter(build, [[f_side,you],[f_btype,b_factory]]) then
+    MyHint('NonCombat');
+end;
+
+every 0$3 do
+var ok, sez, i;
+begin
+     sez:=[];
+     ok:=false;
+     for i in FilterAllUnits([f_control,control_remote]) do begin
+         if IsControledBy(i) in sez then begin
+            ok:=true;
+            break;
+         end
+         else
+            sez:=sez ^ i;
+     end;
+     if ok then begin
+         ChangeMissionObjectives('MRa');
+     end
+     else
+         enable;
+end;
+
+on ResearchComplete(tech,lab) do
+begin
+   if tech=tech_RemCont and GetSide(lab)=you then begin
+      DialogR2;
+      MyHint('RemoteControlTower');
+   end;
+   if tech=tech_MatDet and GetSide(lab)=you then begin
+      MyHint('MaterialisationDetection');
+   end;
+end;

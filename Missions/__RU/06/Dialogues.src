@@ -1,0 +1,958 @@
+export Kar, Lip, Bur, Pla, Ptr, Pty, Glb, Tit, Dol, Vse;
+export donttalk;
+
+export function set_shorts;
+begin
+   Kar:=Karamazov;
+   Lip:=Lipshchin;
+   Bur:=Burlak;
+   Pla:=Platonov;
+   Ptr:=Petrovova;
+   Pty:=Petrosyan;
+   Glb:=Gleb;
+   Tit:=Titov;
+   Dol:=Dolgov;
+   Vse:=Vsevolod;
+end;
+
+{@ Step by Step
+% Having finally crossed the XX river, Burlak and his men reached the position of V. A. Ovsyenko base, but alas, too late. Now they have to re-take what used to belong to them.
+& West by South from former S. M. Kirov base, South from former V. A. Ovsyenko base, June 7, NR 2
+}
+// Dialogue
+
+// Dialogue Start
+{$ DStart-Kar-1
+- [present] So here we come, boys and girls, comrades. So where is that oil depot we were promised?
+$ DStart-Lip-1
+- [otherwise] This must be the place, comrade commander.
+$ DStart-Bur-1
+- However, we are late here. Shit. We'll run out of oil in no time. (into radio) Comrade Platonov, the auxiliary base is destroyed as well. We are out of fuel.
+$ DStart-Pla-1
+- It's your criminal delay, comrade lieutenant. Get out of your vehicles and proceed on foot. The V. A. Ovsyenko must be taken back. At any cost, do you understand me?
+$ DStart-Bur-2
+- Yes, comrade colonel.
+$ DStart-Pty-2
+- [present] That's no problem. I can capture that base with one hand tied behind my back!
+}
+{# MStart (+Capture)
+Add main Capture
+- Capture the base V. A. Ovsyenko, now in American hands.
+#}
+export function DStart;
+begin
+   CenterNowOnXY(120,140);
+   CenterNowOnXY(120,140);
+   DialogueOn;
+   if not Say(Kar, 'DStart-Kar-1') then
+          Say(Lip, 'DStart-Lip-1');
+   Say(Bur, 'DStart-Bur-1');
+   Dwait(0$3);
+   SayRadio(Pla, 'DStart-Pla-1');
+   Say(Bur, 'DStart-Bur-2');
+   Say(Ptr, 'DStart-Ptr-2');
+   SaveForQuickRestart;
+   ChangeMissionObjectives('MStart');
+   DialogueOff;
+end;
+
+
+
+// Dialogue OvsyenkoTaken (When Russians capture Ovsyenko)
+{$ DOvsyenkoTaken-Bur-1
+- Comrade colonel Platonov, I report we took back the V. A. Ovsyenko base.
+$ DOvsyenkoTaken-Pla-1
+- Good work, comrade. Now restore the alaskite mining equipment.
+$ DOvsyenkoTaken-Kar-1
+- [present] Seems like a stinking hole to me.
+$ DOvsyenkoTaken-Tit-1
+- [otherwise] I can't see what was the fuss about.
+$ DOvsyenkoTaken-Lip-1
+- But have you ever seen an alaskite mine with you own eyes? If we were here in other time, we would be millionaires!
+$ DOvsyenkoTaken-Glb-1
+- [present] All alaskite belongs to the Union of Soviet Socialist Republics, comrade!
+}
+{# MMine  (-Capture, +Mine)
+Out Capture
+Add main Mine
+- Mine at least XXX alaskite.
+#}
+every 0$2 trigger GetSide(RuDepot)=you or not FilterHumansInArea(ovsyenko_base, [[f_side,ai]]) do
+begin
+   DOvsyenkoTaken;
+   OvsyenkoTaken:=1;
+end;
+export function DOvsyenkoTaken;
+begin
+   DialogueOn;
+   Say(Bur, 'DOvsyenkoTaken-Bur-1');
+   SayRadio(Pla, 'DOvsyenkoTaken-Pla-1');
+   Say(Kar, 'DOvsyenkoTaken-Kar-1');
+   Say(Tit, 'DOvsyenkoTaken-Tit-1');
+   if Say(Lip, 'DOvsyenkoTaken-Lip-1') then 
+     Say(Glb, 'DOvsyenkoTaken-Glb-1');
+   ChangeMissionObjectives('MOutCapture');
+   ChangeMissionObjectives('MAddMine');
+   DialogueOff;
+   MyHint('Capturing');
+   MyHint('SibDet');
+end;
+
+// Dialogue MatPrediction (When lab is rebuilt)
+{$ DMatPrediction-Pty-1
+- [present: alt a1] Comrade commander, I was thinking about our experience around XXX river. Did you notice the crates all appeared in one area?
+$ DMatPrediction-Dol-1
+- [otherwise: alt a2] Comrade commander, I have an idea I want to share with you. Do you recall this crates around XXX river all appeared in one area?
+$ DMatPrediction-Bur-1
+- Yes, I noticed. Do you think there is some pattern in it?
+$ DMatPrediction-Pty-2
+- [alt a1] Yes, I do. I think that Soviet scientists could discover this pattern, given some time and proper equipment.
+$ DMatPrediction-Dol-2
+- [alt a2] Yes, I suspect so. If we take a look at the data we have from previous observations and if we have good tools... I am almost certain we will find some sort of relationship.
+$ DMatPrediction-Bur-2
+- And what kind of equipment you need?
+$ DMatPrediction-Pty-3
+- [alt a1] A lab equipped for computer research is necessary.
+$ DMatPrediction-Dol-3
+- [alt a2] We would need tools for computer research.
+}
+export function DMatPrediction;
+begin
+   DialogueOn;
+   if IsOK(Pty) or IsOk(Dol) then begin
+     if not Say(Pty, 'DMatPrediction-Pty-1') then
+            Say(Dol, 'DMatPrediction-Dol-1');
+
+        Say(Bur, 'DMatPrediction-Bur-1');
+
+     if not Say(Pty, 'DMatPrediction-Pty-2') then
+            Say(Dol, 'DMatPrediction-Dol-2');
+
+        Say(Bur, 'DMatPrediction-Bur-2');
+
+     if not Say(Pty, 'DMatPrediction-Pty-3') then
+            Say(Dol, 'DMatPrediction-Dol-3');
+   end;
+   ChangeMissionObjectives('MPred');
+   DialogueOff;
+end;
+// Dialogue NoMaterial (When Materialization Detecion is researched)
+{$ DNoMaterial-Pty-1
+- [present: alt a1] Comrade commander, Soviet scientists made a new important breakthrough. We can now predict arrivals of shipments from the future.
+$ DNoMaterial-Dol-1
+- [otherwise: alt a2] Comrade commander, we made an important discovery. We are now able to predict landings of crates.
+$ DNoMaterial-Bur-1
+- Congratulations, comrade. This is very important. So what is your prediction now?
+$ DNoMaterial-Pty-2
+- [alt a1] I am afraid I have bad news for you, comrade commander. There will be no arrivals in next five minutes and long term outlook is pretty bleak as well. We expect no landings of supplies in foreseeable future.
+$ DNoMaterial-Dol-2
+- [alt a2] Comrade commander, we can't expect any shipments in foreseeable future. Certainly not in next five minutes and probably not even later.
+$ DNoMaterial-Bur-2
+- This is not good news, comrade, but thank you anyway. I will take it into account.
+}
+{! Prediction
+Prediction
+
+There will be hint...
+!}
+
+// z eventu
+export function DNoMaterial;
+begin
+   DialogueOn;
+   if not Say(Pty, 'DNoMaterial-Pty-1') then
+          Say(Dol, 'DNoMaterial-Dol-1');
+
+      Say(Bur, 'DNoMaterial-Bur-1');
+
+   if not Say(Pty, 'DNoMaterial-Pty-2') then
+          Say(Dol, 'DNoMaterial-Dol-2');
+
+      Say(Bur, 'DNoMaterial-Bur-2');
+   ChangeMissionObjectives('MOutPred');
+   DialogueOff;
+   MyHint('Prediction');
+end;
+
+// Dialogue SibResearch (When lab is repaired and some alaskite stored in depot)
+{$ DSibResearch-Pty-1
+- [present] There is so much alaskite here, comrade commander! Soviet scientists could make wonders here! Back in future, we had to beg for even the smallest bits. With the quantities available here, I am sure we could make important breakthroughs in no time.
+$ DSibResearch-Dol-1
+- [otherwise] Comrade commander, with so much alaskite all over the place we could research its special properties. Back in our time I heard Americans are conducting experiments in this direction, but then it was impossible to get alaskite in quantities we have here.
+$ DSibResearch-Bur-1
+- You think you would be able to do it?
+$ DSibResearch-Bur-1a
+- (into radio) This is lieutenant Gorky calling V. I. Lenin. Comrade Platonov, we have restored the alaskite mine and we are storing it in our depot. Is it possible that our scientist will meanwhile research some special properties of alaskite?
+$ DSibResearch-Pla-1
+- (over radio) Exactly, Burlak. I just wanted to let you know that it was decided that your scientists would initiate alaskite research. Start at once and report to me when you are finished.
+
+# MResearch (+Research)(Available al. tech. are: Spotting, Power, Local Tau fiels (stasis))
+Add main Research
+- Research available alaskite technologies (you will need both siberite and space-time lab).
+#}
+export byl_sib_research;
+every 0$2 trigger GetResourceVisibility(101,93,you) OR GetResourceVisibility(53,55,you) OR GetResourceVisibility(29,30,you) OR FilterAllUnits([[f_side, you], [f_btype, b_siberite_mine]]) > 0 OR DepotWithSiberite marked 66 do
+begin
+   DSibResearch;
+end;
+export function DSibResearch;
+begin
+   byl_sib_research:=true;
+   DialogueOn;
+   if not Say(Pty, 'DSibResearch-Pty-1') then
+          Say(Dol, 'DSibResearch-Dol-1');
+
+      Say(Bur, 'DSibResearch-Bur-1');
+      SayRadio(Pla, 'DSibResearch-Pla-1');
+   ChangeMissionObjectives('MResearch');
+   DialogueOff;
+end;
+
+// Dialogue Vsevolod (when alaskite spotting research is initiated)
+{$ DVsevolod-Dol-1
+- Comrade Gorky! We have some strange broadcast on American frequency! Listen!
+$ DVsevolod-Vse-1
+- (over radio) This is Swallow 7, Swallow 7 calling Eagle on captured radio. Eagle could you hear me?
+$ DVsevolod-Bur-1
+- (cannot speak) ...
+$ DVsevolod-Glb-1
+- We hear you, Swallow 7. What is your position?
+$ DVsevolod-Vse-2
+- Present position unknown. Contact with American forces established. We are now in possession of some American installation. American attack expected.
+$ DVsevolod-Bur-2
+- Vsevolod! Is it you?
+$ DVsevolod-Vse-3
+- Beats me, it's you, Yuri?
+$ DVsevolod-Bur-3
+- I know. How did you get... Did you say you took an American base? How many of you are there?
+$ DVsevolod-Vse-4
+- We are three. Met here after a time. None of us had a working radio, can you imagine? Well, now I found a piece of this American crap and it seems to work OK. Did you say you are a commander?
+$ DVsevolod-Bur-4
+- Sure, Vsevolod. I'm a commander of-
+$ DVsevolod-Glb-4
+- [present] Comrades! Could you tell me what's going on here?
+$ DVsevolod-Bur-5
+- [reply] I apologize, comrade commissar.
+$ DVsevolod-Som-5
+- [otherwise] Comrade Gorky, what the hell is going on here?
+$ DVsevolod-Bur-6
+- This is my older brother...
+$ DVsevolod-Dol-6
+- We managed to triangulate him, comrade commander. We can show you his position. (reveals fog)
+$ DVsevolod-Bur-7
+- Thank you, comrade. Now listen, Vsevolod. I am commander of V. A. Ovsyenko, just south of your present position. Can you get here?
+$ DVsevolod-Vse-7
+- I guess not. We tried but there are just too many Yanks there. We've taken them by surprise here, but I'm afraid they'll be back soon.
+$ DVsevolod-Bur-8
+- Oh, shit.
+}
+function AnyUnitOver(y);
+var res,i;
+begin
+  res:=false;
+  for i in FilterAllUnits([[f_side,you],[f_not,[f_type,unit_building]]]) do
+    if GetY(i)<y then begin
+      res:=true;
+      break;
+    end;
+  result:=res;
+end;
+                                                                                              
+every 0$4 trigger (OvsyenkoTaken and GetTechProgress(tech_SibDet, you)>50) or AnyUnitOver(30)  do
+var i;
+begin
+   PlaceUnitArea(Vsevolod, vsevolod_in, false);
+   for i in Vsevolod_uderna_group do
+      PlaceUnitArea(i, vsevolod_in, false);
+   ComAgressiveMove(Vsevolod_uderna_group ^ [vsevolod] ,51,11);
+   DoNotAttack(ai, Vsevolod);
+   for i in UnitFilter(vsevolod_uderna_group, [[f_class,class_engineer]]) do
+     DoNotAttack(ai, i);
+   wait(0$5);
+   ComAgressiveMove(FilterHumansInArea(near_base2, [[f_side,ai]]) ,51,11);
+   wait(0$10);
+   ComMoveXY(FilterHumansInArea(near_base2, [[f_side,ai]]), 23,28);
+   SetSideBase(GetBase(vsevd1), you2);
+   SetBName(vsevd1, 'gorkij');
+   ComEnterUnit(Vsevolod, vseva1);
+   ComEnterUnit(vsevolod_uderna_group, vseva1);
+   ComEnterUnit(UnitFilter(vsevolod_uderna_group, [[f_class,class_engineer]]), vseva1);
+   for i in vsevolod_uderna_group do
+     NormalAttack(ai, i);
+   AddComChangeProfession(UnitFilter(vsevolod_uderna_group, [[f_class,class_engineer]]), class_soldier);
+   ComEnterUnit(vsevolod_uderna_group[2], vsevb1);
+   wait(0$5);
+
+   Vsevolod_vstoupil:=tick;
+   DVsevolod;
+end;
+export function DVsevolod;
+var who;
+begin
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   DialogueOn;
+    Say(Dol, 'DVsevolod-Dol-1');
+    SayRadio(Vse, 'DVsevolod-Vse-1');//noface
+    Say(Bur, 'DVsevolod-Bur-1');
+    Say(Glb, 'DVsevolod-Glb-1');
+    SayRadio(Vse, 'DVsevolod-Vse-2');//noface
+    Say(Bur, 'DVsevolod-Bur-2');
+    SayRadio(Vse, 'DVsevolod-Vse-3');//noface
+    Say(Bur, 'DVsevolod-Bur-3');
+    SayRadio(Vse, 'DVsevolod-Vse-4');
+    Say(Bur, 'DVsevolod-Bur-4');
+ if Say(Glb, 'DVsevolod-Glb-4') then
+    Say(Bur, 'DVsevolod-Bur-5');
+ if not IsOk(Glb) then
+    Say(who, 'DVsevolod-RSol1-5');
+
+    Say(Bur, 'DVsevolod-Bur-6');
+    Say(Dol, 'DVsevolod-Dol-6');
+    RevealFogArea(you, near_base2);
+    CenterNowOnXY(51,13);
+    dwait(0$1);
+    Say(Bur, 'DVsevolod-Bur-7');
+    SayRadio(Vse, 'DVsevolod-Vse-7');
+    Say(Bur, 'DVsevolod-Bur-8');
+
+   DialogueOff;
+   ChangeMissionObjectives('MVsevolod');
+end;
+// Dialogue Help1 (after Vsevolod; Burlak's men are discussing whether to help or not; BelkovFreed = True)
+{$ DHelp1-Glb-1
+- [alive: alt a1] Given your record, comrade Gorky, allow me to remind that your task is to develop alaskite technologies.
+$ DHelp1-Dol-1
+- [alive: alt a2] I've heard how you rescued Pyoter Mikhailovich, comrade Gorky. But if you try to do the same now, how can we develop those alaskite technologies?
+$ DHelp1-Som-1
+- [otherwise: alt a3] You want to go there, don't you, comrade? When you saved comrade Belkov, it was OK, but what will become of our alaskite research now?
+$ DHelp1-Tit-1
+- [alive] Holy Ivan, it is his brother!
+$ DHelp1-Glb-2
+- [alt a1] Personal concerns should never cloud the mind of soviet soldier!
+}
+every 0$2 trigger vsevolod_vstoupil and tick>(vsevolod_vstoupil+0$6) do
+begin
+   if belkovfreed then
+     DHelp1
+   else
+     DHelp2;
+   DHelp3;
+end;
+export function DHelp1;
+var who;
+begin
+   DialogueOn;
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   if (not Say(Glb, 'DHelp1-Glb-1'))  and (not Say(Dol, 'DHelp1-Dol-1')) then
+          Say(who, 'DHelp1-RSol1-1');
+          Say(Tit, 'DHelp1-Tit-1');
+          Say(Glb, 'DHelp1-Glb-2');
+   DialogueOff;
+end;
+// Dialogue Help2 (after Vsevolod; Burlak's men are discussing whether to help or not; BelkovFreed =False)
+{$ DHelp2-Tit-1
+- [alive: alt a1] I know about Belkov, Yuri. If you just follow the orders, you sometimes fail to do what you should do.
+$ DHelp2-Som-1
+- [otherwise] You left comrade Belkov to his fate, comrade commander. Do you sometimes remember him?
+$ DHelp2-Glb-1
+- [alive: alt b1] Our orders in this moment are quite specific. We have to research alaskite technologies.
+$ DHelp2-Som1-1
+- [otherwise: alt b2] But our orders are to research alaskite here.
+$ DHelp2-Tit-2
+- [alt a1] Holy Ivan, Yuri, it's your brother!
+}
+export function DHelp2;
+var who, who2;
+begin
+   DialogueOn;
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 1);
+   who2:=WhoSayAny(donttalk, you, sex_male, 0, 2);
+   if not Say(Tit, 'DHelp2-Tit-1') then
+          Say(who, 'DHelp2-RSol1-1');
+   if not Say(Glb, 'DHelp2-Glb-1') then
+          Say(who2, 'DHelp2-RSol2-1');
+          Say(Tit, 'DHelp2-Tit-2');
+   DialogueOff;
+end;
+// Dialogue Help3 (after Help1 or Help2)
+{$ DHelp3-Bur-1
+- If we join forces, we might be able to defend more effectively.
+$ DHelp3-Lip-1
+- [alive] But we can't split. There is not enough of us. And if we leave, Yanks will capture this base.
+$ DHelp3-Som-1
+- [otherwise] But there are not enough of us, comrade Gorky. And Yanks would capture this base if we left.
+$ DHelp3-Bur-2
+- Anyway. I am the commander. The decision is mine.
+}
+export function DHelp3;
+var who;
+begin
+   DialogueOn;
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+
+          Say(Bur, 'DHelp3-Bur-1');
+   if not Say(Lip, 'DHelp3-Lip-1') then
+          Say(who, 'DHelp3-RSol1-1');
+          Say(Bur, 'DHelp3-Bur-2');
+   DialogueOff;
+end;
+// Dialogue OvsyenkoCaptured (if Ovsyenko fails)
+{$ DOvsyenkoCaptured-Glb-1
+- [alive: alt a1] See, comrade Gorky? The base we fought for, our brave soldier shed blood for, is in enemy hands again. How will you explain this to me, comrade?
+$ DOvsyenkoCaptured-Bur-1
+- [alt a1] (sighs) Comrade Gleb, I am just trying to save some of our brave soldiers.
+$ DOvsyenkoCaptured-Som-1
+- [otherwise] Back to square One. Now we again have no base.
+}
+every 0$5 trigger vsevolod_vstoupil and not FilterHumansInArea(ovsyenko_base, [[f_side,you]]) do
+var b, i;
+begin
+   if FilterUnitsInArea(ovsyenko_base, [[f_side,ai], [f_or, [f_type, unit_human], [f_type, unit_vehicle]]]) >=1 then begin
+     DOvsyenkoCaptured;
+     OvsyenkoCaptured:=true;
+     b:=FilterUnitsInArea(ovsyenko_base, [[f_type,unit_building]]);
+     for i in b do begin
+       SetSide(i, ai);
+     end;
+   end
+   else
+     enable;
+end;
+export function DOvsyenkoCaptured;
+var who;
+begin
+   DialogueOn;
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   if Say(Glb, 'DOvsyenkoCaptured-Glb-1') then
+      Say(Bur, 'DOvsyenkoCaptured-Bur-1')
+   else
+      Say(who, 'DOvsyenkoCaptured-RSol1-1');
+   DialogueOff;
+end;
+
+// Dialogue PartyAttacked (if Americans attack the party travelling North)
+{$ DPartyAttacked-Som-1
+- [present in the attacked group] Comrades! We are ambushed!
+$ DPartyAttacked-Glb-1
+- [alive] That's your half-hearted attempt to cover all bases, isn't it, comrade Gorky?
+$ DPartyAttacked-Som1-1
+- [otherwise] I don't know if it was a good idea to split, comrade commander.
+}
+every 0$2 trigger false do
+var a;
+begin
+   a:=FilterHumansInArea(to_north, [f_side,you]);
+   if UnitFilter(a, [f_or,[f_distxy, 67,37, 10],[f_distxy, 83,38, 10]]) then
+      DPartyAttacked
+   else
+      enable;
+end;
+export function DPartyAttacked;
+var who, who2;
+begin
+   DialogueOn;
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 1);///////////////////ma byt prepaden///////////////////////
+   who2:=WhoSayAny(donttalk, you, sex_male, 0, 2);
+          Say(who, 'DPartyAttacked-RSol1-1');
+   if not Say(Glb, 'DPartyAttacked-Glb-1') then
+          Say(who2, 'DPartyAttacked-RSol2-1');
+   DialogueOff;
+end;
+
+
+
+// Dialogue OtherMeetVsev (when the player's units reach Northern base and Burlak is not with them)
+{$ DOtherMeetVsev-Vse-1
+- So you must be men Yuri sent for us.
+$ DOtherMeetVsev-Som-1
+- [present] Yes. But comrade Gorky had to stay behind. I hope you'll be able to meet him soon.
+}
+export kecali;
+export otherkecali;
+export VsevolodSaved;
+every 0$3 trigger FilterAllUnits([[f_side,you],[f_dist,Vsevolod,10]]) do
+var mt,i;
+begin
+   if IsLive(vsevolod) and GetDistUnits(Vsevolod,Burlak)<=10 and not kecali then begin
+     mt:=tick+0$20;
+     while IsInUnit(Vsevolod)=vseva1 and mt<tick do begin
+       ComExitBuilding(UnitsInside(vseva1));
+       wait(0$1);
+     end;
+     wait(0$2);
+     ComStop(FilterAllUnits([[f_side,you2]]));
+     SetSide(FilterAllUnits([[f_side,you2]]),you);
+     for i in FilterAllUnits([[f_side,you]]) do
+       NormalAttack(ai, i);
+     DMeetVsev;
+     if OvsyenkoCaptured then
+        DMeetVsev2
+     else
+        DMeetVsev2a;
+     DMeetVsev3;
+     if stevens_Killed then
+        DMeetVsev4
+     else
+        DMeetVsev5;
+     DMeetVsev6;
+     kecali:=true;
+     VsevolodSaved:=true;
+     ChangeMissionObjectives('MVsevolodOut');
+   end
+   else begin
+     if IsLive(vsevolod) and not otherkecali then begin
+        ComStop(FilterAllUnits([[f_side,you2]]));
+        SetSide(FilterAllUnits([[f_side,you2]]),you);
+        for i in FilterAllUnits([[f_side,you]]) do
+          NormalAttack(ai, i);
+        DOtherMeetVsev;
+        ComExitBuilding(vseva1);
+        VsevolodSaved:=true;
+        otherkecali:=true;
+        ChangeMissionObjectives('MVsevolodOut');
+     end;
+     enable;
+   end;
+end;
+
+export function DOtherMeetVsev;
+var who;
+begin
+   DialogueOn;
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   if Say(Vse, 'DOtherMeetVsev-Vse-1') then
+      Say(who, 'DOtherMeetVsev-RSol1-1');
+   DialogueOff;
+end;
+
+// Dialogue MeetVsev (when Burlak meets Vsevolod)
+{$ DMeetVsev-Vse-1
+- Hello, Burlak! How does it look like here?
+$ DMeetVsev-Bur-1
+- Hi, Sevi. The situation doesn't look well. Few months ago, we were on top. From there everything seems screwed up. We've lost all our bases in the East sector.
+$ DMeetVsev-Vse-2
+- Gosh. Go on, Yuri
+$ DMeetVsev-Bur-2
+- There ain't much to go on. Here I am, with half a dozen men, trying to protect a base, mine alaskite and research some damned technologies. Shit!
+}
+export function DMeetVsev;
+begin
+   DialogueOn;
+   if Say(Vse, 'DMeetVsev-Vse-1') then
+      Say(Bur, 'DMeetVsev-Bur-1');
+   DialogueOff;
+end;
+// Dialogue MeetVsev2 (if Southern  base was captured)
+{$ DMeetVsev2-Vse-1
+- (seriously) So you've abandoned your base so that you could save us?
+$ DMeetVsev2-Bur-1
+- Yes. What else could I do? Now we have to take it back.
+$ DMeetVsev2-Vse-2
+- You might need not. There are some supplies in this depot. And if I'm not mistaken, also some alaskite. I've also overheard some American traffic. It seems they might sent a cargo truck this way. We might try to capture it.
+}
+export function DMeetVsev2;
+begin
+   DialogueOn;
+   if Say(Vse, 'DMeetVsev2-Vse-1') then
+   if Say(Bur, 'DMeetVsev2-Bur-1') then
+      Say(Vse, 'DMeetVsev2-Vse-2');
+   DialogueOff;
+end;
+// Dialogue MeetVsev2 (if Southern base was not captured)
+{$ DMeetVsev2a-Vse-1
+- (seriously) So you've risked your base so that you could save us?
+$ DMeetVsev2a-Bur-1
+- Yes. You would do the same. Well, now we have to get on with that research.
+$ DMeetVsev2a-Vse-2
+- Try thinking about moving into the base we captured. Depot is full of material and if I'm not mistaken there is some alaskite too.
+}
+
+export function DMeetVsev2a;
+begin
+   DialogueOn;
+   if Say(Vse, 'DMeetVsev2-Vse-2a') then
+   if Say(Bur, 'DMeetVsev2-Bur-2') then
+      Say(Vse, 'DMeetVsev2-Vse-3');
+   DialogueOff;
+end;
+// Dialogue MeetVsev3 (in any case continues)
+{$ DMeetVsev3-Bur-1
+- I'll think about it.
+$ DMeetVsev3-Vse-1
+- OK. And what else is going on here. Who is the commander?
+$ DMeetVsev3-Bur-2
+- General Morozov. Never met him though. Our immediate commander is colonel Platonov.
+$ DMeetVsev3-Vse-2
+- Morozov? I think he'll remember me from North China. But I thought Yashin was supposed to be in charge; he is surely a better commander than Morozov.
+$ DMeetVsev3-Bur-3
+- It's strange, Sevi. You know, last time we caught an American professor. He spoke as if he wasn't coming from our own world.
+}
+export function DMeetVsev3;
+begin
+   DialogueOn;
+   if Say(Bur, 'DMeetVsev3-Bur-1') then
+   if Say(Vse, 'DMeetVsev3-Vse-1') then
+   if Say(Bur, 'DMeetVsev3-Bur-2') then
+   if Say(Vse, 'DMeetVsev3-Vse-2') then
+      Say(Bur, 'DMeetVsev3-Bur-3');
+   DialogueOff;
+end;
+
+// Dialogue MeetVsev4 (if StevensKilled =True)
+{$ DMeetVsev4-Bur-1
+- I've let him killed, of course. He might be lying and he still was an enemy. Still, I wonder... Could it be that there is not single future but more of them?
+}
+export function DMeetVsev4;
+begin
+   DialogueOn;
+      Say(Bur, 'DMeetVsev4-Bur-1');
+   DialogueOff;
+end;
+// Dialogue MeetVsev5 (if StevensKilled = False)
+{$ DMeetVsev5-Bur-1
+- I put him under lock and then interrogated him. It's strange, Sevi. He says they don't have alaskite - he kept calling it siberite - in the world he comes from. Never heard about Kauders-Kurisawa field generator. Or about North-China crisis.
+$ DMeetVsev5-Vse-1
+- Might be lying.
+$ DMeetVsev5-Bur-2
+- I doubt it. Seemed quite genuine to me. And listen, Sevi, he told me that in that world Russia ruled over half the Europe, even half of Germany was in our power. Could it be that there is not single future but more of them?
+}
+export function DMeetVsev5;
+begin
+   DialogueOn;
+   if Say(Bur, 'DMeetVsev5-Bur-1') then
+   if Say(Vse, 'DMeetVsev5-Vse-1') then
+      Say(Bur, 'DMeetVsev5-Bur-2');
+   DialogueOff;
+end;
+// Dialogue MeetVsev6 (in any case continues)
+{$ DMeetVsev6-Vse-1
+- It is strange. But I guess you've got more pressing business, Burlak, don't you.
+$ DMeetVsev6-Bur-1
+- You bet.
+}
+export function DMeetVsev6;
+begin
+   DialogueOn;
+   if Say(Vse, 'DMeetVsev6-Vse-1') then
+      Say(Bur, 'DMeetVsev6-Bur-1');
+   DialogueOff;
+end;
+// Dialogue Truck (when Am. truck arrives to Northern base and it is in Russian hands)
+{$ DTruck-Asol-1
+- (English, with Native titles) Hello, Catherine! Did you prepare burgers for us?
+$ DTruck-Bur-1
+- Some burgers, Yank. Go! It's full of material, it mustn't escape.
+}
+
+every 0$5 trigger kecali and FilterUnitsInArea(north_base, [[f_side,you]]) do
+begin
+   wait(0$10);
+   nakladaky;
+   ComMoveXY([accar1,accar2],53,8);
+   DTruck;
+   AddComMoveXY([accar1,accar2],45,14);
+   AddComMoveXY([accar1,accar2],33,14);
+   AddComMoveXY([accar1,accar2],27,32);
+   AddComUnload([accar1,accar2]);
+   AddComMoveXY([accar1,accar2],42,79);
+   AddComExitVehicle([acman1, acman2]);
+   sol:=sol union [acman1, acman2];
+   a3:=a3 union [acman1, acman2];
+end;
+
+export function DTruck;
+var who;
+begin
+   who:=acman1;
+   DialogueOn;
+   if Say(who, 'DTruck-Sol1-1') then
+      Say(Bur, 'DTruck-Bur-1');
+   DialogueOff;
+end;
+
+// Dialogue DieVsev1 (if Burlak decides not to save his brother - this must happen before the player researches Stasis)
+{$ DDieVsev1-Vse-1
+- Burlak! We are finished here! I'll blow up the depot and that's it. Don't be sorry for me, I know you couldn't come. Break your neck, you little brat.
+}
+export function DDieVsev1;
+begin
+   SetLives(vsevd1, 0);
+   ChangeMissionObjectives('MVsevolodDel');
+   DialogueOn;
+   Say(Vsevolod2, 'DDieVsev1-Vse-1');
+   DialogueOff;
+end;
+// Dialogue DieVsev2 (OtherMeetVsev or MeetVsev took place, Vsevolod is dying)
+{$ DDieVsev2-Vse-1
+- Burlak! I'm sorry we couldn't talk more. For Russia, avenge me!
+}
+export function DDieVsev2;
+begin
+   DialogueOn;
+   Say(Vsevolod2, 'DDieVsev2-Vse-1');
+   DialogueOff;
+end;
+// Dialogue Stasis
+{$ DStasis-Pty-1
+- [in lab: alt a1] Comrade commander! Soviet scientists under my leadership made an important discovery. Using alaskite, we can now build warping device that will slow down time around you.
+$ DStasis-Dol-1
+- [in lab: alt a2] Comrade commander! We've made an important breakthrough. We've long suspected that the alaskite can twist time or space, like some warping device. And now we have a device that can slow down time around you.
+$ DStasis-Som-1
+- [in lab: alt a3] Comrade commander! We have researched a new technology for personal warping device. It will slow down time around you.
+$ DStasis-Bur-1
+- So that you can move faster than your surroundings?
+$ DStasis-Pty-2
+- [alt a1] No, comrade commander, it will actually slow down the person wearing it. But Soviet soldiers might use it for example when they are bleeding and waiting for treatment.
+$ DStasis-Dol-2
+- [alt a2] No, comrade. It will actually slow you down. But it can be an advantage, for example when you are badly hit and you are waiting for treatment.
+$ DStasis-Som-2
+- [in lab: alt a3] No, it will slow down the person wearing it. The only situation where this might be useful is when the person is wounded and waiting for treatment.
+$ DStasis-Bur-2
+- Good idea, comrade. Just make sure it turns on automatically, when you are injured.
+}
+{! Stasis
+Stasis
+
+There will be hint...
+!
+}
+export function DStasis;
+var who;
+begin
+   who:=WhoSayAny(donttalk, you, sex_male, 0, 0);
+   DialogueOn;
+              if not Say(Pty, 'DStasis-Pty-1') then
+              if not Say(Dol, 'DStasis-Dol-1') then
+                     Say(who, 'DStasis-RSol1-1');
+                     Say(Bur, 'DStasis-Bur-1');
+              if not Say(Pty, 'DStasis-Pty-2') then
+              if not Say(Dol, 'DStasis-Dol-2') then
+                     Say(who, 'DStasis-RSol1-2');
+                     Say(Bur, 'DStasis-Bur-2');
+   DialogueOff;
+   MyHint('Stasis');
+end;
+      
+// Dialogue NextMiss1 (when stasis is researched)
+{$ DNextMiss1-Pla-1
+- (over radio) Comrade Gorky! This is an emergency! We have reliable information that our main base will come under heavy american attack. You are hereby ordered to attack the american base New Kabul East-North-East from your present position and thus impede the pressure on our base.
+}
+every 0$2 trigger GetTech(tech_TauField, you)=state_researched
+                  and GetTech(tech_SibDet, you)=state_researched
+                  and GetTech(tech_SibPow, you)=state_researched
+                  and GetTech(tech_SibEng, you)=state_researched do
+begin
+   ChangeMissionObjectives('MOutResearch');
+end;
+
+export exit_enabled;
+every 0$2 trigger GetTech(tech_TauField, you)=state_researched
+                  and GetTech(tech_SibDet, you)=state_researched
+                  and GetTech(tech_SibPow, you)=state_researched
+                  and GetTech(tech_SibEng, you)=state_researched
+                  and mine_obj_completed do
+var plidi, lidi, min, max, i, go_pryc, go_pryc_tmp, zustavaj, utek, povol_povol, mt;
+begin
+   if IsLive(Vsevolod) and GetSide(Vsevolod)=you2 then begin
+     kolik_ma_vsevolod_casu:=0;
+     utek:=[Vsevolod] union vsevolod_uderna_group;
+     utek:=UnitFilter(utek, [[f_placed],[f_side,you2]]);
+
+     mt:=tick+0$20;
+     while utek and tick<mt do begin
+       for i in utek do
+         if IsInArea(i, vsevolod_in) or not IsPlaced(i) then begin
+           RemoveUnit(i);
+           utek:=utek diff i;
+         end;
+       utek:=UnitFilter(utek, [[f_placed]]);
+       wait(0$1);
+       ComExitVehicle(utek);
+       AddComMoveToArea(utek, vsevolod_in);
+       AddComMoveXY(utek, 53,1);
+     end;
+     SetLives(Vsevolod, 0);
+     for i in vsevolod_uderna_group do
+       SetLives(i, 0);
+   end;
+
+   wait(0$15);
+   DNextMiss1;
+   if IsLive(Vsevolod) and kecali then
+     DNextMiss3
+   else begin
+     DNextMiss2;
+     VyhraResearch; 
+   end;
+   DNextMiss4;
+
+   ChangeMissionObjectives('MCars');
+
+   SetAreaMapShow(ru_exit, 1);
+   exit_enabled:=true;
+   convoy_can_go:=true;
+
+   if IsLive(Vsevolod) then begin
+     lidi:=FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_russian]]) diff [Vsevolod,Burlak];
+
+     max:=lidi div 2 + lidi mod 2;
+     min:=0;
+
+     povol_povol:=[class_soldier,class_engineer,class_mechanic,class_scientistic];
+
+     if max>1 then begin
+       zustavaj:=[Burlak] ^ CharacterSelection('1',min, max, [Burlak,sel_changeable,sel_change_class] ^ (lidi diff vsevolod_uderna_group) ^ [sel_not_hired] ^ vsevolod_uderna_group ^ [sel_not_changeable,Vsevolod], povol_povol);
+       go_pryc:=[Vsevolod] ^ (lidi diff zustavaj);
+     end
+     else begin
+       zustavaj:=[Burlak];
+       go_pryc:=[Vsevolod] ^ lidi;
+     end;
+
+     SetSide(go_pryc, you2);
+     for i in go_pryc do
+       DoNotAttack(ai, i);
+     sli_pryc:=[];
+     go_pryc_tmp:=go_pryc;
+     while go_pryc_tmp do begin
+       for i in go_pryc_tmp do
+         if IsInArea(i, exit_a) then begin
+           RemoveUnit(i);
+           go_pryc_tmp:=go_pryc_tmp diff [i];
+           sli_pryc:=sli_pryc union [i];
+         end;
+       wait(0$1);
+       ComExitVehicle(go_pryc_tmp);
+       AddComMoveToArea(go_pryc_tmp, exit_a);
+       AddComMoveXY(go_pryc_tmp, 104,71);
+     end;
+     wait(0$3);
+   end;
+end;
+export convoy_can_go;
+every 0$10 trigger convoy_can_go do
+begin
+   wait(0$25);
+   convoy;
+end;
+
+export function DNextMiss1;
+begin
+   DialogueOn;
+   SayRadio(Pla, 'DNextMiss1-Pla-1');
+   DialogueOff;
+end;
+
+// Dialogue NextMiss2 (Vsevolod is dead)
+{$ DNextMiss2-Pla-1
+- (cont.) You will be joined en route by some supply trucks. Now leave immediately eastward! (mission accomplished)
+}
+export function DNextMiss2;
+begin
+   DialogueOn;
+   SayRadio(Pla, 'DNextMiss2-Pla-1');
+   DialogueOff;
+end;                        
+// Dialogue NextMiss3 (Vsevolod is not dead)
+{$ DNextMiss3-Pla-1
+- (cont.) We have noted you made contact with comrade Vsevolod Gorky, who has excellent record. He will now leave with a party of your best men for reconnaissance of the american base. You will stay and receive a convoy with material you will use to build some vehicles for the attack.
+$ DNextMiss3-Pla-1a
+- Then you will leave eastward and support attack on New Kabul. Repair your vehicles and produce new ones if you can. You should also take alaskite with you if you want to use it, it's unlikely there will be a deposit in your new theatre of operation.
+}
+export function DNextMiss3;
+begin
+   DialogueOn;
+   SayRadio(Pla, 'DNextMiss3-Pla-1');
+   SayRadio(Pla, 'DNextMiss3-Pla-1a');
+   DialogueOff;
+end;
+// Dialogue NextMiss4 (in any case)
+{$ DNextMiss4-Bur-1
+- (into radio) I understand, comrade colonel.
+}
+export function DNextMiss4;
+begin
+   DialogueOn;
+   Say(Bur, 'DNextMiss4-Bur-1');
+   DialogueOff;
+end;
+// Query EndGame
+{? QEndGame
+Are you sure you want to end the mission and enter the next one with the vehicles now in exit area?
+-1 Yes
+-2 No
+?}
+var was_end_query;
+every 0$5 trigger exit_enabled do
+var a,qr;
+begin
+  a:=FilterHumansInArea(ru_exit, [[f_side,you]]);
+  if (Burlak in a) then begin
+    end_the_mission_allowed:=true;
+    if not was_end_query then begin
+      qr:=Query('QEndGame');
+      was_end_query:=true;
+      if qr=1 then
+        VyhraExit;
+    end;
+  end
+  else begin
+    end_the_mission_allowed:=false;
+    was_end_query:=false;
+  end;
+  enable;
+end;
+
+// Dialogue KillGleb (If the player kills Gleb)
+{$ DKillGleb-Pla-1
+- (over radio) What do you mean by that, comrade Gorky? You will be court-martialled for murder of political commissar! (mission fails)
+}
+export gleb_lives, utok_na_gleba;
+every 0$1 trigger gleb and gleb_lives<>GetLives(gleb) do
+var i;
+begin
+  for i in FilterAllUnits([[f_side,you]]) do
+    if WantsToAttack(i)=Gleb then
+      utok_na_gleba:=true;
+{  wait(0$3);
+  if isOK(gleb) then
+    utok_na_gleba:=false;
+}
+  enable;
+end;
+export function DKillGleb;
+begin
+   DialogueOn;
+   SayRadio(Pla, 'DKillGleb-Pla-1');
+   DialogueOff;
+end;
+
+every 0$5 do
+var i,a;
+begin
+  a:=0;
+  for i in FilterAllUnits([[f_or,[f_btype,b_depot],[f_btype,b_warehouse]],[f_side,you]]) do
+    a:=a+GetResourceType(Getbase(i),mat_siberit);
+  if a>=100 then begin
+    ChangeMissionObjectives('MOutMine');
+    mine_obj_completed:=true;
+  end
+  else
+    enable;
+end;
+
+every 0$5 trigger GetResourceType(GetBase(RuDepot), mat_siberit)>15 do
+begin
+  if not Ovsyenkotaken then begin
+    if GetSide(RuDepot)<>you then SetResourceType(GetBase(RuDepot), mat_siberit, 5);
+    enable;
+  end;
+end;
+
+
+
+every 0$10 trigger UnitFilter(zbytek, [[f_see,you]]) do
+begin
+  wait(0$10);
+  MyHint('RemoteControl');
+end;

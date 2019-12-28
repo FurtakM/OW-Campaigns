@@ -1,0 +1,250 @@
+export function get_x_best(lidi, num, skill, mclass, idle);
+var i, skills;
+begin
+    if mclass then
+      lidi:=UnitFilter(lidi, [[f_class, mclass]]);
+    skills:=[];
+    for i in lidi do
+        skills:=skills ^ [GetSkill(i, skill)];
+    lidi:=SortListByListDesc(lidi, skills);
+    if num>lidi then
+       num:=lidi+0;
+
+    i:=1;
+    result:=[];
+    while i<=lidi and result<num do begin
+      if idle then begin
+        if IsIdle(lidi[i]) then
+          result:=result ^ [lidi[i]];
+      end
+      else
+        result:=result ^ [lidi[i]];
+      i:=i+1;
+    end;
+end;
+
+
+//vynecha apemany
+//vybere prvniho z skupiny lidi se zadanym pohlavim sex (0=obe)
+//a zadanym Hclass (0=jakykoliv)
+export function SayAny(lidi, ident, side, sex, Hclass, index);
+var kdo;
+begin
+     kdo:=WhoSayAny(lidi, side, sex, Hclass, index);
+     if kdo then
+        result:=Say(kdo, ident)
+     else
+        result:=false;
+end;
+export function WhoSayAny(lidi, side, sex, Hclass, index);
+begin
+     lidi:=UnitFilter(lidi, [[f_type,unit_human],[f_side,side],f_not,[f_nation,nation_nature]]);
+     if sex<>0 then
+        lidi:=UnitFilter(lidi, [f_sex,sex]);
+
+     if Hclass<>0 then
+        lidi:=UnitFilter(lidi, [f_class,Hclass]);
+
+     if index<=0 then index:=1;
+
+     if lidi>=index then
+        result:=lidi[index]
+     else
+        result:=0;
+end;
+
+
+export function see_any(strana, sez);
+var i;
+begin
+     result:=[];
+     for i in sez do
+         if See(strana,i) then begin
+            result:=result ^ i;
+         end;
+     ;
+end;
+
+export function TalkOn;
+begin
+     stop_talking:=true;
+end;
+export function TalkOff;
+begin
+     stop_talking:=false;
+end;
+
+export function FilterHumansInArea(area, filter);
+var inbase, i;
+begin
+     result:=[];
+     inbase:=FilterUnitsInArea(area, []);
+     for i in inbase do begin
+         if GetType(i)=unit_building or GetType(i)=unit_vehicle then begin
+            result:=result ^ UnitsInside(i);
+         end
+         else begin
+            result:=result ^ [i];
+         end;
+     end;
+     result:=UnitFilter(result, filter);
+end;
+export function inside_units(uns);
+var i;
+begin
+   result:=[];
+   for i in uns do
+      result:=result ^ UnitsInside(i);
+end;
+
+export function find_drivers(cars, drivers, take_out);
+var empty, free, i, konec;
+begin
+     cars:=UnitFilter(cars, [f_alive]) union [];
+     drivers:=UnitFilter(drivers, [f_alive]) union [];
+
+     for i in cars do
+         if not IsDrivenBy(i) then
+            empty:=add(empty,i);
+     if take_out then begin
+       for i in drivers do
+           if not (IsInUnit(i) in cars) then
+              free:=add(free,i);
+     end
+     else begin
+       for i in drivers do
+           if not IsInUnit(i) then
+              free:=add(free,i);
+     end;
+
+     result:=cars diff empty;
+
+     if empty <= free then
+        konec:=empty
+     else
+        konec:=free;
+
+     for i:=1 to konec do begin
+         ComEnterUnit(free[i], empty[i]);
+         result:=add(result,empty[i]);
+     end;
+end;
+export function find_remotes(cars, mechs, remotes);
+var cas, i;
+begin
+     while remotes > mechs do
+        delete(remotes, 1);
+     for i:=1 to remotes do
+        ComEnterUnit(mechs[i], remotes[i]);
+end;
+export function wait_for_remotes(cars, remotes, cas);
+var c, unlinked, i;
+begin
+     c:=tick+cas;
+     while tick<c and (not (inside_units(remotes)+0)=remotes) do
+        wait(0$1);
+
+     unlinked:=cars;
+     for i in remotes do begin
+        ComLinkTo(unlinked, UnitsInside(i));
+        unlinked:=unlinked diff UnitsLinked(UnitsInside(i));
+     end;
+end;
+
+
+export function wait_for_drivers(cars, cas);
+var i, vsichni_ready, k, pockat;
+begin
+     k:=0;
+     pockat:=tick+cas;
+     while not vsichni_ready and tick<pockat do begin
+           vsichni_ready:=true;
+           k:=k+1;
+           for i in cars do
+               if not IsDrivenBy(i) then
+                  vsichni_ready:=false;
+
+           wait(0$1.0);
+     end;
+end;
+
+export function add(list, list1);
+begin
+     if list=0 then
+        list:=[];
+     if list1=0 then
+        list1:=[];
+     result:=list ^ list1;
+end;
+
+export function take_x(list, x);
+var i,r ;
+begin
+  r:=[];
+  for i:=1 to x do
+    r:=r ^ [list[i]];
+  result:=r;
+end;
+export hinty_co_byli;
+export function MyHint(ident);
+begin
+  if not hinty_co_byli then
+    hinty_co_byli:=[];
+  if not (ident in hinty_co_byli) then begin
+    hinty_co_byli:=hinty_co_byli ^ ident;
+    Hint(ident);
+  end;
+end;
+
+Export Function BlockMarchNorth;
+var i, x, y;
+begin
+
+     for i in FilterUnitsInArea(block_march, [f_side, you]) do
+     begin
+          x = GetX(i);
+          y = GetY(i);
+
+          ComMoveXY(i, x + 3, y + 5);
+     end;                 
+
+end;
+
+Export Function DepotWithSiberite;
+var i, your_depots;
+begin
+
+     your_depots = FilterAllUnits([[f_side, you], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]);
+
+     for i in your_depots do
+     begin
+          IF GetResourceType(GetBase(i), mat_siberit) > 0 then
+          begin
+               result = true;
+          end;
+     end;
+
+END;
+
+Export function AttackVehicles(side, vehicles);
+var i, j, vehiclesOK, target1, target2, seeEnemy;
+begin
+
+    if vehicles > 0 then
+        repeat
+            wait(0$1);
+
+            vehiclesOK = UnitFilter(vehicles, [f_lives, 600]);
+
+                for j in vehiclesOK do
+                begin
+                    target1 := NearestUnitToUnit(FilterAllUnits([[f_side, side]]), j);
+                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, side], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), j);
+
+                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
+                    else ComAttackUnit(j, target2);
+                end;
+
+        until vehiclesOK  = 0;
+end;
+

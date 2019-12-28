@@ -1,0 +1,74 @@
+var us_fort,             // seznam americkych vezi (unit,weapon)
+    ru_fort;             // seznam ruskych vezi (unit,weapon)
+
+var us_place,
+    ru_place;
+
+// inicializace promennych
+every 0$11 do
+var side,un,list;
+begin
+  us_fort:=[];
+  ru_fort:=[];
+  for side in (cpu_list diff ar) do
+    begin
+      list:=FilterAllUnits([ [f_side,side], [f_or, [f_btype,b_bunker], [f_btype,b_turret]] ]);
+      for un in list do
+        case side of
+         us: us_fort:=us_fort ^ [[GetX(un),GetY(un),GetBWeapon(un)]];
+         ru: ru_fort:=ru_fort ^ [[GetX(un),GetY(un),GetBWeapon(un)]];
+        end;
+    end;
+end;
+
+
+// overovani uplnosti US obrany
+every 0$10.5 do
+var un,w,x,y,list;
+begin
+  list:=FilterAllUnits([ [f_side,us], [f_or, [f_btype,b_bunker], [f_btype,b_turret]], [f_constructed],
+                               f_not, [f_or, [f_bweapon,us_rocket_launcher],
+                                             [f_bweapon,us_heavy_gun],
+                                             [f_bweapon,us_radar],
+                                             [f_bweapon,us_double_laser]] ]);
+  for un in list do
+    begin
+      x:=GetX(un);
+      y:=GetY(un);
+      for w in us_fort do
+        begin
+          if (x=w[1]) and (y=w[2]) then
+            ComPlaceWeapon(un,w[3]);
+          wait(8);
+        end;
+      wait(27);
+    end;
+  wait(Rand(0$5,0$10));
+  enable;
+end;
+
+
+// overovani uplnosti RU obrany
+every 0$10.7 do
+var un,w,x,y,list;
+begin
+  list:=FilterAllUnits([ [f_side,ru], [f_or, [f_btype,b_bunker], [f_btype,b_turret]],  [f_constructed],
+                               f_not, [f_or, [f_bweapon,ru_rocket],
+                                             [f_bweapon,ru_heavy_gun],
+                                             [f_bweapon,ru_time_lapser],
+                                             [f_bweapon,ru_gatling_gun]] ]);
+  for un in list do
+    begin
+      x:=GetX(un);
+      y:=GetY(un);
+      for w in ru_fort do
+        begin
+          if (x=w[1]) and (y=w[2]) then
+            ComPlaceWeapon(un,w[3]);
+          wait(8);
+        end;
+      wait(27);
+    end;
+  wait(Rand(0$5,0$10));
+  enable;
+end;

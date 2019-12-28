@@ -1,0 +1,6 @@
+//Steam achievements
+
+Export Function SA_OnMissionStart;
+     begin
+          SetAchievement('ACH_PUR');
+     end;

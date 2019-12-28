@@ -1,0 +1,198 @@
+export john,powell,huck;
+var bobby,cyrus,lisa,cornel,frank,brown,lucy,glad,denis,yamoko,gary;
+var bobbyloc,cyrusloc,lisaloc,cornelloc,frankloc,brownloc,lucyloc,gladloc,denisloc,yamokoloc,garyloc;
+
+export function prepare_americans;
+var vip;
+begin
+  uc_nation=nation_american;
+  uc_side=am;
+  if testcharacters('JMM') and checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+//  if testcharacters('Powell') and checkcharacterset('Powell') then powell=createcharacter('Powell')
+//  else buildquery('neny Powell',['OK']);
+  powell=newcharacter('Powell');
+  if not powell then buildquery('neny Powell',['OK']);
+
+//  if testcharacters('Huckleberg') and checkcharacterset('Huckleberg') then huck=createcharacter('Huckleberg')
+//  else buildquery('neny Huckleberg',['OK']);
+  huck=newcharacter('Stevens');
+  if not huck then buildquery('neny Stevens',['OK']);
+
+  americani=[];
+  if testcharacters('otherwithJMM') then
+    if checkcharacterset('otherwithJMM') then americani=createcharacterset('otherwithJMM') else
+  else buildquery('neny otherwithJMM',['OK']);
+
+  vip=[];
+  if not testcharacters('Bobby') or not checkcharacterset('Bobby') then bobby=0
+  else begin
+    bobbyloc=loadvariable('BobbyLoc',-1);
+    if bobbyloc=6 then begin
+      bobby=createcharacter('Bobby');
+      vip=vip^[bobby];
+    end
+    else bobby=0;
+  end;
+  if not testcharacters('Cyrus') or not checkcharacterset('Cyrus') then cyrus=0
+  else begin
+    cyrusloc=loadvariable('CyrusLoc',-1);
+    if cyrusloc=6 then begin
+      cyrus=createcharacter('Cyrus');
+      vip=vip^[cyrus];
+    end
+    else cyrus=0;
+  end;
+  if not testcharacters('Lisa') or not checkcharacterset('Lisa') then lisa=0
+  else begin
+    lisaloc=loadvariable('LisaLoc',-1);
+    if lisaloc=6 then begin
+      lisa=createcharacter('Lisa');
+      vip=vip^[lisa];
+    end
+    else lisa=0;
+  end;
+  if not testcharacters('Cornell') or not checkcharacterset('Cornell') then cornel=0
+  else begin
+    cornelloc=loadvariable('CornellLoc',-1);
+    if cornelloc=6 then begin
+      cornel=createcharacter('Cornell');
+      vip=vip^[cornel];
+    end
+    else cornel=0;
+  end;
+  if not testcharacters('Frank') or not checkcharacterset('Frank') then frank=0
+  else begin
+    frankloc=loadvariable('FrankLoc',-1);
+    if frankloc=6 then begin
+      frank=createcharacter('Frank');
+      vip=vip^[frank];
+    end  
+    else frank=0;
+  end;
+  if not testcharacters('Brown') or not checkcharacterset('Brown') then brown=0
+  else begin
+    brownloc=loadvariable('BrownLoc',-1);
+    if brownloc=6 then begin
+      brown=createcharacter('Brown');
+      vip=vip^[brown];
+    end
+    else brown=0;
+  end;
+  if not testcharacters('Donaldson') or not checkcharacterset('Donaldson') then lucy=0
+  else begin
+    lucyloc=loadvariable('DonaldsonLoc',-1);
+    if lucyloc=6 then begin
+      lucy=createcharacter('Donaldson');
+      vip=vip^[lucy];
+    end
+    else lucy=0;
+  end;
+  if not testcharacters('Gladstone') or not checkcharacterset('Gladstone') then glad=0
+  else begin
+    gladloc=loadvariable('GladstoneLoc',-1);
+    if gladloc=6 then begin
+      glad=createcharacter('Gladstone');
+      vip=vip^[glad];
+    end
+    else glad=0;
+  end;
+  if not testcharacters('Denis') or not checkcharacterset('Denis') then denis=0
+  else begin
+    denisloc=loadvariable('DenisLoc',-1);
+    if denisloc=6 then begin
+      denis=createcharacter('Denis');
+      vip=vip^[denis];
+    end
+    else denis=0;
+  end;
+  if not frank then
+    if not testcharacters('Yamoko') or not checkcharacterset('Yamoko') then yamoko=0
+    else begin
+      yamokoloc=loadvariable('YamokoLoc',-1);
+      if yamokoloc=6 then begin
+        yamoko=createcharacter('Yamoko');
+        vip=vip^[yamoko];
+      end
+      else yamoko=0;
+    end
+  else yamoko=0;
+  if not testcharacters('Gary') or not checkcharacterset('Gary') then gary=0
+  else begin
+    garyloc=loadvariable('GaryLoc',-1);
+    if garyloc=6 then begin
+      gary=createcharacter('Gary');
+      vip=vip^[gary];
+    end
+    else gary=0;
+  end;
+
+  americani=vip^americani;
+
+end;
+
+export function saveitall;
+begin
+  savecharacters(john,'JMM');
+  savecharacters(huck,'Stevens');
+  savecharacters(burlak,'Burlak');
+
+  if bobby then begin
+    savecharacters(bobby,'Bobby');
+    if islive(bobby) then savevariable(6,'BobbyLoc')
+    else savevariable(0,'BobbyLoc');
+  end;
+  if cyrus then begin
+    savecharacters(cyrus,'Cyrus');
+    if islive(cyrus) then savevariable(6,'CyrusLoc')
+    else savevariable(0,'CyrusLoc');
+  end;
+  if lisa then begin
+    savecharacters(lisa,'Lisa');
+    if islive(lisa) then savevariable(6,'LisaLoc')
+    else savevariable(0,'LisaLoc');
+  end;
+  if cornel then begin
+    savecharacters(cornel,'Cornell');
+    if islive(cornel) then savevariable(6,'CornellLoc')
+    else savevariable(0,'CornellLoc');
+  end;
+  if frank then begin
+    savecharacters(frank,'Frank');
+    if islive(frank) then savevariable(6,'FrankLoc')
+    else savevariable(0,'FrankLoc');
+  end;
+  if brown then begin
+    savecharacters(brown,'Brown');
+    if islive(brown) then savevariable(6,'BrownLoc')
+    else savevariable(0,'BrownLoc');
+  end;
+  if lucy then begin
+    savecharacters(lucy,'Donaldson');
+    if islive(lucy) then savevariable(6,'DonaldsonLoc')
+    else savevariable(0,'DonaldsonLoc');
+  end;
+  if glad then begin
+    savecharacters(glad,'Gladstone');
+    if islive(glad) then savevariable(6,'GladstoneLoc')
+    else savevariable(0,'GladstoneLoc');
+  end;
+  if denis then begin
+    savecharacters(denis,'Denis');
+    if islive(denis) then savevariable(6,'DenisLoc')
+    else savevariable(0,'DenisLoc');
+  end;
+  if yamoko then begin
+    savecharacters(yamoko,'Yamoko');
+    if islive(yamoko) then savevariable(6,'YamokoLoc')
+    else savevariable(0,'YamokoLoc');
+  end;
+  if gary then begin
+    savecharacters(gary,'Gary');
+    if islive(gary) then savevariable(6,'GaryLoc')
+    else savevariable(0,'GaryLoc');
+  end;
+
+  savecharacters((filterallunits([[f_side,am],[f_alive],[f_type,unit_human]]) diff ([john,lucy,bobby,cyrus,lisa,cornel,frank,brown,glad,denis,yamoko,gary,huck]^seznamposil)),'otherwithJMM');
+
+end;

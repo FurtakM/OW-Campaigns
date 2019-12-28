@@ -1,0 +1,259 @@
+export you;                           // strana hrace
+
+export Burlak,                        // hrdinove velke ruske expedice
+       Gnyevko,
+       Belkov,
+       Kirilenkova,
+       Kovalyuk,
+       Popov,
+       Scholtze,
+       Kuzmov,
+       Karamazov,
+       Petrovova,
+       Gleb,
+       Petrosyan,
+       Lipshchin,
+       Titov,
+       Dolgov,
+       Vsevolod,
+       Xavier,
+       Yashin,
+       Oblukov,
+       Kozlov,
+       Kapitsova,
+       Stolypin;
+
+export LabCaptured,
+       Trotskij,
+       depot;
+
+
+export people,
+       map_env,
+       survivor;
+
+var animals;
+
+function RemoveAnimals;
+var un;
+begin
+  for un in all_units do
+  begin
+    animals:=animals^[[un, GetX(un), GetY(un)]];
+    RemoveUnit(un);
+  end;
+end;
+
+function RestoreAnimals;
+var un;
+begin
+  for un in animals do
+    PlaceUnitXYR(un[1], un[2], un[3], 10, false);
+end;
+
+// sazeni stromecku do mapy
+function prepare_map;
+var un;
+begin
+  map_env:=LoadVariable('Environment',[]);
+  PlaceEnvironmentList(map_env);
+end;
+
+// staveni zakladny
+function prepare_base;
+var building,un,weap,
+    x,y,dir;
+begin
+  depot:=false;
+  uc_side:=you;
+
+  Trotskij:=LoadVariable('Trotskij',[]);
+
+  for building in Trotskij do
+    begin
+      bc_type:=building[1];
+      x:=building[2];
+      y:=building[3];
+      dir:=building[4];
+      bc_level:=building[5]+1;
+      uc_nation:=building[6];
+      if building>7 then
+        begin
+          bc_kind1:=building[7];
+          bc_kind2:=building[8];
+        end;
+
+      if bc_type in [b_oil_mine, b_siberite_mine] then
+        SetResourceVisibility(x,y,you);
+
+      if bc_type=b_breastwork then
+        bc_type:=[b_bunker,b_turret,b_turret] [Rand(1,3)];
+
+      un:=CreateAndPlaceBuildingXYD(x,y,dir);
+
+      if bc_type in [b_bunker, b_turret] then
+        begin
+          weap:=[ru_gun,ru_rocket_launcher,ru_heavy_gun];
+          if (building>6) then
+            begin
+              if (building[7] in weap) then
+                PlaceWeaponTurret(un,building[7])
+              else
+                PlaceWeaponTurret(un,weap[Rand(1,weap)]);
+            end
+          else
+            PlaceWeaponTurret(un,weap[Rand(1,weap)]);
+        end;
+    end;
+
+  building:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  for un in building do
+    begin
+      if not depot then
+        depot:=un;
+      SetResourceType(GetBase(un),mat_cans,125);
+      SetResourceType(GetBase(un),mat_oil,38);
+      SetResourceType(GetBase(un),mat_siberit,12);
+    end;
+end;
+
+
+// priprava jednotek
+function prepare_units;
+var un,x,y,placed,num,veh,
+    important,
+    depot_list,depot,
+    factory_list,mechanics,
+    lab_list,scientists;
+begin
+  uc_side=3;
+  uc_nation=nation_russian;
+
+  mechanics:=[];
+  scientists:=[];
+
+  LabCaptured:=LoadVariable('LabCaptured',false);
+
+  Burlak:=CreateCharacter('Burlak');
+  Yashin:=NewCharacter('Yashin');
+  Popov:=NewCharacter('Popov');
+
+  SetClass(Burlak,class_mechanic);
+
+  if TestCharacters('Vsevolod') and CheckCharacterSet('Vsevolod') then
+    begin
+      Vsevolod:=CreateCharacter('Vsevolod');
+      survivor:=vsevolod;
+    end
+  else
+    begin
+      Stolypin:=NewCharacter('Stolypin');
+      survivor:=Stolypin;
+    end;
+
+  uc_direction:=3;
+  vc_chassis:=ru_medium_tracked;
+  vc_engine:=engine_combustion;
+  vc_control:=control_manual;
+  vc_weapon:=ru_gun;
+
+  veh:=CreateVehicle;
+
+  // nacteni vsech pritomnych lidi a doplneni na 10, pokud je jich mene
+  people:=LoadAllMen;
+  if people<10 then
+    for un:=1 to (10-people) do
+      begin
+        PrepareHuman(0,0,6);
+        people:=people ^ CreateHuman;
+      end;
+
+  factory_list:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_workshop], [f_btype,b_factory]] ]);
+  lab_list:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_lab], [f_btype,b_lab_full], [f_btype,b_lab_half]] ]);
+
+  if people>12 then
+    num:=6
+  else
+    num:=4;
+  for un=1 to num do
+    mechanics:=mechanics ^ FindMaxSkill2(people diff mechanics,skill_mechanical);
+
+  for un=1 to num do
+    scientists:=scientists ^ FindMaxSkill2( people diff (mechanics ^ scientists),skill_scientistic);
+
+  depot_list:=FilterAllUnits([ [f_side,you], [f_or, [f_btype,b_depot], [f_btype,b_warehouse]] ]);
+  for un in depot_list do
+    begin
+      depot:=un;
+      x:=GetX(un);
+      y:=GetY(un);
+      break;
+    end;
+
+  // umisteni jednotek na mapu
+  PlaceUnitXYR(Burlak,x,y,10,false);
+  PlaceUnitXYR(Yashin,x,y,10,false);
+  PlaceUnitArea(veh,survivor_place,false);
+  PlaceHumanInUnit(survivor,veh);
+
+  wait(10);
+  if not IsOK(survivor) then
+    PlaceUnitArea(survivor,survivor_place,false);
+  wait(10);
+  if not IsOK(survivor) then
+    PlaceHumanInUnit(survivor,depot);
+
+  for un in people do
+    begin
+      placed:=false;
+      if (un in mechanics) and factory_list then              // umisteni mechaniku
+        begin
+          SetClass(un,class_mechanic);
+          PlaceHumanInUnit(un,factory_list[1]);
+          placed:=true;
+        end;
+      if (un in scientists) and lab_list then                 // umisteni vedcu
+        begin
+          SetClass(un,class_scientistic);
+          PlaceHumanInUnit(un,lab_list[1]);
+          placed:=true;
+        end;
+
+      if not placed then
+        begin
+            case Rand(0,1) of
+          0: SetClass(un,class_soldier);
+          1: SetClass(un,class_engineer);
+            end;
+          if (GetClass(un)=class_engineer) and (UnitsInside(depot)<6) then
+            PlaceHumanInUnit(un,depot)
+          else
+            PlaceUnitXYR(un,x,y,10,false);
+        end;
+    end;
+end;
+
+
+// priprava stran
+function prepare_sides;
+begin
+  you:=3;
+end;
+
+
+// startovni blok
+starting
+begin
+  RandomizeAll;
+
+  InGameOn;
+
+  prepare_sides;
+  RemoveAnimals;
+  prepare_map;
+  prepare_base;
+  prepare_units;
+  RestoreAnimals;
+
+  starting_scene;
+end;

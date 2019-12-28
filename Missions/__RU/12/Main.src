@@ -1,0 +1,227 @@
+//konstanty
+export t_kill, t_intimidate, t_persuade, t_pay, t_beat, t_killbeat;
+export you, americans, arabians, nature;
+  //obtiznost
+  export mcdef1_difficulty,
+         mcdef2_difficulty,
+         mcdef3_difficulty,
+         mcdef4_difficulty,
+         mcdef5_difficulty;
+  export gossudarov_mech_skill;
+
+//stav hry
+export cap_bases; //count
+export your_bases; //list
+
+export aiH, aiN, aiZ; //list
+export ai_nation; //nation
+export ai_s; //side[5]
+export ai; //list
+export plat_i; //index
+
+export apemans;
+
+//semafory
+export Diplomacy, Goss;
+export BehemothSeen;
+export vedci_zacali_zdrhat;
+
+export run_sci;
+export utek, utek_e;
+export art_cargo1;
+
+export your_cars;
+export your_builds; 
+export your_humans;
+
+
+export function inicializace_main;
+begin
+  you:=3;
+  americans:=1;
+  arabians:=2;
+  nature:=0;
+
+  utek:=[[55,21],[83,36],[103,70],[142,88]];
+  utek_e:=[186,55];
+
+  cap_bases:=0;
+  t_kill:=1;
+  t_intimidate:=2;
+  t_persuade:=3;
+  t_pay:=4;
+  t_beat:=5;
+  t_killbeat:=10;
+
+  Diplomacy:=true;
+  Goss:=true;
+
+  ai_s:=[6,5,2,8,7];
+  ai:=[6,5,2,8,7];
+  plat_i:=1;
+
+  aiH:=[];
+  aiN:=[ai_s[2],ai_s[3],ai_s[4],ai_s[5]];
+  aiZ:=[ai_s[1]];
+
+  your_bases:=[];
+  cap_bases:=0;
+  art_cargo1:=art_cargo;
+
+  ai_nation:=nation_russian;
+
+  debug_strings:=[[],[],[]];
+end;
+
+{export function VyhraMain;
+begin
+//^ Main
+//Bases captured
+    Query('QKill');
+    DEnd;
+    SetMedals;
+    GiveMedals('Main');
+    RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_not,[f_nation,nation_nature]]]));
+    Save;
+    YouWin;
+end;}
+export vyhrano;
+export function VyhraPlaton;
+begin
+//^ Platon
+//Platonov killed
+    if not vyhrano then begin
+      vyhrano:=true;
+      cap_bases:=5;
+      Query('QEndInfo');
+      ExclusiveOn;
+      wait(1);
+      DEnd;
+      ExclusiveOff;
+      SetMedals;
+      GiveMedals('Platon');
+      RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_not,[f_nation,nation_nature]]]));
+      Save;
+      YouWin;
+      ExclusiveOn;
+      wait(1);
+      ExclusiveOff;
+    end;
+end;
+
+export function SetMedals;
+begin
+{
+* All
++ All bases captured
+- You ignored one base
+*
+}
+   AddMedal('All', cap_bases=5);
+
+{
+* Diplomacy
++ No unnecessary fighting
+- Some bases could have been taken without fighting
+*
+}
+   AddMedal('Diplomacy', Diplomacy);
+
+{
+* Goss
++ Scientists stopped
+- You allowed your scientists to join the Alliance.
+*
+}
+   AddMedal('Goss', Goss);
+end;
+
+
+export function LostBurlak;
+begin
+//| Burlak
+//Burlak is dying.
+   YouLost('Burlak');
+end;
+
+export function LostArte;
+begin
+//| Arte
+//Artefact was taken away.
+   YouLost('Arte');
+end;
+
+export function set_difficulty;
+begin              
+  mcdef1_difficulty:=[200,230,260][difficulty];
+  mcdef2_difficulty:=[150,180,200][difficulty];
+  mcdef3_difficulty:=[170,200,230][difficulty];
+  mcdef4_difficulty:=[170,200,230][difficulty];
+  mcdef5_difficulty:=[170,200,230][difficulty];
+  gossudarov_mech_skill:=[0,2,4][difficulty];
+
+end;
+
+export function get_your_units;
+var a;
+begin
+  a:=FilterAllUnits([[f_side,you]]);
+  your_humans:=UnitFilter(a, [[f_type,unit_human]]);
+  your_cars:=UnitFilter(a, [[f_type,unit_vehicle]]);
+  your_builds:=UnitFilter(a, [[f_type,unit_building]]);
+end;
+
+
+every 0$1 do
+//enemies, friends and neutrals
+var i;
+begin
+   for i in ai do
+      case GetAttitude(i, you) of
+         att_friend : begin aiH:=aiH union i; aiZ:=aiZ diff i; aiN:=aiN diff i; end;
+         att_neutral: begin aiN:=aiN union i; aiZ:=aiZ diff i; aiH:=aiH diff i; end;
+         att_enemy  : begin aiZ:=aiZ union i; aiH:=aiH diff i; aiN:=aiN diff i; end;
+      end;
+   enable;
+end;
+
+
+//cas
+every 0$1 do
+begin
+  debug_strings:=[[(tick div 0$1) div 60, (tick div 0$1) mod 60],
+                 debug_strings[2],
+                 debug_strings[3]];
+  enable;
+end;
+
+
+starting
+begin
+  SA_OnMissionStart;
+  inicializace_main;
+  inicializace_ai;
+  inicializace_functions;
+  inicializace_ai_b_repair;
+  inicializace_ai_b_build;
+  inicializace_ai_defend;
+  inicializace_ai_c_make;
+  inicializace_ai_c_repair;
+
+  disable(10);
+  disable(11);
+  disable(12);
+  disable(115);
+  apemans:=FilterAllUnits([[f_nation,nation_nature],[f_type,unit_human],[f_class,class_apeman]]);
+
+  set_difficulty;
+
+  SetCargo(art_cargo1, mat_artifact, 4*10);
+  load;
+  inicializace_dialogues;
+  place_ru;
+  build_map;
+  get_groups;
+  get_your_units;
+  DStart;
+end;

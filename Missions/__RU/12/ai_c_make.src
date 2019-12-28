@@ -1,0 +1,178 @@
+//designy vozidel
+var d1, d2, d3, d5, d6, d7;
+
+export function inicializace_ai_c_make;
+begin
+
+   d1:=[ru_heavy_wheeled,engine_combustion,control_manual,ru_gatling_gun];
+   d2:=[ru_heavy_wheeled,engine_combustion,control_manual,ru_rocket_launcher];
+   d3:=[ru_heavy_wheeled,engine_combustion,control_manual,ru_heavy_gun];
+   d5:=[ru_heavy_wheeled,engine_siberite,control_computer,ru_gatling_gun];
+   d6:=[ru_heavy_wheeled,engine_siberite,control_computer,ru_rocket_launcher];
+   d7:=[ru_heavy_wheeled,engine_siberite,control_computer,ru_heavy_gun];
+end;
+
+every 0$3 do
+var i,a;
+begin
+  for i:=1 to 5 do begin
+    if ai_s[i] in ai then begin
+      if depots[i] then begin
+        if GetResourceType(GetBase(depots[i][1]), mat_cans)<150 then
+          SetResourceType(GetBase(depots[i][1]), mat_cans, 150+Rand(50,100));
+        a:=GetListOfCratesInArea(near_base_area[i]);
+        if a>6 then
+          for i in a do
+            if not SeeXY(you, i[1], i[2]) then begin
+              MoveAreaXY(hexik,i[1],i[2]);
+              EraseResourceArea(hexik, mat_cans);
+              break;
+            end;
+      end;                   
+    end;
+
+  end;
+end;
+
+function MyCanBeConstructed(tfact, d);
+begin
+  result:=CanBeConstructed(tfact, d[1], d[2], d[3], d[4]);
+end;
+function MyComConstruct(tfact, d);
+begin
+  result:=ComConstruct(tfact, d[1], d[2], d[3], d[4]);
+end;
+every 0$10 + 0$1.1 trigger IsOk(factories[1]) and IsIdle(factories[1]) do// and not (to_attack or to_defence) do
+var a, tfact, def, att;
+begin
+    tfact:=factories[1];
+    def:=UnitFilter(vehicles[1], [mf_manu]);
+    att:=UnitFilter(vehicles[1], [mf_comp]);
+   case true of
+//def
+     def<2 and MyCanBeConstructed(tfact, d2): begin
+         MyComConstruct(tfact, d2);
+     end;
+     def<3 and MyCanBeConstructed(tfact, d3): begin
+         MyComConstruct(tfact, d3);
+     end;
+//att
+     att<2 and MyCanBeConstructed(tfact, d6): begin
+         MyComConstruct(tfact, d6);
+     end;
+     att<3 and MyCanBeConstructed(tfact, d5): begin
+         MyComConstruct(tfact, d5);
+     end;
+     att<5 and MyCanBeConstructed(tfact, d7): begin
+         MyComConstruct(tfact, d7);
+     end;
+   end;
+   enable;//-----------
+end;
+
+every 0$10 + 0$2.3  trigger IsOk(factories[2]) and IsIdle(factories[2]) do // and not (to_attack or to_defence) do
+var a, tfact, def, att;
+begin
+   tfact:=factories[2];
+    def:=UnitFilter(vehicles[2], [mf_manu]);
+    att:=UnitFilter(vehicles[2], [mf_comp]);
+   case true of
+//def
+//def
+     def<2 and MyCanBeConstructed(tfact, d2): begin
+         MyComConstruct(tfact, d2);
+     end;
+     def<3 and MyCanBeConstructed(tfact, d3): begin
+         MyComConstruct(tfact, d3);
+     end;
+//att
+     att<2 and MyCanBeConstructed(tfact, d6): begin
+         MyComConstruct(tfact, d6);
+     end;
+     att<3 and MyCanBeConstructed(tfact, d5): begin
+         MyComConstruct(tfact, d5);
+     end;
+     att<5 and MyCanBeConstructed(tfact, d7): begin
+         MyComConstruct(tfact, d7);
+     end;
+   end;
+   enable;//-----------
+end;
+
+every 0$10 + 0$3.4 trigger IsOk(factories[3]) and IsIdle(factories[3]) do // and not (to_attack or to_defence) do
+var a, tfact, def, att;
+begin
+   tfact:=factories[3];
+    def:=UnitFilter(vehicles[3], [mf_manu]);
+    att:=UnitFilter(vehicles[3], [mf_comp]);
+   case true of
+//def
+     def<1 and MyCanBeConstructed(tfact, d2): begin
+         MyComConstruct(tfact, d2);
+     end;
+//att
+     att<2 and MyCanBeConstructed(tfact, d6): begin
+         MyComConstruct(tfact, d6);
+     end;
+     att<4and MyCanBeConstructed(tfact, d7): begin
+         MyComConstruct(tfact, d7);
+     end;
+   end;
+   enable;//-----------
+end;
+
+every 0$10 + 0$4.5 trigger IsOk(factories[4]) and IsIdle(factories[4]) do // and not (to_attack or to_defence) do
+var a, tfact, def, att;
+begin
+   tfact:=factories[4];
+    def:=UnitFilter(vehicles[4], [mf_manu]);
+    att:=UnitFilter(vehicles[4], [mf_comp]);
+   case true of
+//def
+     def<2 and MyCanBeConstructed(tfact, d2): begin
+         MyComConstruct(tfact, d2);
+     end;
+     def<3 and MyCanBeConstructed(tfact, d3): begin
+         MyComConstruct(tfact, d3);
+     end;
+//att
+     att<2 and MyCanBeConstructed(tfact, d6): begin
+         MyComConstruct(tfact, d6);
+     end;
+     att<5 and MyCanBeConstructed(tfact, d7): begin
+         MyComConstruct(tfact, d7);
+     end;
+   end;
+   enable;//-----------
+end;
+
+every 0$10 + 0$5.6 trigger IsOk(factories[5]) and IsIdle(factories[5]) do // and not (to_attack or to_defence) do
+var a, tfact, def, att;
+begin
+   tfact:=factories[5];
+    def:=UnitFilter(vehicles[5], [mf_manu]);
+    att:=UnitFilter(vehicles[5], [mf_comp]);
+
+   case true of
+//def
+     def<2 and MyCanBeConstructed(tfact, d2): begin
+         MyComConstruct(tfact, d2);
+     end;
+     def<3 and MyCanBeConstructed(tfact, d3): begin
+         MyComConstruct(tfact, d3);
+     end;
+//att
+     att<2 and MyCanBeConstructed(tfact, d6): begin
+         MyComConstruct(tfact, d6);
+     end;
+     att<3 and MyCanBeConstructed(tfact, d5): begin
+         MyComConstruct(tfact, d5);
+     end;
+     att<5 and MyCanBeConstructed(tfact, d7): begin
+         MyComConstruct(tfact, d7);
+     end;
+   end;
+   enable;//-----------
+end;
+
+

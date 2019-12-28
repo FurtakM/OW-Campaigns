@@ -1,0 +1,81 @@
+var def_buildings,                     // seznam seznamu obrannych budov jednotlivych stran
+    def_vehicles,                      // seznam vozidel pro obranny ucel
+    def_peoples;                       // lidi pouzitelni k obrane
+
+var id_reg,                            // seznam identu makra registry pro vsechny strany
+    id_def;                            // seznam identu makra obrany pro vsechny strany
+
+var BaseArea,                          // seznam areji jednotlivych bazi
+    Heal;                              // seznam polnich nemocnic u jednotlivych bazi
+
+var docs;                              // seznam vedcu v roli mastickare (opet u vsech stran)
+
+
+//-------------------------------------//
+//-----  UPDATE OBRANNYCH ZDROJU  -----//
+function prepare_defend(side);
+begin
+  def_buildings:=FilterAllUnits([ [f_side,rus], [f_or, [f_btype,b_turret], [f_btype,b_bunker], [f_btype,b_breastwork]] ]);
+
+  def_peoples:=FilterAllUnits([ [f_side,rus], [f_type,unit_human], f_not, [f_class,class_scientistic] ]);
+
+  def_vehicles:=FilterAllUnits([ [f_side,rus], [f_type,unit_vehicle] ]);
+end;
+
+
+//--------------------------------------------//
+//-----  ZPUSTENI MAKRA OBRANY ZAKLADNY  -----//
+function start_defend;
+var side;
+begin
+  McRegistry( 1, [ [mc_reg_refresh_time,0$1],
+                   [mc_reg_expire_stops_to_attack,0$4],
+                   [mc_reg_area_to_guard,DefendArea],
+                   [mc_reg_area_to_protect,DefendArea],
+                   [mc_reg_units_to_protect,prepare_defend(side)],
+                    mc_reg_only_important,
+                   -mc_reg_ignore_fog ]
+            );
+
+  McDefend( 100, id_reg, prepare_defend(side),
+              [ [mc_def_advantage,300],
+                [mc_area_dont_leave,DefendArea],
+                [mc_retreat_area_people,HealArea],
+                [mc_retreat_lives_people,600], ]
+          );
+end;
+
+
+// healovani jednotek
+every 0$5 do
+var side,sci,list;
+begin
+  for side=1 to 8 do
+    if side in cpu_list then
+      begin
+        if FilterUnitsInArea(Heal[side],[ [f_side,side], [f_type,unit_human], [f_not, [f_lives,1000]] ]) and
+           not docs[side] then
+          begin
+            sci:=request_people(side,class_scientistic,5);
+            Delete(docs,side);
+            Insert(docs,side,sci);
+            ComRemember(sci);
+
+            ComMoveToArea(sci,Heal[side]);
+            list:=reserved_people[side] ^ sci;
+            Delete(reserved_people,side);
+            Insert(reserved_people,side,list);
+          end
+        else
+          if docs[side] then
+            begin
+              list:=reserved_people[side] diff docs[side];
+              Delete(reserved_people,side);
+              Insert(reserved_people,side,list);
+              ComReturn(docs[side]);
+              Delete(docs,side);
+              Insert(docs,side,[]);
+            end;
+      end;
+  enable;
+end;

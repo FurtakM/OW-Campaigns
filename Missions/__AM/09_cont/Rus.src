@@ -1,0 +1,864 @@
+
+every 0$0.3 trigger FilterUnitsInArea(at_mine, [[f_side,you],[f_or,[f_weapon,ru_gun],[f_weapon,ru_rocket_launcher],[f_weapon,ru_heavy_gun]]]) do
+var a;
+begin
+     if IsLive(rumine1) then begin
+       a:=FilterUnitsInArea(at_mine, [f_or,[f_weapon,ru_gun],[f_weapon,ru_rocket_launcher],[f_weapon,ru_heavy_gun]]);
+       ComAttackUnit(a, rumine1);
+     end;
+     enable;
+end;
+
+export function rep_car(i);
+begin
+    case true of
+         IsInArea(i,NearL): ComMoveToArea(i, repL);
+         IsInArea(i,NearM): ComMoveToArea(i, repM);
+         IsInArea(i,NearR): ComMoveToArea(i, repR);
+         IsInArea(i,NearT): ComMoveToArea(i, repL);
+    end;
+    while not IsIdle(i) do wait(0$1);
+    AddComExitVehicle(UnitsInside(i));
+end;
+export function ret_car(i);
+begin
+    ComEnterUnit(NearestUnitToUnit(FilterAllUnits([[f_side,russians],[f_type,unit_human]]), i), i);
+    while not UnitsInside(i) do wait(0$1);
+    ComAgressiveMove(i, 92,92);
+end;
+
+every 0$1 do
+var vehs, i;
+begin
+     vehs:=FilterAllUnits([[f_side,russians],[f_type,unit_vehicle]]);
+     for i in vehs do begin
+         if GetClass(UnitsInside(i))=class_mechanic then begin
+           if GetLives(i)<600 then
+              RaiseSailEvent(i+1000);
+           if GetLives(i)>900 and not UnitsInside(i) then 
+              RaiseSailEvent(i+2000);
+         end;
+     end;
+    enable;
+end;
+
+
+// U1
+every 10$0 trigger utocit do
+var u1, u2, p1, i, b1;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVH([mhmg,mhmg]);
+     p1:=CreateH(1, 1);
+     b1:=CreateB(2) ^ CreateS(1);
+     end;
+     2: begin
+     u1:=CreateVH([mhmg,mgg]);
+     p1:=CreateH(2, 0);
+     b1:=CreateB(3) ^ CreateS(2);
+     end;
+     3: begin
+     u1:=CreateVH([mgg]);
+     u2:=CreateVC([mgg]);
+     p1:=CreateH(1, 0);
+     b1:=CreateB(5) ^ CreateS(3);
+     end;
+end;
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_l, false);
+     end;
+     for i in u2 do begin
+         MyPlaceUnitArea(i, rus_mat_l, false);
+     end;
+     wait(0$1);
+     AttackBase(u1 ^ u2, pathBL ^ pathUL);
+
+     for i in b1 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(b1, pathB1);
+
+
+     while not ContactTime([russians]) do
+       wait(0$1);
+     MyHint('PriorityAttacks');
+end;
+// U2
+every 15$0 trigger utocit do
+var u1, p1, b1, i, u2, u1a;
+begin
+case difficulty of
+     1: begin
+       u1:=CreateVH([mg]);
+       p1:=CreateH(1, 0);
+       b1:=CreateB(2) ^ CreateS(1);
+     end;
+     2: begin
+       u1:=CreateVH([mrl]);
+       p1:=CreateH(1, 0);
+       b1:=CreateB(3) ^ CreateS(2);
+     end;
+     3: begin
+       u1:=CreateVH([mrl]);
+       p1:=CreateH(0, 1);
+       b1:=CreateB(4) ^ CreateS(3);
+     end;
+end;
+     for i in b1 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(b1, pathB1);
+
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_m, false);
+     end;
+     wait(0$1);
+     AttackBase(u1, pathBM ^ ReverseList(pathML) ^ pathUL);
+
+
+case difficulty of
+     1: begin
+     u2:=CreateVC([mg]);
+     end;
+     2: begin
+     u2:=CreateVC([hhg]);
+     end;
+     3: begin
+     u2:=CreateVC([mg, hhg]);
+     end;
+end;
+     for i in u2 do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     wait(0$1);
+     AttackBase(u2, pathBR ^ pathUR);
+end;
+
+//U3
+every 18$0 trigger utocit  do
+var u1, p1, i, u1a;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVH([mrl]);
+     u1a:=CreateVC([mrl]);
+     p1:=CreateH(0, 1);
+     end;
+     2: begin
+     u1:=CreateVH([hrl]);
+     u1a:=CreateVC([hrl]);
+     p1:=CreateH(0, 1);
+     end;
+     3: begin
+     u1:=CreateVH([hrl,mrl]);
+     u1a:=CreateVC([hrl]);
+     p1:=CreateH(1, 1);
+     end;
+end;
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_l, false);
+     end;
+     for i in u1a do begin
+         MyPlaceUnitArea(i, rus_mat_l, false);
+     end;
+     wait(0$1);
+     AttackBase(u1, pathBL ^ pathUL);
+     AttackBase(u1a, pathBL ^ pathUL);
+
+case difficulty of
+     1: begin
+     u1:=CreateVH([mg]);
+     u1a:=[];
+     p1:=CreateH(1, 0);
+     end;
+     2: begin
+     u1:=CreateVH([hhg]);
+     u1a:=CreateVC([mg]);
+     p1:=CreateH(1, 0);
+     end;
+     3: begin
+     u1:=CreateVH([hhg]);
+     u1a:=CreateVC([hrl]);
+     p1:=CreateH(0, 1);
+     end;
+end;
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     for i in u1a do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     wait(0$1);
+     AttackBase(u1, pathBR ^ pathMR ^ pathUT);
+     AttackBase(u1a, pathBR ^ pathMR ^ pathUT);
+end;
+
+//U3
+every 22$0 trigger utocit do
+var u1, p1, i, u1a;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVH([mrl, mrl]);
+     u1a:=CreateVC([mrl]);
+     p1:=CreateH(0,2);
+     end;
+     2: begin
+     u1:=CreateVH([hrl, hrl]);
+     u1a:=CreateVC([mrl]);
+     p1:=CreateH(2,0);
+     end;
+     3: begin
+     u1:=CreateVH([hrl, hrl]);
+     u1a:=CreateVC([hrl, hrl]);
+     p1:=CreateH(1,1);
+     end;
+end;
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     for i in u1a do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     wait(0$4);
+     AttackBase(u1, pathBR ^ pathMR ^ pathUT);
+     AttackBase(u1a, pathBL ^ pathUL);
+end;
+
+//U4
+every 37$0 trigger utocit do
+var u1, p1, i, u2, p2, u3, p3, b1;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVC([mg]);
+     b1:=CreateB(2) ^ CreateS(1);
+     end;
+     2: begin
+     u1:=CreateVC([hhg]);
+     b1:=CreateB(2) ^ CreateS(2);
+     end;
+     3: begin
+     u1:=CreateVC([hhg, hgg]);
+     b1:=CreateB(3) ^ CreateS(3);
+     end;
+end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(u1, pathUT ^ pathUR);
+     AttackBase(b1, pathUT ^ pathUR);
+
+case difficulty of
+     1: begin
+     u2:=CreateVH([mgg]);
+     p2:=CreateH(1, 0);
+     end;
+     2: begin
+     u2:=CreateVH([mgg, mg]);
+     p2:=CreateH(0, 2);
+     end;
+     3: begin
+     u2:=CreateVH([mgg, hhg]);
+     p2:=CreateH(0, 2);
+     end;
+end;
+     for i:=1 to u2 do begin
+         PlaceHumanInUnit(p2[i], u2[i]);
+     end;
+     for i in u2 do begin
+         MyPlaceUnitArea(i, rus_mat_l, false);
+     end;
+     wait(0$1);
+     AttackBase(u2, pathBL ^ pathUL);
+
+
+case difficulty of
+     1: begin
+     u3:=CreateS(1);;
+     end;
+     2: begin
+     u3:=CreateVC([mgg]);
+     end;
+     3: begin
+     u3:=CreateVC([hgg]);
+     end;
+end;
+     for i in u3 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(u3, pathT);
+end;
+
+//U5
+every 38$0 trigger utocit do
+var u1, p1, i, u2, p2, u3, p3;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVH([hhg]);
+     p1:=CreateH(1, 0);
+     end;
+     2: begin
+     u1:=CreateVH([mrl, hhg]);
+     p1:=CreateH(1, 1);
+     end;
+     3: begin
+     u1:=CreateVH([hrl, hhg]);
+     p1:=CreateH(0, 2);
+     end;
+end;
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_m, false);
+     end;
+     wait(0$4);
+     AttackBase(u1, pathBM ^ ReverseList(pathML) ^ pathUL);
+
+case difficulty of
+     1: begin
+     u2:=CreateVC([mgg, mrl]);
+     end;
+     2: begin
+     u2:=CreateVC([hgg, mrl]);
+     end;
+     3: begin
+     u2:=CreateVC([hgg, hrl]);
+     end;
+end;
+     for i in u2 do begin
+         MyPlaceUnitArea(i, rus_mat_m, false);
+     end;
+     wait(0$1);
+     AttackBase(u2, pathBM ^ pathMM ^ pathUR);
+
+end;
+
+
+//U6
+every 41$0 trigger utocit do
+var u1, p1, i, u2, p2, u3, p3;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVC([hrl, mgg]);
+     end;
+     2: begin
+     u1:=CreateVC([hrl, hrl, mgg]);
+     end;
+     3: begin
+     u1:=CreateVC([hrl, hrl, hhg, mgg]);
+     end;
+end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$4);
+     AttackBase(u1, pathT);
+end;
+
+//U7
+every 44$0 trigger utocit do
+var u1, p1, i, u2, p2, u3, p3, u2a;
+begin
+case difficulty of
+     1: begin
+     u1:=CreateVH([hrl, mg, mrl]);
+     p1:=CreateH(2,1);
+     end;
+     2: begin
+     u1:=CreateVH([hrl, hhg, mrl, mgg]);
+     p1:=CreateH(3,1);
+     end;
+     3: begin
+     u1:=CreateVH([hrl, hhg, hrl, hgg]);
+     p1:=CreateH(3,1);
+     end;
+end;
+     for i:=1 to u1 do begin
+         PlaceHumanInUnit(p1[i], u1[i]);
+     end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(u1, pathUT);
+
+case difficulty of
+     1: begin
+     u2:=CreateVH([hgg]);
+     u2a:=CreateVC([mg, hhg]);
+     p2:=CreateH(1,0);
+     end;
+     2: begin
+     u2:=CreateVH([hgg, mrl]);
+     u2a:=CreateVC([mg, hhg]);
+     p2:=CreateH(1,1);
+     end;
+     3: begin
+     u2:=CreateVH([hgg, hrl]);
+     u2a:=CreateVC([hhg, hhg]);
+     p2:=CreateH(0,2);
+     end;
+end;
+     for i:=1 to u2 do begin
+         PlaceHumanInUnit(p2[i], u2[i]);
+     end;
+     for i in u2^ u2a do begin
+         MyPlaceUnitArea(i, rus_mat_l, false);
+     end;
+     wait(0$1);
+     AttackBase(u2, pathBL ^ pathUL);
+
+
+case difficulty of
+     1: begin
+     u3:=CreateVC([mgg, mg, mrl]);
+     end;
+     2: begin
+     u3:=CreateVC([mgg, mg, mrl, hgg]);
+     end;
+     3: begin
+     u3:=CreateVC([mgg, mg, hrl, hgg]);
+     end;
+end;
+     for i in u3 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(u3, pathT);
+end;
+
+//U8
+every 0$5 trigger last_attack and timer<rusaci_pred_koncem do
+var u1, p1, i, u2, p2, u3, p3, u4, p4;
+begin
+     lev:=[8,8,8];
+     SetTech(tech_Comp1, russians, state_researched);
+     SetTech(tech_Comp2, russians, state_researched);
+     SetTech(tech_Comp3, russians, state_researched);
+     SetTech(tech_Weap1, russians, state_researched);
+     SetTech(tech_Weap2, russians, state_researched);
+     SetTech(tech_Weap3, russians, state_researched);
+case difficulty of
+     1: begin
+     u1:=CreateVC([hrl, hrl, hrl, hrl]);
+     end;
+     2: begin
+     u1:=CreateVC([hrl, hrl, hrl, hrl]);
+     end;
+     3: begin
+     u1:=CreateVC([hrl, hrl, hrl, hrl]);
+     end;
+end;
+     for i in u1 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(u1, pathBL ^ pathUL);
+
+case difficulty of
+     1: begin
+     u2:=CreateVH([hhg, hhg, hrl]);
+     p2:=CreateH(0,3);
+     end;
+     2: begin
+     u2:=CreateVH([hhg, hhg, hrl]);
+     p2:=CreateH(0,3);
+     end;
+     3: begin
+     u2:=CreateVH([hhg, hhg, hrl]);
+     p2:=CreateH(0,3);
+     end;
+end;
+     for i:=1 to u2 do begin
+         PlaceHumanInUnit(p2[i], u2[i]);
+     end;
+     for i in u2 do begin
+         MyPlaceUnitArea(i, rus_mat_m, false);
+     end;
+     wait(0$1);
+     AttackBase(u2, pathBM ^ ReverseList(pathML) ^ pathUL);
+
+     p4:=CreateS(3);
+     p4:=p4 ^ CreateB(3);
+     for i in p4 do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     wait(0$1);
+     AttackBase(p4, pathBR ^ pathUR);
+
+case difficulty of
+     1: begin
+     u3:=CreateVH([hhg, hrl, hhg, hgg]);
+     p3:=CreateH(0,4);
+     end;
+     2: begin
+     u3:=CreateVH([hhg, hrl, hhg, hgg]);
+     p3:=CreateH(0,4);
+     end;
+     3: begin
+     u3:=CreateVH([hhg, hrl, hhg, hgg]);
+     p3:=CreateH(0,4);
+     end;
+end;
+     for i:=1 to u3 do begin
+         PlaceHumanInUnit(p3[i], u3[i]);
+     end;
+     for i in u3 do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     wait(0$1);
+     AttackBase(u3, pathBR ^ pathUR);
+
+case difficulty of
+     1: begin
+     u4:=CreateVC([hgg, hrl, hhg, mgg]);
+     end;
+     2: begin
+     u4:=CreateVC([hgg, hrl, hhg, mgg]);
+     end;
+     3: begin
+     u4:=CreateVC([hgg, hrl, hhg, mgg]);
+     end;
+end;
+     for i in u4 do begin
+         MyPlaceUnitArea(i, rus_mat_t, false);
+     end;
+     wait(0$1);
+     AttackBase(u4, pathUT);
+
+     p4:=CreateB(3);
+     p4:=p4 ^ CreateS(3);
+     for i in p4 do begin
+         MyPlaceUnitArea(i, rus_mat_r, false);
+     end;
+     wait(0$1);
+     AttackBase(p4, pathUT);
+     for i in FilterAllUnits([[f_side,you],[f_or,[f_btype,b_siberite_power],[f_btype,b_oil_power],[f_btype,b_solar_power],[f_btype,b_barracks],[f_btype,b_armoury],[f_btype,b_bunker],[f_btype,b_breastwork],[f_btype,b_turret]]]) do begin
+       PriorityAttack(russians, i);
+     end;
+     wait(0$20);
+     for i in FilterAllUnits([[f_side,you],[f_not,[f_btype,b_warehouse]],[f_not,[f_btype,b_depot]]]) do begin
+       PriorityAttack(russians, i);
+     end;
+
+     wait(0$30);
+     if Getside(rudepot1)=you and xxx<2 then begin
+       xxx:=xxx+1;
+       enable;
+     end;
+end;
+export xxx;
+
+every 0$15 trigger GetSide(RuDepot1)=you and not FilterHumansInArea(base, [f_side,you]) do
+var ing,i,a;
+begin
+     InitUc;                                                                                          
+     InitHc;
+
+     uc_side:=russians;
+     uc_nation:=nation_russian;
+     PrepareEngineer(0,6);
+     ing:=CreateHuman;
+
+     PlaceUnitXYR(ing, 137,147,4,false);
+     wait(0$5);
+     a:=FilterAllUnits([[f_side,russians],[f_class,class_engineer]]);
+     ComMoveUnit(a, rudepot1);
+     wait(0$20);
+     if FilterAllUnits([[f_side,russians],[f_class,class_engineer]])>3 then begin
+       TimerEnable:=true;
+       TimerCas:=ContactTime(russians);
+       SetSideBase(GetBase(rudepot1), russians);
+       for i in FilterAllUnits([[f_side,you]]) do
+         NormalAttack(russians, i);
+     end;
+     enable;
+end;
+
+every 0$5 do
+var a;
+begin
+  a:=FilterAllUnits([[f_side,russians],[f_not,[f_hastask]]]);
+  wait(0$5);
+  a:=UnitFilter(a,[f_not,[f_hastask]]);
+  if a then begin
+    ComAgressiveMove(UnitFilter(a,[[f_inarea,top_half]]), 42,10);
+    ComAgressiveMove(UnitFilter(a,[[f_exceptarea,top_half]]), 93,94);
+  end;
+  enable;
+end;
+
+
+export pathBL, pathBM, pathBR, pathUL, pathUR, pathUT, pathML, pathMM, pathMR, pathT;
+export pathB1, pathB2, pathB3, pathB4;
+var d;
+every 0$0.1 do
+begin
+     pathBL:=[[62,119],[73,120],[78,121],[80,118],[80,113],[80,109]];
+     pathBM:=[[98,144],[96,139],[96,135],[96,131],[97,128],[99,126],[101,124]];
+     pathBR:=[[130,137],[120,128]];
+     pathUL:=[[80,109],[77,103],[72,97],[71,93],[76,93],[81,93],[86,94],[92,95]];
+     pathUR:=[[120,128],[115,123],[110,118],[106,114],[99,107],[96,100],[92,95]];
+     pathUT:=[[111,87],[107,88],[103,88],[100,85],[95,85],[91,85]];
+     pathML:=[[80,109],[85,111],[89,112],[94,117],[98,121],[101,124]];
+     pathMM:=[[101,124],[105,125],[112,128],[117,129],[120,128]];
+     pathMR:=[[120,128],[121,124],[119,118],[116,112],[115,105],[116,100],[114,92],[111,87]];
+     pathT:=[[111,87],[109,82],[105,77],[103,71],[100,65],[97,62],[93,61],[92,56],[90,52],[87,48],[82,46],[78,44],[76,37],[75,33],[75,29],[71,25],[67,23],[62,22],[59,23],[57,26],[54,37],[51,29],[47,26],[45,23],[42,18]];
+     pathB1:=[[97,72],[84,67],[84,77]];
+     pathB2:=[[44,71],[64,68],[64,79]];
+     pathB3:=[[91,131],[93,121],[94,115],[107,115]];
+     pathB4:=[[126,128],[116,107],[107,87]];
+
+     lev:=[2,4,7];
+     d:=difficulty;
+
+     case true of
+          d<=1: ;
+          d<=2: begin
+                  SetTech(tech_Comp1, russians, state_researched);
+                  SetTech(tech_Weap1, russians, state_researched);
+                end;
+          d<=3: begin
+                  SetTech(tech_Comp2, russians, state_researched);
+                  SetTech(tech_Weap2, russians, state_researched);
+                end;
+     end;
+end;
+
+every 31$0 do
+begin
+     case difficulty of
+          1: SetTech(tech_Comp1, russians, state_researched);
+          2: SetTech(tech_Comp2, russians, state_researched);
+          3: SetTech(tech_Comp3, russians, state_researched);
+     end;
+end;
+every 47$0 do
+begin
+     case difficulty of
+          1: SetTech(tech_Weap1, russians, state_researched);
+          2: SetTech(tech_Weap2, russians, state_researched);
+          3: SetTech(tech_Weap3, russians, state_researched);
+     end;
+end;
+
+
+
+function CreateH(sol, mec);
+var units, i;
+begin
+
+     units:=[];
+     for i:=1 to sol do begin
+         InitUc;
+         InitHc;
+
+         uc_nation:=nation_russian;
+         uc_side:=russians;
+         PrepareSoldier(0, lev[d]);
+         units:=units ^ CreateHuman;
+         wait(0$0.2);
+     end;
+     for i:=1 to mec do begin
+         InitUc;
+         InitHc;
+
+         uc_nation:=nation_russian;
+         uc_side:=russians;
+         PrepareMechanic(0, lev[d]);
+         units:=units ^ CreateHuman;
+         wait(0$0.2);
+     end;
+     result:=units;
+end;
+function CreateB(num);
+var units, i;
+begin
+
+     units:=[];
+     for i:=1 to num do begin
+         InitUc;
+         InitHc;
+
+         uc_nation:=nation_russian;
+         uc_side:=russians;
+         PrepareSoldier(0, lev[d]);
+         hc_class:=class_bazooker;
+         units:=units ^ CreateHuman;
+         wait(0$0.2);
+     end;
+     result:=units;
+end;
+function CreateS(num);
+var units, i;
+begin
+
+     units:=[];
+     for i:=1 to num do begin
+         InitUc;
+         InitHc;
+
+         uc_nation:=nation_russian;
+         uc_side:=russians;
+         hc_class:=class_soldier;
+         PrepareSoldier(0, lev[d]);
+         units:=units ^ CreateHuman;
+         wait(0$0.2);
+     end;
+     result:=units;
+end;
+
+
+
+{mhmg, mgg, mg, mrl, hgg, hrl, hhg}
+function CreateVH(list);
+{
+  ru_heavy_machine_gun - m
+  ru_gatling_gun  - m,h
+  ru_gun - m
+  ru_rocket_launcher - m,h
+  ru_heavy_gun h
+}
+var units, i;
+begin
+     for i in list do begin
+         InitUc;
+         InitVc;
+
+         uc_nation:=nation_russian;
+         uc_side:=russians;
+
+         units:=[];
+
+         vc_control:=control_manual;
+         vc_engine:=engine_combustion;
+         vc_fuel_battery:=75;
+         case i of
+              mhmg: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_heavy_machine_gun;
+              end;
+              mgg: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_gatling_gun;
+              end;
+              mg: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_gun;
+              end;
+              mrl: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_rocket_launcher;
+              end;
+              hgg: begin
+                    vc_chassis:=ru_heavy_tracked;
+                    vc_weapon:=ru_gatling_gun;
+              end;
+              hrl: begin
+                    vc_chassis:=ru_heavy_tracked;
+                    vc_weapon:=ru_rocket_launcher;
+              end;
+              hhg: begin
+                    vc_chassis:=ru_heavy_tracked;
+                    vc_weapon:=ru_heavy_gun;
+              end;
+         end;
+
+         units:=units ^ CreateVehicle;
+         wait(0$0.2);
+     end;
+
+     result:=units;
+end;
+{mhmg, mgg, mg, mrl, hgg, hrl, hhg}
+function CreateVC(list);
+var units, i;
+begin
+     units:=[];
+     for i in list do begin
+         InitUc;
+         InitHc;
+         InitVc;
+
+         uc_nation:=nation_russian;
+         uc_side:=russians;
+
+         vc_control:=control_computer;
+         vc_engine:=engine_combustion;
+         vc_fuel_battery:=75;
+         case i of
+              mhmg: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_heavy_machine_gun;
+              end;
+              mgg: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_gatling_gun;
+              end;
+              mg: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_gun;
+              end;
+              mrl: begin
+                    vc_chassis:=ru_medium_tracked;
+                    vc_weapon:=ru_rocket_launcher;
+              end;
+              hgg: begin
+                    vc_chassis:=ru_heavy_tracked;
+                    vc_weapon:=ru_gatling_gun;
+              end;
+              hrl: begin
+                    vc_chassis:=ru_heavy_tracked;
+                    vc_weapon:=ru_rocket_launcher;
+              end;
+              hhg: begin
+                    vc_chassis:=ru_heavy_tracked;
+                    vc_weapon:=ru_heavy_gun;
+              end;
+         end;
+
+         units:=units ^ CreateVehicle;
+         wait(0$0.2);
+     end;
+
+     result:=units;
+end;
+
+function MyPlaceUnitArea(un, ar, bordr);
+var h, r;
+begin
+  case ar of
+    rus_mat_l : h:=[61,119];
+    rus_mat_m : h:=[99,148];
+    rus_mat_r : h:=[137,148];
+    rus_mat_t : h:=[112,87];
+  end;
+  r:=PlaceUnitArea(un, ar, bordr);
+  if not r then
+    r:=PlaceUnitXYR(un, h[1], h[2], 20, bordr);
+  result:=r;
+end;

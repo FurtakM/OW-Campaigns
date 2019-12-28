@@ -1,0 +1,277 @@
+var vedci_zdrhli;
+var am,john,powell,otherwith,othernot,americani;
+var bobby,cyrus,lisa,cornel,frank,brown,lucy,glad,denis,yamoko,gary,huck;
+var bobbyloc,cyrusloc,lisaloc,cornelloc,frankloc,brownloc,lucyloc,gladloc,denisloc,yamokoloc,garyloc;
+var withjmmvip,notjmmvip,lidi;
+var zakl,x,y,r,tmp,tmp1,zakladna;
+var debug;
+var i,blbecci;
+
+starting
+begin
+  debug=false; //true;
+  if debug then msg('Bacha debug is ON');
+  am=1;
+  uc_nation=nation_american;
+  uc_side=am;
+  if testcharacters('JMM') and checkcharacterset('JMM') then john=createcharacterwithclass('JMM',class_soldier)
+  else buildquery('neny JMM',['OK']);
+//  if testcharacters('Powell') and checkcharacterset('Powell') then powell=createcharacter('Powell')
+//  else buildquery('neny Powell',['OK']);
+  powell=newcharacter('Powell');
+  if not powell then buildquery('neny Powell',['OK']);
+  huck=newcharacter('Stevens');
+  if not huck then buildquery('neny Stevens',['OK']);
+
+  otherwith=[];
+  othernot=[];
+  if testvariable('vedci_zdrhli') then vedci_zdrhli=loadvariable('vedci_zdrhli',-1)
+  else buildquery('neny vedci_zdrhli',['OK']);
+  if testcharacters('otherwithJMM') then
+    if checkcharacterset('otherwithJMM') then otherwith=createcharacterset('otherwithJMM')
+    else otherwith=[]
+  else buildquery('neny otherwithJMM',['OK']);
+  if testcharacters('othernotJMM') then
+    if checkcharacterset('othernotJMM') then othernot=createcharacterset('othernotJMM')
+    else othernot=[]
+  else buildquery('neny othernotJMM',['OK']);
+
+  withjmmvip=[];
+  notjmmvip=[];
+  if not testcharacters('Bobby') or not checkcharacterset('Bobby') then bobby=0
+  else begin
+    bobby=createcharacter('Bobby');
+    bobbyloc=loadvariable('BobbyLoc',-1);
+    case bobbyloc of
+      6:withjmmvip=withjmmvip^[bobby];
+      7:notjmmvip=notjmmvip^[bobby];
+      -1:buildquery('neny BobbyLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Cyrus') or not checkcharacterset('Cyrus') then cyrus=0
+  else begin
+    cyrus=createcharacter('Cyrus');
+    cyrusloc=loadvariable('CyrusLoc',-1);
+    case cyrusloc of
+      6:withjmmvip=withjmmvip^[cyrus];
+      7:notjmmvip=notjmmvip^[cyrus];
+      -1:buildquery('neny CyrusLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Joan') or not checkcharacterset('Joan') or not testcharacters('Lisa') or not checkcharacterset('Lisa') then lisa=0
+  else begin
+    lisa=createcharacter('Lisa');
+    lisaloc=loadvariable('LisaLoc',-1);
+    case lisaloc of
+      6:withjmmvip=withjmmvip^[lisa];
+      7:notjmmvip=notjmmvip^[lisa];
+      -1:buildquery('neny LisaLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Cornell') or not checkcharacterset('Cornell') then cornel=0
+  else begin
+    cornel=createcharacter('Cornell');
+    cornelloc=loadvariable('CornellLoc',-1);
+    case cornelloc of
+      6:withjmmvip=withjmmvip^[cornel];
+      7:notjmmvip=notjmmvip^[cornel];
+      -1:buildquery('neny CornellLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Frank') or not checkcharacterset('Frank') then frank=0
+  else begin
+    frank=createcharacter('Frank');
+    frankloc=loadvariable('FrankLoc',-1);
+    case frankloc of
+      6:withjmmvip=withjmmvip^[frank];
+      7:notjmmvip=notjmmvip^[frank];
+      -1:buildquery('neny FrankLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Brown') or not checkcharacterset('Brown') then brown=0
+  else begin
+    brown=createcharacter('Brown');
+    brownloc=loadvariable('BrownLoc',-1);
+    case brownloc of
+      6:withjmmvip=withjmmvip^[brown];
+      7:notjmmvip=notjmmvip^[brown];
+      -1:buildquery('neny BrownLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Donaldson') or not checkcharacterset('Donaldson') then lucy=0
+  else begin
+    lucy=createcharacter('Donaldson');
+    lucyloc=loadvariable('DonaldsonLoc',-1);
+    case lucyloc of
+      6:withjmmvip=withjmmvip^[lucy];
+      7:notjmmvip=notjmmvip^[lucy];
+      -1:buildquery('neny DonaldsonLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Gladstone') or not checkcharacterset('Gladstone') then glad=0
+  else begin
+    glad=createcharacter('Gladstone');
+    gladloc=loadvariable('GladstoneLoc',-1);
+    case gladloc of
+      6:withjmmvip=withjmmvip^[glad];
+      7:notjmmvip=notjmmvip^[glad];
+      -1:buildquery('neny GladstoneLoc',['OK']);
+    end;
+  end;
+  if not testcharacters('Denis') or not checkcharacterset('Denis') then denis=0
+  else begin
+    denis=createcharacter('Denis');
+    denisloc=loadvariable('DenisLoc',-1);
+    case denisloc of
+      6:withjmmvip=withjmmvip^[denis];
+      7:notjmmvip=notjmmvip^[denis];
+      -1:buildquery('neny DenisLoc',['OK']);
+    end;
+  end;
+  yamoko=0;
+  if not frank then
+    if not testcharacters('Yamoko') or not checkcharacterset('Yamoko') then yamoko=0
+    else begin
+      yamoko=createcharacter('Yamoko');
+      yamokoloc=loadvariable('YamokoLoc',-1);
+      case yamokoloc of
+        6:withjmmvip=withjmmvip^[yamoko];
+        7:notjmmvip=notjmmvip^[yamoko];
+        -1:buildquery('neny YamokoLoc',['OK']);
+      end;
+    end;
+  if not testcharacters('Gary') or not checkcharacterset('Gary') then gary=0
+  else begin
+    gary=createcharacter('Gary');
+    garyloc=loadvariable('GaryLoc',-1);
+    case garyloc of
+      6:withjmmvip=withjmmvip^[gary];
+      7:notjmmvip=notjmmvip^[gary];
+      -1:buildquery('neny GaryLoc',['OK']);
+    end;
+  end;
+
+  if testvariable('Epsilon') then zakl=loadvariable('Epsilon',[])
+  else msg('neny Epsilon'); //[[GetBType(i),GetX(i),GetY(i),GetDir(i),GetBLevel(i),GetNation(i)]]
+
+  setresourcevisibility(65,46,1);
+  setresourcevisibility(56,20,1);
+
+  x=0;y=0;zakladna=0;             //-48,-4
+  for tmp in zakl do 
+    if validhex(tmp[2]-48,tmp[3]-4)=2 then
+      case tmp[1] of
+        b_depot:begin
+          bc_type=tmp[1];
+          bc_level=tmp[5];
+          uc_nation=tmp[6];
+          tmp1=createandplacebuildingxyd(tmp[2]-48,tmp[3]-4,tmp[4]);
+          setbname(tmp1,'epsilon');
+          if tmp1 then begin x=x+tmp[2]-48;y=y+tmp[3]-4;zakladna=zakladna+1;end;
+        end;
+        b_lab,b_lab_half,b_lab_full:begin
+          bc_type=tmp[1];
+          bc_level=tmp[5];
+          bc_kind1=tmp[7];
+          bc_kind2=tmp[8];
+          uc_nation=tmp[6];
+          tmp1=createandplacebuildingxyd(tmp[2]-48,tmp[3]-4,tmp[4]);
+          if tmp1 then begin x=x+tmp[2]-48;y=y+tmp[3]-4;zakladna=zakladna+1;end;
+        end;
+        b_bunker,b_turret:begin
+          bc_type=tmp[1];
+          bc_level=tmp[5];
+          uc_nation=tmp[6];
+          tmp1=createandplacebuildingxyd(tmp[2]-48,tmp[3]-4,tmp[4]);
+          if tmp1 then placeweaponturret(tmp1,tmp[7]);
+          if tmp1 then begin x=x+tmp[2]-48;y=y+tmp[3]-4;zakladna=zakladna+1;end;
+        end;
+        else begin
+          bc_type=tmp[1];
+          bc_level=tmp[5];
+          uc_nation=tmp[6];
+          tmp1=createandplacebuildingxyd(tmp[2]-48,tmp[3]-4,tmp[4]);
+          if tmp1 then begin x=x+tmp[2]-48;y=y+tmp[3]-4;zakladna=zakladna+1;end;
+        end;
+      end;
+  x=x/(0+zakladna);
+  y=y/(0+zakladna);
+  r=5;
+
+  lidi=withjmmvip^notjmmvip^otherwith^othernot;
+
+  blbecci=[];
+  uc_nation=nation_american;
+  if lidi<4 then
+    for i=1 to (4-lidi) do begin
+      preparehuman(rand(1,2),class_soldier,5);
+      blbecci=blbecci^[createhuman];
+    end;
+  lidi=lidi^blbecci;
+
+  revealfogarea(am,celamapa);
+  placeunitxyr(john,x,y,r,false);
+  centernowonunits([john]);
+
+  //if debug then begin wait(0$10);msg('tu som');wait(0$30);end;
+
+  interface_hidden=true;
+  dialogueon;
+  wait(0$0.5);
+  say(john,'D1-JMM-1');
+  sayradio(powell,'D1-Pow-1');
+  if vedci_zdrhli then sayradio(powell,'D1-Pow-1a')
+  else sayradio(powell,'D1-Pow-1b');
+  sayradio(powell,'D1-Pow-1c');
+  say(john,'D1-JMM-2');
+  sayradio(powell,'D1-Pow-2');
+  say(john,'D1-JMM-3');
+  sayradio(powell,'D1-Pow-3');
+  say(john,'D1-JMM-4');
+  sayradio(powell,'D1-Pow-4');
+  dialogueoff;
+  interface_hidden=false;
+  //unit selection 
+  americani=characterselection('',4,6,[john,huck,sel_changeable,sel_not_hired,sel_change_class]^lidi,[[class_scientistic,2],class_mechanic,class_soldier,[class_engineer,1],[class_sniper,0,1]]);
+  americani=americani diff [0];
+  savecharacters(americani isect (otherwith^othernot^blbecci),'otherwithJMM');
+  savecharacters((otherwith^othernot) diff americani,'othernotJMM');
+
+  if bobby then
+    if bobby in americani then begin savevariable(6,'BobbyLoc');savecharacters(bobby,'Bobby');end
+    else savevariable(7,'BobbyLoc');
+  if cyrus then
+    if cyrus in americani then begin savevariable(6,'CyrusLoc');savecharacters(cyrus,'Cyrus');end
+    else savevariable(7,'CyrusLoc');
+  if lisa then
+    if lisa in americani then begin savevariable(6,'LisaLoc');savecharacters(lisa,'Lisa');end
+    else savevariable(7,'LisaLoc');
+  if cornel then
+    if cornel in americani then begin savevariable(6,'CornellLoc');savecharacters(cornel,'Cornell');end
+    else savevariable(7,'CornellLoc');
+  if frank then
+    if frank in americani then begin savevariable(6,'FrankLoc');savecharacters(frank,'Frank');end
+    else savevariable(7,'FrankLoc');
+  if brown then
+    if brown in americani then begin savevariable(6,'BrownLoc');savecharacters(brown,'Brown');end
+    else savevariable(7,'BrownLoc');
+  if lucy then
+    if lucy in americani then begin savevariable(6,'DonaldsonLoc');savecharacters(lucy,'Donaldson');end
+    else savevariable(7,'DonaldsonLoc');
+  if glad then
+    if glad in americani then begin savevariable(6,'GladstoneLoc');savecharacters(glad,'Gladstone');end
+    else savevariable(7,'GladstoneLoc');
+  if denis then
+    if denis in americani then begin savevariable(6,'DenisLoc');savecharacters(denis,'Denis');end
+    else savevariable(7,'DenisLoc');
+  if yamoko then
+    if yamoko in americani then begin savevariable(6,'YamokoLoc');savecharacters(yamoko,'Yamoko');end
+    else savevariable(7,'YamokoLoc');
+  if gary then
+    if gary in americani then begin savevariable(6,'GaryLoc');savecharacters(gary,'Gary');end
+    else savevariable(7,'GaryLoc');
+
+  if debug then savecampaignfile('us13_out.txt');
+  changemap('1','%_cont');
+
+end;

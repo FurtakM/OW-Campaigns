@@ -1,0 +1,137 @@
+var JMM_car,               // definice MacMillanova vozidla
+    Bur_car;               // definice Burlakova vozidla
+
+var JMM_load,                  // ident nalozeni cargo baye
+    Bur_load;
+
+var truck_selected;
+
+// Dialogue 1 (in Freedom)
+export function starting_scene;
+begin
+  interface_hidden:=true;
+  RevealFogArea(you,all_fog);
+//  CenterNowOnUnits([MacMillan]);
+  ComTurnUnit(MacMillan,Burlak);
+  ComTurnUnit(Burlak,MacMillan);
+  wait(10);
+  DialogueOn;
+  interface_hidden:=true;
+
+  Say(MacMillan,'D1-JMM-1');
+  Say(Burlak,'D1-Bur-1');
+  Say(MacMillan,'D1-JMM-2');
+  Say(Burlak,'D1-Bur-2');
+  Say(MacMillan,'D1-JMM-3');
+  Say(Burlak,'D1-Bur-3');
+  Say(MacMillan,'D1-JMM-4');
+  Say(Burlak,'D1-Bur-4');
+  Say(MacMillan,'D1-JMM-5');
+  Say(Burlak,'D1-Bur-5');
+  Say(MacMillan,'D1-JMM-6');
+  Say(Burlak,'D1-Bur-6');
+  Say(MacMillan,'D1-JMM-7');
+
+  wait(20);
+  Query('QTruck');
+
+  interface_hidden:=false;
+  DialogueOff;
+
+  JMM_car:=[];
+  Bur_car:=[];
+  JMM_load:=0;
+  Bur_load:=0;
+
+  truck_selected:=false;
+
+  ChangeMissionObjectives('MArtPickup');
+
+  Enable(1);
+  SetAreaMapShow(leaving_border,1);
+end;
+
+
+// Odjezd MacMillana z mapy do mise
+every 0$1 trigger IsInArea(MacMillan,leaving) Marked 1 do
+var un,go;
+begin
+  go:=true;
+  un:=IsInUnit(MacMillan);
+
+  if un and not IsOK(Burlak) and not truck_selected and
+     not (GetWeapon(un) in [us_cargo_bay, ru_cargo_bay]) then
+    go:=false;
+
+  if un and go then
+    begin
+      RemoveUnit(MacMillan);
+      JMM_car:=[GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un)];
+      if (GetWeapon(un) in [us_cargo_bay, ru_cargo_bay]) then
+        begin
+          if (GetCargoType(un)=mat_oil) then
+            JMM_load:=GetCargo(un,mat_oil);
+          truck_selected:=true;
+        end;
+      RemoveUnit(un);
+    end
+  else
+    begin
+      Query('QTruck');
+      repeat
+        wait(0$1);
+      until not IsInArea(MacMillan,leaving);
+    end;
+  enable;
+
+end;
+
+// Odjezd Burlaka z mapy do mise
+every 0$1 trigger IsInArea(Burlak,leaving) Marked 1 do
+var un,go;
+begin
+  go:=true;
+  un:=IsInUnit(Burlak);
+
+  if un and not IsOK(MacMillan) and not truck_selected and
+     not (GetWeapon(un) in [us_cargo_bay, ru_cargo_bay]) then
+    go:=false;
+
+  if un and go then
+    begin
+      RemoveUnit(Burlak);
+      Bur_car:=[GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un)];
+      if (GetWeapon(un) in [us_cargo_bay, ru_cargo_bay]) then
+        begin
+          if (GetCargoType(un)=mat_oil) then
+            Bur_load:=GetCargo(un,mat_oil);
+          truck_selected:=true;
+        end;
+      RemoveUnit(un);
+    end
+  else
+    begin
+      Query('QTruck');
+      repeat
+        wait(0$1);
+      until not IsInArea(Burlak,leaving);
+    end;
+  enable;
+end;
+
+
+// Save dulezitych promennych a reload mapy po odjezdu obou hrdinu
+every 0$1 trigger not (IsOK(MacMillan) or IsOK(Burlak)) do
+begin
+  SaveCharacters(MacMillan,'JMM');
+  SaveCharacters(Burlak,'Burlak');
+
+  SaveVariable(JMM_car,'JMM_car');
+  SaveVariable(Bur_car,'Bur_car');
+  SaveVariable(JMM_load,'JMM_car_load');
+  SaveVariable(Bur_load,'Bur_car_load');
+
+  ChangeMap('%_cont','%_cont');
+end;
+
+

@@ -1,0 +1,787 @@
+{\rtf1\ansi\ansicpg1250\uc1 \deff0\deflang1033\deflangfe1029{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f1\fswiss\fcharset0\fprq2{\*\panose 020b0604020202020204}Arial;}
+{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}{\f3\froman\fcharset2\fprq2{\*\panose 05050102010706020507}Symbol;}{\f4\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Times{\*\falt Times New Roman};}
+{\f5\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Helvetica;}{\f6\fmodern\fcharset0\fprq1{\*\panose 00000000000000000000}Courier;}{\f7\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Geneva;}
+{\f8\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Tms Rmn;}{\f9\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Helv;}{\f10\froman\fcharset0\fprq2{\*\panose 00000000000000000000}MS Serif;}
+{\f11\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}MS Sans Serif;}{\f12\froman\fcharset0\fprq2{\*\panose 00000000000000000000}New York;}{\f13\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}System;}
+{\f14\fnil\fcharset2\fprq2{\*\panose 05000000000000000000}Wingdings;}{\f15\fswiss\fcharset0\fprq2{\*\panose 020b0604030504040204}Tahoma;}{\f16\fswiss\fcharset238\fprq1{\*\panose 00000000000000000000}Fixedsys;}
+{\f17\fswiss\fcharset255\fprq1{\*\panose 00000000000000000000}Terminal;}{\f18\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}Small Fonts;}{\f19\fmodern\fcharset238\fprq1{\*\panose 00000000000000000000}MujFontik;}
+{\f20\fnil\fcharset2\fprq2{\*\panose 00000000000000000000}Marlett;}{\f21\fmodern\fcharset0\fprq1{\*\panose 020b0609040504020204}Lucida Console;}{\f22\fswiss\fcharset0\fprq2{\*\panose 020b0a04020102020204}Arial Black;}
+{\f23\fscript\fcharset0\fprq2{\*\panose 030f0702030302020204}Comic Sans MS;}{\f24\fswiss\fcharset0\fprq2{\*\panose 020b0806030902050204}Impact;}{\f25\fswiss\fcharset0\fprq2{\*\panose 020b0604030504040204}Verdana;}
+{\f26\froman\fcharset2\fprq2{\*\panose 05030102010509060703}Webdings;}{\f27\fswiss\fcharset0\fprq2{\*\panose 020b0506020202030204}Arial Narrow;}{\f28\froman\fcharset0\fprq2{\*\panose 02040502050405020303}Georgia;}
+{\f29\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}Lucida Blackletter;}{\f30\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Lucida Bright;}{\f31\fscript\fcharset0\fprq2{\*\panose 00000000000000000000}Lucida Calligraphy;}
+{\f32\fscript\fcharset0\fprq2{\*\panose 00000000000000000000}Papyrus;}{\f33\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Poor Richard;}{\f34\fscript\fcharset0\fprq2{\*\panose 00000000000000000000}Viner Hand ITC;}
+{\f35\fswiss\fcharset0\fprq2{\*\panose 020b0706040902060204}Haettenschweiler;}{\f36\froman\fcharset2\fprq2{\*\panose 00000000000000000000}MT Extra;}{\f37\froman\fcharset0\fprq2{\*\panose 02050604050505020204}Bookman Old Style;}
+{\f38\fnil\fcharset2\fprq2{\*\panose 01010601010101010101}Monotype Sorts;}{\f39\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Map Symbols;}{\f40\froman\fcharset0\fprq2{\*\panose 02020404030301010803}Garamond;}
+{\f41\fnil\fcharset2\fprq2{\*\panose 05000000000000000000}MS Outlook;}{\f42\froman\fcharset238\fprq2{\*\panose 00000000000000000000}Tms Rmn CE;}{\f43\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}Helv CE;}
+{\f44\froman\fcharset238\fprq2{\*\panose 00000000000000000000}MS Serif CE;}{\f45\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}MS Sans Serif CE;}{\f46\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}System CE;}
+{\f47\fmodern\fcharset0\fprq1{\*\panose 00000000000000000000}LinePrinter;}{\f48\froman\fcharset0\fprq2{\*\panose 00000000000000000000}CG Times;}{\f49\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Univers;}
+{\f50\fnil\fcharset2\fprq2{\*\panose 00000000000000000000}Tera Special;}{\f51\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Century Schoolbook;}{\f52\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Gill Sans MT;}
+{\f53\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Gill Sans MT Condensed;}{\f54\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}Gill Sans MT CE;}{\f55\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}Gill Sans MT Condensed CE;}
+{\f56\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Lucida Sans Unicode;}{\f57\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}News Gothic MT;}{\f58\fscript\fcharset0\fprq2{\*\panose 00000000000000000000}Lucida Handwriting;}
+{\f59\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Lucida Sans;}{\f60\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Book Antiqua;}{\f61\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Century Gothic;}
+{\f62\fmodern\fcharset0\fprq1{\*\panose 00000000000000000000}OCR A Extended;}{\f63\froman\fcharset0\fprq2{\*\panose 00000000000000000000}Calisto MT;}{\f64\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Abadi MT Condensed Light;}
+{\f65\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Copperplate Gothic Bold;}{\f66\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Copperplate Gothic Light;}{\f67\fdecor\fcharset0\fprq2{\*\panose 00000000000000000000}Matisse ITC;}
+{\f68\fdecor\fcharset0\fprq2{\*\panose 00000000000000000000}Tempus Sans ITC;}{\f69\fdecor\fcharset0\fprq2{\*\panose 00000000000000000000}Westminster;}{\f70\fnil\fcharset2\fprq2{\*\panose 00000000000000000000}StarBats;}
+{\f71\fnil\fcharset2\fprq2{\*\panose 00000000000000000000}StarMath;}{\f72\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}Arioso;}{\f73\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}ChevaraOutline;}
+{\f74\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}Chevara;}{\f75\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}Conga;}{\f76\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}HelmetCondensed;}
+{\f77\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}Helmet;}{\f78\fnil\fcharset0\fprq2{\*\panose 00000000000000000000}Timmons;}{\f79\fswiss\fcharset0\fprq2{\*\panose 00000000000000000000}Turkey Sandwich;}
+{\f80\fnil\fcharset2\fprq2{\*\panose 00000000000000000000}SWGamekeys MT;}{\f81\fnil\fcharset2\fprq2{\*\panose 00000000000000000000}SWGamekeys2 MT;}{\f82\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}Lucida Sans Unicode CE;}
+{\f83\fswiss\fcharset204\fprq2{\*\panose 00000000000000000000}Lucida Sans Unicode Cyr;}{\f84\fswiss\fcharset161\fprq2{\*\panose 00000000000000000000}Lucida Sans Unicode Greek;}
+{\f85\fswiss\fcharset162\fprq2{\*\panose 00000000000000000000}Lucida Sans Unicode Tur;}{\f86\froman\fcharset238\fprq2{\*\panose 00000000000000000000}Book Antiqua CE;}{\f87\froman\fcharset204\fprq2{\*\panose 00000000000000000000}Book Antiqua Cyr;}
+{\f88\froman\fcharset161\fprq2{\*\panose 00000000000000000000}Book Antiqua Greek;}{\f89\froman\fcharset162\fprq2{\*\panose 00000000000000000000}Book Antiqua Tur;}{\f90\froman\fcharset186\fprq2{\*\panose 00000000000000000000}Book Antiqua Baltic;}
+{\f91\fswiss\fcharset238\fprq2{\*\panose 00000000000000000000}Century Gothic CE;}{\f92\fswiss\fcharset204\fprq2{\*\panose 00000000000000000000}Century Gothic Cyr;}{\f93\fswiss\fcharset161\fprq2{\*\panose 00000000000000000000}Century Gothic Greek;}
+{\f94\fswiss\fcharset162\fprq2{\*\panose 00000000000000000000}Century Gothic Tur;}{\f95\fswiss\fcharset186\fprq2{\*\panose 00000000000000000000}Century Gothic Baltic;}{\f96\fswiss\fcharset0\fprq2{\*\panose 020b0603020202020204}Trebuchet MS;}
+{\f97\fmodern\fcharset0\fprq1{\*\panose 020b0509000000000004}Andale Mono;}{\f98\froman\fcharset238\fprq2 Times New Roman CE;}{\f99\froman\fcharset204\fprq2 Times New Roman Cyr;}{\f101\froman\fcharset161\fprq2 Times New Roman Greek;}
+{\f102\froman\fcharset162\fprq2 Times New Roman Tur;}{\f103\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f104\fswiss\fcharset238\fprq2 Arial CE;}{\f105\fswiss\fcharset204\fprq2 Arial Cyr;}{\f107\fswiss\fcharset161\fprq2 Arial Greek;}
+{\f108\fswiss\fcharset162\fprq2 Arial Tur;}{\f109\fswiss\fcharset186\fprq2 Arial Baltic;}{\f110\fmodern\fcharset238\fprq1 Courier New CE;}{\f111\fmodern\fcharset204\fprq1 Courier New Cyr;}{\f113\fmodern\fcharset161\fprq1 Courier New Greek;}
+{\f114\fmodern\fcharset162\fprq1 Courier New Tur;}{\f115\fmodern\fcharset186\fprq1 Courier New Baltic;}{\f188\fswiss\fcharset238\fprq2 Tahoma CE;}{\f189\fswiss\fcharset204\fprq2 Tahoma Cyr;}{\f191\fswiss\fcharset161\fprq2 Tahoma Greek;}
+{\f192\fswiss\fcharset162\fprq2 Tahoma Tur;}{\f193\fswiss\fcharset186\fprq2 Tahoma Baltic;}{\f224\fmodern\fcharset238\fprq1 Lucida Console CE;}{\f225\fmodern\fcharset204\fprq1 Lucida Console Cyr;}{\f227\fmodern\fcharset161\fprq1 Lucida Console Greek;}
+{\f228\fmodern\fcharset162\fprq1 Lucida Console Tur;}{\f230\fswiss\fcharset238\fprq2 Arial Black CE;}{\f231\fswiss\fcharset204\fprq2 Arial Black Cyr;}{\f233\fswiss\fcharset161\fprq2 Arial Black Greek;}{\f234\fswiss\fcharset162\fprq2 Arial Black Tur;}
+{\f235\fswiss\fcharset186\fprq2 Arial Black Baltic;}{\f236\fscript\fcharset238\fprq2 Comic Sans MS CE;}{\f237\fscript\fcharset204\fprq2 Comic Sans MS Cyr;}{\f239\fscript\fcharset161\fprq2 Comic Sans MS Greek;}
+{\f240\fscript\fcharset162\fprq2 Comic Sans MS Tur;}{\f241\fscript\fcharset186\fprq2 Comic Sans MS Baltic;}{\f242\fswiss\fcharset238\fprq2 Impact CE;}{\f243\fswiss\fcharset204\fprq2 Impact Cyr;}{\f245\fswiss\fcharset161\fprq2 Impact Greek;}
+{\f246\fswiss\fcharset162\fprq2 Impact Tur;}{\f247\fswiss\fcharset186\fprq2 Impact Baltic;}{\f248\fswiss\fcharset238\fprq2 Verdana CE;}{\f249\fswiss\fcharset204\fprq2 Verdana Cyr;}{\f251\fswiss\fcharset161\fprq2 Verdana Greek;}
+{\f252\fswiss\fcharset162\fprq2 Verdana Tur;}{\f253\fswiss\fcharset186\fprq2 Verdana Baltic;}{\f260\fswiss\fcharset238\fprq2 Arial Narrow CE;}{\f261\fswiss\fcharset204\fprq2 Arial Narrow Cyr;}{\f263\fswiss\fcharset161\fprq2 Arial Narrow Greek;}
+{\f264\fswiss\fcharset162\fprq2 Arial Narrow Tur;}{\f265\fswiss\fcharset186\fprq2 Arial Narrow Baltic;}{\f266\froman\fcharset238\fprq2 Georgia CE;}{\f267\froman\fcharset204\fprq2 Georgia Cyr;}{\f269\froman\fcharset161\fprq2 Georgia Greek;}
+{\f270\froman\fcharset162\fprq2 Georgia Tur;}{\f271\froman\fcharset186\fprq2 Georgia Baltic;}{\f308\fswiss\fcharset238\fprq2 Haettenschweiler CE;}{\f309\fswiss\fcharset204\fprq2 Haettenschweiler Cyr;}
+{\f311\fswiss\fcharset161\fprq2 Haettenschweiler Greek;}{\f312\fswiss\fcharset162\fprq2 Haettenschweiler Tur;}{\f313\fswiss\fcharset186\fprq2 Haettenschweiler Baltic;}{\f320\froman\fcharset238\fprq2 Bookman Old Style CE;}
+{\f321\froman\fcharset204\fprq2 Bookman Old Style Cyr;}{\f323\froman\fcharset161\fprq2 Bookman Old Style Greek;}{\f324\froman\fcharset162\fprq2 Bookman Old Style Tur;}{\f325\froman\fcharset186\fprq2 Bookman Old Style Baltic;}
+{\f338\froman\fcharset238\fprq2 Garamond CE;}{\f339\froman\fcharset204\fprq2 Garamond Cyr;}{\f341\froman\fcharset161\fprq2 Garamond Greek;}{\f342\froman\fcharset162\fprq2 Garamond Tur;}{\f343\froman\fcharset186\fprq2 Garamond Baltic;}
+{\f674\fswiss\fcharset238\fprq2 Trebuchet MS CE;}{\f678\fswiss\fcharset162\fprq2 Trebuchet MS Tur;}{\f680\fmodern\fcharset238\fprq1 Andale Mono CE;}{\f681\fmodern\fcharset204\fprq1 Andale Mono Cyr;}{\f683\fmodern\fcharset161\fprq1 Andale Mono Greek;}
+{\f684\fmodern\fcharset162\fprq1 Andale Mono Tur;}{\f685\fmodern\fcharset186\fprq1 Andale Mono Baltic;}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;\red255\green0\blue255;\red255\green0\blue0;
+\red255\green255\blue0;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;\red192\green192\blue192;}{\stylesheet{
+\nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid \snext0 Normal;}{\s1\keepn\nowidctlpar\widctlpar\adjustright \b\fs20\lang2057\cgrid \sbasedon0 \snext0 heading 1;}{\*\cs10 \additive Default Paragraph Font;}{
+\s15\sb120\nowidctlpar\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid \sbasedon0 \snext15 _DialogueCaption;}{\s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \fs20\lang2057\cgrid \sbasedon0 \snext16 _DialogueLine;}{\s17\nowidctlpar\adjustright 
+\f16\fs20\cf13\lang2057\cgrid \sbasedon0 \snext17 _InputOutput;}{\s18\nowidctlpar\adjustright \f16\fs20\cf15\lang2057\cgrid \sbasedon17 \snext18 _MOKeywords;}{\*\cs19 \additive \cf10\lang2057 \sbasedon10 _Name;}{
+\s20\sb360\nowidctlpar\outlinelevel0\adjustright \b\f1\fs36\lang2057\cgrid \sbasedon0 \snext20 _NameOfMission;}{\s21\nowidctlpar\adjustright \fs16\cf15\lang2057\cgrid \sbasedon0 \snext21 _Persons;}{\s22\sb240\nowidctlpar\outlinelevel1\adjustright 
+\b\fs20\cf12\lang2057\cgrid \sbasedon0 \snext22 _Section;}{\s23\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \i\fs20\cf6\lang2057\cgrid \sbasedon16 \snext23 _vlada_remarks;}{\s24\nowidctlpar\widctlpar\adjustright \cbpat9 \f15\fs20\lang2057\cgrid 
+\sbasedon0 \snext24 Document Map;}}{\*\listtable{\list\listtemplateid585031666\listsimple{\listlevel\levelnfc23\leveljc0\levelfollow0\levelstartat15\levelspace0\levelindent0{\leveltext\'01-;}{\levelnumbers;}\fbias0 \fi-360\li360\jclisttab\tx360 }
+{\listname ;}\listid1418017699}{\list\listtemplateid-1319716568\listsimple{\listlevel\levelnfc23\leveljc0\levelfollow0\levelstartat0\levelspace0\levelindent0{\leveltext\'01-;}{\levelnumbers;}\fbias0 \fi-360\li360\jclisttab\tx360 }{\listname 
+;}\listid1447579598}{\list\listtemplateid67436567\listsimple{\listlevel\levelnfc4\leveljc0\levelfollow0\levelstartat1\levelspace0\levelindent0{\leveltext\'02\'00);}{\levelnumbers\'01;}\fbias0 \fi-360\li360\jclisttab\tx360 }{\listname ;}\listid1800564432}
+{\list\listtemplateid771682358\listsimple{\listlevel\levelnfc23\leveljc0\levelfollow0\levelstartat0\levelspace0\levelindent0{\leveltext\'01-;}{\levelnumbers;}\fbias0 \fi-360\li360\jclisttab\tx360 }{\listname ;}\listid2132699950}}{\*\listoverridetable
+{\listoverride\listid1418017699\listoverridecount0\ls1}{\listoverride\listid1800564432\listoverridecount0\ls2}{\listoverride\listid2132699950\listoverridecount0\ls3}{\listoverride\listid1447579598\listoverridecount0\ls4}}{\info{\title CAST_BEGIN}
+{\author Martin}{\operator budul}{\creatim\yr2000\mo9\dy27\hr23\min18}{\revtim\yr2000\mo11\dy9\hr15\min14}{\version8}{\edmins44}{\nofpages15}{\nofwords5643}{\nofchars28782}{\*\company Altar interactive}{\nofcharsws0}{\vern73}}
+\margl1417\margr1417\margt1417\margb1417 \deftab708\widowctrl\ftnbj\aenddoc\hyphhotz425\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\formshade\viewkind4\viewscale110\pgbrdrhead\pgbrdrfoot \fet0\sectd 
+\linex0\headery709\footery709\colsx709\endnhere\sectdefaultcl {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl4
+\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl7\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}
+{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain \s21\nowidctlpar\tx1440\outlinelevel0\adjustright \fs16\cf15\lang2057\cgrid {\lang1029 
+CAST_BEGIN
+\par }\pard \s21\nowidctlpar\tx1440\adjustright {\lang1029 Macmillan:\tab JMM\tab M
+\par Powell:\tab Pow\tab M
+\par Lisa:\tab Lisa\tab F
+\par Harrison:\tab Har\tab M
+\par Joan:\tab Joan\tab F
+\par Frank:\tab Frank\tab M
+\par Burlak:\tab Bur\tab M
+\par Cyrus:\tab Cyrus\tab M
+\par Cornell:\tab Corn\tab M
+\par Kurt:\tab Kurt\tab M
+\par Donaldson:\tab Don\tab F
+\par Bobby:\tab Bobby\tab M
+\par Denis:\tab Den\tab M
+\par Gladstone:\tab Glad\tab M
+\par Gossudarov:\tab Gos\tab M
+\par Stevens:\tab Huck\tab M
+\par Yamoko:\tab Yam\tab F
+\par Brown:\tab Brown\tab M
+\par Roth:\tab Roth\tab M
+\par Khattam:\tab Khat\tab M
+\par Sikorski:\tab Sik\tab M
+\par Connie:\tab Con\tab F
+\par Gary:\tab Gary\tab M
+\par Mikhail:\tab Mikh\tab M
+\par Simms:\tab Sim\tab F
+\par Kirilenkova:\tab Kir\tab F
+\par VanHouten:\tab VanH\tab M
+\par Belkov:\tab Bel\tab M
+\par Officer:\tab Off\tab M
+\par Abdul:\tab Abd\tab M
+\par Dietrich:\tab Diet\tab M
+\par Soldier1:\tab Sol1\tab M
+\par FSoldier1:\tab FSol1\tab F
+\par Soldier2:\tab Sol2\tab M
+\par FSoldier2:\tab Fsol2\tab F
+\par Soldier3:\tab Sol3\tab M
+\par FSoldier3:\tab FSol3\tab F
+\par Soldier4:\tab Sol4\tab M
+\par FSoldier4:\tab FSol4\tab F
+\par Soldier5:\tab Sol5\tab M
+\par Scientist:\tab Sci\tab M
+\par Scientist1:\tab Sci1\tab M
+\par FScientist1:\tab FSci1\tab F
+\par Mechanic1:\tab Mech1\tab M
+\par FMechanic1:\tab FMech1\tab F
+\par Engineer1:\tab Eng1\tab M
+\par FEngineer1:\tab FEng1\tab F
+\par All:\tab All\tab M
+\par Arabian1:\tab Ar1\tab M
+\par Arabian2:\tab Ar2\tab M
+\par FArabian1:\tab FAr1\tab F
+\par AScientist1:\tab ASci1\tab M
+\par Mercenary1:\tab Merc1\tab M
+\par FMercenary2:\tab FMerc2\tab F
+\par Russian1:\tab Rus1\tab M
+\par FRussian1:\tab FRus1\tab F
+\par Russian2:\tab Rus2\tab M
+\par Russian3:\tab Rus3\tab M
+\par RSoldier1:\tab RSol1\tab M
+\par RScientist1:\tab RSci1\tab M
+\par Russians:\tab Russ\tab M
+\par CAST_END
+\par }\pard\plain \s20\sb360\nowidctlpar\outlinelevel0\adjustright \b\f1\fs36\lang2057\cgrid {\lang1029 15. Final Countdown
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Designer}{\lang1033 \rquote s notes
+\par }\pard\plain \nowidctlpar\widctlpar\outlinelevel0\adjustright \fs20\lang2057\cgrid {\lang1029 Vstupn\'ed \'fadaje:
+\par }{\f98\lang1029 L - podveden\'ed arab\'f9 v\~Am12
+\par B - zachr\'e1n\'ecn\'ed z\'e1kladny v\~Am14
+\par W - zachr\'e1n\'ecn\'ed \'9eensk\'e9 v\~Am14
+\par T - zdr\'9een\'ed v\~Am14
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\f98\lang1029 Podm\'ednky maj\'ed tvar: nap\'f8 LnB znamen\'e1 L a not B. Ob\'e8as je pou\'9eito i jako p\'f8\'edpona jm\'e9na dialogu.
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 Startovn\'ed situace: Macmillan p\'f8ij\'ed\'9ed\'ed s\'e1m, pouze v\~p\'f8\'edpad\'ec nBW p\'f8ij\'ed\'9ed\'ed s\~\'9eenskou. Plat\'ed B or W -> T (tedy kombinace BnT ani WnT nen\'ed mo\'9en\'e1).
+
+\par }{\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\f98\lang1029 Na map\'ec jsou tyto z\'e1kladny:
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Powellova z\'e1kladna: 
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 Lo\'9eiska siberitu, \'9e\'e1dn\'e1 ropa. Celkem dobr\'e9 opevn\'ecn\'ed, ale z\~jedn\'e9 strany je z\'e1kladna otev\'f8en\'e1 a t\'ec\'9eko br\'e1niteln\'e1 (a to z\~t\'e9, ze kter\'e9 p\'f8
+ijde Macmillan). Laborato\'f8 siberite/weapon. Tov\'e1rna, gun ext., sib. ext., noncombat ext.. Jedna siberitov\'e1 elektr\'e1rna. \'8e\'e1dn\'e1 d\'e1lkov\'ec nebo po\'e8\'edta\'e8em \'f8\'edzen\'e1 vozidla. Je tu dost lid\'ed, ale v\'ect\'9aina z\~
+nich je }{\lang1033 \lquote odsouzena\rquote  zem}{\f98\lang1029 \'f8\'edt b\'echem prvn\'edho nebo druh\'e9ho \'fatoku. Je tu i Powell osobn\'ec. Zb\'fdvaj\'edc\'edch asi dvan\'e1ct lid\'ed jsou v\'ect\'9ainou Johnovi sta\'f8\'ed zn\'e1m\'ed
+ (Cyrus, Bobby, Frank, Lisa, Donaldsonov\'e1, Yamoko, Grant, Simmsov\'e1, Peterson, Gladstone, Brown, Cornell, z\~dal\'9a\'edch pak ti nejzku\'9aen\'ecj\'9a\'ed\'85). P\'ect z\~t\'ecchto deseti lid\'ed se k\~Johnovi p\'f8ipoj\'ed hned na za\'e8\'e1
+tku, zbyl\'fdch sedm a\'9e po Powellov\'ec smrti \endash  do t\'e9 doby jsou v\~obrann\'fdch bunkrech a zaji\'9a\'9duj\'ed c}{\lang1029 hod z\'e1kladny.
+\par 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Legie:
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 Legie m\'e1 z\'e1kladnu nedaleko Powellovy. M\'e1 dost lid\'ed a velice dob\'f8e chr\'e1n\'ecn\'fd p\'f8\'edstup \endash  na kopci, spousta v\'ec\'9e\'ed. M\'e1 n\'ecjak\'e9 mobiln\'ed
+ jednotky, kter\'e9 pou\'9e\'edv\'e1 hlavn\'ec k\~obran\'ec. Dva americk\'e9 \'fatoky odraz\'ed a obnov\'ed svou z\'e1kladnu. Pouze jednou po\'9ale d\'e1lkov\'ec \'f8\'edzen\'e9 samohybn\'e9 bomby, kter\'e9 zni\'e8\'ed Powellovu tov\'e1rnu.
+\par Dob\'f8e chr\'e1n\'ecnou za lini\'ed opevn\'ecn\'ed jim Rusk\'fd v\'ecdec/in\'9een\'fdr postavil tov\'e1rnu a laborato\'f8. V\'ecdec je skryt ve warehouse \endash  kdy\'9e arabov\'e9 p\'f8ijdou o n\'eckterou z\~kl\'ed\'e8ov\'fdch rusk\'fdch staveb a \'fa
+tok odraz\'ed, vyleze a znovu ji postav\'ed. Hr\'e1\'e8 mus\'ed Araby porazit, jinak nakonec postav\'ed tu siberitovku a po\'9alou mu ji na z\'e1kladnu. Dal\'9a\'ed siberitovku pak po\'9alou na Rusy \endash  a to vyvol\'e1 rozklad motherlodu a konec hry.
+
+\par }{\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Rusov\'e9 1:
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 Sed\'ed na siberite motherlode, pou\'9e\'edvaj\'ed jen siberit. Jsou v\'fdborn\'ec chr\'e1n\'ecn\'ed, t\'e9m\'ec\'f8 nedobytn\'ed. \'datoky za\'e8nou podnikat a\'9e ve druh\'e9 f\'e1zi hry. Do \'fa
+toku vyr\'e1b\'ecj\'ed hlavn\'ec po\'e8\'edta\'e8em \'f8\'edzen\'e1 vozidla (nejvy\'9a\'9a\'ed upgrade) s\~raketami (jejich speci\'e1ln\'ed zbra\'f2). Krom\'ec toho n\'eckde za\'e8nou \'e8asem stav\'ect Behemothy (ti pot\'f8eb}{\lang1029 u}{\f98\lang1029 
+j\'ed rovn\'fd ter\'e9n) a pokud je hr\'e1\'e8 nezru\'9a\'ed,  \'e8asem p\'f8es les p\'f8ijedou a\'9e k\~jeho z\'e1kladn\'ec. Ve druh\'e9 f\'e1zi za\'e8nou tak\'e9 vyv\'edjet a stav\'ect Siberitovou raketu. Pokud ji maj\'ed d\'f8\'edve ne\'9e hr\'e1\'e8
+, daj\'ed mu ultim\'e1tum. Pozor! Pokud p\'f8i dob\'fdv\'e1n\'ed hr\'e1\'e8 nezni\'e8\'ed prvn\'ec raketov\'e1 sil}{\lang1029 a}{\f98\lang1029 , odp\'e1l\'ed ji stejn\'ec v\~okam\'9eiku, kdy tu\'9a\'ed, \'9ee prohraj\'ed\'85
+\par }{\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Rusov\'e9 2:
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 Nemaj\'ed z\'e1kladnu, p\'f8ich\'e1zej\'ed na mapu po celou dobu zhruba ze stejn\'e9 strany jako Macmillan. Pokud je Macmillan nezadr\'9e\'ed, napadnou Powellovu z\'e1kladnu z\~nechr\'e1n\'ecn\'e9
+ strany. Jejich \'fatoky jsou velmi siln\'e9 a hr\'e1\'e8 pot\'f8ebuje v\'9aechen um, aby je zadr\'9eel. Ve druh\'e9 f\'e1zi hry jejich \'fatoky nejsou tak \'e8ast\'e9, ale stejn\'ec ob\'e8as p\'f8ijdou. Mohou b\'fdt dokonce synchronizov\'e1ny s\~Rusy 1.
+
+\par }{\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Alliance:
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 Ti\'9ae si buduj\'ed z\'e1kladnu na m\'edst\'ec, kam se v\'f9bec ned\'e1 dojet vozidly, z\~po\'e8\'e1tku o nich nen\'ed nic v\'ecd\'ect ani sly\'9aet. Maj\'ed v\'9aak artefakt. Ten jim umo\'9e\'f2
+uje teleportovat \'e8lov\'ecka do z\'e1kladny, sta\'e8\'ed, kdy\'9e ho po ur\'e8itou dobu vid\'ed. Toho pak konvertuj\'ed na svou stranu. Les je chr\'e1n\'ecn neviditeln\'fdmi snipery a bazuk\'e9ry. Alliance v\'f9bec nestav\'ed vozidla \endash  pou\'9e
+\'edv\'e1 jen lidi a neviditelnost. Sna\'9e\'ed se p\'f8ibl\'ed\'9eit k\~jedn\'e9 z hr\'e1\'e8ov\'fdch z\'e1kladen a ukr\'e1st mu n\'ecjak\'e9ho \'e8lov\'ecka. V\'9edy, kdy\'9e se jim to povede, n\'ecjakou dobu m\'e1 hr\'e1\'e8 klid. Kdy\'9e
+ se jim to povede poprv\'e9, dozv\'ed se, jak to d\'eclaj\'ed, tak\'9ee si p}{\lang1029 a}{\f98\lang1029 k m\'f9\'9ee d\'e1vat pozor.
+\par }{\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Arabov\'e9:
+\par }\pard \nowidctlpar\widctlpar\adjustright {\f98\lang1029 P\'f8ijedou v\~okam\'9eiku, kdy m\'e1 hr\'e1\'e8 ruce na lopat\'ec. U\'9e p\'f8ed t\'edm by ale m\'ecl m\'edt jist\'e9 n\'e1znaky \endash  u\'9e se jednou o \'fatok na rusy pokou\'9aeli. Je to hlavn
+\'ec Heike a Omar a sna\'9e\'ed se kontaminovat Siberite motherlode. Kdy\'9e se jim to povede, hra kon\'e8\'ed smrt\'ed v\'9aech, stejn\'ec jako v\~okam\'9eiku, kdy\'9e pobl\'ed\'9e motherlode vybouchne siberitov\'e1 raketa.
+\par }{\lang1029 
+\par 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Informace:
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Legie m\'e1 Rusa, kter\'fd
+ pro ni stav\'ed siberitovku \endash  s\~Powellem se spoj\'ed n\'eckdo od legie, komu se to nel\'edb\'ed
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Rusov\'e9 stav\'ed
+ Siberitovku \endash  \'f8ekne ti to Stevens nebo n\'eckdo nov\'fd, kdy\'9e p\'f8ijedou od lo\'9eiska
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 
+Hodit siberitovku na Motherlode je konec \endash  to ti \'f8ekne Aliance (Roth)
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Rusov\'e9 stav\'ed n\'ec
+kde bokem tajnou zbra\'f2 \endash  zachytili transmisi
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 \'8aejk Omar se sna\'9e\'ed
+ dostat k\~Motherlode \endash  bav\'ed se o tom na za\'e8\'e1tku s\~Powellem, pak se asi od \'9eold\'e1k\'f9 dozv\'ed, \'9ee u\'9e se o to jednou pokusili
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Aliance pou\'9e\'edv\'e1
+ cosi, co j\'ed umo\'9e\'f2uje teleportovat lidi \endash  p\'f8\'edmo t\'edm, \'9ee to pou\'9eij\'ed
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 Osnova:
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 ++P\'f8\'ed
+jezd JMM, rozhovor s\~Powellem (o Legii a siberitovce, o Rusech jen zb\'ec\'9en\'ec, o Arabe}{\lang1029 ch tajemstv\'ed)
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 +Tvrd\'e9 \'fatoky Rus\'f9
+, po celou hru, i kdy\'9e \'e8asem slab\'9a\'ed
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 ++Powell\'f9v prvn\'ed \'fatok
+
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 ++Powell\'f9v druh\'fd \'fatok
+
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 ++Ingame \endash  arabsk\'fd
+ proti\'fatok, Powellova smrt, p\'f8evzet\'ed z\'e1kladny\'85
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 ++Znovu se s\~tebou spoj\'ed }{
+\lang1033 \lquote p}{\f98\lang1029 \'f8\'edtel}{\lang1033 \rquote }{\f98\lang1029  od Legie, \'9ee to zkou\'9aej\'ed znovu }{\lang1029 
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 ++P\'f8ijde Stevens a p\'e1
+r lid\'ed, \'9ee rusov\'e9 jim ukradli podklady, mus\'ed\'9a za\'e8\'edt vyv\'edjet siberitovku
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 Rusov\'e9 podnikaj\'ed prvn\'ed \'fatoky
+
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 +Alliance se ozve, \'9ee nem
+\'e1\'9a h\'e1zet siberitovku na Motherlode
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 +P\'f8ijede bu\'ef \'9eensk
+\'e1 (v p\'f8\'edpad\'ec BW) nebo rusov\'e9}{\lang1029  (nB) nebo nikdo (BnW) z Kappy
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 +Zachycena transmise o tom, 
+\'9ee rusov\'e9 chystaj\'ed tajnou zbra\'f2
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 +}{\f98\lang1029 Prvn\'ed
+ pokus o ukraden\'ed \'e8lov\'ecka
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 +Pokud hr\'e1\'e8 nedobude v
+\'e8as Legii, odp\'e1l\'ed na n\'ecj siberitovku. Pokud mu to nevad\'ed, pr\'e1sknou dal\'9a\'ed na Rusy
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 +Pokud hr\'e1\'e8 zlikvid
+uje Legii, pak v\~p\'f8\'edpad\'ec L se k\~n\'ecmu v\~ur\'e8it\'e9m okam\'9eiku p\'f8ipoj\'ed (Kurt a asi t\'f8i lidi), v\~p\'f8\'edpad\'ec nL pouze zr\'e1dce \endash  v\~ka\'9ed\'e9m p\'f8\'edpad\'ec informace o Heike a Omarovi
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Rusov\'e9
+ vynaleznou siberitovku, transmise, vyhro\'9euj\'ed, mus\'ed\'9a lh\'e1t, pokud ji nem\'e1\'9a
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 Pokud jsi }{\f98\lang1029 p\'f8ijal zr
+\'e1dce, velice rychle se rusov\'e9 dozv\'ed, \'9ee nic nem\'e1\'9a
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Rusov\'e9 se dom\'e1knou, \'9e
+e nic nem\'e1\'9a, pak t\'ec za\'e8nou bombardovat siberitovkama
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Behemoti vyj\'ed\'9ed\'ed
+
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 Pokud p\'f8i \'fa
+toku na Rusy nesejme hr\'e1\'e8 nejd\'f8\'edv jejich siberitovky, pak kdy\'9e u\'9e jsou na lopat\'ec, odp\'e1l\'ed je na hr\'e1\'e8ovu z\'e1kladnu (co\'9e asi u\'9e nebude takov\'e1 katastrofa, hr\'e1\'e8 m\'e1 lidi jinde)
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 T\'ecsn\'ec po dobyt\'ed rusk
+\'e9 z\'e1kladny p\'f8ij\'ed\'9ed\'ed Arabov\'e9 a pokus\'ed se kontaminovat lo\'9eisko
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 Objective Change 1
+\par Add Main Defend
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 defend cliff over Powells base
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 End
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 Objective Change 2
+\par Out Defend
+\par Add Main Motherlode
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 Gain control of siberite Motherlode
+
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 End
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 Objective Change 3
+\par Add Secondary Roth
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 Capture the Alliance leader Peter Roth
+
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 End
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 Objective Change 4
+\par Add Main Omar
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 Kill sheik Omar
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 End
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Loss JMM
+\par John Macmillan died.
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Loss JMMCaptured
+\par John Macmillan was captured by Alliance.
+\par 
+\par Loss Surrender
+\par You surrender
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Loss Dismissed
+\par General Powell dismissed you.
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Loss Motherlode1
+\par Chain reaction was triggered on Siberite motherlode by the Legion Siberite rocket.
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Loss Motherlode2
+\par Chain reaction was triggered on Siberite motherlode by the your Siberite rocket.
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard \nowidctlpar\widctlpar\outlinelevel0\adjustright {\lang1029 Loss Motherlode3
+\par Chain reaction was triggered on Siberite motherlode by sheik Omar.
+\par }\pard\plain \s22\sb240\nowidctlpar\outlinelevel0\adjustright \b\fs20\cf12\lang2057\cgrid {\lang1029 Dialogues
+\par }\pard\plain \nowidctlpar\widctlpar\adjustright \fs20\lang2057\cgrid {\f98\lang1029 Z\~dialog\'f9 by m\'eclo b\'fdt vid\'ect, \'9ee Powell nen\'ed \'fapln\'ec ve sv\'e9 k\'f9\'9ei \endash  hysteri\'e8t\'ecj\'9a\'ed ne\'9e obvykle, rychle m\'ecn\'edc\'ed n
+\'e1ladu. Nen\'ed sice \'9a\'edlen\'fd, ale zd\'e1 se, \'9ee k\~tomu nem\'e1 daleko.
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1T
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Macmillan vol\'e1 gener\'e1la Powella\'85 m\'ecl bych b\'fdt n\'eckde v\~oblasti.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Macmillane, ty \'e8ub\'e8\'ed synu, rozk\'e1zal jsem ti p\'f8ijet co nejd\'f8\'edve!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1029 [B] Nemohl jsem nechat Kappu padnout do rukou nep\'f8\'edtele, pane! A nikdo jin\'fd pobl\'ed\'9e nebyl.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [reply] Kappa? \'c8ert ji vem, tady te\'ef jde o v\'9aechno!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab [nBW] Omlouv\'e1m se, pane, ale musel jsem pomoci jednomu z\~na\'9aich voj\'e1k\'f9, nikdo jin\'fd pobl\'ed\'9e neb}{\lang1029 yl.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [reply] Bo\'9ee, Macmillane, ty snad mysl\'ed\'9a rozkrokem. Co je n\'e1m do n\'ecjak\'fd \'9eensk\'fd, tady te\'ef jde o v\'9aechno!
+\par }{\cs19\cf10\lang1029 Joan: }{\f98\lang1029 \tab [present, reply] Tady Joan Marcusov\'e1. Byl jste to vy, pane, kdo n\'e1m sebral skoro v\'9aechny voj\'e1ky a nechal n\'e1s na Kapp\'ec v\~brynd\'ec!
+\par }{\cs19\cf10\lang1029 Lisa: }{\f98\lang1029 \tab [present, reply] Tady Lawsonov\'e1, gener\'e1le. Byl jste to vy, kdo posral, co mohl. Kv\'f9li v\'e1m jsme p\'f8i\'9ali o Kappu. Jd\'ecte do prdele.
+\par }{\cs19\cf10\lang1029 Coonie: }{\f98\lang1029 \tab [present, reply] Coonie Traversov\'e1, gener\'e1le. Na Kapp\'ec jsou v\'9aichni mrtv\'ed. Jsem jedin\'e1, kdo p\'f8e\'9eila.
+\par }{\cs19\cf10\lang1029 Powell: }{\lang1029 \tab [reply] V\'e1s se nikdo na n\'e1zor neptal!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab [nBnW] Omlouv\'e1m se, pane. Zdr\'9eel jsem se u Kappy, ale bylo to beznad\'ecjn\'e9. Je to moje chyba.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [reply] Douf\'e1m, \'9ee n\'e1s tvoje zdr\'9een\'ed nebude st\'e1t p\'f8\'edli\'9a mnoho, Johne.
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1nT
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Macmillan vol\'e1 g}{\f98\lang1029 ener\'e1la Powella\'85 dorazil jsem do oblasti. Douf\'e1m, \'9e
+e nejedu pozd\'ec.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab V\'fdborn\'ec, Johne! Jsem r\'e1d, \'9ee jsi tu. Jde tady o v\'9aechno!
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1 (all cases)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Jak\'e1 je situace, pane.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Slo\'9eit\'e1, Johne, zatracen\'ec slo\'9eit\'e1. Naproti sed\'ed na hromad\'ec siberitu Rusov\'e9, nalevo m\'e1me zakopanou Legii s\~
+tou jejich bombou.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Dejte mi pros\'edm p\'f8esn\'e9 informace.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Informace? Na co pot\'f8ebuje\'9a informace? Pot\'f8ebuje\'9a rozkazy! To je to slovo, rozkazy!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Pane\'85
+\par }{\cs19\cf10\lang1029 Powell: }{\lang1029 \tab Macmillane, koukni se do mapy. Pod\'edvej se na mou z\'e1kladnu. M\'e1m j\'e1 z\'e1kladnu?
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Nev\'edm, co t\'edm\'85
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Hovno m\'e1m. A v\'ed\'9a pro\'e8? Proto\'9ee stoj\'ed pod kopcem. Pod zasran\'fdm kopcem, tak\'9ee se z\~jihu ned\'e1 br\'e1nit. 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Vid\'edm, pane.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab A v\'ed\'9a co vid\'ecli na\'9ai zv\'ecdov\'e9? Konvoj rusk\'fdch tank\'f9. Bl\'ed\'9e\'ed se z\~jihu, zatracen\'ec, z\~jihu! Zrovna z\~jihu, kde nem\'e1me v\'ec\'9ee, ale zatracenej sr\'e1
+z, kterej se ned\'e1 br\'e1nit!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Rozum\'edm.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Macmillane, mus\'ed\'9a je zastavit. P\'f8ijedou bu\'ef t\'e1mhle od toho brodu nebo pr\'f9}{\lang1029 smykem. A ty je zastav\'ed\'9a. Po\'9alu ti p\'e1r lid\'ed a materi\'e1l\'85
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Query 1
+\par }\pard\plain \nowidctlpar\widctlpar\outlinelevel0\adjustright \fs20\lang2057\cgrid {\f98\lang1029 Powell se zd\'e1 b\'fdt je\'9at\'ec hysteri\'e8t\'ecj\'9a\'ed ne\'9e obvykle, vypad\'e1 to, \'9ee situaci p\'f8est\'e1v\'e1 zvl\'e1dat.
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\lang1029 zept\'e1\'9a
+ se na podrobnosti o Siberite Matherlode
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\lang1029 zept\'e1\'9a se na podrobnosti o Rusech
+
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\lang1029 zept\'e1\'9a se na podrobnosti o Legii
+
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\f98\lang1029 zept\'e1\'9a se, co d\'eclaj
+\'ed Arabov\'e9
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\f98\lang1029 na nic se d\'e1l nept\'e1\'9a
+ a potvrd\'ed\'9a p\'f8ijet\'ed rozkazu
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\f98\lang1029 pokus\'ed\'9a se nab\'ed
+dnout, \'9ee se ujme\'9a velen\'ed 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Query 1a
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\f98\lang1029 V\'edc u\'9e ti toho Powell asi ne\'f8ekne.
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\f98\lang1029 potvrd\'ed\'9a p\'f8ijet\'ed
+ rozkazu
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls4\adjustright {\f98\lang1029 pokus\'ed\'9a se nab\'ed
+dnout, \'9ee se ujm}{\lang1029 e\'9a velen\'ed 
+\par }\pard \nowidctlpar\widctlpar\adjustright {\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 2Mot
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Poda\'f8ilo se v\'e1m zam\'ec\'f8it Siberite Motherlode?
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Poda\'f8ilo? Jist\'ec, poda\'f8ilo. Ani jsme to nemuseli d\'eclat, h\'e1dej kde je\'85 t\'e1mhle na prot\'ecj\'9a\'edm kopci, tam co sed\'ed
+ Rusov\'e9. V\'9aiv\'e1ci, zakopan\'ed jsou a\'9e po u\'9ai a nepust\'ed n\'e1s tam, svin\'ec, nepust\'ed.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Chyst\'e1te \'fatok, pane?
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Jist\'ec, to taky\'85 a\'9e p\'f8ijde \'e8as, po\'9eenu je a\'9e k\~Moskv\'ec\'85 ale prvn\'ec je tu ta Legie, ta zatracen\'e1 Legie.
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 2Rus
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Co v\'edme o Rusech?
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\lang1029 \tab Co? Jo o Rusech! No, t\'e1mhle sed\'ed, zakopan}{\f98\lang1029 \'ed na prot\'ecj\'9a\'edm kopci a nic ned\'eclaj\'ed. Taky bych nic ned\'ec
+lal, kurva, kdybych \'e8ekal takov\'fd posily.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Jak jsou daleko s\~v\'fdzkumem Siberitov\'fdch zbran\'ed?
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [after dialogue 2Leg] Jak jsem \'f8\'edkal, v\~prdeli! Ten Kozlov jim \'9alohnul v\'9aechny v\'fdpo\'e8ty! Tak\'9ee siberitou raketu te\'ef stav\'ed pro Legii!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [before dialogue 2Leg] Jsou v\~prdeli, Macmillane, \'fapln\'ec v\~prdeli. \'8a\'e9fa jejich v\'fdzkumu, n\'ecjak\'fdho Kozlova, p\'f8eplatila Legie. (chraptiv\'fd sm\'edch) Zdrhnul jim se v\'9aema v\'fdpo
+\'e8tama. (Znovu v\'e1\'9en\'fd hlas) Jen\'9ee te\'ef m\'e1 v}{\lang1029 \'9aechno v\~ruk\'e1ch Legie.
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 2Leg
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Co chce ta zatracen\'e1 legie?
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Co chce? Jak to m\'e1m, kurva, v\'ecd\'ect. Ale stav\'ed siberitovou raketu!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab [before dialogue 2Rus] Legie stav\'ed raketu?
+\par }{\cs19\cf10\lang1029 Powell: }{\lang1029 \tab }{\lang1033 [reply] }{\f98\lang1029 P\'f8esn\'ecji \'f8e\'e8eno, stav\'ed ji Rus, n\'ecjakej Kozlov. (chraptiv\'fd sm\'edch) Zdrhnul Rus\'f9m se v\'9aema v\'fdpo\'e8tama\'85 (Znovu v\'e1\'9en\'fd hlas) Jen
+\'9ee te\'ef stav\'ed siberitovku pro Legii.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Jak to v\'9aechno v\'edte?
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab M\'e1m v\~jejich z\'e1kladn\'ec \'e8lov\'ecka\'85 ani nev\'edm, jak se jmenuje, \'f8\'edk\'e1 si prost\'ec }{\lang1033 \lquote p}{\f98\lang1029 \'f8\'edtel}{\lang1033 \rquote .
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 2Ar
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab A co Arabov\'e9?
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab (chraptiv\'fd sm\'edch) Od t\'e9 doby, cos jim tak natrhl prdel, se u\'9e moc neukazuj\'ed.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab V\'9aiml jsem si, pane\'85 a m\'e1m strach, \'9ee n\'ecco chystaj\'ed. Sly\'9ael jste o Omaru Alim a Heike Steyerov\'e9?
+\par }{\cs19\cf10\lang1029 Powell:}{\lang1029 \tab Steyerov\'e1, Steyerov\'e1\'85}{\f98\lang1029  u\'9e si vzpom\'edn\'e1m, n\'ecjak\'e1 jejich velitelka. Co je s nimi.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Pr\'fd se vypravili do t\'e9to oblasti. Zaj\'edmalo by m\'ec, pro\'e8.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Kurva, Macmillane, za\'e8\'edn\'e1\'9a b\'fdt paranoidn\'ed. Asi si cht\'ecli za\'9aoustat\'85
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 2Conf
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab OK, pane. Pokus\'edm se ud\'eclat}{\lang1029 , co bude v\~m\'fdch sil\'e1ch, abych Rusy zastavil.
+
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 2Com
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Pane, mo\'9en\'e1 jste u\'9e unaven\'85 kdybyste si cht\'ecl na chv\'edli odpo\'e8inout\'85
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Odpo\'e8inout? Macmillane, neser m\'ec je\'9at\'ec ty! Jak si m\'e1m odpo\'e8inout, Rus\'e1ci mi p\'f8ed nosem vyfoukli m\'f9j Motherl
+ode, za zadkem mi \'9eold\'e1ci stav\'ed siberitovou raketu, m\'ed\'f8\'ed sem cel\'e1 Rusk\'e1 arm\'e1da\'85
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Cht\'ecl jsem jenom \'f8\'edct\'85
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Dr\'9e hubu, ty u\'9evan\'ecnej magore! Dostal jsi rozkaz, tak ho koukej splnit, nebo se v\'e1\'9en\'ec naseru!
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Objective Change 1
+\par }\pard\plain \s18\nowidctlpar\outlinelevel0\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 Add Main Defend
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard\plain \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright \fs20\lang2057\cgrid {\lang1029 
+defend cliff over Powells base
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 End
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 3W (immediately)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Joan:}{\lang1029 \tab }{\lang1033 [it is she] }{\f98\lang1029 Nem\'e1\'9a pocit, Johne, 
+\'9ee Powell mluvil tak trochu z cesty?
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Lisa:}{\lang1029 \tab }{\lang1033 [it is she] }{\f98\lang1029 Sakra, Johne, ten Powell je u\'9e \'fapln\'ec mimo, copak to nevid
+\'ed\'9a.
+\par }{\cs19\cf10\lang1029 Coonie:}{\lang1029 \tab }{\lang1033 [it is she] }{\f98\lang1029 Majore, m\'ecla jsem pocit, \'9ee gener\'e1l nen\'ed zcela ve sv\'e9 k\'f9\'9ei.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Mo\'9en\'e1 ten n\'e1por \'fapln\'ec nezvl\'e1d\'e1, ale ani se mu nediv\'edm.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 3nW (when support forces from Powell arive \endash  select randomly one sentence)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Lisa:}{\lang1029 \tab }{\lang1033 [var a1] }{\f98\lang1029 To jsem r\'e1da, \'9e
+e jsi tu, Johne! Powell za\'e8\'edn\'e1 b\'fdt \'fapln\'ec mimo, jestli sis v\'9aiml!
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Cyrus}{\lang1029 :\tab }{\lang1033 [var a2] }{\f98\lang1029 Kurva, majore, ani nev\'edte, jak jsem r\'e1d, \'9e
+e jste tu. Ten Powell m\'e1 v\~hlav\'ec snad sra\'e8ky, je\'9at\'ec n\'e1s v\'9aechny zabije.
+\par }{\cs19\cf10\lang1029 Bobby}{\lang1029 :\tab }{\lang1033 [var a3] }{\f98\lang1029 John Macmillan, kone\'e8n\'ec! Powell to nikdy nem\'ecl v\~hlav\'ec \'fapln\'ec srovnan\'fd, ale to, co d\'ecl\'e1 te\'ef\'85
+\par }{\cs19\cf10\lang1029 Garry}{\lang1029 :\tab }{\lang1033 [var a4] }{\f98\lang1029 Macmillane, jsem r\'e1d, \'9ee v\'e1s vid\'edm. Nejsem si jist, jestli Powell je\'9at\'ec vid\'ed v\'ecci jasn\'ec\'85 
+\par }{\cs19\cf10\lang1029 Donaldsonov\'e1}{\lang1029 :\tab }{\lang1033 [var a5] }{\f98\lang1029 Jsem r\'e1da, Johne, \'9ee jste tu. Powell to tu posledn\'ed dobou moc nezvl\'e1d\'e1.
+\par }{\cs19\cf10\lang1029 Cornell}{\lang1029 :\tab }{\lang1033 [var a6] }{\f98\lang1029 Macmillan? Ani bych nev\'ec\'f8il, \'9ee ten tv\'f9j ksicht uvid\'edm tak r\'e1d\'85 se star\'fdm to jde od des\'edti k\~p\'ecti.
+\par }{\cs19\cf10\lang1029 Frank}{\lang1029 :\tab }{\lang1033 [var a7] }{\f98\lang1029 John Macmillan! Bo\'9ee, ty jsi vysly\'9ael moje prosby. A te\'ef je\'9at\'ec pros\'edm tu o\'9aklivou vyr\'e1\'9eku, co jsem cht\'ecl pro Powella.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Pod\'edvejte, Powell mo\'9en\'e1 nen\'ed \'9e\'e1dn\'fd p\'f8\'edjemn\'fd \'e8lov\'eck, sami v\'edte, jak to mezi n\'e1mi sk\'f8\'edpalo. Ale je to voj\'e1k t\'eclem i du\'9a\'ed a n\'e1\'9a velitel.
+
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Mimochodem, s\~touhle p\'f8\'edstupovou cestou m\'e1 pravdu. Jestli tudy p\'f8ijedou Rusk\'fd posily, smetli by z\'e1kladnu jedna dv\'ec. Tak\'9ee dost \'f8e\'e8\'ed a do pr\'e1ce!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue Back1 (when player first time enters Powell base)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Macmillane! Dostal jsi sv\'fd lidi, tak si je hl\'eddej. M\'e1te br\'e1
+nit p\'f8\'edstupov\'e9 cesty a ne se courat po kdov\'ed kde!!!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue Back2 (when player second time enters Powell base)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\lang1029 \tab Macmillane,}{\f98\lang1029  kurva, starej se o sv\'ec\'f8en\'e9 \'fazem\'ed
+. To je rozkaz, rozm\'ed\'9a? ROZKAZ! Je\'9at\'ec jednou se ty nebo n\'eckdo z\~tv\'fdch lid\'ed budete courat mimo a \'9aeredn\'ec to odsk\'e1\'e8e\'9a!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue Back3 (when player third time enters Powell base)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Varoval jsem t\'ec, Macmillane. M\'e1m t\'ec pln\'fd zuby. Odlo\'9e
+ uniformu a vypadni. Rozum\'ed\'9a? VYPADNI!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 4 (1}{\lang1029\super st}{\lang1029  attack)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Tak\'9ee se, chlapci, p\'f8ipravte. Hlavn\'ed c\'edl je laborato\'f8 a tov
+\'e1rna, kde vyv\'edjej\'ed raketu. Mus\'edme je zni\'e8it, jinak n\'e1m sem ka\'9edou chv\'edli m\'f9\'9ee ten siberitov\'fd d\'e1rek p\'f8ilet\'ect. Tak se, kurva, sna\'9ete!
+\par }{\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab Rozkaz, pane!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Za deset minut bude ten kopec n\'e1\'9a! Vp\'f8ed!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 4a (1}{\lang1029\super st}{\lang1029  attack - continues)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab Ustupujem!
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Kdo dal, kurva, rozkaz k\~\'fastupu! Kdo k\~\'e8ertu dal rozkaz k\~\'fastupu!
+\par }{\cs19\cf10\lang1029 Soldier1: }{\f98\lang1029 \tab P\'f8i\'9ali jsme o vozidla, pane, jsou dob\'f8e opevn\'ecn\'ed.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Vy slepi\'e8\'ed mozky, rozkaz zn\'ecl zni\'e8it tov\'e1rnu a laborato\'f8! Kdy\'9e p\'f8ijdete o vozidlo, pokra\'e8ujete p\'ec\'9aky, jasn\'fd? Te\'ef se vra\'9dte\'85
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 5 (2}{\lang1029\super nd}{\lang1029  attack)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab P\'f8ipravte se k\~dal\'9a\'edmu \'fatoku. Tentokr\'e1t p\'f9
+jde i t\'f8et\'ed \'e8eta jako p\'ecchotn\'ed podpora.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Soldier2: }{\lang1029 \tab Rozkaz, pane.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Kdy\'9e v\'e1m sejmou vozidlo, vysko\'e8\'edte a jdete d\'e1l. Jestli se n\'eckdo oto\'e8\'ed k\~\'fastupu, j\'e1 osobn\'ec ho zast\'f8el\'edm! Rozum\'ecli jste?
+\par }{\cs19\cf10\lang1029 Soldier2: }{\lang1029 \tab Ano, pane.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Hlavn\'ed c\'edle: laborato\'f8, tov\'e1rna. Srovnejte je se zem\'ed. A zabijte toho Kozlova \endash  je to Rus, se s\~nimi sp\'f8\'e1hl. Vp\'f8ed!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 5a (2}{\lang1029\super nd}{\lang1029  attack - continues)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\lang1029 \tab Neustupujte, vy hovada! 
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Dr\'9ete linii!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Zne\'9akodn\'ecte tu v\'ec\'9e!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Rychleji, vy sra\'e8ky!}{\cs19\cf10\lang1029  
+\par Powell: }{\lang1029 \tab Co tam}{\f98\lang1029  d\'ecl\'e1te, prasata, m\'e1te postupovat vp\'f8ed!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 6 (all are dead, ingame video begins)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Soldier3: }{\lang1029 \tab V\'9aichni jsou mrtv\'ed, pane\'85
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Ti neschopn\'ed idioti. Jak m\'e1m kurva vyhr\'e1t s\~takovou hromadou lempl\'f9! Maj\'ed \'9at\'ecst
+\'ed, \'9ee je po nich, vlastnoru\'e8n\'ec bych jim zak}{\lang1029 routil krkem!
+\par }{\cs19\cf10\lang1029 Soldier3: }{\f98\lang1029 \tab Pane, bl\'ed\'9e\'ed se vozidla Legie\'85 d\'e1lkov\'ec \'f8\'edzen\'e1\'85 nemaj\'ed zbran\'ec\'85 ale jak\'e9si n\'e1lo\'9ee.
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Samohybn\'e9 bomby! Sejm\'ecte je, zatracen\'ec!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 6a (selfpropeled bombs explode and destroy american factory)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\lang1029 \tab Ty zasran\'ed bastardi! M\'e1}{\f98\lang1029 m toho po krk, rozum\'edte? M\'e1
+m toho po krk! Na\'9ae tov\'e1rna je v\~hajzlu a ta jejich d\'e1l klidn\'ec stoj\'ed\'85
+\par }{\cs19\cf10\lang1029 Soldier3: }{\f98\lang1029 \tab Sakra, gener\'e1le, poslal jste na smrt skoro v\'9aechny? Co je\'9at\'ec chcete?
+\par }{\cs19\cf10\lang1029 Powell: }{\lang1029 \tab Co j\'e1 chci? Chci voj\'e1ky schopn\'e9 splnit rozkaz!
+\par }{\cs19\cf10\lang1029 Soldier3: }{\lang1029 \tab Legie m\'e1 v\'fdbornou obranou pozici\'85
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab Dr\'9e u\'9e, kurva, hubu! Arabsk\'e1 obrana je d\'ecrav\'e1 jako ement\'e1l! Copak to nikdo nevid\'edte?
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Designer}{\lang1033 \rquote s notes
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\f98\lang1029 Powell nastoup\'ed do lehk\'e9ho vozidla, kter\'e9 stoj\'ed opod\'e1l a jede. Je v\'fdborn\'fd \'f8idi\'e8, tak\'9ee snadno unik
+\'e1 raket\'e1m a minomet\'f9m. D\'ecla mu nakonec vozidlo rozst\'f8el\'ed \endash  ale Powell b\'ec\'9e\'ed d\'e1l k\~nedalek\'e9 selfpropeled bomb. Nasko\'e8\'ed a jede d\'e1l, \'9a\'edlen\'ec p\'f8itom \'f8ve. Arabov\'e9 v\~hr\'f9ze prchaj\'ed
+. Dojede k\~tov\'e1rn\'ec, kde vybouchne a zni\'e8\'ed ji.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 6b (during Powells attack)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Powell: }{\lang1029 \tab [when escapes rock}{\f98\lang1029 ets] (afektovan\'ec \'f8ve) Kde je, kurva, n
+\'ecjak\'e1 neproniknuteln\'e1 obrana. Kde ji sakra vid\'edte!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [when vehicle destroyed] (afektovan\'ec \'f8ve) Kdy\'9e p\'f8ijdu o vozidlo, pokra\'e8uju p\'ec\'9aky, jasn\'fd?
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [in selfpropeled bomb] (nep\'f8\'ed\'e8etn\'ec \'f8ve) V\'9aichni zdechnete, b}{\lang1029 astardi, v\'9aichni zdechnete!
+\par }{\cs19\cf10\lang1029 ArSoldier1: }{\lang1029 \tab }{\lang1033 [reply] }{\lang1029 Proboha, ten chalp ze\'9a\'edlel!
+\par }{\cs19\cf10\lang1029 ArSoldier2: }{\lang1029 \tab }{\lang1033 Uhn}{\f98\lang1029 \'ecte, ten \'9a\'edlenec to m\'f9\'9ee kdykoliv odp\'e1lit!!!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [in selfpropeled bomb] (nep\'f8\'ed\'e8etn\'ec \'f8ve) \'c1\'e1\'e1\'e1\'e1\'e1\'e1\'e1\'e1\'e1!!!
+\par }{\cs19\cf10\lang1029 Powell: }{\f98\lang1029 \tab [if close to factory] (nep\'f8irozen\'ec klidn\'ec) Kdy\'9e n\'ecco chce\'9a po\'f8\'e1dn\'ec, ud\'eclej si to s\'e1m! (explodes and destroys factory)
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 6c (after Powells attack)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Soldier3: }{\lang1029 \tab Oh, God!
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\lang1029 (a beat)
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Je jedno, jak gener\'e1l Arthur Powell \'9eil. Zem\'f8el jako hrdina.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Cyrus: }{\lang1029 \tab }{\f98\lang1033 [present \endash  var a1] Byl to v\'f9l a jako v\'f9l taky zem\'f8el\'85}{\lang1029 
+\par }{\cs19\cf10\lang1029 Bobby: }{\lang1029 \tab }{\f98\lang1033 [present \endash  var a2] F\'edha. Podle m\'ec to bylo gesto\'85 ale p\'f9sobiv\'e9 gesto!
+\par }{\cs19\cf10\lang1029 Cornell: }{\lang1029 \tab }{\f98\lang1033 [present \endash  var a3] \'c8ekal jsem, \'9ee se starej nakonec zbl\'e1zn\'ed, ale \'9ee to bude takhle efektn\'ed\'85
+\par }{\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab }{\f98\lang1033 [else \endash  var a4] Byl v\'f9bec p\'f8i smyslech, kdy\'9e to d\'ec}{\lang1033 lal?
+\par }{\cs19\cf10\lang1029 
+\par Lisa: }{\lang1029 \tab }{\f98\lang1033 [present \endash  var b1] Dr\'9e hubu! Nikdo z\~n\'e1s by nedok\'e1zal to, co on!}{\lang1029 
+\par }{\cs19\cf10\lang1029 Gary: }{\lang1029 \tab }{\f98\lang1033 [present \endash  var b2] Nech si hloup\'fd kecy. Pr\'e1v\'ec n\'e1m mo\'9en\'e1 zachr\'e1nil kejh\'e1k.
+\par }{\cs19\cf10\lang1029 Donaldson: }{\lang1029 \tab }{\lang1033 [present \endash  var b3] Zmlkni! Byl to tvrd\'fd chlap ze star\'e9 \'9akoly \endash  takov\'ed jsou vz\'e1cn\'ed!
+\par }{\cs19\cf10\lang1029 Soldier2: }{\lang1029 \tab }{\f98\lang1033 [else \endash  var b4] V\~ka\'9ed\'e9m p\'f8\'edpad\'ec tu tov\'e1rnu sejmul, a s\'e1m. 
+\par }{\cs19\cf10\lang1029 
+\par Soldier3: }{\f98\lang1029 \tab Majore Macmillane, jste p\'f8ipraven p\'f8evz\'edt vrchn\'ed velen\'ed Americk\'e9 arm\'e1dy?
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab OK. Tak\'9ee je to te\'ef na m\'ec. A na v\'e1s. Ud\'ecl\'e1me to, pro\'e8 jsme tady.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 
+\par }\pard \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright {\lang1029 Objective Change 2
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 Out Defend
+\par Add Main Motherlode
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard\plain \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright \fs20\lang2057\cgrid {\lang1029 
+Gain control of siberite Motherlode
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 End
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 7 (transmission from }{\lang1033 \lquote friend\rquote }{\lang1029 )
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab Hello? Tady \'82p\'f8\'edte}{\lang1033 l\rquote . To, co ud}{
+\f98\lang1029 \'eclal v\'e1\'9a gener\'e1l, bylo moc p\'f9sobiv\'e9!
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Kdo jsi? O co ti jde?
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab Jsem \'e8lov\'eck, kter\'fd nem\'e1 r\'e1d atomov\'e9 v\'fdbuchy a tak podob\'ec \'85 zvl\'e1\'9a\'9d, kdy\'9e jsem pobl\'ed\'9e. Proto jsem informoval va\'9aeho gener\'e1la. A proto te\'ef informuji v
+\'e1s.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Tak mluv.
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab J\'e1 jen, abyste neusnuli na vav\'f8\'ednech. Ten Kozlov po\'f8\'e1d \'9eije \endash  a u\'9e zase piln\'ec p\'f8ipravuje v\'fdrobu siberitov\'e9 rakety. Legie tu v\'ecc opravdu moc chce.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Jak m\'e1m poznat, \'9ee mluv\'ed\'9a pravdu?
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab Ale, ale\'85 riskne\'9a mi nev\'ec\'f8it? V\'9edy\'9d jsem tv\'f9j p\'f8\'edtel. Jo, abych nezapomn\'ecl, s\~gener\'e1lem jsme m\'ecli malou dohodu.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Gener\'e1l je mrtv\'fd. O co \'9alo?
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab Jen mali\'e8kost. M\'f9j \'9eivot. Sl\'edbil m\'ec nechat na\'9eivu, a\'9e to tady srovn\'e1te se zem\'ed.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Dob\'f8e, zv\'e1\'9e\'edm to. Ale bude\'9a n\'e1s pravideln\'ec informovat o postupu prac\'ed.
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab Bude mi pot\'ec\'9aen\'edm.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Designer}{\lang1033 \rquote s notes
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\f98\lang1029 P\'f8ijede skupinka veden\'e1 Stevensem (pokud zem\'f8el, bude to n\'eckdo jin\'fd pod stejn\'fdm ozna\'e8en\'edm). Jsou v\~n
+\'ed \'e8ty\'f8i lid\'e9, kter\'e9 jsi m\'ecl v\~misi 13 (v\'fdvoj bomby). Hr\'e1\'e8i je povolena technologie na siberitovku.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 8 (stevens arive)}{\lang1033 
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Stevens: }{\lang1029 \tab Mus\'edm rychle mluvit s\~plukovn\'edkem Powellem.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [it is really Stevens] }{\f98\lang1029 Powell je mrtv\'fd, Hughu. Te\'ef vel\'edm j\'e1
+. Co se u v\'e1s d\'ecje?
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab [it is not Stevens] Powell je mrtv\'fd, Bakere, vel\'edm te\'ef j\'e1. N\'ecjak\'fd probl\'e9m s\~v\'fdzkumem siberitov\'e9 rakety?
+\par }{\cs19\cf10\lang1029 Stevens: }{\f98\lang1029 \tab Velk\'fd probl\'e9m. Rusov\'e9 za\'fato\'e8ili na na\'9ai z\'e1kladnu s\~obrovskou silou! M\'ecli jsme velk\'e9 ztr\'e1ty.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Co v\'fdsledky, sta\'e8ili jste je zni\'e8it?
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\lang1029 (a beat)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Stevens: }{\f98\lang1029 \tab Je mi l\'edto\'85 sotva jsme vyv\'e1zli \'9eivotem.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Zatracen\'ec. Tak\'9ee Rusov\'e9 se se zradou Kozlova nesm\'ed\'f8ili! 
+\par }{\cs19\cf10\lang1029 Stevens: }{\f98\lang1029 \tab Ob\'e1v\'e1m se, \'9ee v\~tuhle dobu u\'9e jejich laborato\'f8e piln\'ec pracuj\'ed.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Nesm\'edme jim nechat n\'e1skok. Jestli ty rakety budou m\'edt d\'f8\'edve ne\'9e my, ur\'e8it\'ec nebudou v\'e1hat je pou\'9e\'edt!!!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 9 (Alliance broadcast)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab V\'9aem sil\'e1m. V\'9aem z\'e1kladn\'e1m. Hovo\'f8\'ed
+ Peter Roth, jm\'e9nem Alliance Zem\'ec.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Oh, God. Peter, na toho jsem \'fapln\'ec zapomn\'ecl. Ten tu je\'9at\'ec chyb\'ecl.
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab M\'e1me p\'f8esv\'ecd\'e8iv\'e9 d\'f9kazy \'9ee Siberit, resp. Alaskit, jak \'f8\'edkaj\'ed Rusov\'e9, zde zanechala mimozemsk\'e1 civilizace. Jsme v\~tomto okam\'9eiku jedin\'ed z\'e1stupci Zem\'ec a je na
+\'9a\'ed povinnost\'ed jedna}{\lang1029 t jej\'edm jm\'e9nem a pokusit se nav\'e1zat kontakt.
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Vyz\'fdv\'e1m proto v\'9aechny strany k\~odlo\'9een\'ed zbran\'ed a ke spojen\'ed sil za \'fa\'e8elem prozkoum\'e1n\'ed mimozemsk\'fdch technologi\'ed a nav\'e1z\'e1n\'ed spojen\'ed s\~mimozemskou civilizac
+\'ed! Nesete odpov\'ecdnost za cel\'e9 \'85
+\par }{\cs19\cf10\lang1029 Morozov: }{\f98\lang1029 \tab Hovo\'f8\'ed gener\'e1l Morozov! Lo\'9eiska Alaskitu jsou majetkem Sov\'ectsk\'e9ho svazu. Nehodl\'e1me se o n\'ec s\~nik\'fdm d\'eclit. A co se t\'fd\'e8e zkoum\'e1n\'ed siberitu, brzy poc\'edt\'ed
+te jeho s\'edlu!
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Tohle je posledn\'ed v\'fdzva. P\'f8eru\'9ate boj. Zamyslete se nad\'85
+\par }{\cs19\cf10\lang1029 Morozov: }{\f98\lang1029 \tab Stanovisko Sov\'ectsk\'e9 arm\'e1dy je n\'ecm\'ecnn\'e9. P\'f8\'edm\'ec\'f8\'ed nep\'f8ipad\'e1 v\~\'favahu.
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Johne Macmillane. Ty jsi pr\'fd te\'ef velitelem Americk\'fdch sil. Ozvi se n\'e1m.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Query 9 
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\f98\lang1029 Roth po tob\'ec chce, aby ses mu ozval. Co odpov\'ed\'9a?
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 neozve\'9a se
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 odpov\'ed\'9a, a\'9d jde do h
+\'e1je
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 odpov\'ed\'9a, \'9ee se ned
+\'e1 nic d\'eclat 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 9a
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Johne Macmillane, nev\'edm pro\'e8 neodpov\'edd\'e1\'9a. Vys\'edl\'e1m na va
+\'9a\'ed frekvenci, aby to Rusov\'e9 nezachytili, mus\'edm ti \'f8\'edci d\'f9le\'9eitou v\'ecc.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 9b
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab U\'9e jsem se jednou rozhodl, Pet\'f8e. Nejsem zr\'e1
+dce. Jdi do h\'e1je!
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Roth: }{\lang1029 \tab Jak chce\'9a, Johne. A}{\f98\lang1029 le te\'ef d\'e1vej pozor. Vys\'edl\'e1m na va\'9a\'ed
+ frekvenci, aby to Rusov\'e9 nezachytili.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 9c
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Je mi l\'edto, Pet\'f8e, ale v\'ecci u\'9e za\'9ali p\'f8
+\'edli\'9a daleko.
+\par }\pard \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright {\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Johne, ty artefakty, to jsou \'fa\'9easn\'e9 v\'ecci! Jejich v\'fdzkum pokra\'e8uje m\'edlov\'fd
+mi kroky \endash  a v\'fdsledky jsou }{\lang1029 fascinuj\'edc\'ed.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Sly\'9ael jsi Rusy, i kdybych cht\'ecl, tak\'85
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Sakra, Johne, siberit je v\'edc ne\'9e jen zdroj paliva. Zprovoznili jsme artefakt, kter\'fd dok\'e1\'9ee p\'f8em\'edstit skupinu lid\'ed na obrovskou vzd\'e1lenost, sta\'e8\'ed, aby n\'eckdo z\~nich m\'ec
+l u sebe nepatrn\'fd ko}{\lang1029 usek siberitu\'85
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Pet\'f8e! To jsou hezk\'e9 v\'ecci, ale te\'ef n\'e1s v\'edc zaj\'edm\'e1 ni\'e8iv\'e1 s\'edla siberitu.
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Tak te\'ef poslouchej, ty tup\'e8e!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 9cont
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab Nesm\'edte odp\'e1lit siberitovou raketu proti Rus\'f9m, rozum\'ed\'9a
+?! Rusov\'e9 sed\'ed na prim\'e1rn\'edm siberitov\'e9m lo\'9eisku. Jestli to ud\'ecl\'e1te, spust\'edte \'f8et\'eczovou reakci!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab O \'e8em to mluv\'ed\'9a?
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab O tom, \'9ee zabijete n\'e1s v\'9aechny a nen\'e1vratn\'ec po\'9akod\'edte ekosf\'e9ru zem\'ec. Je\'9at\'ec nem\'e1me p\'f8esn\'e9 v\'fdpo\'e8ty, ale mo\'9en\'e1, \'9ee zni\'e8\'edte nav\'9edy \'9e
+ivot na zemi! Macmillane, tu bombu na lo\'9eisko nesm\'ed\'9a hodit!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab D\'ecl\'e1m jen svou pr\'e1ci, Pet\'f8e. A ud\'ecl\'e1m, co budu muset. Kon\'e8\'edm.
+\par }{\cs19\cf10\lang1029 Roth: }{\f98\lang1029 \tab J\'e1 se taky nevzd\'e1m, Johne. I kdybych m\'ecl p\'f8emlouvat ka\'9ed\'e9ho voj\'e1ka osobn\'ec, tuhle nesmyslnou v\'e1lku sko\'e8\'edm!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab (pro sebe) J\'e1 v\'edm, Pet\'f8e, \'9e}{\lang1029 e jsi toho schopen. Mus\'edm si na tebe d\'e1vat pozor\'85 (nahlas) Petera Rotha se pokus\'edme zne\'9akodnit \endash  ale nezab\'ed
+jejte ho, pokud to nebude nutn\'e9.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Objective Change 3
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 Add Secondary Roth
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard\plain \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright \fs20\lang2057\cgrid {\lang1029 
+Capture the Alliance leader Peter Roth
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 End
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 10BW
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Joan: }{\lang1029 \tab Jsem tady, }{\f98\lang1029 Johne! A vezu ti n\'ecjak\'e9 posily!
+\par }{\cs19\cf10\lang1029 Lisa: }{\f98\lang1029 \tab Johne, hl\'e1s\'edm p\'f8\'edchod. A vezu ti p\'e1r t\'ecch po\'e8\'edta\'e8ov\'fdch oblud.
+\par }{\cs19\cf10\lang1029 Coonie: }{\f98\lang1029 \tab Majore Macmillane, p\'f8ivedla jsem n\'ecjak\'e9 posily.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 10nB
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Proboha, kdo to p\'f8ij\'ed\'9ed\'ed? Identifikujte se!
+\par }{\cs19\cf10\lang1029 Vsevolod: }{\f98\lang1029 \tab Pro p\'f8\'e1tele jsem Sevi, ale ty mi \'f8\'edkej soudruhu Gorki.
+\par }{\cs19\cf10\lang1029 Vsevolod: }{\lang1029 \tab }{\f98\lang1033 [Burlak killed in Am13] M\'ecl jsem bratra, \'f8\'edkali mu Burlak, co o tom v\'ed\'9a, hajzle?}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Jsem John Macmillan, vrchn\'ed velitel Americk\'e9 arm\'e1dy\'85
+\par }{\cs19\cf10\lang1029 Vsevolod: }{\lang1029 \tab }{\lang1033 [Joan left in Am14 \endash  var a1] J\'e1 v\'edm, kdo jsi, ta m}{\f98\lang1033 ali\'e8k\'e1 po\'f8\'e1d volala tvoje jm\'e9no, kdy\'9e jsme si s\~n\'ed u\'9e\'edvali.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [reply] }{\f98\lang1029 Joan? Ty hajzle, za tohle mi krut\'ec zaplat\'ed\'9a!
+\par }{\cs19\cf10\lang1029 Vsevolod: }{\lang1029 \tab }{\f98\lang1033 [Lisa left in Am14 \endash  var a2] J\'e1 v\'edm, kdo jsi, ta divok\'e1 blond\'fdna t\'ec prokl\'ednala celou dobu, co jsme si s\~n\'ed u\'9e\'edvali.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [reply] }{\f98\lang1029 Lisa? Toho bude\'9a krut\'ec litovat.
+\par }{\cs19\cf10\lang1029 Vsevolod: }{\lang1029 \tab }{\f98\lang1033 [Coonie left in Am14 \endash  var a3] J\'e1 v\'edm, kdo jsi. \'d8ekla n\'e1m to ta mali\'e8k\'e1, ne\'9e jsme se na n\'ed v\'9aichni vyst\'f8\'eddali.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Vsevolod: }{\lang1029 \tab }{\f98\lang1033 [else \endash  var a4] J\'e1 dob\'f8e v\'edm, kdo jsi. A te\'ef pozn\'e1\'9a, kdo jsem j\'e1!}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [reply \endash  var a3, a4] }{\f98\lang1029 Sakra. Nem\'ecl jsem Kappu nech\'e1vat napospas Rus\'f9m.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 11
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab }{\f98\lang1033 Pane, zachytili jsme \'fatr\'9eek rusk\'e9ho vys\'edl\'e1n
+\'ed, poslechn\'ecte si to.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab (very noisy signal)}{\f98\lang1033 \'85 p\'f8evahu v\~konven\'e8n\'edch zbran\'edch. Je v\'e1m douf\'e1m jasn\'e9, \'9ee projekt podl\'e9h\'e1 p\'f8\'edsn\'e9mu utajen\'ed. }{\lang1029 
+\par }{\cs19\cf10\lang1029 Kovalyuk: }{\lang1029 \tab (very noisy signal)Poloha z\'e1kladny }{\f98\lang1033 byla zvolena s\~ohledem na sch\'f9dnost ter\'e9nu, pane. Podvozek je p\'f8\'edli\'9a t\'ec\'9ek\'fd, nejsme schopni zdol\'e1vat prudk\'e9 svahy.}{
+\lang1029 
+\par }{\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\f98\lang1033 To v\'e1s nezbavuje zodpov\'ecdnosti za utajen\'ed projektu dokud nebude\'85 (noise) \'85 zv\'fd\'9aen\'ed palebn\'e9 s\'edly \'85 (noise) \'85 potvr\'efte \'85}{\lang1029 
+\par }{\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab }{\lang1033 V\'edc toho nem\'e1me, pane}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Zatracen\'ec. Zd\'e1 se, \'9ee Rusov\'e9 n\'e1m chystaj\'ed n\'ecjak\'e9 p\'f8ekvapen\'ed.}{\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Objective Change 4
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 Add Secondary Project
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard\plain \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright \fs20\lang2057\cgrid {\lang1029 
+Try to cancel Russian secret project
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 End
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 12 (Legion sent his siberite bomb)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\lang1033 Macmillan? Take this!}{\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 12a (Legion sent his siberite bomb to Russians)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\lang1033 Ru\'9a\'9at\'ed bastardi! Tohle v\'e1m bude chutnat!}{\lang1029 
+
+\par }{\cs19\cf10\lang1029 Roth: }{\lang1029 \tab }{\lang1033 [alive] Proboha, ne}{\lang1029 !
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 13 (Legion Warehouse destroyed)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 P\'f8esta\'f2te bojovat, nem\'e1te \'9aanci. Neubl\'ed\'9e
+\'edme v\'e1m.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab A}{\lang1033  jakou m\'e1me z\'e1ruku?}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan:}{\lang1029 \tab }{\lang1033 Moje slovo!}{\lang1029 
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\lang1033 [L] Tvoje slovo stoj}{\f98\lang1029 \'ed za hovno, Macmillane. U\'9e jednou jsme ti nalet\'ecli s\~t\'edm Siberite Motherlode. Bojujte}{\lang1029  d\'e1l, chlapi!
+\par }{\lang1033 (a beat)}{\lang1029 
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\f98\lang1033 [nL \endash  really Kurt] Tvoje slovo m\'e1 v\'e1hu, Macmillane. Slo\'9ete zbran\'ec, }{\lang1029 chlapi}{\f98\lang1033 \'85 koneckonc\'f9, tenhle chlap mi zachr\'e1nil \'9eivot!}{\lang1029 
+
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\f98\lang1033 [nL \endash  else] Tvoje slovo m\'e1 v\'e1hu, Macmillane. Slo\'9ete zbran\'ec, }{\lang1029 chlapi}{\lang1033 \'85}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 Dobr\'e1. Odevzdejte z}{\f98\lang1033 bran\'ec a m\'f9\'9eete j\'edt.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\f98\lang1033 A taky se m\'f9\'9eeme p\'f8idat k\~tob\'ec, jestli m\'e1\'9a z\'e1jem. Koneckonc\'f9, jsme \'9eold\'e1ci.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 To by byla v\~t\'e9to t\'ec\'9ek\'e9 dob\'ec v\'edtan\'e1 pomoc. V\'edtejte v\~t\'fdmu\'85}{\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 14 (continues in all cases \endash  after killing or joining)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 A tohle je zase kdo.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Friend: }{\lang1029 \tab }{\f98\lang1033 Mo\'9en\'e1 si m\'ec bude\'9a pamatovat \endash  jsem p\'f8ece tv}{\f98\lang1029 \'f9j }{\lang1033 \lquote p}{\f98\lang1029 \'f8\'edtel}{\lang1033 \rquote . 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab Tak se}{\f98\lang1033  kone\'e8n\'ec setk\'e1v\'e1me. Tak copak m\'e1\'9a pro n\'e1s zase za informace.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Friend: }{\lang1029 \tab }{\f98\lang1033 Vlastn\'ec nic. Snad jen, kdyby v\'e1s zaj\'edmalo, co chyst\'e1 jeden z\~na\'9aich \'9aejk\'f9\'85 a ta jeho \'e8u}{\lang1033 bka, Heike.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 O co jde?}{\lang1029 
+\par }{\cs19\cf10\lang1029 Friend: }{\lang1029 \tab }{\f98\lang1033 Omar Ali na\'9ael n\'ecjak\'fd zp\'f9sob, jak vyvolat v\~siberitu \'f8et\'eczovou reakci. Jestli se dostane k\~prim\'e1rn\'edmu lo\'9eisku, v\'9aechny n\'e1s to odd\'ecl\'e1. Ta kr\'e1
+va Steyerov\'e1 se mi sv\'ec\'f8ila. Ona to v\'ed, a klidn\'ec mu pom\'e1h\'e1!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab \'c8lov\'ec\'e8e, ty teda hraje\'9a na v\'9aechny strany! Ale d\'edky za informaci, beru to na v\'ecdom\'ed\'85
+\par }{\cs19\cf10\lang1029 Friend: }{\lang1029 \tab }{\f98\lang1033 Mimochodem, neocenili byste slu\'9eby schopn\'e9ho mechanika?
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Query 14
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\f98\lang1029 Powell\'f9v \'e8lov\'eck u Legie ti nab\'edz\'ed slu\'9eby.
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 p\'f8ijme\'9a jej
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 propust\'ed\'9a jej
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 nech\'e1\'9a jej zab\'edt
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 14a
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Ka\'9ed\'e1 ruka dobr\'e1. Ale u\'9e \'9e\'e1dn\'e9 podrazy!
+}{\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 14b
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Je mi l\'edto, ale zradil jsi jednou, m\'f9\'9ee\'9a to ud
+\'eclat i podruh\'e9. B\'ec\'9e a u\'9e se nikdy nevracej.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 14c
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 Zabte ho!
+\par }{\cs19\cf10\lang1029 Friend: }{\lang1029 \tab }{\f98\lang1033 Ale sl\'edbil jsi, \'9ee\'85
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 \'d8ekl jsem, \'9ee to zv\'e1\'9e\'edm. Zabte ho!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 15
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\lang1033 You are cooked, Yankee dogs. We have siberite bomb now! M\'e1
+te posledn\'ed \'9aanci se vzd\'e1t, jinak ji odp\'e1l\'edme\'85
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Query 15a
+\par }\pard\plain \nowidctlpar\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \fs20\lang2057\cgrid {\lang1029 Rusov\'e9 vynalezli siberitovou bombu.
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 vzd\'e1\'9a se
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 vezme\'9a si p\'ec
+t minut na rozmy\'9alen\'ed}{\lang1029 
+\par {\pntext\pard\plain\fs20\cgrid \hich\af0\dbch\af0\loch\f0 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\lang1029 ignoruje\'9a jej
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright {\f98\lang1029 \'f8ekne\'9a, \'9ee m\'e1
+te bombu tak\'e9
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1}{\lang1033 5a
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: \tab }{\f98\lang1029 Dobr\'e1\'85 vyhr\'e1li jste, vzd\'e1v\'e1me se. Slibte mi, \'9e
+e moji lid\'e9 z\'f9stanou na\'9eivu.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1}{\lang1033 5b
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 To je t\'ec\'9ek\'e9 rozhodnut\'ed\'85 dejte mi p\'ec
+t minut.
+\par }{\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\f98\lang1033 M\'e1te t\'f8i minuty, ani o vte\'f8in}{\lang1033 u d\'e9le!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1}{\lang1033 5c
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 B\'ec\'9ete se vycpat se sv\'fdma raketama!
+\par }{\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\f98\lang1033 Jak mysl\'edte! Vyma\'9eeme v\'e1s z\~povrchu zem\'ec!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel0\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 1}{\lang1033 5d
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 [before delay] Je mi l\'edto, soudruhu, ale nejste jedin\'ed
+, kdo m\'e1 siberitovou bombu. A s\~tou n\'e1lo\'9e\'ed siberitu, co m}{\lang1033 \'e1te pod zadkem, polet}{\f98\lang1029 \'edte p\'eckn\'ec vysoko!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 [after delay] D\'edky za t\'ecch p\'e1r minut\'85 te\'ef u\'9e m\'e1me siberitovou bombu p\'f8ipravenou taky. A s\~tou n\'e1lo\'9e\'ed siberitu, co m\'e1te pod zadkem, polet}{\f98\lang1029 
+\'edte p\'eckn\'ec vysoko!
+\par }{\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\f98\lang1033 Nev\'ec\'f8\'edm v\'e1m ani slovo\'85 ale prov\'ec\'f8\'edme si t}{\lang1033 o!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 16 (15 secs after Dialogue15 Friend tries to leave map. If he is selected, then this dialogue occures)
+
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Ale, ale, kampak, p\'f8\'edteli!
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab Rusov\'e9 maj\'ed bombu, v\'9aichni tady um\'f8eme!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Jestli um\'f8eme, tak v\'9aichni. Jen poj\'ef zp\'e1t}{\lang1029 ky.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 16a (after one minute, if there is no siberite bomb and Friend present)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\lang1033 Jsi l}{\f98\lang1029 h\'e1\'f8, Johne Macmillane, dob\'f8e v\'ed
+me, \'9ee \'9e\'e1dnou bombu nem\'e1te. A na\'9ae trp\'eclivost p\'f8etekla! P\'f8ipravte se na smrt!
+\par }{\cs19\cf10\lang1029 Stevens: }{\f98\lang1029 \tab Zatracen\'ec. }{\lang1033 Jak na to mohl tak rychle }{\f98\lang1033 p\'f8ij\'edt?}{\lang1029 
+\par }{\cs19\cf10\lang1029 Soldier1: }{\f98\lang1029 \tab Zatracen\'ec. }{\f98\lang1033 Jak na to mohl tak rychle p\'f8ij\'edt?}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [friend escaped] }{\f98\lang1029 Mimochodem, kde je vlastn\'ec n\'e1\'9a p\'f8\'edtel?
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [friend didn\rquote t escaped] M}{\f98\lang1029 \'f9\'9eeme se zkusit zeptat na\'9aeho }{\f98\lang1033 \lquote p\'f8\'edtele\rquote , mo\'9en\'e1 dob\'f8e v\'ecd\'ecl, pro\'e8 ut\'edk\'e1!}{
+\lang1029 
+\par }{\cs19\cf10\lang1029 Friend: }{\f98\lang1029 \tab J\'e1\'85 p\'f8ece bych nikomu nic\'85 co si to o m\'ec mysl\'edte?
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 16b (after five or so minutes, if there is no siberite bomb and Friend not present)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\lang1033 Jsi l}{\f98\lang1029 h\'e1\'f8, Johne Macmillane, podle n\'e1s 
+\'9e\'e1dnou bombu nem\'e1te. A na\'9ae trp\'eclivost p\'f8etekla! P\'f8ipravte se na smrt!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 Jednou to prasknout muselo\'85
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 16c (after five minutes, if player has a bomb)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\f98\lang1033 OK, Johne Macmillane. M\'e1me tedy oba siberitovou bombu. Douf
+\'e1m, \'9ee m\'e1\'9a dost rozumu, abys ji nepou\'9eil \endash  v\~tom p\'f8\'edpad\'ec nezav\'e1h\'e1me poslat tu na\'9ai\'85}{\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogu}{\f98\lang1029 e 17a (behemoti objeveni b\'echem stavby)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\f98\lang1029 \tab Bo\'9ee! Tady ur\'e8it\'ec Rusov\'e9 p\'f8ipravuj\'ed
+ tu svou novou tajnou zbra\'f2}{\f98\lang1033 ! Mus\'edme je zastavit, ne\'9e to dokon\'e8\'ed.
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\f98\lang1029 Dialogue 17b (behemoti p\'f8ij\'ed\'9ed\'ecj\'ed do \'fatoku)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 [17a didn\rquote t take place] }{\f98\lang1029 Bo\'9ee! T}{
+\lang1033 ohle mus\'ed b\'fdt ta r}{\f98\lang1033 usk\'e1 tajn\'e1 zbra\'f2!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 18 (rakety odp\'e1leny)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Morozov: }{\lang1029 \tab }{\f98\lang1033 Zatracen\'fd Yankeeov\'e9, zdechn\'ecte!!!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\f98\lang1029 Dialogue 19 (Arabov\'e9 p\'f8ij\'ed\'9ed\'ecj\'ed)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 Watch your back!
+\par }{\cs19\cf10\lang1029 Soldier1:}{\lang1029 \tab }{\f98\lang1033 Kdo to k\~\'e8ertu je?
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 To jsou ur\'e8it\'ec Arabov\'e9! Cht\'ecj\'ed vyu\'9e\'edt zmatku a zni\'e8it motherlode. Nesm\'edme je k\~n\'ecmu pustit!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 19a (Omar killed)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 V\'fdborn\'ec. Mysl\'edm, \'9ee to byl ten Omar Ali!
+\par }{\cs19\cf10\lang1029 Heike: }{\lang1029 \tab (over radio) }{\f98\lang1033 Tohle zaplat\'ed\'9a, Macmillane, krut\'ec to zaplat\'ed\'9a!
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 19b (Omar succeeds)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Zatracen\'ec! Tomu arabsk\'fdmu \'9aejkovi se poda\'f8
+ilo dostat k\~lo\'9eisku! 
+\par }\pard\plain \s15\sb120\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Objective Change 5
+\par }\pard\plain \s18\nowidctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 Add Main Motherlode
+\par {\pntext\pard\plain\f98\fs20\cgrid \hich\af98\dbch\af0\loch\f98 -\tab}}\pard\plain \fi-360\li360\nowidctlpar\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls3\pnrnot0\pnindent360\pnhang{\pntxtb -}}\ls3\adjustright \fs20\lang2057\cgrid {\f98\lang1029 
+Protect motherlode p\'f8ed \'9aejkama
+\par }\pard\plain \s18\nowidctlpar\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 End
+\par 
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue A (when someone teleported \endash  if Simms is dead, then another women with the same identifier appears)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Roth: }{\lang1029 \tab (after propper line from A1) }{\lang1033 V}{\f98\lang1029 \'edtej v\~t\'e1bo\'f8e Alliance.
+\par }{\cs19\cf10\lang1029 Simms: }{\lang1029 \tab }{\f98\lang1033 [first time] Dovolili jsme si prezentovat mo\'9enosti siberitu \endash  transportovali jsme t\'ec sem pomoc\'ed artefaktu, kter\'fd se n\'e1m poda\'f8ilo zprovoznit.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Roth: }{\lang1029 \tab }{\f98\lang1033 [first time] Je ti douf\'e1m jasn\'e9, \'9ee zp\'e1tky t\'ec nepust\'edme. Z\'f9stane\'9a tady\'85 a je jen na tob\'ec, zda tu bude\'9a dobrovoln\'ec jako my v\'9aichni, kdo chceme skoncovat s\~
+touhle v\'e1lkou.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Simms: }{\lang1029 \tab }{\f98\lang1033 [not first time] Zp\'e1tky t\'ec, samoz\'f8ejm\'ec, nepust\'edme.}{\lang1029  }{\f98\lang1033 Nab\'edz\'edme ti mo\'9enost p\'f8idat se k\~n\'e1m. 
+\par }{\cs19\cf10\lang1029 Roth: }{\lang1029 \tab }{\lang1033 [if accepts \endash  propper line in A1] Jsem r}{\f98\lang1029 \'e1d, \'9ee m\'e1\'9a rozum. V\'edtej v\~na\'9aich \'f8ad\'e1ch.
+\par }{\cs19\cf10\lang1029 Roth: }{\lang1029 \tab }{\lang1033 [if doesn\rquote t accept \endash  propper line in A1] Jak chce}{\lang1029 \'9a. Uspat.
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue Aa (when someone first time teleported)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\lang1033 Hej, zpr\'e1va v\'9aem. D\'e1vejte si pozor! Pohybuj\'ed se tu agenti Aliance a pomoc\'ed nezn\'e1m\'e9
+ technologie un\'e1\'9aej\'ed na\'9ae lidi.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 [if was 9c] Podle toho, co \'f8\'edkal Roth, se k\~v\'e1m mus\'ed p\'f8ibl\'ed\'9eit, aby v\'e1s mohli zam\'ec\'f8it.
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Pou\'9e\'edvaj\'ed parci\'e1ln\'ed neviditelnost, tak\'9ee je velmi t\'ec\'9ek\'e9 je zaznamenat! D\'e1vejte si pozor. Nevzdalujte se zbyte\'e8n\'ec od z\'e1kladny. Pokus\'ed
+me se situaci co nejd\'f8\'edve \'f8e\'9ait a Rotha zajmout.
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue Ab (when Roth captured)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Je mi l\'edto Pet\'f8e, ale ne ka\'9ed\'e9mu se jeho sny spln\'ed. Odve\'efte ho!
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 [female character captured] Tak poj\'ef ven. Jsem r\'e1d, \'9ee t\'ec Roth nep\'f8}{\lang1033 emluvil.}{\lang1029 
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 [more characters captured] Tak poj\'efte ven. D\'edky, \'9ee jste se nenechali zviklat a nep\'f8idali se k\~Rothovi.}{\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue A1 (when teleported)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Zatracen\'ec, Rothe, co to d\'ecl\'e1\'9a?
+\par }{\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab [-] }{\f98\lang1033 Zbl\'e1znil ses? \'d8ekl jsem ti to jasn\'ec!
+\par }{\cs19\cf10\lang1029 Joan: }{\lang1029 \tab Co to je? Kde to jsem?}{\lang1033 
+\par }{\cs19\cf10\lang1029 Joan: }{\f98\lang1029 \tab [-] Ne, to p\'f8ece nem\'f9\'9eu Johnovi ud\'eclat!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Lisa: }{\lang1029 \tab Sakra, co to bylo za podraz?}{\lang1033 
+\par }{\cs19\cf10\lang1029 Lisa: }{\f98\lang1029 \tab [-] Na to zapome\'f2 Rothe, nejsem \'9e\'e1dn\'e1 prodejn\'e1 d\'ecvka!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Donaldson: }{\f98\lang1029 \tab Prob\'f9h, co se to se mnou stalo?}{\lang1033 
+\par }{\cs19\cf10\lang1029 Donaldson: }{\f98\lang1029 \tab [+] Nev\'edm\'85 u\'9e o tom p\'f8em\'fd\'9al\'edm del\'9a\'ed dobu. Mo\'9en\'e1 m\'e1te pravdu\'85
+\par }{\cs19\cf10\lang1029 Cornell: }{\lang1029 \tab Ale sakra, co to je za podrazy!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Cornell: }{\f98\lang1029 \tab [-] S\~t\'edm nepo\'e8\'edtejte. Rad\'ecji m\'ec hned vra\'9dte zp\'e1tky, ne\'9e se naseru!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Denis: }{\f98\lang1029 \tab Proboha, to\'e8\'ed se mi hlava\'85 co se stalo?
+\par }{\cs19\cf10\lang1029 Denis: }{\f98\lang1029 \tab [+] Zaj\'edmalo by m\'ec, jak to d\'ecl\'e1te, s\~t\'edm teleporto}{\lang1029 v\'e1n\'edm\'85
+\par }{\cs19\cf10\lang1029 Bobby: }{\f98\lang1029 \tab Bo\'9ee, co se mnou d\'ecje?
+\par }{\cs19\cf10\lang1029 Bobby: }{\f98\lang1029 \tab [+] M\'ec u\'9e je v\'9aechno jedno.
+\par }{\cs19\cf10\lang1029 Gladstone: }{\lang1029 \tab Jak jsem se tu ocitnul?
+\par }{\cs19\cf10\lang1029 Gladstone: }{\f98\lang1029 \tab [-] Nezlob se, Pet\'f8e, ale jedu v\~tom vlaku od za\'e8\'e1tku a te\'ef p\'f8esedat nebudu.
+\par }{\cs19\cf10\lang1029 Cyrus: }{\f98\lang1029 \tab Kurva, co to se mnou d\'ecl\'e1te.
+\par }{\cs19\cf10\lang1029 Cyrus: }{\lang1029 \tab [-] Seru na v\'e1s, rozum\'ed\'9a, seru na v\'e1s na v\'9aechny!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Stevens: }{\f98\lang1029 \tab Oh, Peter Roth! Patrn\'ec jste m\'ec pr\'e1v\'ec teleportovali, \'9ee?
+\par }{\cs19\cf10\lang1029 Stevens: }{\lang1029 \tab }{\lang1033 [+] }{\f98\lang1029 Nem\'e1m t\'ec r\'e1d, Rothe, to dob\'f8e v\'ed\'9a. Ale mo\'9enosti siberitu m\'ec l\'e1kaj\'ed. Z\'f9stanu.
+\par }{\cs19\cf10\lang1029 Brown: }{\lang1029 \tab Oh, shit, kde to jsem?
+\par }{\cs19\cf10\lang1029 Brown: }{\f98\lang1029 \tab [+] Jsem hrozn\'ec unaven\'fd. Kdy\'9e tahle v\'e1lka skon\'e8\'ed, budu jen r\'e1d. Beru to.
+\par }{\cs19\cf10\lang1029 Gary: }{\lang1029 \tab Shit!
+\par }{\cs19\cf10\lang1029 Gary: }{\lang1029 \tab }{\lang1033 [-] Odpov}{\f98\lang1029 \'ec\'ef zn\'ed: ne!
+\par }{\cs19\cf10\lang1029 Coonie:}{\f98\lang1033 \tab Proboha, co to bylo, je mi \'9apatn\'ec!
+\par }{\cs19\cf10\lang1029 Coonie:}{\f98\lang1033 \tab [-] J\'e1 nev\'edm. Nel\'edb\'ed se mi to. Major Macmillan mi zachr\'e1nil \'9eivot!
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab Co to m\'e1 ksakru znamenat!?}{\lang1033 
+\par }{\cs19\cf10\lang1029 Kurt: }{\lang1029 \tab }{\lang1033 [-] }{\f98\lang1029 Sakra, jsem \'9eold\'e1k, nem\'f9\'9eu budovat m\'edr!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Yamoko:}{\lang1033 \tab Peter Roth, nem}{\lang1029 \'fdlim-li se\'85
+\par }{\cs19\cf10\lang1029 Yamoko:}{\lang1033 \tab [+] OK. }{\f98\lang1029 Z\'f9stanu s\~v\'e1mi.
+\par }{\cs19\cf10\lang1029 Frank: }{\lang1029 \tab }{\lang1033 Wow}{\f98\lang1029 ! To byla j\'edzda. M\'f9\'9eu je\'9at\'ec jednou?
+\par }{\cs19\cf10\lang1029 Frank: }{\lang1029 \tab }{\lang1033 [-] R}{\f98\lang1029 \'e1d bych tu s\~v\'e1mi z\'f9stal, kluci, ale m\'e1m doma na plotn\'ec pol\'edvku\'85 Mohl bych u\'9e j\'edt?
+\par }{\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab }{\f98\lang1033 Co to prob\'f9h bylo?}{\lang1029 
+\par }{\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab }{\lang1033 [-] Na to nep}{\f98\lang1029 \'f8istoup\'edm.
+\par }{\cs19\cf10\lang1029 Soldier1: }{\lang1029 \tab }{\f98\lang1033 [+] Asi m\'e1te pravdu. Z\'f9stanu s\~v\'e1mi.}{\lang1029 
+\par }{\cs19\cf10\lang1029 FSoldier1: }{\lang1029 \tab }{\lang1033 Co se to se mnou stalo?}{\lang1029 
+\par }{\cs19\cf10\lang1029 FSoldier1: }{\lang1029 \tab }{\lang1033 [-] Na to nep}{\f98\lang1029 \'f8istoup\'edm.
+\par }{\cs19\cf10\lang1029 FSoldier1: }{\lang1029 \tab }{\f98\lang1033 [+] Asi m\'e1te pravdu. Z\'f9stanu s\~v\'e1mi.}{\lang1029 
+\par }\pard\plain \s18\nowidctlpar\adjustright \f16\fs20\cf15\lang2057\cgrid {\lang1029 
+\par }\pard\plain \s15\sb120\nowidctlpar\outlinelevel2\adjustright \i\fs20\cf11\lang1024\cgrid {\lang1029 Dialogue 20 (konec mi}{\f98\lang1029 se \endash  v\'9aichni p\'f8\'edtomn\'ed \'f8eknou svou v\'ectu)
+\par }\pard\plain \s16\fi-1559\li1559\sb60\nowidctlpar\tx0\adjustright \fs20\lang2057\cgrid {\cs19\cf10\lang1029 Macmillan: }{\lang1029 \tab }{\f98\lang1033 Skv\'ecle. Zd\'e1 se, \'9ee Siberite Motherlode je n\'e1\'9a a nezb\'fdv\'e1 nikdo, kdo by n\'e1
+m jej mohl up\'edrat! \'c8ek\'e1 n\'e1s je\'9at\'ec po\'f8\'e1dn\'fd kus pr\'e1ce, ne\'9e zah\'e1j\'edme t\'ec\'9ebu a transport na Alja\'9aku, ale to nejt\'ec\'9e\'9a\'ed u\'9e je za n\'e1mi \endash  vyhr\'e1li jsme prvn\'ed v\'e1lku v\~d\'ecjin\'e1
+ch lidstva. D\'edky v\'e1m v\'9aem.
+\par }{\cs19\cf10\lang1029 Joan: }{\f98\lang1029 \tab [present] Jsem r\'e1da, \'9ee to dob\'f8e dopadlo, Johne\'85}{\lang1033 
+\par }{\cs19\cf10\lang1029 Lisa: }{\f98\lang1029 \tab [present] Byla to maka\'e8ka, Johne, ale dok\'e1zali jsme to!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Donaldson: }{\f98\lang1029 \tab [present] Je to hlavn\'ec tvoje z\'e1sluha, Macmillane.}{\lang1033 
+\par }{\cs19\cf10\lang1029 Cornell: }{\lang1029 \tab [present]}{\f98\lang1029  V\'ecd\'ecl jsem, \'9ee s\~tebou to dok\'e1\'9eeme, ty parchante!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Denis: }{\f98\lang1029 \tab [present] Kone\'e8n\'ec! Let\'ecl jsem sem stav\'ect stroje, ne v\'e1l\'e8it.
+\par }{\cs19\cf10\lang1029 Bobby: }{\f98\lang1029 \tab [present] Provedl jste m\'ec t\'edm peklem od prvn\'edho okam\'9eiku a\'9e do te\'ef, majore. D\'edky.
+\par }{\cs19\cf10\lang1029 Gladstone: }{\f98\lang1029 \tab [present] Jak je to vlastn\'ec dlouho, co jsem p\'f8ist\'e1l? P\'f8ipad\'e1 mi to jako v\'ec\'e8nost\'85
+\par }{\cs19\cf10\lang1029 Cyrus: }{\f98\lang1029 \tab [present] Nikdy bych nev\'ec\'f8il, \'9ee se tohodle zkurven\'fdho okam\'9eiku do\'9eiju!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Stevens: }{\f98\lang1029 \tab [present] Gratuluji v\'e1m, Macmillane, byl jste skv\'ecl\'fd\'85
+\par }{\cs19\cf10\lang1029 Brown: }{\f98\lang1029 \tab [present] Jsem unaven\'fd\'85 unaven\'fd, ale \'9a\'9dastn\'fd.
+\par }{\cs19\cf10\lang1029 Gary: }{\lang1029 \tab [pres}{\f98\lang1029 ent] Vedl jste to zpropaden\'ec dob\'f8e, majore.
+\par }{\cs19\cf10\lang1029 Coonie:}{\f98\lang1033 \tab [present] D\'edky, majore, \'9ee jste m\'ec tam nenechal. Nikdy v\'e1m to nezapomenu.
+\par }{\cs19\cf10\lang1029 Kurt: }{\f98\lang1029 \tab [present] Gratuluji v\'e1m, majore. Vyhr\'e1l jste, proto\'9ee jste byl nejlep\'9a\'ed!}{\lang1033 
+\par }{\cs19\cf10\lang1029 Yamoko:}{\lang1033 \tab [present] Na\'9ala jsem v\~rusk\'e9m skladi\'9ati be}{\f98\lang1033 dnu \'9aampa\'f2sk\'e9ho! Tak na co \'e8ek\'e1me?
+\par }{\cs19\cf10\lang1029 Frank: }{\f98\lang1029 \tab [present] Tak jo, p\'f9jdeme to oslavit n\'eckam do hospody, ne?}{\lang1033 
+\par 
+\par 
+\par }}

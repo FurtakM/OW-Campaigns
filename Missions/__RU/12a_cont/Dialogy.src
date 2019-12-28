@@ -1,0 +1,213 @@
+EXPORT function D_Start; // Dialogue Start (in Bluekher)
+begin
+  DisableExclamations;
+  Say(Gossudarov,'DStart-Gos-1'); //- I'm so glad you're with us, Burlak. Not many soldiers would understand our goals.
+  Say(Burlak,'DStart-Bur-1'); //- Maybe more than you think. I shall try to bring more with me.
+  Say(Gossudarov,'DStart-Gos-2'); //- You must hurry then. We plan to leave in the morning.
+  Say(Burlak,'DStart-Bur-2'); //- Thanks for the warning!
+  Say(Gossudarov,'DStart-Gos-3'); //- We will need time to get away. Bringing the Artefact is going to slow us down.
+  Say(Burlak,'DStart-Bur-3'); //- Maybe I can lure the guards away. Which way will be heading?
+  Say(Gossudarov,'DStart-Gos-4'); //- Straight to the North, where we are meeting Peter Roth, the American scientist.
+  Say(Burlak,'DStart-Bur-4'); //- OK. There are marshes like a maze to the North, which could be useful. I'll get some men I can trust to build a small encampment to the north-east. I'll lure the pursuers there and this should give you time to make the escape.
+  Say(Gossudarov,'DStart-Gos-5'); //- Thank you Burlak. Until tomorrow.
+  EnableExclamations;
+end;
+
+EXPORT function D_Platonov; // Dialogue Platonov (start - Burlak is within base, Masha is nearby)
+begin
+  DisableExclamations;
+  Say(RSoldier,'DPlatonov-Rsol1-1'); //- Comrade Major Gorky. Please come with us.
+  Say(Burlak,'DPlatonov-Bur-1'); //- What the hell for?
+  Say(RSoldier,'DPlatonov-Rsol1-2'); //- We just need to ask a few questions. You'll be back soon.
+  Say(Burlak,'DPlatonov-Bur-2'); //- No problem. I just have to do something first. (enters Masha)
+  ComEnterUnit(Burlak,Masha);
+  Say(RSoldier,'DPlatonov-Rsol1-3'); //- What is it you need to do comrade?
+  repeat
+     Wait(0$0.2);
+  until IsDrivenBy(Masha)=Burlak;
+  Say(Burlak,'DPlatonov-Bur-3'); //- Blow your ass away! (Burlak shoots)
+  AddComAttackUnit(Burlak,RSoldier);
+  repeat
+    Wait(0$0.2);
+  until Attacks(Masha)=RSoldier;
+  Wait(0$0.5);
+  Say(RSoldier,'DPlatonov-Rsol1-4'); //- Aaargh!
+  ComAttackUnit(RSoldier,Masha);
+  AddComAttackUnit(Burlak,RSoldier);
+  Say(Platonov,'DPlatonov-Pla-4'); //- I knew it Gorky! You are imperialist agent! You will not live!
+  Say(Platonov,'DPlatonov-Pla-4a'); //- Marshal Platonov calling all units! All units! Zionistic agent Yuri Gorky is escaping! Stop him! Whatever it takes. He must not escape!
+  EnableExclamations;
+end;                             
+
+{MRun (+Run)
+Add mainAttacks
+-Reach the encampment in North East corner.
+}
+
+EXPORT function D_GosStart; // Dialogue GosStart (when Burlak reaches encamp. - only characters present can speak)
+var un,filter,filter_all;
+begin
+  DisableExclamations;
+  if IsOK(Belkov) AND GetSide(Belkov)=you then Say(Belkov,'DGosStart-Bel-1'); //- Glad to see you alive!
+  if IsOK(Gnyevko) AND GetSide(Gnyevko)=you then Say(Gnyevko,'DGosStart-Gny-1'); //- Thank God you made it.
+  if IsOK(Gleb) AND GetSide(Gleb)=you then Say(Gleb,'DGosStart-Glb-1'); //- Screw Marx. Screw Lenin! Screw communism!
+  if IsOK(Petrosyan) AND GetSide(Petrosyan)=you then Say(Petrosyan,'DGosStart-Pty-1'); //- Welcome, comrade major.
+  if IsOK(Titov) AND GetSide(Titov)=you then Say(Titov,'DGosStart-Tit-1'); //- Holy Trofim, Burlak, you got through!
+  if IsOK(Kirilenkova) AND GetSide(Kirilenkova)=you then Say(Kirilenkova,'DGosStart-Kir-1'); //- Glad to see you again, Burlak.
+
+  if NOT ((IsOK(Belkov) AND GetSide(Belkov)=you)
+          OR (IsOK(Gnyevko) AND GetSide(Gnyevko)=you)
+          OR (IsOK(Gleb) AND GetSide(Gleb)=you)
+          OR (IsOK(Petrosyan) AND GetSide(Petrosyan)=you)
+          OR (IsOK(Titov) AND GetSide(Titov)=you)
+          OR (IsOK(Kirilenkova) AND GetSide(Kirilenkova)=you)) then
+  begin
+    filter_all:=FilterAllUnits([[f_side,you],[f_sex,sex_male],[f_ok],[f_not,[f_nation,nation_nature]]]);
+    filter_all:=filter_all diff Burlak;
+    if 0+filter_all>0 then
+    begin
+     filter:=[];
+     for un in filter_all do // nepojmenovane postavy
+       if NOT (un in all_possible) then
+         filter:=filter union un;
+     if filter>0 then
+       Say(filter[1],'DGosStart-Sol1-1') //- Welcome, Burlak.
+     else
+       Say(filter_all[1],'DGosStart-Sol1-1'); //- Welcome, Burlak.
+    end
+    else
+    begin
+      filter_all:=FilterAllUnits([[f_side,you],[f_sex,sex_female],[f_ok],[f_not,[f_nation,nation_nature]]]);
+      if 0+filter_all>0 then
+      begin
+       filter:=[];
+       for un in filter_all do // nepojmenovane postavy
+         if NOT (un in all_possible) then
+           filter:=filter union un;
+       if filter>0 then
+         Say(filter[1],'DGosStart-FSol1-1') //- Welcome, Burlak.
+       else
+         Say(filter_all[1],'DGosStart-FSol1-1'); //- Welcome, Burlak.
+      end;
+    end;
+  end;
+
+  Say(Burlak,'DGosStart-Bur-1'); //- I'm pretty pleased to be here myself!
+  Wait(0$20);
+  Say(Burlak,'DGosStart-Bur-1a'); //- (into radio) This is vulture calling robins. The vulture has landed.
+  SayRadio(Gossudarov,'DGosStart-Gos-1'); //- (over radio) Robins to vulture. We are ready to fly the nest.
+  Say(Burlak,'DGosStart-Bur-2'); //- (into radio) Stand by for signal. Over and out.
+  Hint('Signal');
+  attackAvalaible = 1;
+  enable(6); // Goss_time countdown
+  EnableExclamations;
+end;
+
+EXPORT function D_Situation; // Dialogue Situation (after GosStart)
+var un,filter,filter_all;
+begin
+  DisableExclamations;
+  Say(Burlak,'DSituation-Bur-1'); //- This is a good base you are building, but where we're going will require all the resources we've got.
+
+  filter_all:=FilterAllUnits([[f_side,you],[f_sex,sex_female],[f_ok],[f_not,[f_nation,nation_nature]]]);
+  if 0+filter_all>0 then
+  begin
+   filter:=[];
+   for un in filter_all do // nepojmenovane postavy
+     if NOT (un in all_possible) then
+       filter:=filter union un;
+   if filter>0 then
+     Say(filter[1],'DSituation-RFSol1-1') //- We will economise, commander.
+   else
+     Say(filter_all[1],'DSituation-RFSol1-1'); //- We will economise, commander.
+  end
+  else
+  begin
+    filter_all:=FilterAllUnits([[f_side,you],[f_sex,sex_male],[f_ok],[f_not,[f_nation,nation_nature]]]);
+    filter_all:=filter_all diff Burlak;
+    if 0+filter_all>0 then
+    begin
+     filter:=[];
+     for un in filter_all do // nepojmenovane postavy
+       if NOT (un in all_possible) then
+         filter:=filter union un;
+     if filter>0 then
+       Say(filter[1],'DSituation-RSol1-1')//- We will economise, commander.
+     else
+       Say(filter_all[1],'DSituation-RSol1-1');//- We will economise, commander.
+    end;
+  end;
+
+  EnableExclamations;
+end;
+
+{MHold (-Run,+Hold)
+Out Run
+Add main Hold
+-Hold against pursuers, signal to professor Gossudarov that he can leave the base.
+Add secondary Economy
+-Try to spend as little of your resources as possible.
+
+
+! Signal
+Signal
+
+There will be hint...
+!
+
+// Query GO (when Burlak enters lab)
+? QGO
+Do you want to send a signal to professor Gossudarov to leave? If he does so you will have to guide him to the exit area in North.
+-1 Yes
+-2 No
+}
+
+EXPORT function D_GO1; // Dialogue GO#1
+begin
+  DisableExclamations;
+  Say(Burlak,'DGO#1-Bur-1'); //- Vulture calling robins. Fly the nest. I repeat, fly now.
+  EnableExclamations;
+  SetAreaMapShow(ExitArea,1);
+end;
+
+{MGuide (-Run, ?Hold, +Guide)
+Out Run
+Chg main Hold
+-Hold against pursuers.
+Add main Guide
+-Guide scientists to exit area, protect Artefact.
+}
+
+EXPORT function D_SeeYou; // Dialogue SeeYou (when scientists leave the exit area)
+begin
+  DisableExclamations;
+  DialogueOn;
+  Say(Gossudarov,'DSeeYou-Gos-1'); //- Thank God, we made it. And my thanks to you Burlak. I hope we'll see each other soon.
+  Say(Burlak,'DSeeYou-Bur-1'); //- So do I, professor.
+  DialogueOff;
+  EnableExclamations;
+end;
+
+{^ Main
+Scientists escaped
+
+| Burlak
+Burlak is dying.
+
+| Artefact
+Artefact was lost.
+
+* Science
++ All scientists escaped
+- Not all scientists made it through.
+*
+
+* Effectivity
++ Resources saved
+- You used most of your resources
+*
+
+* LittleLosses
++ Few casualties
+- You lost more than one man.
+*}

@@ -1,0 +1,334 @@
+{3x 92,74
+
+67,64
+70,63
+
+auto 73,61
+borec 74,63        }
+
+export rpat1,phase,patience;
+
+var d1R,d1Ra,d1Rb,d1Rc,run_d1Rb,run_d1Rc;
+
+export function hunters_to_position;
+  begin
+    d1R:=0;
+    d1Ra:=0;
+    d1Rb:=0;
+    d1Rc:=0;
+
+    ComEnterUnit(rmech1,rveh1);
+    wait(0$2);
+
+    phase:=1;
+    rpat1:=[rpat1_1,rpat1_2,rpat1_3];
+
+    ComFree(rpat1^[rpat2,rpat3,rveh1,rmech1]);
+
+    AddComAgressiveMove(rveh1,73,61);
+    AddComExitVehicle(rveh1);
+    AddComAgressiveMove(rveh1,74,63);
+
+    AddComAgressiveMove(rpat1,92,74);
+    AddComAgressiveMove(rpat2,70,63);
+    AddComWait(rpat3,0$2);
+    AddComAgressiveMove(rpat3,67,64);
+
+  end;
+
+every 0$0.5 trigger (FilterAllUnits([[f_side,russians],[f_see,you]])>=2)and IsInArea(JMM,starthill) and IsInArea(JMM,starthill) do
+  begin
+    if not FilterAllUnits([[f_side,you],[f_see,russians]]) then
+      begin
+//        CenterOnUnits(FilterAllUnits([[f_side,russians],[f_see,you]]));
+        Hint('Visibility2');
+      end
+    else
+      enable;
+  end;
+
+every 0$0.5 trigger IsAt(rpat3,67,64) marked 1 do
+  var deltime;
+  begin
+    if d1R then
+      exit;
+
+    deltime:=hunt_waiting1[difficulty];
+
+    ComWait(rpat3,deltime+0$0);
+    AddComMoveXY(rpat3,79,81);
+    ComWait(rpat2,deltime+0$2);
+    AddComMoveXY(rpat2,81,80);
+    ComWait(rpat1,deltime+0$3.5);
+    AddComMoveXY(rpat1,83,82);
+    dialogue_d1R;
+  end;
+
+function pursue_JMM;
+  var i;
+  begin
+    if not IsInUnit(rmech1) then
+      ComEnterUnit(rmech1,rveh1);
+
+    if phase=1 then
+      phase:=2;
+
+    AddComAttackUnit(rmech1,JMM);
+    ComAttackUnit(rpat1^[rpat2,rpat3],JMM);
+    run_d1Rb:=true;
+    for i:=1 to hunting_cycles[difficulty] do
+      begin
+        if not See(russians,JMM) then
+          begin
+            wait(0$2);
+            if not See(russians,JMM) then
+              break;
+          end
+        else
+          wait(0$2);
+      end;
+    ComStop(rpat1^[rpat2,rpat3,rveh1]);
+    ComWait(rpat1^[rpat2,rpat3,rveh1],0$5);
+    case phase of
+      2:begin
+          AddComMoveXY(rpat1^[rpat2,rpat3],82,81);
+          AddComMoveXY(rveh1,73,61);
+        end;
+      3:begin
+          AddComMoveXY(rpat1,138,90);
+          AddComMoveXY([rpat2,rpat3],23,14);
+          ComAgressiveMove(rveh1,130,87);
+        end;
+    end;
+    if not See(russians,JMM) and IsOk(JMM) then
+      run_d1Rc:=true;
+    wait(0$5.5);
+    enable;
+  end;
+
+
+function dialogue_d1R;
+  begin
+    d1R:=true;
+    if not See(russians,JMM) then
+      begin
+        Say(rpat3,'D1R-Rus1-1');
+        if not See(russians,JMM) then
+          Say(rpat2,'D1R-Rus2-1');
+      end;
+  end;
+
+function dialogue_d1Ra;
+  begin
+    d1Ra:=true;
+    d1Rc:=d1Rc+1;
+    phase:=2;
+    if not See(russians,JMM) then
+      begin
+        Say(rpat3,'D1Ra-Rus1-1');
+        if not See(russians,JMM) then
+          Say(rpat2,'D1Ra-Rus2-1');
+      end;
+  end;
+
+function dialogue_d1Rb(var count);
+  var ok1,ok2,k;
+  begin
+    if count>=3 then
+      exit;
+
+    ok1:=IsOk(rpat2) and IsOk(rpat3);
+    ok2:=IsOk(rpat1_1) and IsOk(rpat1_2);
+
+    if ok1 and ok2 then
+      if GetDistUnits(JMM,rpat2)<=GetDistUnits(JMM,rpat1_1) then
+        k:=1
+      else
+        k:=2
+    else if ok1 then
+      k:=1
+    else if ok2 then
+      k:=2
+    else
+      k:=0;
+
+    if k=1 then
+      begin
+        if count<>2 then Say(rpat3,'D1Rb-Rus1-1');
+        if count<>1 then Say(rpat2,'D1Rb-Rus2-1');
+      end
+    else if k=2 then
+      begin
+        if count<>2 then Say(rpat1_1,'D1Rb-Rus1-1');
+        if count<>1 then Say(rpat1_2,'D1Rb-Rus2-1');
+      end;
+    count:=count+1;
+  end;
+
+function dialogue_d1Rc(var count);
+  var ok1,ok2,k;
+  begin
+    if count>=2 then
+      exit;
+
+    ok1:=IsOk(rpat2) and IsOk(rpat3);
+    ok2:=IsOk(rpat1_1) and IsOk(rpat1_2);
+
+    if ok1 and ok2 then
+      if GetDistUnits(JMM,rpat2)<=GetDistUnits(JMM,rpat1_1) then
+        k:=1
+      else
+        k:=2
+    else if ok1 then
+      k:=1
+    else if ok2 then
+      k:=2
+    else
+      k:=0;
+
+    if k=1 then
+      begin
+        Say(rpat3,'D1Rc-Rus1-1');
+        if count<>1 then Say(rpat2,'D1Rc-Rus2-1');
+      end
+    else if k=2 then
+      begin
+        Say(rpat1_1,'D1Rc-Rus1-1');
+        if count<>1 then Say(rpat1_2,'D1Rc-Rus2-1');
+      end;
+    count:=count+1;
+  end;
+
+every 0$1 trigger See(russians,JMM) and (wait(0$0.9) or true) and See(russians,JMM) marked 2 do
+  begin
+    d1R:=true;
+    d1Ra:=true;
+    patience:=0;
+    disable(1);
+    pursue_JMM;
+  end;
+
+every 0$0.5 trigger IsAt(rpat3,79,81) marked 1 do
+  begin
+    dialogue_d1Ra;
+  end;
+  
+every 0$0.5 trigger run_d1Rb do
+  begin
+    dialogue_d1Rb(d1Rb);
+    enable;
+    run_d1Rb:=false;
+  end;
+
+every 0$0.5 trigger run_d1Rc do
+  begin
+    dialogue_d1Rc(d1Rc);
+    enable;
+    run_d1Rc:=false;
+  end;
+
+every 0$1 trigger (phase=2) do
+  begin
+    patience:=patience+1;
+    if patience=hunt_patience[difficulty] then
+      begin
+        phase:=3;
+        ComMoveXY(rpat1,130,87);
+        ComMoveXY([rpat2,rpat3],23,14);
+        if not IsInUnit(rmech1) then
+          ComEnterUnit(rmech1,rveh1);
+      end
+    else
+      enable;
+  end;
+
+every 0$1 trigger (phase=3) and IsDrivenBy(rveh1) do
+  var expired,oldx,oldy,oldl,newx,newy,newl,i;
+  begin
+    repeat
+
+      AddComAgressiveMove(rveh1,126,86);
+      expired:=0;
+      oldx:=-1;
+      oldy:=-1;
+      while not IsAt(rveh1,126,86) and (expired<25) do
+        begin
+          wait(0$1);
+          newx:=GetX(rveh1);
+          newy:=GetY(rveh1);
+          newl:=GetLives(rveh1);
+          if (oldx=newx)and(oldy=newy)and(oldl=newl) then
+            expired:=expired+1
+          else
+            expired:=0;
+          oldx:=newx;
+          oldy:=newy;
+          oldl:=newl;
+        end;
+      if GetLives(rveh1)<900 then
+        begin
+          ComMoveXY(rveh1,136,88);
+          AddComExitVehicle(rveh1);
+          repeat
+            wait(0$0.5);
+          until not IsDrivenBy(rveh1);
+          setFuel(rveh1,100);
+          ComRepairVehicle(rmech1,rveh1);
+        end;
+      wait(patrol_waits[difficulty][1]);
+      i:=0;
+      while (GetLives(rveh1)<990)and not IsDrivenBy(rveh1) and (i<60) do
+        begin
+          wait(0$1);
+          i:=i+1;
+        end;
+
+      if not IsDrivenBy(rveh1) then
+        ComEnterUnit(rmech1,rveh1);
+
+      if IsAt(rveh1,126,86) then
+        setFuel(rveh1,100);
+
+      AddComAgressiveMove(rveh1,27,18);
+      expired:=0;
+      oldx:=-1;
+      oldy:=-1;
+      while not IsAt(rveh1,27,18) and (expired<25) do
+        begin
+          wait(0$1);
+          newx:=GetX(rveh1);
+          newy:=GetY(rveh1);
+          newl:=GetLives(rveh1);
+          if (oldx=newx)and(oldy=newy)and(oldl=newl) then
+            expired:=expired+1
+          else
+            expired:=0;
+          oldx:=newx;
+          oldy:=newy;
+          oldl:=newl;
+        end;
+      if GetLives(rveh1)<900 then
+        begin
+          AddComExitVehicle(rveh1);
+          repeat
+            wait(0$0.5);
+          until not IsDrivenBy(rveh1);
+          setFuel(rveh1,100);
+          ComRepairVehicle(rmech1,rveh1);
+        end;
+      wait(patrol_waits[difficulty][2]);
+      i:=0;
+      while (GetLives(rveh1)<990)and not IsDrivenBy(rveh1) and (i<60) do
+        begin
+          wait(0$1);
+          i:=i+1;
+        end;
+
+      if IsAt(rveh1,27,18) then
+        setFuel(rveh1,100);
+    until false;
+  end;
+
+
+
+

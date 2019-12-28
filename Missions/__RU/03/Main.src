@@ -1,0 +1,224 @@
+EXPORT You,You2,You3,Amici,Arabi;
+
+Export KurinDialog;
+Export KurinAddTime;
+
+starting
+begin
+  RandomizeAll;
+  InitHc;
+  InitBc;
+  InitVc;
+  InitUc;
+
+  KurinDialog = 0;
+  KurinAddTime = 0;
+
+  // nastaveni konstant pro obtiznosti
+  set_difficulty;
+
+  // loadovani postav a promennych a predesle mise
+  load_postav;
+  load_promenne;
+
+  // definice stran
+  You=3;
+  You2=6;
+  You3=5;
+  Amici=1;
+  Arabi=2;
+
+
+  // placnuti budov z minule mise
+  placni_budovy_z_predesle_mise;
+
+  // odkryti fogu z predesle mise
+  RevealFogArea(You,CelaRU02);
+  RevealFogArea(You2,CelaRU02);
+
+  // predcreate jednotek
+  create_arabsky_utok;
+  create_americka_pomoc_hlidce;
+  create_americke_posily;
+  create_ruske_posily_na_omicron;
+  create_arabi_komanda;
+  create_ru_posily_ma_utek;
+  create_arabi_na_posily_kirovu;
+  create_cerpaci_ruske_auta;
+
+  // create jednotek ze savu
+  create_am_jednotky;
+
+  // pridani skilu amikum
+  set_skily_amikum;
+
+  // schovani rusu v RU1 do budov
+  uklid_rusu;
+
+  // spolecny fog s rusama 2 (ruzovy)
+  ChangeSideFog(You,You);
+  ChangeSideFog(You2,You);
+
+  // vysviceni jmen nad zakladnama
+  pojmenovani_zakladen;
+
+  InGameOn;
+  CenterOnXY(137,76);
+
+   // odkryti fogu z predesle mise
+  RevealFogArea(You,CelaRU02);
+  RevealFogArea(You2,CelaRU02);
+
+  uvodni_pokec;
+end;
+
+// konec mise - chcipnuti burlaka
+// konec !!
+on UnitDestroyed(un) DO
+begin
+  if un=bur then YouLost('Burlak');
+  enable;
+end;
+
+// ukonceni mise, protoze lhal oo poctu aut
+EXPORT function konec_mise_lhani;
+begin
+  hlaska_lhani;
+  YouLost('Vehicles');
+end;
+
+// ukonceni mise ... nedostal se pred omicron vcas
+EXPORT function konec_pred_omikronem;
+begin
+  YouLost('Delay');
+end;
+
+// konec kdyz zacne utocit na vlastni
+EXPORT function konec_mise_utok;
+begin
+  YouLost('SelfAttack');
+end;
+
+//******************************************************
+//*********  SAVENI POSTAV A PROMENNYCH  ***************
+//******************************************************
+// osetreni ukonceni mise
+EXPORT function konec_mise;
+VAR i,pom,pom1;
+VAR zivi;
+VAR drv;
+VAR mrtvi;
+VAR all_people;
+begin
+  DisableExclamations;
+  gained_medals:=[];
+  missing_medals:=[];
+
+  if Prezite_posily>=muze_projit_posil[difficulty]
+    then AddMedal('PreventReinforcements',-1)
+    else AddMedal('PreventReinforcements',1);
+
+  if scholtze_saved and IsOk(schol) and GetSide(schol) = 3 then AddMedal('Scholtze',1)
+                    else AddMedal('Scholtze',-1);
+
+  case stav_aut_new of
+   1:AddMedal('Surplus',1);
+   2:AddMedal('Surplus',-1);
+   3:AddMedal('Surplus',-2);
+  end;
+
+  if not stav_aut_new then
+     AddMedal('Surplus',-1);
+
+  GiveMedals('Main');
+
+  // ostatni vojaci
+  all_people:=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+
+  RewardPeople(all_people);
+
+  if not (bel in all_people) then KillUnit(bel);
+  if not (gny in all_people) then KillUnit(gny);
+  if not (kov in all_people) then KillUnit(kov);
+  if not (schol in all_people) then KillUnit(schol);
+
+  SaveCharacters(bur,'Burlak');
+  SaveCharacters(bel,'Belkov');
+  SaveCharacters(gny,'Gnyevko');
+  SaveCharacters(kov,'Kovalyuk');
+  SaveCharacters(schol,'Scholtze');
+  SaveCharacters(pop,'Popov');
+
+  pom:=all_people diff [bur,kur,bel,gny,kov,schol,schol2,pop];
+  SaveCharacters(pom,'survivors1');
+
+  SaveVariable(BELKOV_SAVED,'belkov_saved'); // 1 belkov saved; 0 belkov not saved
+  SaveVariable(STAV_UTOKU,'stav_utoku');     // 1 stpravne; 2 spravne s posilama; 3 bez rozkazu
+  SaveVariable(stav_aut,'Surplus_vehicles'); // 1 byly auta navic; 2 pouze pro sebe; 3 auta ani pro sebe
+
+  YouWin;
+  EnableExclamations;
+  exit;
+end;
+
+
+//*******************************************************
+//*********  LOADENI POSTAV A PROMENNYCH  ***************
+//*******************************************************
+function load_postav;
+begin
+  grishko=NewCharacter('Grishko');
+  kur=nacti_osobu('kurin');
+  bel=nacti_osobu('Belkov');
+  kov=nacti_osobu('Kovalyuk');
+  bur=nacti_osobu('Burlak');
+  gny=nacti_osobu('Gnyevko');
+  pop=NewCharacter('Popov');
+
+  // ostatni prezivsi z mise 2
+  if CheckCharacterSet('survivors1')
+    then other_survivors_mise_2=CreateCharacterSet('survivors1');
+
+  if CheckCharacterSet('amici_bw') then amici_bw_2=CreateCharacter('amici_bw')
+                                   else amici_bw_2=[];
+end;
+
+function load_promenne;
+VAR default_budovy;
+begin
+  default_budovy=[[0,2,66,97,0],[2,1,61,83,2],[6,1,73,90,4]];
+
+  budovy_mise_2=LoadVariable('budovy',default_budovy);
+  breastworks_east=LoadVariable('bw_east',3);
+end;
+
+// vyroba scholtzeho
+EXPORT function create_scholtze;
+VAR pom;
+begin
+  pom=NewCharacter('Scholtze');
+  SetSide(pom,You2);
+  SetClass(pom,class_scientistic);
+  PlaceUnitXY(pom,49,5,true);
+
+  result=pom;
+end;
+
+
+On Command(com) do
+var i, j, temp;
+begin
+        for i in FilterAllUnits([[f_side,3],[f_type,unit_human]]) do
+            if GetTaskList(i) > 0 then
+               for j = 1 to GetTaskList(i) do
+               begin
+                    temp = GetTaskList(i)[j][4];
+
+                    if temp = RU1_dep or (GetSide(temp) = 6 and GetType(temp) = unit_vehicle) then
+                       SetTaskList(i, []);
+               end;
+end;
+
+
+
+

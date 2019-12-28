@@ -1,0 +1,34 @@
+//Steam achievements
+
+Every 0$2+0$0.1 do
+     begin
+          if FilterAllUnits([[f_side,1],[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_soldier],[f_class,class_apeman_kamikaze]]]) >
+             FilterAllUnits([[f_side,1],[f_type,unit_human],[f_not,[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_soldier],[f_class,class_apeman_kamikaze]]]]) then
+               begin
+                    SetAchievement('ACH_POTA');
+                    exit;
+               end;
+
+          enable;
+     end;
+
+Export Function SA_OnSiberiteRocketExploded(siberite_rocket_vehicle);
+     begin
+          if GetSide(siberite_rocket_vehicle) = 1 then
+               SetAchievement('ACH_RAD');
+     end;
+
+Export Function SA_OnLegionJoin;
+     begin
+          SetAchievement('ACH_LS');
+     end;
+
+Export Function SA_OnMissionComplete;
+     begin
+          SetAchievement('ACH_GBA');
+     end;
+
+Export Function SA_OnVsevolodAppear;
+     begin
+          SetAchievement('ACH_MMB');
+     end;

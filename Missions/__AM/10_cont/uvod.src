@@ -1,0 +1,20 @@
+VAR konvoj;
+
+EXPORT Amici_enter;
+EXPORT Amici_ar;
+
+// posilani konzerv amikum
+EVERY 1$0 TRIGGER Dial>0 DO
+begin
+  wait(Rand(1,7200));
+  CreateCratesArea(Rand(3,5),Base2,true);
+  enable;
+end;
+
+// random konzervy
+EVERY 2$0 DO
+begin
+  wait(Rand(1,7200));
+  CreateCratesArea(Rand(3,5),bedny_ar,true);
+  enable;
+end;

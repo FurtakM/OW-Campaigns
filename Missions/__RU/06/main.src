@@ -1,0 +1,186 @@
+export you, you2, americans, arabians, neutral;
+export ai, ai_nation;
+export apemans, rulive;
+export cargo_am;
+export Vsevolod_vstoupil;
+export Vsevolod_uderna_group;
+export belkovfreed;
+export OvsyenkoTaken;
+export OvsyenkoCaptured;
+export mcdef_difficulty;
+export mcatt_difficulty;
+export na_kopci_mcdef_difficulty;
+export b1_levels,b2_levels,b3_levels,b4_levels,b5_levels;
+
+export normal1_utok, normal2_utok, normal3_utok, normal4_utok, vsevolod_attack, vsevolod_final_attack;
+
+export mine_obj_completed;
+
+//difficulty
+export cas_mezi_utoky;
+export cas_prvniho_utoku;
+export kolik_ma_vsevolod_casu;
+export kolik_ma_vsevolod_mezi_utoky;
+export kolik_je_v_depotu;
+export kolik_je_sib_v_hornim;
+export zivoty_armoury,zivoty_armoury2;
+export utoci_max;
+
+export all_labs;
+export function Vyhra;
+begin
+end;
+
+function set_sides;
+begin
+  you:=3;
+  you2:=6;
+  americans:=1;
+  arabians:=2;
+  neutral:=0;
+  OvsyenkoTaken = 0;
+  ai:=americans;
+  ai_nation:=nation_american;
+end;
+
+{
+* Vsevolod
++Brother Vsevolod saved
+- You failed to save your brother
+*
+
+* Ovsyenko
++ V. A. Ovsyenko base saved
+- You lost V. A. Ovsyenko base
+*
+
+* Prediction
++ Materialization Prediction researched
+- You haven't researched materialization prediction.
+*
+}
+var gleb_lives;
+every 0$1 trigger gleb_lives<>GetLives(gleb) do
+var i;
+begin
+//| Gleb
+//You can't just kill political commissars. Try sending him to the front line next time.
+   for i in FilterAllUnits([f_side,you]) do
+     if WantsToAttack(i)=Gleb then
+        YouLost('Gleb');
+   gleb_lives:=GetLives(gleb);
+end;
+
+every 0$5 trigger not FilterAllUnits([[f_side,you],[f_or,[f_class,class_engineer],[f_btype,b_warehouse],[f_btype,b_depot],[f_btype,b_lab],[f_btype,b_lab_half],[f_btype,b_lab_full]]]) do
+begin
+   YouLost('NoDepotNoEngineerNoLab');
+end;
+
+Every 1 trigger OvsyenkoTaken = 0 do
+begin
+    BlockMarchNorth;
+    enable;
+end;
+
+export function VyhraResearch;
+begin
+//^ Research
+//Research completed.
+    set_medals;
+    GiveMedals('Research');
+    RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_russian]]));
+    Save;
+    YouWin;
+end;
+export function VyhraExit;
+begin
+//^ Exit
+//Research completed, exit area reached.
+    set_medals;
+    GiveMedals('Exit');
+    RewardPeople(FilterAllUnits([[f_side,you],[f_type,unit_human],[f_nation,nation_russian]]));
+    Save;
+    YouWin;
+end;
+
+export function set_medals;
+begin
+
+  AddMedal('Vsevolod', VsevolodSaved);
+
+  AddMedal('Ovsyenko', OvsyenkoTaken and not OvsyenkoCaptured);
+  AddMedal('Prediction', GetTech(tech_MatPred, you)=state_researched);
+{* Vsevolod
++Brother Vsevolod saved
+- You failed to save your brother
+*
+
+* Ovsyenko
++ V. A. Ovsyenko base saved
+- You lost V. A. Ovsyenko base
+*
+
+* Prediction
++ Materialization Prediction researched
+- You haven't researched materialization prediction.
+*
+}
+end;
+
+export function set_difficulty;
+var d;
+begin
+   d:=difficulty;
+              //vyjimky, ostatni
+   b1_levels:=[[1,3,5][d],[2,3,5][d]];
+   b2_levels:=[[2,3,5][d],[3,4,6][d]];
+   b3_levels:=[[2,5,8][d],[7,8,10][d]];
+   b4_levels:=[[5,7,10][d],[7,8,10][d]];
+   b5_levels:=[[3,6,9][d],[3,6,9][d]];
+   mcatt_difficulty:=[200,250,300][d];
+   mcdef_difficulty:=[270,350,450][d];
+   na_kopci_mcdef_difficulty:=[200,230,260][d];
+   kolik_ma_vsevolod_casu:=[46$0, 39$0, 32$0][d];
+   kolik_ma_vsevolod_mezi_utoky:=[10$0, 8$0, 5$0][d];
+   kolik_je_v_depotu:=[220, 180, 120][d];
+   kolik_je_sib_v_hornim:=[130,90,65][d];
+   zivoty_armoury:=[hranice_umirani+50, hranice_umirani+150, hranice_umirani+350][d];
+   zivoty_armoury2:=[hranice_umirani+150, hranice_umirani+350, hranice_umirani+550][d];
+   cas_mezi_utoky:=[6$0,3$0,0$30][d];
+   utoci_max:=[3,6,9][d];
+   cas_prvniho_utoku:=[5$0,3$30,1$0][d];
+end;
+
+
+//cas
+export mrtvi_vsevolodaci;
+every 0$1 do
+begin
+     debug_strings:=[mrtvi_vsevolodaci,[(tick div 0$1) div 60, (tick div 0$1) mod 60]];
+     enable;//------------
+end;
+
+
+starting
+begin
+
+  all_labs:=[b_lab, b_lab_half, b_lab_full];
+  normal1_utok:=7001;
+  normal2_utok:=7002;
+  normal3_utok:=7003;
+  normal4_utok:=7004;
+  vsevolod_attack:=7005;
+  vsevolod_final_attack:=7006;
+
+  SetBName(RuDepot,'ovsyenko');
+
+  set_difficulty;
+  set_sides;
+  load;
+  place_b;
+  place_in_ru_cars;
+  place_ru_cars;
+  apemans:=FilterAllUnits([[f_nation,nation_nature],[f_type,unit_human]]);
+  set_shorts;
+  DStart;
+end;

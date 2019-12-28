@@ -1,0 +1,128 @@
+export function hunt(hunter);
+var un,animals,animal,kasarna,depot,i,x,y,d,rnd_animal,hunter_x_coordinate,hunter_y_coordinate,range,osoba,min,setridene_animals;
+begin
+  kasarna:=FilterAllUnits([f_or,[f_btype,b_barracks],[f_btype,b_armoury]]);
+  SetSide(hunter,ally);
+  if NOT(GetClass(hunter)=class_soldier) AND (kasarna>0) then
+  begin
+    ComEnterUnit(hunter,kasarna[1]);
+    Wait(10);
+    while HasTask(hunter) do
+    begin
+      Wait(10);
+    end;
+    hunter_x_coordinate:=GetX(hunter);
+    hunter_y_coordinate:=GetY(hunter);
+    RemoveUnit(hunter);
+    SetClass(hunter,class_soldier);
+    Wait(0$2);
+    if NOT PlaceUnitXY(hunter,hunter_x_coordinate,hunter_y_coordinate,false) then
+    begin
+      range:=0;
+      repeat
+        Wait(2);
+        range:=range+1;
+      until PlaceUnitXYR(hunter,hunter_x_coordinate,hunter_y_coordinate,range,false)
+    end;
+  end;
+  animals:=FilterAllUnits([f_or,[f_class,class_phororhacos],[f_class,class_tiger]]);
+  if animals=[] then
+  begin
+    Randomize;
+    RandomizeAll;
+    for i:=1 to 6 do
+    begin
+      uc_side=0; // neutral
+      uc_nation:=nation_nature;
+
+      PrepareHuman(0,class_phororhacos,0);
+      hc_name:='';
+      Wait(1);
+      PlaceUnitArea(CreateHuman,AnimalsArea,false);
+      Wait(1);
+
+      PrepareHuman(0,class_tiger,0);
+      hc_name:='';
+      Wait(1);
+      PlaceUnitArea(CreateHuman,AnimalsArea,false);
+      Wait(1);
+      animals:=FilterAllUnits([f_or,[f_class,class_phororhacos],[f_class,class_tiger]]);
+    end;
+  end;
+  if GetClass(hunter)=class_soldier then
+    rnd_animal:=Rand(4,6)
+  else
+    rnd_animal:=Rand(1,2);
+  range:=999;
+  osoba:=hunter;
+  setridene_animals:=[];
+  while animals<>[] do
+  begin
+    for un in animals do
+    begin
+      if GetDistUnits(osoba,un)<range then
+      begin
+        range:=GetDistUnits(hunter,un);
+        min:=un;
+      end;
+      Wait(1);
+    end;
+    setridene_animals:=setridene_animals^min;
+    animals:=animals diff min;
+    osoba:=min;
+    range:=999;
+  end;
+  for i:=1 to rnd_animal do
+  begin
+    AddComAttackUnit(hunter,setridene_animals[i]);
+    Wait(10);
+  end;
+  if GetClass(hunter)=class_soldier then
+    enable(102); // Hunter crawl and walk + Hunting done
+  depot:=FilterAllUnits([f_or,[f_btype,b_depot],[f_btype,b_warehouse]]);
+  if depot+0>0 then
+  begin
+    x:=GetX(depot[1]);
+    y:=GetY(depot[1]);
+    d:=GetDir(depot[1]);
+    AddComMoveXY(hunter,ShiftX(x,d,7),ShiftY(y,d,7));
+  end
+  else
+    AddComMoveXY(hunter,83,40);
+  while HasTask(hunter) do
+  begin
+    Wait(0$1);
+  end;
+  SetSide(hunter,you);
+end;
+
+every 0$1 marked 101 do // Asking about Hunting
+begin
+  HuntingAsked:=true;
+  Wait(Rand(0$30,2$30));
+  if NOT(HuntingAccepted) AND (IsOK(Belkov) OR IsOK(Karamazov) OR IsOK(Kozlov)) then
+  begin
+    D_Hunting;
+    case Query('QHunting') of
+      1:
+      begin
+        HuntingAccepted:=true;
+        D_QrHunting1;
+        hunt(hunter);
+      end;
+      2:D_QrHunting2;
+    end;
+  end;
+end;
+
+every 0$1+0$0.3 marked 102 do // Hunter crawl and walk + Hunting done
+begin
+  if GetDistUnits(hunter,WantsToAttack(hunter)) < 13 then
+    ComCrawl(hunter)
+  else
+    ComWalk(hunter);
+  if NOT HasTask(hunter) then
+    disable
+  else
+    enable;
+end;

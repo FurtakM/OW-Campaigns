@@ -1,0 +1,661 @@
+EXPORT kur;
+EXPORT pop;
+EXPORT bur;
+EXPORT kov;
+EXPORT gny;
+EXPORT bel;
+EXPORT schol;
+EXPORT schol2;
+
+EXPORT grishko;
+
+EXPORT Rusi_enter;
+
+EXPORT scholtze_saved;
+EXPORT stav_aut;
+EXPORT stav_omikron;
+EXPORT RU_videl_oil;
+VAR counter_zapnut;
+EXPORT setkani_om;
+VAR R_comp;
+EXPORT Rusi_utekli;
+EXPORT Rusi_save;
+
+VAR dialog_probehnul;
+VAR qrefuel_over;
+EXPORT kecy_scholtze_nalezen;
+EXPORT konec_counteru;
+EXPORT stav_aut_new;
+
+EXPORT postavenych_aut;
+
+VAR TTime;             // aktualni cas counteru
+
+EXPORT special_time;
+
+// uvodni definice hodnot a disable triggeru
+EVERY 0$0.1 DO
+VAR i;
+begin
+  schol=0;
+  scholtze_saved=false;
+  stav_omikron=0;
+  stav_aut=0;
+  RU_videl_oil=false;
+  counter_zapnut=false;
+  setkani_om=false;
+  R_comp=[];
+  Rusi_utekli=[];
+  Rusi_save=[];
+  dialog_probehnul=false;
+  qrefuel_over=false;
+  kecy_scholtze_nalezen=false;
+  postavenych_aut=0;
+  TTime=0;
+  konec_counteru=false;
+  stav_aut_new=0;
+  special_time=false;
+  for i in [1,2,3,6,7,8,9,10,51,52,53,200,201,202,203] do disable(i);
+  // 1..10
+  // 51 ... counter 1 prijeti k omicronu
+  // 52 ... counter 2 cas navic k omicronu
+  // 53 ... counter 3 7 minut navic pro staveni
+  // 200 ... rizeni utoku na Omikron
+  // 201 ... uzdravovani aut pred Omikronem
+  // 202 ... utok na hracovy cile
+  // 203 ... mechanici bez aut, auta bez mechaniku
+end;
+
+// uklid vojaku do bunkru, budov apod
+EXPORT function uklid_rusu;
+begin
+  // do bunkru
+  ComEnterUnit(RU1_vb1,RU1_bu1);
+  ComEnterUnit(RU1_vb2,RU1_bu2);
+
+  // laboratore
+  ComEnterUnit(RU1_sci1,RU1_lab2);
+  ComEnterUnit(RU1_sci2,RU1_lab2);
+  ComEnterUnit(RU1_sci3,RU1_lab2);
+  ComEnterUnit(RU1_sci4,RU1_lab1);
+  ComEnterUnit(RU1_sci5,RU1_lab1);
+
+  // tovarna
+  ComEnterUnit(RU1_me1,RU1_fac);
+  ComEnterUnit(RU1_me2,RU1_fac);
+  ComEnterUnit(RU1_me3,RU1_fac);
+
+  // baraky
+  ComEnterUnit(pop,RU1_bar1);
+  ComEnterUnit(RU1_sol1,RU1_bar1);
+  ComEnterUnit(RU1_sol2,RU1_bar1);
+  ComEnterUnit(RU1_sol3,RU1_bar2);
+  ComEnterUnit(RU1_sol4,RU1_bar2);
+  ComEnterUnit(RU1_sol5,RU1_bar2);
+
+  // depot
+  ComEnterUnit(RU1_eng1,RU1_dep);
+end;
+
+// prichod prof Scholtzeho
+EVERY 5$30 DO
+VAR pom;
+begin
+  schol2=create_scholtze;
+  wait(0$2);
+  CenterNowOnUnits(schol2);
+  dialog_scholtze_enter;
+  ComMoveToArea(schol2,scholze_flee);
+  AddComHold(schol2);
+  wait(0$5);
+  amici_hlidka;
+  enable(1);
+end;
+
+// nalezeni Scholtzeho + prebarveni
+EVERY 0$1 TRIGGER FilterUnitsInArea(Schol_les,[[f_side,You]])>0 marked 1 DO
+begin
+  kecy_scholtze_nalezen=true;
+  dialog_scholtze_nalezen;
+  SetSide(schol2,You);
+  schol=schol2;
+  ChangeMissionObjectives('MScholtzeOut');
+  wait(1$0);
+  if IsLive(schol) then scholtze_saved=true;
+end;
+
+// doplnovani ropy bazi RU1
+EVERY 1$0 DO
+begin
+  if GetResourceType(GetBase(RU1_dep),mat_oil)<50
+   then AddResourceType(GetBase(RU1_dep),mat_oil,100);
+  enable;
+end;
+
+// pohyb v bazi - vyzkum
+EVERY 1$7 DO
+begin
+  if Researched(You2,tech_Weap1) then
+    begin
+      SetTech(tech_Weap1,You2,state_enabled);
+      ComResearch(RU1_lab1,tech_Weap1);
+    end;
+  enable;
+end;
+
+// pocatek vyzkumu na zacatku !!!
+EVERY 0$19 DO
+begin
+  SetTech(tech_Weap1,You2,state_enabled);
+  ComResearch(RU1_lab1,tech_Weap1);
+end;
+
+// cas navic na pripravu aut na utok omicronu
+EVERY 0$5 TRIGGER stav_omikron=2 DO
+begin
+  TTime=7$0;
+  enable(53);     // 7 minut navic at se Laren neposere
+  wait(7$0);
+  special_time=true;
+  hlaska_omicron;
+  stav_omikron=3;
+end;
+
+// popov utika za zakladny
+EXPORT function popov_ven;
+var i;
+begin
+  for i = 1 to 8 do
+       DoNotAttack(i,pop);
+
+  while IsInUnit(pop) > 0 do
+       begin
+            case GetType(IsInUnit(pop)) of
+                 unit_building: ComExitBuilding(pop);
+                 unit_vehicle: ComExitVehicle(pop);
+            end;
+
+            wait(0$0.5);
+       end;
+  //ComExitBuilding(pop);
+  AddComMoveToArea(pop,bst_2);
+  AddComMoveToArea(pop,bst_3);
+  AddComHold(pop);
+end;
+
+// odebrani popova na konci
+EVERY 0$5 TRIGGER IsInArea(pop,Exit_area) DO
+begin
+  RemoveUnit(pop);
+end;
+
+// prebarveni druhe baze na zacatku
+EXPORT function prebarveni_druhe_baze;
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You3],[f_type,unit_building]]);
+  for i in pom do SetSide(i,You);
+end;
+
+// prijezd pomoci pro rusi na napadeni
+EXPORT function pomoc_pro_omikroni_utok;
+VAR i;
+begin
+  // auta - posily
+  for i in RUSKE_POSILY_NA_OMICRON_LIST do
+    PlaceUnitArea(i,Enterposil,false);
+  ComMoveToArea(RUSKE_POSILY_NA_OMICRON_LIST,bst_4);
+
+  // ridici pro pripadne prazdne auta navic
+  for i in RUSKE_POSILY_RIDICI_LIST do PlaceUnitArea(i,Arabi1,false);
+  ComMoveToArea(RUSKE_POSILY_RIDICI_LIST,bst_1);
+  AddComEnterUnit(RUSKE_POSILY_RIDICI_LIST,RU1_fac);
+end;
+
+// utok na omicron ... zacatek odpoctu 3 minut
+EVERY 0$1 TRIGGER stav_omikron=3 and not special_time DO
+begin
+  disable(53);
+  TTime=3$0;
+  enable(51);
+  counter_zapnut=true;
+  posli_ruske_posily;
+  enable(3);
+end;
+
+// utok na omicron ... zacatek odpoctu 3 minut
+EVERY 0$1 TRIGGER stav_omikron=3 and special_time DO
+begin
+  disable(53);
+  TTime=2$0;
+  enable(51);
+  counter_zapnut=true;
+  posli_ruske_posily;
+  enable(3);
+end;
+
+
+// setkami vsech pred omicronem
+EVERY 0$3 TRIGGER stav_omikron=3 DO
+VAR i,pom,pom1,pom2,rpom;
+VAR rusi_enter_new;
+VAR poc;
+begin
+  if FilterUnitsInArea(Om_zone,[[f_side,You]]) then
+    begin
+      rpom=FilterUnitsExceptArea(Om_pom1,[[f_side,You],[f_type,unit_human]]);
+      if rpom=0 then
+        begin
+          disable(51);        // konec counteru 1 do prijezdu pred omikron
+          disable(52);        // konec counteru 2 na extra prijezd k omicronu
+          konec_counteru=true;
+          poc=0;
+          while FilterUnitsInArea(Om_zone,[[f_side,You2]])=0 and poc<60 do
+            begin
+              wait(0$1);
+              poc=poc+1;
+            end;
+          stav_omikron=4;
+          dialog_pred_omicronem;
+          enable(9);
+          disable(3);
+        end
+      else
+        enable;
+    end
+  else
+    enable;
+end;
+
+Export function CheckVehicles;
+var pom, pom1, pom2;
+begin
+          pom=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);
+          pom1=FilterAllUnits([[f_side,You],[f_type,unit_human],[f_alive]]);
+          pom2=FilterUnitsInArea(Ru2_base,[[f_side,You2],[f_type,unit_vehicle]]);
+          pom=pom+pom2;
+          if pom<pom1 then stav_aut_new=3;      // malo aut
+          if pom=pom1 then stav_aut_new=2;      // presne aut - zadne navic
+          if pom>pom1 and KurinAddTime = 0 then stav_aut_new=1;      // auta navic vyrobena
+          if pom>=pom1 and KurinAddTime = 1 then stav_aut_new=2;
+end;
+
+
+// poslani ruskych posil pred omicron
+function posli_ruske_posily;
+begin
+  McMove(1,RUSKE_POSILY_NA_OMICRON_LIST,[[109,54],[102,38],[90,22],[54,10]],[mc_move_dontcapture]);
+end;
+
+// poslani ridicu pro auta navic
+every 0$7 Marked 2 DO
+VAR pom;
+begin
+//  wait(1$30);
+  ComExitBuilding(RUSKE_POSILY_RIDICI_LIST);
+
+  while FilterUnitsInArea(RU2_base,[[f_side,You2]])<RUSKE_POSILY_RIDICI_LIST do
+    begin
+      ComMoveToArea(RUSKE_POSILY_RIDICI_LIST,drivers_enter);
+      wait(0$1);
+    end;
+
+  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_type,unit_vehicle], f_not, [f_occupied]]);
+  if not pom then konec_mise_lhani;
+end;
+
+// hlaseni pred omicronem
+EVERY 0$1 marked 3 DO
+begin
+  if special_time then wait(2$0)
+                  else wait(3$0);
+  if not setkani_om then
+    begin
+      dialog_upoz;
+      TTime=2$0;
+      disable(51);      // konec counteru 1
+      enable(52);       // zacatek counteru 2
+      wait(2$0);
+      if not setkani_om then konec_pred_omikronem;
+    end;
+end;
+
+// ohlaseni ruskeho utoku na Omicron - dotaz na pocet aut
+EVERY 0$1 marked 4 DO
+VAR pom;
+begin
+  wait(utok_na_omikron-5$0);
+  pomoc_pro_omikroni_utok;
+  wait(5$0);
+  disable(5);
+  if dialog_probehnul then exit
+                      else dialog_probehnul:=true;
+  pom=dialog_otazka_poctu_aut;
+  case pom of
+   1:begin
+       stav_omikron=3;
+       stav_aut=1;            // auta navic
+       enable(2);
+     end;
+   2:begin
+       stav_omikron=3;
+       stav_aut=2;            // nejsou auta navic
+     end;
+   3:begin
+       stav_omikron=2;
+       stav_aut=3;            // malo aut
+     end;
+  end;
+end;
+
+// ukonceni a ohlaseni utoku na Omicron
+EVERY 0$17 TRIGGER stav_omikron<2 marked 5 DO
+VAR un,veh;
+begin
+  un=FilterAllUnits([[f_side,You],[f_type,unit_human]]);         // vybere vsechny moje lidi
+  veh=FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]);      // vybere vsechny moje auta
+  if veh>=(un+2) then
+    begin
+      disable(4);
+      pomoc_pro_omikroni_utok;
+      if dialog_probehnul then exit
+                          else dialog_probehnul=true;
+      wait(0$10);
+      un=dialog_otazka_poctu_aut;
+      case un of
+       1:begin
+           stav_omikron=3;
+           stav_aut=1;            // auta navic
+           enable(2);
+         end;
+       2:begin
+           stav_omikron=3;
+           stav_aut=2;            // nejsou auta navic
+         end;
+       3:begin
+           stav_omikron=2;
+           stav_aut=3;            // malo aut
+         end;
+      end;
+    end
+  else enable;
+end;
+
+//-
+// posilani ruskych pocitacovych aut zpatky na zakladnu do Kirova
+EXPORT function manage_ruske_computery_zpet;
+VAR pom;
+begin
+  disable(200);
+  disable(201);
+  disable(202);
+  disable(203);
+  pom=FilterUnitsInArea(Am_base,[[F_side,You2]]);
+  McMove(2,pom,[[42,14],[60,15],[95,21],[100,34]],[mc_move_agressive,mc_move_wait,mc_move_waitwp]);
+  enable(5);
+  R_comp=pom;
+end;
+
+// posunovani RU vojaku
+EVERY 0$15 marked 5 DO
+begin
+  wait(1$0);
+  McMove(1,R_comp,[[110,59],[129,75]],[mc_move_agressive,mc_move_wait,mc_move_waitwp]);
+end;
+
+// rozdeleni ruskych jednotel do utekovych skupin
+function split_ruske_jednotky(jedn);
+VAR i,pom;
+VAR p1,p2,p3,p4;
+VAR a;
+begin
+  p1=[];
+  p2=[];
+  p3=[];
+  p4=[];
+  for i in jedn do
+    begin
+      pom=Rand(1,4);
+      case pom of
+       1:p1=p1^i;
+       2:p2=p2^i;
+       3:p3=p3^i;
+       4:p4=p4^i;
+      end;
+    end;
+  a=[p1,p2,p3,p4];
+  result:=a;
+end;
+
+// odebirani rusu cislo 2
+EVERY 0$1 marked 6 DO
+VAR pom,i;
+begin
+  pom=FilterUnitsInArea(RU_odber,[[f_side,You2]]);
+  if pom>0 then
+    begin
+      Rusi_utekli=Rusi_utekli^pom;
+      for i in pom do RemoveUnit(i);
+    end;
+  enable;
+end;
+
+// prijezd nejakych "posil" do kirova
+EVERY 25$0 DO
+VAR i,pom;
+begin
+  for i in RU_posily_na_utek do PlaceUnitArea(i,Ru_posily,false);
+  pom=UnitFilter(RU_posily_na_utek,[[f_type,unit_vehicle]]);
+  ComMoveXY(pom,155,93);
+  Rusi_save=pom;
+  pom=UnitFilter(RU_posily_na_utek,[[f_class,class_soldier]]);
+  ComEnterUnit(pom,RU1_bar2);
+  pom=UnitFilter(RU_posily_na_utek,[[f_class,class_mechanic]]);
+  ComEnterUnit(pom,RU1_fac);
+  pom=UnitFilter(RU_posily_na_utek,[[f_class,class_engineer]]);
+  ComEnterUnit(pom,RU1_dep);
+  Rusi_save=Rusi_save^[RU1_sol1,RU1_me3,Ru1_sci2,RU1_sci5,RU1_sci3,RU1_sol5,RU1_eng1];
+end;
+
+// poslani rusu pryc ze zakladny
+EXPORT function posli_rusy_pryc;
+VAR pom;
+begin
+  SetLives(Rusi_save,800);
+  pom=split_ruske_jednotky(Rusi_save);
+  ComExitBuilding(Rusi_save);
+  AddComMoveXY(pom[1],110,45);
+  AddComMoveXY(pom[2],103,60);
+  AddComMoveXY(pom[3],76,80);
+  AddComMoveXY(pom[4],53,1);
+end;
+
+// posilani lidi zpet, kdyz utikaji pryc z omicronu
+EXPORT function posli_lidi_zpet_omicron;
+VAR pom;
+VAR pom1,i;
+begin
+  pom1=[];
+  pom=FilterUnitsInArea(Om_ven,[[f_type,unit_building],[f_side,You]]);
+  for i in pom do pom1=pom1^UnitsInside(i);
+  ComExitBuilding(pom1);
+  pom=FilterUnitsInArea(Om_ven,[[f_type,unit_human],[f_side,You]]);
+  pom1=pom1^pom;
+  pom=FilterUnitsInArea(Om_ven,[[f_type,unit_vehicle],[f_side,You]]);
+  for i in pom do begin
+                    pom1=pom^i;
+                    if IsDrivenBy(i) then pom1=pom1^IsDrivenBy(i);
+                  end;
+  SetSide(pom1,You3);
+  pom=FilterUnitsInArea(Om_ven_1,[[f_side,You3],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  ComMoveXY(pom,79,16);
+  pom=FilterUnitsInArea(Om_ven_2,[[f_side,You3],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  ComMoveXY(pom,67,40);
+  pom=FilterUnitsInArea(Om_ven_3,[[f_side,You3],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  ComMoveXY(pom,58,52);
+end;
+
+// lidi josu v popovove arei
+EXPORT function get_lidi_popov_area;
+VAR pom,i;
+VAR drv;
+VAR a;
+begin
+  a=[];
+  pom=FilterUnitsInArea(Pop_area,[[f_side,You],[f_type,unit_human]]);
+  a=pom;
+  pom=FilterUnitsInArea(Pop_area,[[f_side,You],[f_type,unit_vehicle]]);
+  for i in pom do
+    begin
+      drv=IsDrivenBy(i);
+      if (not (drv in a)) and (drv<>0) then
+        a=a^drv;
+    end;
+  result:=a;
+end;
+
+// totalni ukonceni mise
+EXPORT function totalni_ukonceni_mise_v_ingame_videu;
+VAR pom;
+begin
+  InGameOn;
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  McMove(10,pom,[[108,70],[77,65],[53,63],[40,64],[51,97]],[mc_no_stop,mc_move_dontcapture]);
+  pom=FilterAllUnits([[f_side,You2],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  McMove(10,pom,[[108,70],[77,65],[53,63],[40,64],[51,97]],[mc_no_stop,mc_move_dontcapture]);
+  enable(7);
+  wait(0$10);
+  InGameOff;
+  konec_mise;
+end;
+
+// posle kurina se schovat do depotu
+EXPORT function schovej_kurina;
+begin
+  ComEnterUnit(kur,RU1_dep);
+end;
+
+// posle kurina ven z depotu
+EXPORT function posli_kurina_na_smrt;
+begin
+  ComExitBuilding(kur);
+end;
+
+// vraceni lidi z oranzova
+EVERY 0$2 DO
+VAR pom;
+VAR i;
+begin
+  pom=FilterUnitsExceptArea(Om_ven,[[f_side,You3]]);
+  for i in pom do
+    begin
+      if GetType(i)=unit_vehicle then
+        if IsDrivenBy(i) then SetSide(IsDrivenBy(i),You);
+      SetSide(i,You);
+    end;
+  enable;
+end;
+
+// poslani aut na precerpavani
+EVERY 0$1 marked 9 DO
+VAR i;
+VAR ridici;
+VAR mcm;
+begin
+  ridici=[];                             
+  for i in RUSI_CERPACI_AUTA_LIST do
+    begin
+      PlaceUnitArea(i,Enterposil,false);
+      ridici=ridici^IsDrivenBy(i);
+    end;
+  mcm=McMove(10,RUSI_CERPACI_AUTA_LIST,[[130,75],[112,59],[106,32],[91,21],[62,9]],[mc_move_waitwp]);
+  while UnitFilter(RUSI_CERPACI_AUTA_LIST,[[f_inarea,benzina]])<>RUSI_CERPACI_AUTA_LIST do
+    begin
+      KillMc(mcm);
+      wait(0$2);
+      ComMoveXY(RUSI_CERPACI_AUTA_LIST,62,9);
+    end;
+  hint_cerpaci_auta;
+  ComExitVehicle(ridici);
+  AddComAgressiveMove(ridici,45,6);
+  AddComAgressiveMove(ridici,15,10);
+  AddComAttackUnit(ridici,Am_dep);
+end;
+
+// poslani vojaku z cerpacich aut do utoku
+EVERY 0$2 DO
+VAR pom,i;
+VAR ridic;
+begin
+  pom=FilterUnitsInArea(Cauta,[[f_side,You2],[f_weapon,ru_cargo_bay]]);
+  if pom>0 then
+    begin
+      if not qrefuel_over then
+        begin
+          qrefuel_over=true;
+          query_refuel;
+        end;
+    end;
+  for i in pom do
+    if IsDrivenBy(i) then
+      begin
+        ridic=IsDrivenBy(i);
+        ComExitVehicle(ridic);
+        AddComAgressiveMove(ridic,21,14);
+      end;
+  enable;
+end;
+
+// pocitani ruskych aut, ktere hrac postavil
+on VehicleConstructed(v,fact) do
+begin
+  postavenych_aut=postavenych_aut+1;
+  enable;
+end;
+
+// counter na prijeti k omicronu
+EVERY 0$1 marked 51 DO
+begin
+  if konec_counteru then begin
+                           display_strings=[];
+                           exit;
+                         end;
+  display_strings=['#Ru03-1',TTime];
+  TTime=TTime-0$1;
+  if TTime>0 then enable
+             else display_strings=[];
+end;
+
+// counter na cAs 2m navic na diojeti k omicronu
+EVERY 0$1 marked 52 DO
+begin
+  if konec_counteru then begin
+                           display_strings=[];
+                           exit;
+                         end;
+  display_strings=['#Ru03-2',TTime];
+  TTime=TTime-0$1;
+  if TTime>0 then enable
+             else display_strings=[];
+end;
+
+// counter na cas 5 minut na dostaveni a pripravu na utok
+EVERY 0$1 marked 53 DO
+begin
+  if konec_counteru then begin
+                           display_strings=[];
+                           exit;
+                         end;
+  display_strings=['#Ru03-3',TTime];
+  TTime=TTime-0$1;
+  if TTime>0 then enable
+             else display_strings=[];
+end;
+
+// zastaveni ruskych jednotek, kdyz zacne arabsky utok
+EXPORT function zastaveni_rusaku;
+VAR pom;
+begin
+  pom=FilterAllUnits([[f_side,You],[f_or,[f_type,unit_vehicle],[f_type,unit_human]]]);
+  ComStand(pom);
+end;

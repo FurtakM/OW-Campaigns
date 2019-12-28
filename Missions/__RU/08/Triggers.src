@@ -1,0 +1,943 @@
+export function merc_help;
+var rnd;
+begin
+  rnd:=Rand(2$0,3$0);
+  Wait(rnd);
+  if NOT HeikeKilled then
+  begin
+    D_MercHelp;
+    case Query('QMerc') of
+      1:begin
+          D_QrMerc1;
+          create_kurt;
+          MercAccepted:=true;
+          come_to_build_barracks;
+        end;
+      2:begin
+          D_QrMerc2;
+          PopovAsked:=true;
+          create_kurt;
+          MercAccepted:=true;
+          come_to_build_barracks;
+        end;
+      3:begin
+          D_QrMerc3;
+          PopovAsked:=true;
+          Wait(0$13);
+          create_kurt;
+          ComMoveToArea([Kurt,Mercenary1],WaitHeikeArea);
+          enable(6);
+          enable(20);
+          D_MercAttack;
+          merc_attack;
+        end;
+    end;
+    MortarAsked:=true;
+  end;
+end;
+
+export function merc_attack;
+var grp,celkemgrp,rnd,pocet,mercenaries,filter;
+begin
+  repeat
+    SetAttitude(you,merc,att_enemy,true);
+
+    mercenaries:=[];
+
+    grp:=Rand(1,6);
+
+    for pocet:=1 to grp do
+    begin
+      uc_side=merc;
+      uc_nation:=nation_arabian;
+
+      rnd:=Rand(1,2);
+      case rnd of
+        1:PrepareHuman(sex_male,class_soldier,2);
+        2:PrepareHuman(sex_male,class_mortar,2);
+      end;
+      hc_name:='';
+      mercenaries:=mercenaries^CreateHuman;
+      Wait(2);
+    end;
+
+    for pocet:=1 to grp do
+    begin
+      if HeikeDismissed then exit;
+      PlaceUnitArea(mercenaries[pocet],AttackArea,false);
+      ComAgressiveMove(mercenaries[pocet],GetX(Burlak),GetY(Burlak));
+      Wait(1);
+    end;
+    celkemgrp:=celkemgrp+grp;
+    Wait(1$0);
+  until HeikeSend or celkemgrp>pocetmercenaries;
+
+  repeat
+    Wait(0$1);
+  until HeikeDismissed or celkemgrp>pocetmercenaries;
+
+  if HeikeDismissed then
+  begin
+    SetAttitude(you,merc,att_friend,true);
+    filter:=FilterAllUnits([f_side,merc]);
+    ComAgressiveMove(filter,29,57);
+  //  ComMoveToArea(filter,MercExitArea);
+    enable(5); // mercenary destroying in MercExitArea
+    repeat
+      Wait(0$3);
+      ComAgressiveMove(filter,29,57);
+    until FilterAllUnits([f_side,merc])=[];
+  end;
+end;
+
+function come_to_build_barracks;
+var x,y,d,filter;
+begin
+  SetAttitude(you,merc,att_neutral,true);
+
+  filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+  if (0+filter)<>0 then
+  begin
+    x:=GetX(filter[1]);
+    y:=GetY(filter[1]);
+    d:=GetDir(filter[1]);
+  end
+  else
+  begin
+    x:=GetX(Burlak);
+    y:=GetY(Burlak);
+    d:=1;
+  end;
+
+  ComMoveXY([Kurt,Mercenary1],ShiftX(x,d,5),ShiftY(y,d,5));
+
+  enable(1);  // Mercenaries become russians
+end;
+
+
+export function hand_over;
+var i,filter,auto,x,y,d;
+begin
+  SetAttitude(arab,merc,att_enemy,true);
+  SetAttitude(arab,you,att_friend,true);
+
+  auto:=[];
+  ar_human:=[];
+
+  filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+  if (0+filter)<>0 then
+  begin
+    x:=GetX(filter[1]);
+    y:=GetY(filter[1]);
+    d:=GetDir(filter[1]);
+  end
+  else
+  begin
+    x:=GetX(Burlak);
+    y:=GetY(Burlak);
+    d:=1;
+  end;
+
+  enable(7); // player attacks arabs ... HandOverSpoiled
+
+  for i:=1 to 3 do // 3 x cargo_bay
+  begin                         
+    uc_side:=arab;
+    uc_nation:=nation_arabian;
+    uc_direction:=3;
+
+    if i<=2 then
+      PrepareHuman(sex_male,class_soldier,7)
+    else
+      PrepareHuman(sex_male,class_scientistic,7);
+
+    Wait(1);
+    hc_name:='';
+    ar_human:=ar_human^CreateHuman;
+
+    vc_chassis:=ar_medium_trike;
+    vc_engine:=engine_combustion;
+    vc_weapon:=ar_cargo_bay;
+    vc_control:=control_manual;
+
+    auto:=auto^CreateVehicle;
+    PlaceHumanInUnit(ar_human[i],auto[i]);
+    PlaceUnitArea(auto[i],HandOverEnterArea,false);
+    enable(6); // waiting for Heike
+
+    case i of
+      1:
+      begin
+        SetCargo(auto[1],mat_cans,100);
+        ComMoveXY(auto[1],ShiftX(x,d,5),ShiftY(y,d,5));
+        Wait(1);
+        AddComExitVehicle(auto[1]);
+      end;
+      2:
+      begin
+        SetCargo(auto[2],mat_oil,100);
+        ComMoveXY(auto[2],ShiftX(x,d,5),ShiftY(y,d,5));
+        Wait(1);
+        AddComExitVehicle(auto[2]);
+        Wait(1);
+        AddComMoveUnit(auto[2],auto[1]);
+      end;
+      3:
+      begin
+        SetCargo(auto[3],mat_siberit,100);
+        ComMoveXY(auto[3],ShiftX(x,d,5),ShiftY(y,d,5));
+        Wait(1);
+        AddComExitVehicle(auto[3]);
+        Wait(1);
+        AddComMoveUnit(auto[3],auto[1]);
+      end;
+    end;
+    Wait(0$3);
+  end;
+  
+  MercHandoverArabsSpawned = true;
+  enable(9); // Mercenaries starts run vhen Arabs arrive
+end;
+
+//******************** TRIGERS ****************************************
+every 0$1+0$0.5 do // SetBName
+var filter;
+begin
+  filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+  if filter then SetBName(filter,'trockij');
+  enable;
+end;
+
+var crates_amount,crates_creating;
+
+every 1$30 do // crates creating
+begin
+  crates_amount:=GetResourceArea(TreesArea,mat_cans);
+  if crates_amount >= 80 then crates_creating:=false;
+  if crates_amount <= 30 then crates_creating:=true;
+  if crates_creating then CreateCratesArea(Rand(3,5),TreesArea,true);
+  enable;
+end;
+
+var NonBuildBuildings,NonBuildWeapons;
+
+every 0$3 do // Buildings counting
+var filter,filter_tur,un,filter_weap,budova,NonBuild;
+begin
+  NonBuild:=AvailableBuildings;
+
+  filter:=FilterAllUnits([[f_type,unit_building],[f_side,you],[f_ready]]);
+
+  TurretsDone:=false;
+
+  filter_tur:=FilterAllUnits([[f_btype,b_turret],[f_side,you],[f_ready]]);
+
+  filter_weap:=[];
+  for un in filter_tur do
+  begin
+    filter_weap:=filter_weap union GetBWeapon(un);
+    Wait(2);
+  end;
+
+  if (filter_weap diff 0)>=3 then TurretsDone:=True;
+
+  for budova in filter do
+  begin
+    NonBuild:=NonBuild diff GetBType(budova);
+    Wait(1);
+  end;
+
+  if NonBuild=[] AND TurretsDone AND Not BuildingsDone then
+  begin
+    ChangeMissionObjectives('MBuildingsDone');
+    BuildingsDone:=true;
+  end
+  else
+    if (NonBuild<>[] OR NOT TurretsDone) AND BuildingsDone then
+    begin
+      ChangeMissionObjectives('MBuildings');
+      BuildingsDone:=false;
+    end;
+
+  if NOT ((filter_weap diff 0)>3) then
+    NonBuild:=NonBuild+3-(filter_weap diff 0);
+//  else
+//    NonBuild:=NonBuild+3;
+
+
+  NonBuildBuildings:=NonBuild;
+
+  if HeikeCratesTime then
+    display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno),'#Ru08-4',HeikeCratesTime]
+  else
+    display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno)];
+
+  if NonBuild+0=11 AND NOT GalleryAsked  then enable(201); // Asking about Shooting Gallery
+  if NonBuild+0=7 AND NOT HuntingAsked  then enable(101); // Asking about Hunting
+  if NonBuild+0=3  AND NOT FreetimeAsked then enable(301); // Asking about Freetime
+  enable;
+end;
+
+every 0$3+0$0.5 do // Weapons counting
+var filter,veh,NonBuild;
+begin
+  NonBuild:=AvailableWeapons;
+
+  filter:=FilterAllUnits([[f_type,unit_vehicle],[f_side,you]]);
+
+  for veh in filter do
+  begin
+    NonBuild:=NonBuild diff GetWeapon(veh);
+    Wait(1);
+  end;
+
+  if NonBuild=[] AND Not WeaponsDone then
+  begin
+    ChangeMissionObjectives('MWeaponsDone');
+    WeaponsDone:=true;
+  end
+  else
+    if NonBuild<>[] AND WeaponsDone then
+    begin
+      ChangeMissionObjectives('Mweapons');
+      WeaponsDone:=false;
+    end;
+
+  NonBuildWeapons:=NonBuild;
+
+  if HeikeCratesTime then
+    display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno),'#Ru08-4',HeikeCratesTime]
+  else
+    display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno)];
+
+  enable;
+end;
+
+every 0$2 marked 1 do  // Mercenaries become russians
+var filter;
+begin
+  filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+  if (0+filter)=0 then filter:=filter union Burlak;
+
+  if (GetDistUnits(Kurt,filter[1]) < 8) OR (GetDistUnits(Mercenary1,filter[1]) < 8) then
+  begin
+    SetSide([Kurt,Mercenary1],you);
+    enable(10); // Arabian request (handover)
+    enable(601); // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
+  end;
+
+  if GetSide(Kurt)=you  AND GetSide(Mercenary1)=you then
+    disable
+  else
+    enable;
+end;
+
+every 0$1+0$0.2 marked 2 do  // On attack mercenaries change attitude
+//var un;
+var list;
+begin
+  {for un in player_units do
+  begin
+    if (Attacks(un)=Kurt) OR (Attacks(un)=Mercenary1) OR  GetLives(Kurt)<500 OR  GetLives(Mercenary1)<500 then }
+  list = [false,false];
+  if IsLive(Kurt) and UnitShoot(Kurt) > 0 then
+       if GetSide(UnitShoot(Kurt)) = you then
+            list = Replace(list,1,true);
+
+  if IsLive(Mercenary1) and UnitShoot(Mercenary1) > 0 then
+       if GetSide(UnitShoot(Mercenary1)) = you then
+            list = Replace(list,2,true);
+
+  if true in list then
+    begin
+      disable(601); // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
+      SetSide([Kurt,Mercenary1],merc);
+      SetAttitude(you,merc,att_enemy,true);
+      D_MercAmbush;
+      ComAgressiveMove([Kurt,Mercenary1],27,52);
+      enable(23);  // Heike reaction on MercHandedOver (kill'em all)
+      merc_attack;
+      disabled2:=true;
+    end;
+  {  Wait(1);
+  end; }
+  if NOT disabled2 then enable;
+end;
+
+every 0$10 marked 3 do // countdown to attack, if player didn't release Heike
+begin
+  countdown:=countdown-10*35;
+  if countdown<0 AND NOT HeikeDismissed then
+  begin
+    disabled3:=true;
+    enable(24);
+    merc_attack;
+  end;
+  if not disabled3 then enable;
+end;
+
+every 0$1 marked 24 do // Wait dialogue D_MercAttack
+begin
+  Wait(0$20);
+  D_MercAttack;
+end;
+
+every 0$1+0$0.4 marked 4 do  // Heike changes side and leaves map
+begin
+  if IsInArea(Heike,WaitHeikeArea) AND NOT HeikeDismissed then
+  begin
+    SetSide(Heike,merc);
+    ComMoveToArea([Kurt,Mercenary1,Heike],MercExitArea);
+    SetAreaMapShow(WaitHeikeArea,0);
+    HeikeDismissed:=true;
+    if Not PopovAsked then D_MercPopov;
+    enable(5); // mercenary destroying in MercExitArea
+    disabled6:=true;
+    disabled3:=true;
+  end
+  else
+    enable;
+end;
+              
+every 0$1+0$0.5 marked 5 do // mercenary destroying in MercExitArea
+var filter,un;
+begin
+  filter:=FilterUnitsInArea(MercExitArea,[f_or,[f_side,merc],[f_side,arab]]);
+  for un in filter do
+  begin
+    RemoveUnit(un);
+    Wait(1);
+  end;
+  if not disabled5 then enable;
+end;
+
+every 0$1+0$0.6 marked 6 do // waiting for Heike
+begin
+  if IsInArea(Kurt,WaitHeikeArea) then
+    enable(4) // Heike changes side and leaves map
+  else
+    enable;
+end;
+
+every 0$1+0$0.7 marked 7 do // player attacks arabs ... HandOverSpoiled
+var un, i, done;
+begin
+  for un in player_units do
+  begin
+    if GetSide(Attacks(un))=arab AND NOT disabled7 then
+    begin
+      GenscherBetrayed:=true;
+      disabled7:=true;
+      D_HandOverSpoiled;
+      SetAttitude(you,arab,att_enemy,true);
+
+      //A human inside a vehicle will not obey any move orders unless the vehicle has
+      //no tasks when the order is given. The player could attack the cargo bays
+      //before the Arabs exit.
+      repeat
+      wait(0$0.5);
+      done = true;
+
+      for i in ar_human do
+           begin
+                if not IsPlaced(i) and GetLives(i) > 0 then  //Not yet placed
+                     begin
+                          done = false;
+                          continue;
+                     end;
+
+                if not IsOk(i) then
+                     continue;
+
+                if IsInUnit(i) > 0 then
+                     begin
+                          ComExitVehicle(i);
+                          //Task list is reset upon exiting a vehicle so an "AddComAgressiveMove" won't work.
+                          done = false;
+                     end
+                else
+                     ComAgressiveMove(i,GetX(Burlak),GetY(Burlak));
+           end;
+
+      until MercHandoverArabsSpawned and done;
+    end;
+    //Wait(1);
+  end;
+  if not disabled7 and not MercHandoverDone then enable;
+end;
+
+every 0$0.5+0$0.3 marked 8 do // Arabs arrest Mercenaries
+begin
+  if disabled7 then
+  begin
+    disable;
+    exit;
+  end;
+
+  if NOT MercHandedOver then exit;
+
+  if NOT GetSide(Kurt)=arab then ComAttackUnit(ar_human[1],Kurt);
+  if NOT GetSide(Mercenary1)=arab then ComAttackUnit(ar_human[2],Mercenary1);
+  if NOT IsLive(Kurt) OR NOT IsLive(Mercenary1) then
+    McMove(1,[ar_human[1],ar_human[2],ar_human[3]],[[29,57]],[[mc_move_wait,3],mc_move_dontcapture]);
+
+  if Attacks(ar_human[1])=Kurt then
+  begin
+    ComStop([Kurt,Mercenary1]);
+    SetSide([Kurt,Mercenary1],arab);
+    ComStop(ar_human[1]);
+    Wait(2);
+    AddComMoveUnit(ar_human[1],Kurt);
+    if GetLives(Kurt)<300 then AddComHeal(ar_human[3],Kurt);
+  end;
+
+  if Attacks(ar_human[2])=Mercenary1 then
+  begin
+    ComStop(ar_human[2]);
+    SetSide([Kurt,Mercenary1],arab);
+    ComStop([Kurt,Mercenary1]);
+    Wait(2);
+    AddComMoveUnit(ar_human[2],Mercenary1);
+    if GetLives(Mercenary1)<300 then AddComHeal(ar_human[3],Mercenary1);
+  end;
+
+  if GetSide(Kurt)=arab AND GetSide(Mercenary1)=arab then
+  begin
+    disabled8:=true;
+    disable(2); // On attack mercenaries change attitude
+    disable(6); // waiting for Heike
+    disable(12);
+    Wait(0$5);
+    McMove(1,[ar_human[1],ar_human[2],ar_human[3],Kurt,Mercenary1],[[115,32]],[[mc_move_wait,3],mc_move_dontcapture]);
+    enable(11); // Arabs removing in HandOverEnterArea
+  end;
+
+  if Not disabled8 then enable;
+end;
+
+Every 0$1+0$0.1 marked 8 do
+     begin
+          repeat
+          wait(0$1);
+
+          if GenscherBetrayed then
+               exit;
+
+          if UnitFilter(ar_human,[f_placed]) = 0 then
+               begin
+                    SA_OnLegionHandoverToUPF;
+                    MercHandoverDone = true;
+                    exit;
+               end;
+
+          until false;
+     end;
+
+every 0$1+0$0.9 marked 9 do // Mercenaries starts run vhen Arabs arrive
+var un1,un2;
+begin
+  if disabled7 then
+  begin
+    disable;
+    exit;
+  end;
+
+  if IsInUnit(ar_human[1])=0 AND IsInUnit(ar_human[2])=0 then //AND IsInUnit(ar_human[3])=0
+  begin
+    disable(601); // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
+    D_HandOverCome;
+    MercHandedOver:=True;
+    disable(20);  //Heike controlling
+    enable(23); // Heike reaction on MercHandedOver (kill'em all)
+    enable(8); // Arabs arrest Mercenaries
+    ComStop([Kurt,Mercenary1]);
+    SetSide([Kurt,Mercenary1],merc);
+    SetAttitude(you,merc,att_neutral,true);
+    SetAttitude(merc,arab,att_friend,true);
+    Wait(2);
+    enable(5); // mercenary destroying in MercExitArea
+    ComAttackUnit(ar_human[1],Kurt);
+    ComAttackUnit(ar_human[2],Mercenary1);
+    ComMoveToArea([Kurt,Mercenary1],MercExitArea);
+    disabled9:=true;
+  end;
+  if not disabled9 then enable;
+end;
+
+every 0$1 marked 10 do // Arabian request (handover)
+var rnd;
+begin
+  rnd:=Rand(0$30,0$45);
+  Wait(rnd);
+  if GetAttitude(you,merc)=att_neutral AND GetSide(Kurt)=you then D_ArabianRequest;
+end;
+
+every 0$1+0$0.2 marked 11 do // Arabs removing in HandOverEnterArea
+var filter,un,disablefilter;
+begin
+  filter:=FilterUnitsInArea(HandOverEnterArea,[[f_side,arab],[f_type,unit_human]]);
+  for un in filter do
+  begin
+    RemoveUnit(un);
+    Wait(1);
+  end;
+  disablefilter:=FilterAllUnits([f_side,arab]);
+  if 0+disablefilter>0 then
+    enable
+  else
+  begin
+    disable;
+    disable(7); // player attacks arabs ... HandOverSpoiled
+  end;
+end;
+
+var HeikeCratesTime,LegionDone;
+
+every 0$1 marked 13 do // Dialogue and Query LegionFormed
+var un,filter,amount;
+begin
+  if (NOT HeikeKilled) AND HeikeDismissed then
+  begin
+    disabled5:=true;
+    Wait(0$5);
+    D_LegionFormed;
+    case Query('QLegion') of
+      1:
+      begin
+        amount:=0;
+        filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+        if filter<>[] then
+          for un in filter do
+            amount:=amount+GetResourceType(GetBase(un),mat_cans);
+
+        if amount<50 then
+        begin
+          HeikeCratesTime:=0$60;
+          repeat
+            display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno),'#Ru08-4',HeikeCratesTime];
+            amount:=0;
+            filter:=FilterAllUnits([[f_side,you],[[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]]);
+            if filter<>[] then
+              for un in filter do
+                amount:=amount+GetResourceType(GetBase(un),mat_cans);
+            Wait(0$1);
+            HeikeCratesTime:=HeikeCratesTime-0$1;
+          until amount>=50 or HeikeCratesTime<=0;
+
+          if amount>=50 AND HeikeCratesTime>0 then
+          begin
+            D_QrLegion1;
+            MercPaid:=true;
+            amount:=50;
+            for un in filter do
+              if GetResourceType(GetBase(un),mat_cans)<amount AND amount<>0 then
+              begin
+                amount:=amount-GetResourceType(GetBase(un),mat_cans);
+                SetResourceType(GetBase(un),mat_cans,0);
+              end
+              else
+              begin
+                SetResourceType(GetBase(un),mat_cans,GetResourceType(GetBase(un),mat_cans)-amount);
+                amount:=0;
+              end;
+          end;
+        end
+        else
+        begin
+          D_QrLegion1;
+          MercPaid:=true;
+          amount:=50;
+          for un in filter do
+            if GetResourceType(GetBase(un),mat_cans)<amount AND amount<>0 then
+            begin
+              amount:=amount-GetResourceType(GetBase(un),mat_cans);
+              SetResourceType(GetBase(un),mat_cans,0);
+            end
+            else
+            begin
+              SetResourceType(GetBase(un),mat_cans,GetResourceType(GetBase(un),mat_cans)-amount);
+              amount:=0;
+            end;
+        end;
+      end;
+      2:D_QrLegion2;
+    end;
+  end;
+  LegionDone:=true;
+end;
+
+
+every 0$1 marked 20 do // Heike controling
+begin
+  if IsSelected(Heike)=true then
+  begin
+    if WasSelected=false then
+    begin
+      if Query('QSendHeike')=1 then
+        begin
+          HeikeSend:=true;
+          ComMoveXY(Heike,39,47);
+          exit;
+        end;
+      WasSelected:=true;
+    end;
+  end
+  else
+    WasSelected:=false;
+  //if NOT MercWillBeHandedOver AND NOT MercHandedOver then enable;
+  enable;
+end;
+
+every 0$10+0$0.4 marked 21 do // TechnoDone and BuildingsDone ... starting AmAttack
+begin
+  if TechnoDone and BuildingsDone and NOT AmAttackStarted then
+  begin
+    enable(13); // Dialogue and Query LegionFormed
+    repeat
+      Wait(0$1);
+    until LegionDone;
+    if (NOT HeikeKilled) AND HeikeDismissed then
+      Wait(0$35)
+    else
+      Wait(0$5);
+    enable(999); // The End
+    enable(501); // Dialogue & Calling of Am_Attack placing
+  end;
+  if NOT AmAttackStarted then enable;
+end;
+
+var ApesRespawned;
+
+every 0$1+0$0.8 marked 22 do // Apemen respawning
+var Ape;
+begin
+  Wait(350*ApesRespawned);
+  if FilterAllUnits([f_class,class_apeman])<1 then
+  begin
+    ApesRespawned:=ApesRespawned+1;
+    uc_side:=0; //neutral
+    uc_nation:=nation_nature;
+
+    PrepareHuman(sex_male,class_apeman,2);
+    hc_name:='';
+    Ape:=CreateHuman;
+    SetDir(Ape,Rand(0,5));
+    PlaceUnitArea(Ape,AnimalsArea,false);
+    ComMoveToArea(Ape,ApeArea);
+  end;
+  enable;
+end;
+
+
+every 0$15 marked 23 do // Heike reaction on MercHandedOver (kill'em all)
+var filter,un;
+begin
+  ComAttackUnit(Heike,Burlak);
+  filter:=FilterAllUnits([[f_side,you],[f_type,unit_human]]);
+  for un in filter do
+  begin
+    AddComAttackUnit(Heike,un);
+    Wait(10);
+  end;
+  enable;
+end;
+
+// **********************    EVENTS   ********************************
+
+on BuildingComplete(building) do
+var rnd,distance,un1,un2,pole,budova1,budova2,i,filter;
+begin
+  if (NOT depot_build) AND (GetBType(building)=b_depot) AND HeikeCaptured then
+  begin
+    depot_build=true;
+    depotX:=GetX(building);
+    depotY:=GetY(building);
+
+    Wait(0$10);
+    D_Heike;
+    rnd:=Rand(1$15,2$0);
+    Wait(rnd);
+    merc_help;
+  end;
+end;
+
+on UpgradeComplete(building) do
+begin
+  if (GetBType(building)=b_barracks) And (GetNation(building)=nation_arabian) then
+  begin
+    MortarDone:=true;
+    if Not MercHandedOver OR NOT MercWillBeHandedOver then
+    begin
+      Wait(0$1);
+      enable(3); // countdown to attack, if player didn't release Heike
+      D_MercCompleted;
+      enable(20); // Heike controling
+      SetAreaMapShow(WaitHeikeArea,1);
+      SetSide([Kurt,Mercenary1],merc);
+      disable(601); // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
+      ComMoveXY([Kurt,Mercenary1],39,48);
+      enable(6);// waiting for Heike in WaitHeikeArea
+    end;
+  end;
+end;
+
+on UnitGoesToRed(un) do
+begin
+  if LimitTeleportResearched AND GetType(un)=unit_vehicle then
+  begin
+    LimitTeleportTested:=true;
+    ChangeMissionObjectives('MTeleDone');
+  end;
+
+  if GetSide(un)=usa then
+    amattack:=amattack diff un;
+
+  if un=Heike then
+  begin
+    if MortarAsked AND NOT MercHandedOver then
+    begin
+      D_MercDeceived;
+      if NOT MortarDone then
+      begin
+        SetSide([Kurt,Mercenary1],merc);
+        ComAgressiveMove([Kurt,Mercenary1],GetX(Burlak),GetY(Burlak));
+      end;
+      SetLives(Heike,0);
+      HeikeKilled:=true;
+      merc_attack;
+    end
+    else
+    begin
+      D_HeikeKilled;
+      SetLives(Heike,0);
+      HeikeKilled:=true;
+      SetAttitude(you,merc,att_enemy,true);
+    end;
+  end;
+end;
+
+on UnitDestroyed(human) do
+begin
+  if human=Burlak then
+    YouLost('Burlak');
+end;
+
+on ResearchComplete(tech,lab) do
+begin
+  if tech=tech_AdvAI then
+  begin
+    Hint('AI');
+    Wait(0$10);
+    D_AI;
+    ChangeMissionObjectives('MAI');
+  end;
+
+  if tech=tech_LimTeleport then
+  begin
+    Hint('SpontTelep');
+    Wait(0$10);
+    D_SpontTelep;
+    ChangeMissionObjectives('MTele');
+    LimitTeleportResearched:=true;
+  end;
+
+  AvailableTechno:=AvailableTechno diff tech;
+
+  if HeikeCratesTime then
+    display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno),'#Ru08-4',HeikeCratesTime]
+  else
+    display_strings:=['#Ru08-1',(0+NonBuildBuildings),'#Ru08-2',(0+NonBuildWeapons),'#Ru08-3',(0+AvailableTechno)];
+
+  if AvailableTechno=[] AND NOT TechnoDone then
+  begin
+    ChangeMissionObjectives('MTechnoDone');
+    TechnoDone:=true;
+  end;
+end;
+
+on VehicleConstructed(veh,fact) do
+begin
+  AvailableWeapons:=AvailableWeapons diff GetWeapon(veh);
+
+  if (AvailableWeapons+0)=2 AND NOT MashaAsked then enable(401); // Dialogue about Masha
+
+  if GetControl(veh)=control_computer then
+  begin
+    ChangeMissionObjectives('MAIDone');
+    CompVehConstructed=true;
+  end;
+end;
+
+on Command(comm) marked 601 do // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
+var i;
+begin
+  //display_strings:=GetTaskList(Kurt)&' - '&GetTaskList(Mercenary1); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+
+  if IsOK(Kurt) then
+    if GetTaskList(Kurt)<>[] then
+    begin
+      for i:=1 to (0+GetTaskList(Kurt)) do
+      begin
+        if (GetTaskList(Kurt)[i][1] in ['F','H','M','U','V','a','h','u','v','~','^','>','+',';','4','{']) OR (GetTaskList(Kurt)[i][1]='B' AND GetTaskList(Kurt)[i][5]=36) then
+        else
+        begin
+          RemoveTasks(Kurt);
+          D_MercRefuseBuild;
+        end;
+      end;
+    end;
+
+  if IsOK(Mercenary1) then
+    if GetTaskList(Mercenary1)<>[] then
+    begin
+      for i:=1 to (0+GetTaskList(Mercenary1)) do
+      begin
+        if (GetTaskList(Mercenary1)[i][1] in ['F','H','M','U','V','a','h','u','v','~','^','>','+',';','4','{']) OR (GetTaskList(Mercenary1)[i][1]='B' AND GetTaskList(Mercenary1)[i][5]=36) then
+        else
+        begin
+          RemoveTasks(Mercenary1);
+          D_MercRefuseBuild;
+        end;
+      end;
+    end;
+end;
+
+Every 0$1 trigger IsOk(Kurt) and GetSide(Kurt) = 3 and FilterAllUnits([[f_side, 3], [f_nation, 2], [f_btype, 4]]) >= 2 do
+  begin
+     enable;
+     RemoveUnit(FilterAllUnits([[f_side, 3], [f_nation, 2], [f_btype, 4]])[2]);
+     RemoveTasks(Mercenary1);
+     D_MercRefuseBuild;
+  end;
+
+{
+ukolstav              = 'B'; // build
+ukolvolno             = 'F'; // free
+ukolhlidat            = 'H'; // hold
+ukoljed               = 'M'; // move
+ukolvystup            = 'U'; // leave_vehicle
+ukolvyloznekam        = 'V'; // give_to
+ukolagrjed            = 'a'; // agr_movement
+
+ukolpomstav           = 'h'; // help_to_build
+ukolvylez             = 'u'; // leave_building
+ukolvyloz             = 'v'; // give
+
+ukolhledejcile        = '~'; // search_goals
+ukolagrhledejcile     = '^'; // agr_search_goals
+ukoluhni              = '>'; // make_place
+ukolutec              = '+'; // run away
+ukolSailEvent         = ';'; // SailEvent
+ukolStuj              = '4'; // Stand on ground and sidestep
+ukolUtecOdNepritele   = '{'; // run away from enemy
+}
+
+
+
+
+
+
+
+
+
+

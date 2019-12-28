@@ -1,0 +1,70 @@
+var amcount;
+
+export function prepare_am_attack;
+var rndclass,rndlevel,i;
+begin
+  if MercPaid then
+    amcount:=weaker
+  else
+    amcount:=stronger;
+
+  for i:=1 to amcount do
+  begin
+    uc_side:=usa;
+    uc_nation:=nation_american;
+    rndclass:=Rand(1,3);
+    case rndclass of
+      1:PrepareHuman(0,class_soldier,am_attack_skill);
+      2:PrepareHuman(0,class_sniper,am_attack_skill);
+      3:PrepareHuman(0,class_soldier,am_attack_skill);
+    end;
+    hc_name:='';
+    amattack:=amattack^CreateHuman;
+    Wait(1);
+  end;                                                         
+end;
+
+function place_am_attack; // Place Am_Attack
+var i,reg_id;
+begin
+  for i:=1 to amcount do
+  begin
+    PlaceUnitArea(amattack[i],AmEnterArea,false);
+    Wait(1);
+  end;
+
+   /////////////   McRegistry for McAttack   ////////////
+
+  reg_id:= McRegistry(usa,
+      [[mc_reg_area_to_guard, WholeMapArea], -mc_reg_only_important, mc_reg_ignore_fog]);
+
+   //////////    McAttack   /////////
+
+  McAttack(100, reg_id, amattack, [mc_no_stop, mc_pat_aggresive, mc_murder]);
+end;
+
+every 0$1 marked 501 do // Dialogue & Calling of Am_Attack placing
+begin
+  AmAttackStarted:=true;
+  D_AmAttackStart;
+  Wait(0$15);
+  place_am_attack;
+  enable(502); // Am_Attack_Done Checking & Dialogue
+end;
+
+every 0$10 marked 502 do // Am_Attack_Done Checking & Dialogue
+begin
+  if amattack=[] then
+  begin
+    disable;
+    AmAttackDone:=true;
+    D_AmAttackFin;
+  end
+  else
+  enable;
+end;
+
+
+
+
+

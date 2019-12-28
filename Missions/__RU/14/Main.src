@@ -1,0 +1,252 @@
+Var Burlak, Rus1, Rus2, Auto1, Auto2;
+Var Belkov, Gnyevko, Kirilenkova;
+Var Kovalyuk, Scholtze;
+Var Kuzmov;
+Var Karamazov, Petrovova, Gleb, Petrosyan;
+Var Lipshchin, Titov, Dolgov, Xavier;
+Var Oblukov, Kozlov, Kapitsova;
+Var Survivors4;
+Var Vybrano;
+
+Var PrvniOK, DruhyOK;
+
+
+On SailEvent (Event) do
+Begin
+  Case Event of
+  1: PrvniOK = true;
+  2: DruhyOK = true;
+  End;
+  If PrvniOK and DruhyOK then Intro2;
+End;
+
+
+Function load_char (Ident);
+Begin
+  If TestCharacters (Ident) then
+  Begin
+    Result = CreateCharacter (Ident);
+    If IsDead (Result) then
+    Begin
+      DestroyUnit (Result);
+      Result = 0;
+    End;
+  End else Result = NewCharacter (Ident);
+  If Result then SetSide (Result, 3);
+End;
+
+
+Function load_set (Ident);
+Begin
+  If TestCharacters (Ident) then
+  Begin
+    Result = CreateCharacterSet (Ident);
+    SetSide (Result, 3);
+  End else Result = [];
+End;
+
+
+Function load;
+Begin
+  InitUC; InitHC; UC_Side = 3;
+  Burlak = load_char ('Burlak');
+  Belkov = load_char ('Belkov');
+  Gnyevko = load_char ('Gnyevko');
+  Kirilenkova = load_char ('Kirilenkova');
+  Kovalyuk = load_char ('Kovalyuk');
+  Scholtze = load_char ('Scholtze');
+  Kuzmov = load_char ('Kuzmov');
+  Karamazov = load_char ('Karamazov');
+  Petrovova = load_char ('Petrovova');
+  Gleb = load_char ('Gleb');
+  Petrosyan = load_char ('Petrosyan');
+  Lipshchin = load_char ('Lipshchin');
+  Titov = load_char ('Titov');
+  Dolgov = load_char ('Dolgov');
+  Xavier = load_char ('Xavier');
+  Oblukov = load_char ('Oblukov');
+  Kozlov = load_char ('Kozlov');
+  Kapitsova = load_char ('Kapitsova');
+  Survivors4 = load_set ('Survivors4');
+End;
+
+
+Function vytvor_rusaka;
+Begin
+  UC_Nation = NATION_RUSSIAN; UC_side = 3;
+  HC_name = '';
+  HC_sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_class = CLASS_SOLDIER;
+  PrepareSoldierSkills (4);
+  Result = CreateHuman;
+End;
+
+
+Function vytvor_inzenyra;
+Begin
+  UC_Nation = NATION_RUSSIAN; UC_side = 3;
+  HC_name = '';
+  HC_sex = Rand (SEX_MALE, SEX_FEMALE);
+  HC_class = CLASS_ENGINEER;
+  PrepareEngineerSkills (4);
+  Result = CreateHuman;
+End;
+
+
+Function Intro;
+Begin
+  // Prdnout postavy na mapu.
+  PlaceUnitXYR (Burlak, 30, 29, 3, false);
+  If not IsPlaced (Burlak) then PlaceUnitXYR (Burlak, 30, 29, 10, false);
+  PlaceUnitXYR (Auto1, 60, 49, 10, false);
+  PlaceUnitXYR (Auto2, 56, 40, 10, false);
+  CenterNowOnUnits (Burlak);
+  // Nechat je dojet k Burlakovi.
+  ComTurnUnit (Burlak, Auto1); AddComHold (Burlak);
+  ComMoveXY (Auto1, 30, 33);
+  ComMoveXY (Auto2, 34, 30);
+  AddComSailEvent (Auto1, 1);
+  AddComSailEvent (Auto2, 2);
+End;
+
+
+Function Intro2;
+Var Hlavni, Vedlejsi, I;
+Begin
+  ComExitVehicle (Rus1); ComExitVehicle (Rus2);
+  Wait (0$0.5);
+  AddComMoveUnit ([Rus1, Rus2], Burlak);
+  AddComTurnUnit ([Rus1, Rus2], Burlak);
+  Wait (0$3);
+  AddComTurnUnit ([Rus1, Rus2], Burlak);
+  AddComTurnUnit (Burlak, Rus1);
+  AddComHold ([Rus1, Rus2, Burlak]);
+  Wait (0$0.25);
+  Say (Burlak, 'DBriefing-Bur-1');
+  Say (Rus1, 'DBriefing-RSol1-1');
+  Say (Rus2, 'DBriefing-RSol2-1');
+  Say (Burlak, 'DBriefing-Bur-2');
+  Wait (0$1);
+  ComEnterUnit (Rus1, Auto1); ComEnterUnit (Rus2, Auto2);
+  ComMoveXY (Auto1, 60, 44); ComMoveXY (Auto2, 62, 48);
+  Wait (0$3);
+  // Volba lidí.
+  Hlavni = [Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov,
+    Karamazov, Petrovova, Gleb, Petrosyan, Lipshchin, Titov, Dolgov,
+    Xavier, Oblukov, Kozlov, Kapitsova] {union Survivors4} diff [0];
+  //Vedlejsi = [];
+  Vedlejsi = Survivors4 diff 0;
+  For I = Hlavni to 5 do Vedlejsi = Vedlejsi union [vytvor_rusaka];
+  Vybrano = CharacterSelection ('1', 3, 5, [SEL_CHANGE_CLASS, Burlak, SEL_NOT_HIRED, SEL_CHANGEABLE] ^ Hlavni ^ Vedlejsi, [CLASS_SOLDIER, [CLASS_ENGINEER, 1], CLASS_MECHANIC, CLASS_SCIENTISTIC, [CLASS_BAZOOKER, 0, 2]]);
+  // Uložení.
+  SaveCharacters ([Burlak], 'Burlak');
+  If Belkov in Vybrano then SaveVariable (14, 'BelkovLoc');
+  If Belkov then SaveCharacters ([Belkov], 'Belkov');
+  If Gnyevko in Vybrano then SaveVariable (14, 'GnyevkoLoc');
+  If Gnyevko then SaveCharacters ([Gnyevko], 'Gnyevko');
+  If Kirilenkova in Vybrano then SaveVariable (14, 'KirilenkovaLoc');
+  If Kirilenkova then SaveCharacters ([Kirilenkova], 'Kirilenkova');
+  If Kovalyuk in Vybrano then SaveVariable (14, 'KovalyukLoc');
+  If Kovalyuk then SaveCharacters ([Kovalyuk], 'Kovalyuk');
+  If Scholtze in Vybrano then SaveVariable (14, 'ScholtzeLoc');
+  If Scholtze then SaveCharacters ([Scholtze], 'Scholtze');
+  If Kuzmov in Vybrano then SaveVariable (14, 'KuzmovLoc');
+  If Kuzmov then SaveCharacters ([Kuzmov], 'Kuzmov');
+  If Karamazov in Vybrano then SaveVariable (14, 'KaramazovLoc');
+  If Karamazov then SaveCharacters ([Karamazov], 'Karamazov');
+  If Petrovova in Vybrano then SaveVariable (14, 'PetrovovaLoc');
+  If Petrovova then SaveCharacters ([Petrovova], 'Petrovova');
+  If Gleb in Vybrano then SaveVariable (14, 'GlebLoc');
+  If Gleb then SaveCharacters ([Gleb], 'Gleb');
+  If Petrosyan in Vybrano then SaveVariable (14, 'PetrosyanLoc');
+  If Petrosyan then SaveCharacters ([Petrosyan], 'Petrosyan');
+  If Lipshchin in Vybrano then SaveVariable (14, 'LipshchinLoc');
+  If Lipshchin then SaveCharacters ([Lipshchin], 'Lipshchin');
+  If Titov in Vybrano then SaveVariable (14, 'TitovLoc');
+  If Titov then SaveCharacters ([Titov], 'Titov');
+  If Dolgov in Vybrano then SaveVariable (14, 'DolgovLoc');
+  If Dolgov then SaveCharacters ([Dolgov], 'Dolgov');
+  If Xavier in Vybrano then SaveVariable (14, 'XavierLoc');
+  If Xavier then SaveCharacters ([Xavier], 'Xavier');
+  If Oblukov in Vybrano then SaveVariable (14, 'OblukovLoc');
+  If Oblukov then SaveCharacters ([Oblukov], 'Oblukov');
+  If Kozlov in Vybrano then SaveVariable (14, 'KozlovLoc');
+  If Kozlov then SaveCharacters ([Kozlov], 'Kozlov');
+  If Kapitsova in Vybrano then SaveVariable (14, 'KapitsovaLoc');
+  If Kapitsova then SaveCharacters ([Kapitsova], 'Kapitsova');
+  Vedlejsi = Vybrano diff Hlavni;
+  If Vedlejsi then SaveCharacters (Vedlejsi, 'Others_Ru14');
+  Survivors4 = Survivors4 diff Vybrano;
+  SaveCharacters (Survivors4, 'Survivors4');
+  // Konec.
+  Wait (0$2);
+  InGameOff;
+  ChangeMap ('%_Cont', '%_Cont');
+End;
+
+
+Function vojak;
+Begin
+  UC_Side = 3; UC_Nation = NATION_RUSSIAN;
+  HC_Sex = SEX_MALE; HC_Class = CLASS_SOLDIER;
+  PrepareSoldierSkills (Rand (4, 8));
+  Result = CreateHuman;
+End;
+
+
+Function autak;
+Begin
+  UC_Side = 3; UC_Nation = NATION_RUSSIAN;
+  VC_Chassis = RU_MEDIUM_WHEELED; VC_Weapon = RU_CARGO_BAY;
+  VC_Engine = ENGINE_SIBERITE; VC_Control = CONTROL_MANUAL;
+  Result = CreateVehicle;
+End;
+
+
+Function zakladna;
+Var Bluekher, Spec, Tmp;
+Begin
+  // Nahrát základnu.
+  Bluekher = LoadVariable ('Bluekher', []);
+  SetResourceVisibility (20, 34, 3);
+  SetResourceVisibility (14, 23, 3);
+  If not Bluekher then Bluekher = [[20, 34, 5, B_SIBERITE_MINE, 5, NATION_RUSSIAN, 0, 0], [23, 27, 1, B_DEPOT, 5, NATION_RUSSIAN, 0, 0], [14, 23, 0, B_OIL_MINE, 5, NATION_RUSSIAN, 0, 0], [36, 28, 2, B_LAB_FULL, 5, NATION_RUSSIAN, B_LAB_SPACETIME, B_LAB_SIBERIUM]];
+  UC_Side = 3;
+  Result = [];
+  For Spec in Bluekher do
+  Begin
+    BC_Type = Spec [4]; BC_Level = Spec [5]; UC_Nation = Spec [6];
+    If BC_Type in [B_LAB, B_LAB_HALF, B_LAB_FULL] then
+    Begin
+      BC_Kind1 = Spec [7];
+      BC_Kind2 = Spec [8];
+    End else Begin
+      BC_Kind1 = 0;
+      BC_Kind2 = 0;
+    End;
+    Tmp = CreateAndPlaceBuildingXYD (Spec [1], Spec [2], Spec [3]);
+    If not Tmp then Continue;
+    If BC_Type in [B_TURRET, B_BUNKER] then PlaceWeaponTurret (Tmp, Spec [7]);
+    Result = Result ^ Tmp;
+  End;
+  // Oznaèit depot názvem.
+  Tmp = UnitFilter (Result, [[F_BTYPE, B_DEPOT]]) union UnitFilter (Result, [[F_BTYPE, B_WAREHOUSE]]);
+  SetBName (Tmp, 'bluekher');
+End;
+
+
+Starting
+Begin
+  RandomizeAll;
+  // Nahrát.
+  load; zakladna;
+  Rus1 = vojak; Rus2 = vojak; Auto1 = autak; Auto2 = autak;
+  PlaceHumanInUnit (Rus1, Auto1);
+  PlaceHumanInUnit (Rus2, Auto2);
+  // Intro.
+  FogOff (true);
+  InGameOn;
+  Intro;
+End;
+
+

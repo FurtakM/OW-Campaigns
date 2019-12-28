@@ -1,0 +1,141 @@
+export under_attack;
+
+// jsou plne bunkry a auta
+function full_forts;
+var kdo, empty, i, a, uz_in;
+begin
+     empty:=[];
+     uz_in:=[];
+     kdo:=get_x_best(0, skill_combat, class_mortar) ^ get_x_best(0, skill_combat, class_soldier);
+     for i in fort do begin
+         if not UnitsInside(i) then begin
+            empty:=empty ^ i;
+         end
+         else begin
+            kdo:=kdo diff UnitsInside(i);
+            uz_in:=uz_in ^ UnitsInside(i);
+         end;
+     end;         
+     if kdo<empty then kdo:=kdo;// ^ get_x_best(0, skill_combat, class_scientistic);
+     if kdo<empty then
+       a:=(kdo+0)
+     else
+       a:=(empty+0);
+     for i:=1 to a do begin
+         ComStop(kdo[i]);
+         if IsInUnit(kdo[i]) then begin
+            AddComExitBuilding(kdo[i]);
+            AddComExitVehicle(kdo[i]);
+         end;
+         AddComEnterUnit(kdo[i], empty[i]);
+         uz_in:=uz_in ^ kdo[i];
+     end;
+
+     empty:=[];
+     kdo:=get_x_best(0, skill_mechanical, class_soldier) diff uz_in;
+     for i in defence diff Mastodon do begin
+         if not UnitsInside(i) then begin
+            empty:=empty ^ i;
+         end
+         else
+            kdo:=kdo diff UnitsInside(i);
+     end;
+     if kdo<empty then kdo:=kdo;// ^ get_x_best(0, skill_combat, class_mechanic);
+     if kdo<empty then
+       a:=(kdo+0)
+     else
+       a:=(empty+0);
+     for i:=1 to a do begin
+         ComStop(kdo[i]);
+         if IsInUnit(kdo[i]) then begin
+            AddComExitBuilding(kdo[i]);
+            AddComExitVehicle(kdo[i]);
+         end;
+         AddComEnterUnit(kdo[i], empty[i]);
+     end;
+
+     enable;
+end;
+
+
+// obrana base alert
+every 0$2 trigger FilterUnitsInArea(near_base, [f_side,you]) do
+var uns, a;
+begin
+//     uns:=FilterUnitsInArea(near_base, [f_side,you]);
+//     a:=NearestUnitToUnit(uns, dep[1]);
+     under_attack:=true;
+//     ComAgressiveMove(defence union attack, GetX(a), GetY(a));
+     enable;//------------
+end;
+// obrana base pohov
+every 0$10 trigger not FilterUnitsInArea(near_base, [f_side,you]) do
+begin
+     under_attack:=false;
+     enable;//------------
+end;
+
+// zavirani brany
+every 0$10 trigger defence do
+begin
+     ComMoveXY(defence[1], 121,69);
+     AddComStand(defence[1]);
+     enable;//------------
+end;
+
+
+
+// vojaci se zdrzuji v forts
+every 0$5 + 0$2 marked 50 do
+begin
+    full_forts;
+    enable;//------------
+end;
+
+
+// mechanici se zdrzuji v factory
+every 0$5.0 do
+var i;
+begin
+    if fact1 then
+       for i in mec do begin
+          if IsIdle(i) or not IsInArea(i, near_base) then
+             ComEnterUnit(i, fact1);
+       end;
+    enable;//------------
+end;
+
+// inzenyri se zdrzuji v depotu pri utoku
+every 0$5.0 do
+var i;
+begin
+    if dep1 then
+      if under_attack then
+        for i in eng do begin
+            if IsIdle(i) or (not IsInArea(i, near_base) and not IsInUnit(i)) then
+               ComEnterUnit(i, dep1);
+        end
+      else
+        ComExitBuilding(dep1);
+    enable;//------------
+end;
+
+// vedci se zdrzuji v laboratori
+every 0$5.0 do
+var i;
+begin
+    if lab1 then
+      for i in sci do begin
+          if IsIdle(i) then
+             ComEnterUnit(i, lab1);
+      end;
+    enable;//------------
+end;
+
+every 0$1 do
+var a;
+begin
+//   a:=FilterUnitsExceptArea(near_base, [[f_not,[f_hastask]],[f_side,arabians],[f_type,unit_human],[f_outside]]) diff [ArSc1,ArSc2,ArSc3,omar];
+//   ComMoveToArea(a, near_base);
+   enable;
+end;

@@ -1,0 +1,1193 @@
+// placeseeing(x,y,side,-r) removeseeing(x,y,side)
+var driver1, driver2, Selected_Sold;
+var soldiers, soldiers1, Retreat_Boy;
+var driver, developer;
+var R1_Attacking_Units, R1_Patroling_Units;
+var The_original_mechanical_Skill;
+
+
+EXPORT Function RunJMMVehicles;
+var V;
+ begin
+   RevealFogArea(americans, map_ar);
+
+   V= [JMM_veh];
+   if JMM_Woman then V= V ^ [Woman_veh];
+
+   AddComMoveXY(V, 94, 124);
+   AddComMoveXY(V, 47, 79);
+
+   WaitTask(V, 0.5);
+   ComExitVehicle(V);
+   if not(Skip) then CenterJMM= false;
+   End_of_journey= true;
+   RaiseSailEvent(Capture_JMM_Vehicles);   // In Americans1
+
+   Wait(2);
+   if not(Skip) then ComMoveXY(JMM, 48, 63);
+   if not(Skip) then AddComTurnUnit(JMM, Powell);
+
+   if not(Skip) then ComMoveXY(JMM_Woman, 47, 68);
+
+   if not(Skip) then ComMoveXY(Powell, 43, 63);
+   if not(Skip) then AddComTurnUnit(Powell, JMM);
+
+   if not(Skip) then CenterOnUnits(Powell);
+ end;
+
+// Powell capture vehicles of JMM (and JMM_woman if exists)
+EXPORT Function CaptureJMMVehicles;
+var possible_drivers, hex;
+ begin
+   possible_drivers= Remaining_Powells diff Named_americans;
+   driver1= possible_drivers[1];
+   driver2= possible_drivers[2];
+   Remaining_Powells= Remaining_Powells diff (driver1 ^ driver2);
+
+   ComEnterUnit(driver1, JMM_veh);
+   hex= RandHexArea(Am1_parking, true);
+   AddComMoveXY(driver1, hex[1], hex[2]);
+   AddComExitVehicle(driver1);
+   AddComEnterUnit(driver1, AmArm);
+   AddComChangeProfession(driver1, class_soldier);
+
+   if Woman_veh then
+     begin
+       ComEnterUnit(driver2, Woman_veh);
+       hex= RandHexArea(Am1_parking, true);
+       AddComMoveXY(driver2, hex[1], hex[2]);
+       AddComExitVehicle(driver2);
+       AddComEnterUnit(driver2, AmArm);
+       AddComChangeProfession(driver2, class_soldier);
+
+       WaitTask([driver1, driver2], 1);
+       Remaining_Powells= Remaining_Powells ^ driver1 ^ driver2;
+     end
+   else
+     begin
+       WaitTask(driver1, 1);
+       Remaining_Powells= Remaining_Powells ^ driver1 ^ driver2;
+     end;
+
+ end;
+
+EXPORT Function JMMTalk;
+ begin
+   While Joan_semafor do
+     Wait(0$1);
+   case Selected_Sold of
+     Lisa: Say(Lisa, 'D3nW-Lisa-1');
+     Cyrus: Say(Cyrus, 'D3nW-Cyrus-1');
+     Bobby: Say(Bobby, 'D3nW-Bobby-1');
+     Gary: Say(Gary, 'D3nW-Gary-1');
+     Donaldson: Say(Donaldson, 'D3nW-Don-1');
+     Frank: Say(Frank, 'D3nW-Frank-1');
+     Cornell: Say(Cornell, 'D3nW-Corn-1');
+   end;
+   if Selected_Sold > 0 then
+     begin
+       Say(JMM, 'D3nW-JMM-1');
+       Say(JMM, 'D3nW-JMM-1a');
+     end;
+ end;
+
+// Powell sends helpers to defend the hill
+EXPORT Function SendHelpers;
+var Named_without_woman, Un, Uns, i,
+    Possible_Units;
+ begin
+   // Select JMM helpers
+
+   JMM_Helpers= Named_Americans;
+
+   if Named_Americans > Number_of_JMM_Helpers then  // 5
+     begin
+       Uns= FindMaxSkill(JMM_Helpers, skill_engineering);
+       JMM_Helpers= JMM_Helpers diff Uns;
+       Uns= Uns ^ FindMaxSkill(JMM_Helpers, skill_scientistic);
+       JMM_Helpers= JMM_Helpers diff Uns;
+       Uns= Uns ^ FindMaxSkill(JMM_Helpers, skill_combat);
+       JMM_Helpers= JMM_Helpers diff Uns;
+       for Un= Number_of_JMM_Helpers to Named_Americans-1 do
+         begin
+           JMM_Helpers= JMM_Helpers diff JMM_Helpers[Rand(1,JMM_Helpers)];
+         end;
+       JMM_Helpers= JMM_Helpers ^ Uns;
+     end
+
+   else if Named_Americans < Number_of_JMM_Helpers then
+     begin
+       JMM_Helpers= JMM_Helpers ^
+       FindMaxSkill((All_americans diff (JMM_Helpers ^ JMM_Woman)), skill_engineering);
+       for Un= Named_Americans+2 to Number_of_JMM_Helpers do  // 1 person was selected
+         begin
+           JMM_Helpers= JMM_Helpers ^
+           FindMaxSkill((All_americans diff (JMM_Helpers ^ JMM_Woman)), skill_combat);
+         end;
+     end;
+
+
+  // One engineer
+  Uns= JMM_Helpers;
+
+  Un= FindMaxSkill(Uns, skill_engineering);
+  Uns= Uns diff Un;
+  if GetClass(Un) <> class_engineer then
+    begin
+      ComEnterUnit(Un, AmDep);
+      AddComChangeProfession(Un, class_engineer);
+      AddComMoveXY(Un, 68, 107);
+    end
+  else ComMoveXY(Un, 68, 107);
+
+
+  // Two scientists
+  for i= 1 to 1 do
+    begin
+      Un= FindMaxSkill(Uns, skill_scientistic);
+      Uns= Uns diff Un;
+      if GetClass(Un) <> class_scientistic then
+        begin
+          ComEnterUnit(Un, AmLab);
+          AddComChangeProfession(Un, class_scientistic);
+          AddComMoveXY(Un, 68, 107);
+        end
+      else ComMoveXY(Un, 68, 107);
+    end;
+
+  // Three soldiers
+  for Un in Uns do
+    begin
+      if GetClass(Un) <> class_soldier then
+        begin
+          ComEnterUnit(Un, AmArm);
+          AddComChangeProfession(Un, class_soldier);
+          AddComMoveXY(Un, 68, 107);
+        end
+      else ComMoveXY(Un, 68, 107);
+    end;
+
+
+  // Change side to americans
+  Uns= JMM_Helpers;
+  while Uns > 0 do
+    begin
+      for Un in Uns do
+        if GetDistUnitXY(Un, 68, 107) < 6 then
+          begin
+            SetSide(Un, americans);
+            Uns= Uns diff Un;
+          end;
+      Wait(0$1);
+    end;
+
+
+   tick= 0;
+
+   StartRussianBase;         // In Russians
+   StartAllianceBase;        // In Alliance
+   StartArabianBase;         // In Arabian
+
+   R1_Attack_Continues= true;
+   enable(R1_attack);        // Start Russian1 attacks   //
+   enable(First_JMM_Task);   // We have to chack if the JMM stay on its hill
+
+
+  // Report
+  Possible_Units= 0;
+  Possible_Units= JMM_Helpers isect [Lisa, Cyrus, Bobby, Gary, Donaldson, Frank, Cornell];
+  Selected_Sold= Possible_Units[Rand(1,Possible_Units)];
+  RaiseSailEvent(JMM_Talk);
+
+
+  Remaining_Powells= Remaining_Powells diff JMM_Helpers;
+  RaiseSailEvent(Start_Am1_Base);
+ end;
+
+EXPORT Function SendMaterial;
+var Un, i, Cans_Positions, Free_Place;
+ begin
+   ComEnterUnit(Carriers, AmDep);
+   for Un in Carriers do
+     begin
+       AddComChangeProfession(Un, class_engineer);
+     end;
+   WaitTask(Carriers, 0.5);
+
+   Cans_Positions= [[63, 103], [68, 101], [66, 96], [64, 99], [59, 99], [67,104], [69,95]];
+   for i= 1 to Number_of_crates do
+     begin
+       if i=1 then ComTransport(Carriers, AmDep, mat_cans)
+       else AddComTransport(Carriers, AmDep, mat_cans);
+       AddComMoveXY(Carriers, Cans_Positions[i][1], Cans_Positions[i][2]);
+       AddComUnload(Carriers);
+     end;
+   AddComMoveXY(Carriers, 48, 73);
+
+   WaitTask(Carriers, 1);
+
+   Free_Place= 6-UnitsInside(AmArm);
+   if Free_Place > 2 then AddComEnterUnit(Carriers, AmArm)
+   else
+     begin
+       for i= 1 to Free_Place do
+         begin
+           AddComEnterUnit(Carriers[i], AmArm);
+           AddComChangeProfession(Carriers, class_soldier);
+         end;
+       for i= Free_Place+1 to 3 do
+         AddComEnterUnit(Carriers[i], AmLab);
+     end;
+   WaitTask(Carriers, 1);
+   Remaining_Powells= Remaining_Powells ^ Carriers;
+ end;
+
+
+// Start of develop in the base of Americans1
+EXPORT Function StartAm1Base;
+var i, Un, Uns;
+ begin
+   Remaining_Named= (Remaining_Powells diff JMM_Helpers) isect Named_americans;
+   Remaining_Powells= Remaining_Powells diff Named_americans;
+
+   // Send material
+   Carriers= [];
+   for i= 1 to 3 do     // Pri zmene opravit i v cekani na Named
+     begin
+       Carriers= Carriers ^ Remaining_Powells[1];
+       Remaining_Powells= Remaining_Powells diff Remaining_Powells[1];
+     end;
+   RaiseSailEvent(Send_material);
+
+   // Wait while the carriers are not engineers
+   while UnitFilter(Carriers, [f_not, [f_class, class_engineer]]) do
+     Wait(0$1);
+
+   // The people have to run the base
+   i= 0;    
+   Uns= Remaining_Powells;
+
+   repeat
+   i= i+1;
+   case i of
+        // Bunker
+     1: begin
+          Un= FindMaxSkill(Uns, skill_combat);
+          Uns= Uns diff Un;
+          ComEnterUnit(Un, AmArm);
+          AddComChangeProfession(Un, class_soldier);
+          AddComEnterUnit(Un, AmB1);
+        end;
+        // Brestwork
+     2: begin
+          Un= FindMaxSkill(Uns, skill_combat);
+          Uns= Uns diff Un;
+          ComEnterUnit(Un, AmArm);
+          AddComChangeProfession(Un, class_soldier);
+          AddComEnterUnit(Un, AmB2);
+        end;
+        // Factory
+     3: begin
+          Un= FindMinSkill(Uns, skill_mechanical);
+          The_original_mechanical_Skill= GetSkill(Un, skill_mechanical);
+          SetSkill(Un, skill_mechanical, 5);  // 10
+          Uns= Uns diff Un;
+          ComEnterUnit(Un, AmFact);
+          AddComChangeProfession(Un, class_mechanic);
+        end;
+        // Laboratory
+     4: begin
+          Un= FindMinSkill(Uns, skill_scientistic);
+          Uns= Uns diff Un;
+          ComEnterUnit(Un, AmLab);
+          AddComChangeProfession(Un, class_scientistic);
+          Developer= Un;
+        end;
+        // Armoury
+     else begin
+            if (i mod 2 = 1) and (i > 2) then
+              begin
+                Un= Uns[1];
+                Uns= Uns diff Un;
+                ComEnterUnit(Un, AmArm);
+                AddComChangeProfession(Un, class_soldier);
+              end
+            else
+              begin
+                Un= Uns[1];
+                Uns= Uns diff Un;
+                ComEnterUnit(Un, AmDep);
+                AddComChangeProfession(Un, class_engineer);
+              end;
+          end;
+   end;
+   until Uns = 0;
+
+    // Run the develop and construction
+    ComResearch(AmLab, tech_Tech1);
+    AddComResearch(AmLab, tech_Tech2);
+    AddComResearch(AmLab, tech_Tech3);
+
+    // Vehicles for the first attack
+    AddComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_light_gun);
+    //AddComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_light_gun);
+    //AddComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_double_gun);
+    //AddComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_double_gun);
+
+   // The remaining named characters have to survive
+   if Remaining_Named <> 0 then
+     begin
+       ComEnterUnit(Remaining_Named[1], AmLab);
+       AddComChangeProfession(Remaining_Named[1], class_scientistic);
+       while (GetClass(Carriers[1]) <> class_engineer or
+              GetClass(Carriers[2]) <> class_engineer or
+              GetClass(Carriers[3]) <> class_engineer) do
+         Wait(0$1);
+
+       if Remaining_Named > 7 then
+         begin
+           for i= 2 to 7 do
+             begin
+               ComEnterUnit(Remaining_Named[i], AmDep);
+               AddComChangeProfession(Remaining_Named[i], class_engineer);
+             end;
+           for i= 8 to Remaining_Named do
+             begin
+               ComEnterUnit(Remaining_Named[i], AmArm);
+               AddComChangeProfession(Remaining_Named[i], class_soldier);
+             end;
+         end
+       else
+         for i= 2 to Remaining_Named do
+           begin
+             ComEnterUnit(Remaining_Named[i], AmDep);
+             AddComChangeProfession(Remaining_Named[i], class_engineer);
+           end;
+     end;
+
+ end;
+
+
+// The function is called if an americans1 vehicle has been constructed
+EXPORT Function Am1VehicleConstructed(veh);
+var hex;
+ begin
+   driver= UnitsInside(veh)[1];
+   Am1_vehicles= Am1_vehicles ^ veh;
+   
+   if Am1_vehicles < 4 then
+     begin
+       hex= RandHexArea(Am1_parking, true);
+       ComMoveXY(driver, hex[1], hex[2]);
+       AddComExitVehicle(driver);
+       AddComEnterUnit(driver, AmFact);
+       
+       if Powell_Attack_Counter in [1,3] then
+            ComConstruct(Amfact, us_medium_tracked, engine_solar, control_manual, [us_light_gun,us_double_gun][Rand(1,2)]);
+     end
+
+   // The first attack
+   else if Powell_Attack_Counter = 1 then
+     begin  
+       Powell_Attack_Counter= 2;
+       ComMoveXY(driver, 52, 64);
+       AddComExitVehicle(driver);
+       AddComEnterUnit(driver, AmFact);
+       Wait(1);
+       WaitTask(driver, 1);
+       Remaining_Powells= Remaining_Powells diff driver;
+       FirstPowellsAttack;
+       Powell_Attack_Counter = 3;
+       Remaining_Powells= Remaining_Powells ^ driver;
+
+       // Vehicles for the second attack
+       ComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_light_gun);
+       {AddComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_double_gun);
+       if Captured_vehicles = 1 then
+         AddComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_double_gun);}
+
+     end
+
+   // The second attack
+   else if Powell_Attack_Counter = 3 then
+     begin
+       Powell_Attack_Counter= 4;
+       // one vehicle more (for Powell)
+       ComConstruct(AmFact, us_medium_tracked, engine_solar, control_manual, us_light_gun);
+       hex= RandHexArea(Am1_parking, true);
+       ComMoveXY(driver, hex[1], hex[2]);
+       AddComExitVehicle(driver);
+       AddComEnterUnit(driver, AmFact);
+     end
+   else if Powell_Attack_Counter = 4 then
+     begin
+       Powell_Attack_Counter= 5;
+       Am1_vehicles= Am1_vehicles diff veh;
+       Powell_vehicle= veh;
+       ComMoveXY(driver, 52, 64);
+       AddComExitVehicle(driver);
+       AddComEnterUnit(driver, AmFact);
+       Wait(1);
+       WaitTask(driver, 1);
+
+       SecondPowellsAttack;
+     end;
+
+ end;
+
+EXPORT Function RetreatReport;
+ begin
+   Say(Retreat_Boy, 'D4a-Sol1-1');
+   Wait(0$4);
+   Say(Powell, 'D4a-Pow-1');
+   Wait(0$2);
+   Say(Retreat_Boy, 'D4a-Sol1-2');
+   Say(Powell, 'D4a-Pow-2');
+ end;
+
+/////////////////   The First Attack   ///////////////////
+EXPORT Function FirstPowellsAttack;
+var i, Un, ret, first_ret, InsideArm;
+ begin
+   // Select Drivers
+   soldiers= [];
+   ret= [0, 0, 0, 0];
+   first_ret= true;
+
+   InsideArm= UnitsInside(AmArm);
+   ComExitBuilding(InsideArm);
+   ComMoveXY(InsideArm, 55, 69);
+
+   for i= 1 to 4 do
+     begin
+       Un= 0;
+       Un= FindMinSumSkill(Remaining_Powells diff [driver, developer], sex_male);
+       if Un = 0 then Un= FindMinSumSkill(Remaining_Powells, 0);
+       Remaining_Powells= Remaining_Powells diff Un;
+       soldiers= soldiers ^ Un;
+       if GetClass(Un) <> class_soldier then
+         begin
+           ComEnterUnit(Un, AmArm);
+           AddComChangeProfession(Un, class_soldier);
+           AddComMoveXY(Un, 45, 64);
+         end
+       else ComMoveXY(Un, 45, 64);
+     end;
+
+   WaitTask(soldiers, 1);
+   ComEnterUnit(InsideArm diff soldiers, AmArm);
+
+if not(Debug_Constant) then
+ begin
+   While tick < 12$0 do    // Wait to start the attack
+     Wait(0$1);
+ end;
+
+   // Talk before attack
+   Say(Powell, 'D4-Pow-1');
+   Say(soldiers[1], 'D4-Sol1-1');
+   Say(Powell, 'D4-Pow-2');
+
+   for i= 1 to 4 do
+     begin
+       ComEnterUnit(soldiers[i], Am1_vehicles[i]);
+       AddComMoveXY(soldiers[i], 66, 61);
+     end;
+
+   WaitPos(66, 61, 6, Am1_vehicles, 1);
+   ComAgressiveMove(Am1_vehicles, 76, 22);    // soldiers misto vehicles nefunguje!!! (z neznameho duvodu)
+
+   // Control the attack
+   while not(IsInArea(soldiers[1], Am_Base) and IsInArea(soldiers[2], Am_Base) and
+             IsInArea(soldiers[3], Am_Base) and IsInArea(soldiers[4], Am_Base)) do
+     begin
+       for i= 1 to 4 do
+         begin
+           if not(IsInUnit(soldiers[i])) and not(ret[i]) then
+             begin
+               if first_ret then
+                 begin
+                   first_ret= false;
+                   Retreat_Boy= soldiers[i];
+                   RaiseSailEvent(Retreat_Report);
+                 end;
+               ret= replace(ret, i, 1);
+               ComMoveXY(soldiers[i],  51, 65);
+               DoNotAttack(arabians, soldiers[i]);
+             end
+           else
+                if ret[i] then
+                     ComMoveXY(soldiers[i],51,65);
+         end;
+       Wait(0$0.2);
+     end;
+
+   for Un in soldiers do
+     NormalAttack(arabians, Un);
+
+
+   if UnitsInside(AmB1) = 0 then
+     begin
+       ComEnterUnit(soldiers[1], AmB1);
+       Remaining_Powells= Remaining_Powells ^ soldiers[1];
+       soldiers= soldiers diff soldiers[1];
+     end;
+
+   if UnitsInside(AmB2) = 0 then
+     begin
+       ComEnterUnit(soldiers[2], AmB2);
+       Remaining_Powells= Remaining_Powells ^ soldiers[2];
+       soldiers= soldiers diff soldiers[2];
+     end;
+
+   For Un in soldiers do
+     begin
+       Remaining_Powells= Remaining_Powells ^ Un;
+       ComEnterUnit(Un, AmArm);
+     end;
+
+   Am1_vehicles= Captured_vehicles;
+ end;
+
+
+//////////////////   The Second Attack   ///////////////////
+EXPORT Function SecondPowellsAttack;
+var i, Un, Un1, Initial_lives, InsideArm, Hex, JMM_Labs;
+ begin
+   // Select Drivers
+   soldiers= [];
+   soldiers1= [];
+
+if not(Debug_Constant) then
+ begin
+   While tick < 20$0 do
+     Wait(0$1);
+
+   Disable(R1_attack);     // Disable attacks of Russians1
+   R1_Attack_Continues= false;
+
+   While tick < 23$30 do
+     Wait(0$1);
+
+   // Send out the R1 attacking units
+   R1_Attacking_Units= GetMcUnits(Russian1_att_id);
+   RemoveMcUnits(Russian1_att_id, R1_Attacking_Units);
+   ComMoveXY(R1_Attacking_Units, 93, 173);
+   AddComHold(R1_Attacking_Units);
+   R1_Patroling_Units= GetMcUnits(Russian1_patr_id);
+   RemoveMcUnits(Russian1_patr_id, R1_Patroling_Units);
+   ComMoveXY(R1_Patroling_Units, 93, 173);
+   AddComHold(R1_Patroling_Units);
+
+   While tick < 24$0 do    // Wait to start the attack
+     Wait(0$1);
+
+   // Set attitudes to friend between pink russians and americans
+   SetAttitude(russians1, americans, att_friend, true);
+ end;
+
+
+   disable(Not_Ingame_Run_over);
+   // Try to save the driver It Will be Sold3...
+   if Remaining_Powells > 8 then
+     begin
+       Remaining_Powells= Remaining_Powells diff Driver;
+       SetSkill(Driver, skill_mechanical,
+          The_original_mechanical_Skill + GetSkill(Driver, skill_mechanical) - 5);     // He will be better
+     end
+   else Driver= 0;
+
+   // Drivers
+   for i= 1 to 4 do
+     begin
+       Un= FindMinSumSkill(Remaining_Powells, 0);
+       Remaining_Powells= Remaining_Powells diff Un;
+       soldiers= soldiers ^ Un;
+       if GetClass(Un) <> class_soldier then
+         begin
+           ComEnterUnit(Un, AmArm);
+           AddComChangeProfession(Un, class_soldier);
+           AddComMoveXY(Un, 45, 64);
+         end
+       else ComMoveXY(Un, 45, 64);
+     end;
+
+   WaitTask(soldiers, 1);
+
+   // Footmans
+   for i= 1 to 4 do
+     begin
+       if ((i = 1) or (i = 2)) then Un= FindMinSumSkill(Remaining_Powells, sex_male)
+       else Un= FindMinSumSkill(Remaining_Powells, 0);
+       Remaining_Powells= Remaining_Powells diff Un;
+       soldiers1= soldiers1 ^ Un;
+       if GetClass(Un) <> class_soldier then
+         begin
+           ComEnterUnit(Un, AmArm);
+           AddComChangeProfession(Un, class_soldier);
+           AddComMoveXY(Un, 45, 64);
+         end
+       else ComMoveXY(Un, 45, 64);
+     end;
+
+   // take back the Driver
+   if Driver <> 0 then
+     Remaining_Powells= Insert(Remaining_Powells, 1, Driver);
+
+
+   ///////////////////////////////////////////////////////////
+   /////////////////  Ingame begines   ///////////////////////
+   ///////////////////////////////////////////////////////////
+
+   ingame_video= true;
+   interface_hidden= true;
+   CenterOnXY(48, 63);
+
+   // Send teh JMM units out of laboratory
+   JMM_Labs= FilterAllUnits([[f_side, americans], [f_or, [f_btype, b_lab], [f_btype, b_lab_full], [f_btype, b_lab_half]]]);
+   ComExitBuilding(JMM_Labs);
+
+
+   WaitTask(soldiers1, 1);
+
+   // Send new people to the bunkers
+   if UnitsInside(AmB1) = 0 then
+     begin
+       Un= FindMaxSkill(Remaining_Named ^ Remaining_Powells, skill_combat);
+//       msg(['AmB1', Un]);
+       if GetClass(Un) = class_soldier then ComEnterUnit(Un, AmB1)
+       else
+         begin
+           ComEnterUnit(Un, AmArm);
+           AddComChangeProfession(Un, class_soldier);
+           AddComEnterUnit(Un, AmB1);
+         end;
+     end
+   else Un= UnitsInside(AmB1);
+
+   if UnitsInside(AmB2) = 0 then
+     begin
+       Un1= FindMaxSkill((Remaining_Named ^ Remaining_Powells) diff Un, skill_combat);
+//       msg(['AmB2', Un1]);
+       if GetClass(Un1) = class_soldier then ComEnterUnit(Un1, AmB2)
+       else
+         begin
+           ComEnterUnit(Un1, AmArm);
+           AddComChangeProfession(Un1, class_soldier);
+           AddComEnterUnit(Un1, AmB2);
+         end;
+     end
+   else Un1= UnitsInside(AmB2);
+
+//   msg(['AmB1, AmB2', Un, Un1]);
+                                
+    // Send Remaining_Powells to the Armoury
+    ComEnterUnit(Remaining_Powells diff (Un ^ Un1), AmArm);
+    AddComChangeProfession(Remaining_Powells diff (Un ^ Un1), class_soldier);
+
+
+   // Talk before attack
+
+   game_speed= 4;
+
+   Say(Powell, 'D5-Pow-1');
+   Say(Soldiers1[1], 'D5-Sol2-1');
+   Say(Powell, 'D5-Pow-2');
+   Say(Soldiers1[2], 'D5-Sol2-2');
+   Say(Powell, 'D5-Pow-3');
+
+   disable(First_JMM_Task);
+
+   // GO!!!
+
+   EnableVideoExclamations;
+   for i= 1 to 4 do
+     begin
+       ComEnterUnit(soldiers[i], Am1_vehicles[i]);
+       AddComMoveXY(soldiers[i], 68, 64);
+     end;
+
+   for i= 1 to 4 do
+     begin
+       ComMoveXY(soldiers1[i], 68, 64);
+     end;
+
+   enable(Center_on_fight);
+
+
+   WaitPos(68, 64, 8, Am1_vehicles ^ soldiers1 ^ soldiers, 1);
+   ComAgressiveMove(Am1_vehicles ^ soldiers1 ^ soldiers, 76, 22);    // soldiers misto vehicles nefunguje!!! (z neznameho duvodu)
+
+   Initial_lives= GetLives(Am1_vehicles ^ soldiers1 ^ soldiers);
+   repeat
+     Wait(0$1);
+   until Initial_lives > GetLives(Am1_vehicles ^ soldiers1 ^ soldiers)+1;
+
+
+   Say(Powell, 'D5a-Pow-1');
+   Say(Powell, 'D5a-Pow-1a');
+   Wait(0$1);
+   Say(Powell, 'D5a-Pow-1b');
+   Wait(0$1);
+   Say(Powell, 'D5a-Pow-1c');
+   Say(Powell, 'D5a-Pow-1d');
+
+   While (GetLives(soldiers ^ soldiers1) > 0) do
+     Wait(0$0.5);
+
+   DisableVideoExclamations;
+   disable(Center_on_fight);
+   enable(Great_Ingame_Video);
+ end;
+
+
+
+  ///////////////////////////////////////////////////////////////
+  /////////////   Great Ingame Video   //////////////////////////
+  ///////////////////////////////////////////////////////////////
+
+// MARKED 3 - Great_Ingame_Video
+EVERY 0$1 MARKED 3 DO
+var Units_Outside, All_A1,
+    Sold, Arabian1, Arabian2, Arabian3, Arabian_Buildings,
+    Alive, Un, Remaining_named_males, Remaining_named_females,
+    Uns, i, Hex;
+ begin
+   Uns= [];
+//   debug_strings= ['Great Ingame Video begins'];
+   Remaining_named_males= UnitFilter(Remaining_named, [f_sex, sex_male]);
+   Remaining_named_females= UnitFilter(Remaining_named, [f_sex, sex_female]);
+   // replanish the males by females if necessary
+   for i= Remaining_named_males+1 to 3 do
+     if (Remaining_named_females >= (i - Remaining_named_males)) then
+       Uns= Uns ^ Remaining_named_females[i - Remaining_named_males];
+   Remaining_named_males= Remaining_named_males ^ Uns;
+   Sold= [];
+
+   // If we can not select only males, tehn replanish by females
+   for i = 1 to 3 do
+     begin
+       Un= FindMaxSumSkill(Remaining_Powells diff Sold, sex_male);
+       if Un = 0 then Un= FindMaxSumSkill(Remaining_named_males diff Sold, sex_male);
+       if Un = 0 then Un= FindMaxSumSkill((Remaining_Powells ^ Remaining_named_males) diff Sold, sex_male);
+       Sold= Sold ^ Un;
+     end;
+
+{   if Remaining_Powells >= 3 then
+     begin
+       Sold= Sold ^ Remaining_Powells[1];
+       Sold= Sold ^ Remaining_Powells[2];
+       Sold= Sold ^ Remaining_Powells[3];
+     end
+   else if Remaining_Powells >= 2 then
+     begin
+       Sold= Sold ^ Remaining_Powells[1];
+       Sold= Sold ^ Remaining_Powells[2];
+       Sold= Sold ^ Remaining_named_males[1];
+     end
+   else if Remaining_Powells >= 1 then
+     begin
+       Sold= Sold ^ Remaining_Powells[1];       // Driver will be first at any time
+       Sold= Sold ^ Remaining_named_males[1];
+       Sold= Sold ^ Remaining_named_males[2];
+     end
+   else
+     begin
+       Sold= Sold ^ Remaining_named_males[1];
+       Sold= Sold ^ Remaining_named_males[2];
+       Sold= Sold ^ Remaining_named_males[3];
+     end;}
+
+   Uns= UnitFilter(Arabian_soldiers, [f_sex, sex_male]);
+   Arabian1= Uns[1];
+   Arabian2= Uns[2];
+   Arabian3= Uns[3];
+
+   // Detach the arabian soldiers
+   if GetLives(ArT1) > 0 and GetLives(ArT1) < 500 then
+     SetLives(ArT1, 500);
+   RemoveMcUnits(Arabian_def_id, Arabian_soldiers ^ ArT1);
+   ComMoveXY(Arabian_soldiers, 52, 15);
+   AddComHold(Arabian_soldiers);
+   Wait(0$0.5);
+   ComEnterUnit(Arabian1, ArT1);
+   ComMoveXY(Arabian2, 71, 18);
+   AddComHold(Arabian2);
+   ComMoveXY(Arabian_mechanics[1], 83, 15);
+   AddComHold(Arabian_mechanics[1]);
+   ComMoveXY(Arabian3, 85, 26);
+   AddComHold(Arabian3);
+
+   RemoveMcUnits(Arabian_build_id, Arabian_Engineers);
+   ComEnterUnit(Arabian_Engineers, GetUnitNumber(53, 7)); // the arabian depot
+
+
+    /////////////////  Ingame  ///////////////
+   CenterOnXY(60, 62);
+   Say(Sold[3], 'D6-Sol3-1');
+   ComMoveXY(ArBomb1, 71, 61);
+   ComMoveXY(ArBomb2, 74, 61);
+   Say(Powell, 'D6-Pow-1');
+
+   WaitPos(71, 61, 6, [ArBomb1, ArBomb2], 1);
+
+   Say(Sold[1], 'D6-Sol3-2');
+
+   ComMoveXY(ArBomb1, 50, 56);
+   AddComMoveXY(ArBomb1, 46, 52);
+   PriorityAttack(americans1, ArBomb1);
+
+   ComMoveXY(ArBomb2, 48, 60);
+   AddComMoveXY(ArBomb2, 45, 57);
+   AddComAttackUnit(ArBomb2, AmFact);
+   DoNotAttack(americans1, ArBomb2);
+
+   ComMoveXY(Powell, 58, 68);
+   AddComHold(Powell);
+
+    // They mustn't follow the Bomb up.
+   ComExitBuilding(UnitsInside(AmArm));
+   ComExitBuilding(UnitsInside(AmFact));
+   Wait(1);
+   while UnitsInside(AmArm) <> 0 do
+     Wait(2);
+   Units_Outside= FilterUnitsInArea(Am_Base, [[f_side, americans1], [f_type, unit_human]])
+           diff (soldiers1 ^ soldiers ^ Powell);
+   
+   For Un in Units_Outside do
+     begin
+       Hex= RandHexXYR(56, 69, 2, false);
+       ComMoveXY(Un, Hex[1], Hex[2]);
+       AddComHold(Un);
+     end;
+
+   enable(Talk_Bomba);
+
+   while (IsOk(ArBomb1) or IsOk(ArBomb2)) do
+     begin
+//       debug_strings= [['Lives of ArBomb1'], [GetLives(ArBomb1)],
+//                     ['Distance of ArBomb1'], [GetDistUnitXY(ArBomb1, 41, 54)]];
+       if (GetDistUnitXY(ArBomb1, 41, 54) <=7) and (GetLives(ArBomb1) > 250) then
+         SetLives(ArBomb1, 200);
+       if not(IsOk(ArBomb2)) then
+         if GetLives(AmFact) > 0 then
+           SetLives(AmFact, 0);
+       Wait(4);
+     end;
+
+   Wait(0$2);
+   Say(Powell, 'D6a-Pow-1');
+   Say(Sold[1], 'D6a-Sol3-1');
+   Say(Powell, 'D6a-Pow-2');
+   Say(Sold[1], 'D6a-Sol3-2');
+   Say(Powell, 'D6a-Pow-3');
+
+   Center_To_Powell= true;
+   Enable(Protect_Powell);
+   ComEnterUnit(Powell, Powell_vehicle);
+   AddComMoveXY(Powell, 66, 62);   //Powell_vehicle
+   AddComMoveXY(Powell, 81, 61);
+   AddComMoveXY(Powell, 86, 56);
+   AddComMoveXY(Powell, 74, 24);
+
+   While GetDistUnitXY(Powell_vehicle, 74, 24) > 12 do
+     Wait(0$0.1);
+   Say(Powell, 'D6b-Pow-1');
+
+   game_speed= 3;
+
+   While GetDistUnitXY(Powell_vehicle, 74, 24) > 5 do
+     Wait(0$0.1);
+   SetLives(Powell_vehicle, 251);
+
+   while IsInUnit(Powell) do
+     Wait(2);
+
+   SetAttr(Powell, attr_speed, 14);
+
+   ComEnterUnit(Powell, PowBomb);
+
+   Say(Powell, 'D6b-Pow-1a');
+   repeat
+     wait(2);
+   until IsInUnit(Powell);
+
+   AddComMoveXY(Powell, 81, 21);
+   AddComMoveXY(Powell, 73, 16);
+   AddComMoveXY(Powell, 76, 21);
+   AddComMoveXY(Powell, 78, 15);
+   Say(Powell, 'D6b-Pow-1b');
+
+   
+   ComMoveXY(Arabian_soldiers, 48, 14);
+   AddComHold(Arabian_soldiers);
+   ComEnterUnit(Arabian_mechanics[1], ArFact);
+   ComMoveXY(Arabian3, 96, 29);
+
+   async;
+   Say(Arabian1, 'D6b-ArSol1-1');
+   wait(0$1);
+   Say(Arabian2, 'D6b-ArSol2-1');
+   wait(0$0.5);
+   sync;
+   Say(Powell, 'D6b-Pow-2');
+
+
+   WaitTask(Powell, 0.1);
+   if IsInUnit(Powell) then
+     WaitTask(IsInUnit(Powell), 0.1);
+
+   DialogueOn;
+   Say(Powell, 'D6b-Pow-2a');
+   DialogueOff;
+   Disable(Protect_Powell);
+
+   ComAttackUnit(IsInUnit(Powell), ArRuFact);
+   placeseeing(78 ,12 ,americans ,-8);
+   While IsOk(IsInUnit(Powell)) do
+     Wait(0$0.5);
+   if GetLives(ArRuFact) > 0 then
+     SetLives(ArRuFact, 0);
+
+   Center_To_Powell= false;
+   Wait(0$5);
+   removeseeing(78 ,12 , americans);
+   CenterOnUnits(JMM);
+   RepairArabExtensions;
+
+
+   AddMcUnits(Arabian_def_id, Arabian_soldiers ^ ArT1);
+   for Un in Arabian_Soldiers do
+     begin
+       Hex= RandHexArea(Ar_Base, false);
+       ComMoveXY(Un, Hex[1], Hex[2]);
+     end;
+
+
+   Say(Sold[1], 'D6c-Sol3-1');
+   Say(Jmm, 'D6c-JMM-1');
+
+   Alive= UnitFilter([Cyrus, Bobby, Cornell], [f_ok]);
+   if Alive > 0 then Un= Alive[Rand(1,Alive)]
+   else Un= Sold[3];
+
+   case Un of
+     Cyrus: Say(Cyrus, 'D6c-Cyrus-1');
+     Bobby: Say(Bobby, 'D6c-Bobby-1');
+     Cornell: Say(Cornell, 'D6c-Corn-1');
+     Sold[3]: Say(Sold[3], 'D6c-Sol1-1');
+   end;
+
+   Alive= UnitFilter([Lisa, Gary, Donaldson], [f_ok]);
+   if Alive > 0 then Un= Alive[Rand(1,Alive)]
+   else Un= Sold[2];
+
+   case Un of
+     Lisa: Say(Lisa, 'D6c-Lisa-1');
+     Gary: Say(Gary, 'D6c-Gary-1');
+     Donaldson: Say(Donaldson, 'D6c-Don-1');
+     Sold[2]: Say(Sold[2], 'D6c-Sol2-1');
+   end;
+
+   Say(Sold[1], 'D6c-Sol3-2');
+   Wait(0$2);
+   Say(JMM, 'D6c-JMM-2');
+//   RaiseSailEvent(JMM_Is_Ready);
+//   Wait(0$2);
+
+   // Change side for all units to Americans    
+   SetSide(FilterAllUnits([f_side, Americans1]), americans);
+
+   ingame_video= false;
+   interface_hidden= false;
+   ChangeMissionObjectives('M2');
+//   if Add_Legion_Objectives then
+//     ChangeMissionObjectives('Mlegion');
+   Wait(0$1);
+
+   // R1 attack continues
+   enable(R1_attack);
+   R1_Attack_Continues= true;
+
+   // Send R1 units back to attack
+   ComMoveXY(R1_Attacking_Units, 101,147);
+   AddMcUnits(Russian1_att_id, R1_Attacking_Units);
+   ComMoveXY(R1_Patroling_Units, 101,147);
+   AddMcUnits(Russian1_patr_id, R1_Patroling_Units);
+
+   // Set the attitudes back
+   SetAttitude(russians1, americans, att_enemy, true);
+
+   // Repair Arabian buildings
+   Arabian_Buildings= FilterUnitsInArea(Ar_Base, [f_type, unit_building]);
+   for Un in Arabian_Buildings do
+     if (GetLives(Un) > 0) and (GetLives(Un) < 250) then
+       SetLives(Un, 400);
+
+   // return the engineers to macro
+   AddMcUnits(Arabian_build_id, Arabian_Engineers);
+   ComExitBuilding(Arabian_Engineers);
+
+   enable(Ingame_Run_over);
+   Time_of_Ingame_Run_Over= tick;
+
+   // Update of ticks
+   Woman_Coming_Time= Woman_Coming_Time + tick;
+   Rus_Attack_time= Rus_Attack_time + tick;
+   Stevens_Coming_Time= Stevens_Coming_Time + tick;
+   Alliance_broadcast= Alliance_broadcast + tick;
+   Arabian_siberite_attack_time= Arabian_siberite_attack_time + tick;
+   Behemots_broadcast= Behemots_broadcast + tick;
+   Alaskite_Bomb_Time= Alaskite_Bomb_Time + tick;
+   Time_of_first_capture= Time_of_first_capture + tick;
+   Behemot_attack_time= Behemot_attack_time + tick;
+
+   enable(Game_Continue);
+   enable(Timer);
+
+   // Set technologies to researched
+   SetTech(tech_Gun, americans, state_researched);
+   SetTech(tech_SolPow, americans, state_researched);
+   SetTech(tech_SolEng, americans, state_researched);
+
+   All_americans= FilterAllUnits([[f_side, americans], [f_type, unit_human]]);
+   All_russians= FilterAllUnits([[f_side, russians], [f_type, unit_human]]);
+ end; {End of Ingame Video}
+
+
+
+EXPORT Function JMMIsReady;
+ begin
+   Say(JMM, 'D6c-JMM-2');
+ end;
+
+
+// MARKED 6 - Taklk_Bomba
+EVERY 0$0.2 MARKED 6 DO
+ begin
+   Say(Powell, 'D6-Pow-2');
+ end;
+
+// MARKED 5 - Protect_Powell
+EVERY 0$0.1 MARKED 5 DO
+ begin
+//   debug_strings= [['Powell orders'], [GetTaskList(Powell)],
+//                  ['Powell wehicle orders'], [GetTaskList(Powell_vehicle)]];
+    // Dist from 14 to 2. 14 = 100%, 2 = 40%
+   if IsInUnit(Powell) = 0 then
+     begin
+//       if GetDistUnits(Powell, PowBomb) <= 14 and
+//          GetDistUnits(Powell, PowBomb) >= 2 then
+//         if 1000-GetLives(Powell) > 600-(GetDistUnits(Powell, PowBomb)-2)*50 then
+//           SetLives(Powell, 400+(GetDistUnits(Powell, PowBomb)-2)*50);
+       if GetLives(Powell) < 900 then SetLives(Powell, 1000);
+     end;
+
+
+   if (IsInUnit(Powell) <> 0) and (IsInUnit(Powell) <> Powell_vehicle) then
+     begin
+       if GetLives(IsInUnit(Powell)) < 400 then
+         SetLives(IsInUnit(Powell), 400);
+       if GetLives(Powell) < 400 then
+         SetLives(Powell, 400);
+     end;
+   enable;
+ end;
+
+
+EVERY 0$2 TRIGGER Center_To_Powell DO
+var X, Y, NewX, NewY;
+ begin
+   if IsInUnit(Powell) = Powell_vehicle then
+     begin
+       X= GetX(Powell_vehicle);
+       Y= GetY(Powell_vehicle);
+       NewX= ShiftX(X, GetDir(Powell_vehicle), 5);
+       NewY= ShiftY(Y, GetDir(Powell_vehicle), 5);
+       CenterOnXY(NewX, NewY);
+     end
+   else
+     begin
+       X= GetX(Powell);
+       Y= GetY(Powell);
+       NewX= ShiftX(X, GetDir(Powell), 2);
+       NewY= ShiftY(Y, GetDir(Powell), 2);
+       CenterOnXY(NewX, NewY);
+     end;
+   enable;
+ end;
+
+// We have to chack if the JMM stay on its hill
+// MARKED 1 - First_JMM_Task
+EVERY 0$1 MARKED 1 DO
+var Un, Count;
+ begin
+
+   if GetLives(Powell) < 950 then
+     begin
+       enable(out_of_base);
+       exit;
+     end;
+
+   Count= 0;
+   // Send persons back
+   for Un in (JMM_Helpers ^ Joan ^ JMM) do
+     if (not(IsInArea(Un, JMM_Hill)) and IsOk(Un) and (Warning_Time + 0$15) < tick) then
+       begin
+         Count= Count+1;
+         ComMoveXY(Un, 68, 107);
+       end;
+
+   // Warning
+   if Count then
+     begin
+       Powell_warning= Powell_warning+1;
+       case Powell_warning of
+         1: begin
+              Warning_Time= tick;
+              Say(Powell, 'DBack1-Pow-1');
+            end;
+         2: begin
+              Warning_Time= tick;
+              Say(Powell, 'DBack2-Pow-1');
+            end;
+         3: begin
+              Say(Powell, 'DBack3-Pow-1');
+              enable(out_of_base);
+            end;
+       end;
+     for Un in (JMM_Helpers ^ Joan ^ JMM) do
+       if (not(IsInArea(Un, JMM_Hill)) and IsOk(Un)) then
+         begin
+           ComMoveXY(Un, 68, 107);
+         end;
+     end;
+   enable;
+ end;
+
+
+// MARKED 7 - Center_on_fight
+EVERY 0$2 MARKED 7 DO
+var Sum_X, Sum_Y, New_X, New_Y, Number, Un;
+ begin
+   Number= UnitFilter(Soldiers ^ Soldiers1, [f_alive]);
+   if Number > 0 then
+     begin
+       for Un in (Soldiers ^ Soldiers1) do
+         begin
+           if IsLive(Un) then Sum_X= Sum_X + GetX(Un);
+           if IsLive(Un) then Sum_Y= Sum_Y + GetY(Un);
+         end;
+       New_X= (Sum_X + Number/2) div Number;
+       New_Y= ((Sum_Y + Number/2) div Number) - 5;
+       CenterOnXY(New_X, New_Y);
+     end;
+   enable;
+ end;
+
+// MARKED 24 - Timer
+EVERY 0$1 MARKED 24 DO
+ begin
+   display_strings= ['#Am15-1', tick-Time_of_Ingame_Run_Over];
+   enable;
+ end;

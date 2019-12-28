@@ -1,0 +1,274 @@
+EXPORT You,You2,Arabi,Arabi2;
+EXPORT mregistry1,MD1;
+EXPORT mregistry2,MD2;
+
+starting
+begin
+  RandomizeAll;
+  Randomize;
+  debug_strings:=[];
+  cas=[0,':',0];
+  InitUc;
+  InitHc;
+  InitVc;
+
+  // pridelovani stran
+  You:=1;
+  You2:=4;
+  Arabi:=2;
+  Arabi2:=5;
+
+  SetBName(A1_dep,'dammam');
+  SetBName(A2_dep,'jeddah');
+  SetBName(A3_dep,'riyadh');
+
+  disable(80);
+
+  //setuje difficulty
+  SET_DIFFICULTY;
+
+  // loadovani postav a promennych na zacatku
+  load_postavy;
+
+  // dodani skilu postavam
+  dodej_skily;
+
+  // mcdefend pro 2. bazi
+  mregistry1=McRegistry(Arabi,[[mc_reg_area_to_guard,MD1_guard],
+                               [mc_reg_area_to_protect,MD1_protect],
+                               [mc_reg_expire_stops_to_attack,0$5]]);
+  mregistry2=McRegistry(Arabi,[[mc_reg_area_to_guard,MD2_guard],
+                               [mc_reg_area_to_protect,MD2_protect],
+                               [mc_reg_expire_stops_to_attack,0$5]]);
+
+  MD1=McDefend(2,mregistry1,[A2_dep,A2_lab,A2_bar,A2_tov,A2_nau1,A2_bu2,A2_nau2,MDopka1,MDopka2,A2_bu3],
+               [[mc_area_dont_leave,MD1_guard]]);
+
+  MD1=McDefend(1,mregistry2,[A2_dep,A2_lab,A2_bar,A2_tov,A2_nau1,A2_bu3,A2_bu6,A2_bu5,A2_nau2,MDopka1,MDopka2],
+               [[mc_area_dont_leave,MD2_guard]]);
+
+
+  // flagy dobytych arabskych bazi
+  A1_dobyta=false;
+  A2_dobyta=false;
+  A3_dobyta=false;
+
+  // predvytvoreni vojclu pro 2. a 3. arabskou bazi
+  vojcli_base_2;
+  vojcli_base_3;
+
+  // ingame !!!!!!!!!!!!!!!!!!!!!
+  InGameOn;
+
+  // aktovivano odebirani arabu z konce mapy
+  Odebirani=false;
+
+  // vyslani pruzkumnika
+  Pruzkumnik:=false;
+
+  // status vojaka s opicakem
+  oposoldier:=0;
+
+  // vyber vojaku pro tuto misi
+  choose_vojaky;                     // neni definovana .. ja jenom begin end v jednotky
+
+  // vytvoreni pocatecnich amiku
+  create_amici;
+
+  // schovani arabu do bunkru, nastup do vozitek atd
+  uklid_arabu;
+
+  // vytvoreni aut do arabske pritofenzivy
+  create_ar_protiofenzivu;
+
+  // predpriprava na arabske utoky behem mise
+  create_arabske_utoky_behem_mise;
+
+end;
+
+// prohra odvolanim
+EXPORT function end_of_mission_time;
+begin
+  YouLost('Command');
+end;
+
+// prohra chcipnutim JMM
+on UnitDestroyed(un) DO
+begin
+  if un=JMM then YouLost('JMM');
+  enable;
+end;
+
+on EndTheMissionRaised(void) do
+begin
+  konec_mise;
+end;
+
+//******************************************************
+//*********  SAVENI POSTAV A PROMENNYCH  ***************
+//******************************************************
+// ukonceni mise + udelovani madaili
+
+// Added by Nefarem 14.12.2019
+Every 0$1 do
+var i, pomauta, art;
+begin
+enable;
+
+  pomauta=FilterAllUnits([[f_side,You],[f_or,[f_weapon,us_cargo_bay],[f_weapon,ar_cargo_bay]]]);
+  art=false;
+  for i in pomauta do if GetCargo(i,mat_artefact)>0 then art=true;
+
+  If IsDead(A2_dep) and IsDead(A3_dep) and art then
+  begin
+   konec_mise;
+  end;
+
+end;
+
+EXPORT function konec_mise;
+VAR pommedaile;
+VAR pomauta;
+VAR i,pom,pom1,pom2;
+VAR art;
+VAR VIPka;
+VAR all_units_1;
+begin
+  DisableExclamations;
+  gained_medals:=[];
+  missing_medals:=[];
+  if Timecounter<=medaile1[difficulty] then begin
+                                              AddMedal('Time1',1);
+                                              pommedaile=true;
+                                            end
+                                       else begin
+                                              AddMedal('Time1',-1);
+                                              pommedaile=false;
+                                            end;
+  if Timecounter<=medaile2[difficulty] then AddMedal('Time2',1)
+                                       else if pommedaile then AddMedal('Time2',-1)
+                                                          else AddMedal('Time2',-2);
+  pomauta=FilterAllUnits([[f_side,You],[f_or,[f_weapon,us_cargo_bay],[f_weapon,ar_cargo_bay]]]);
+  art=false;
+  for i in pomauta do if GetCargo(i,mat_artefact)>0 then art=true;
+
+  if art then AddMedal('Artefact',1)
+         else AddMedal('Artefact',-1);
+
+  GiveMedals('Main');
+
+  pom=FilterAllUnits([[f_side,You],[f_type,unit_human]]);
+  for i in FilterAllUnits([[f_side,You],[f_type,unit_vehicle]]) do
+    begin
+      pom1=IsDrivenBy(i);
+      if not (pom1 in pom) then pom=pom^pom1;
+    end;
+  all_units_1=pom;
+
+  all_units_1=all_units_1 diff UnitFilter(all_units_1,[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer]]);
+
+  RewardPeople(all_units_1);
+
+  VIPka=[JMM,Frank,Powell,Gary,Bobby,Yamoko,Cyrus,Cornel,Lisa,Don,Brown];
+
+  SaveCharacters(JMM,'JMM');
+
+  SaveCharacters(Cyrus,'Cyrus');
+  if Cyrus in Amici_enter then SaveVariable(6,'CyrusLoc')
+                          else SaveVariable(7,'CyrusLoc');
+
+  SaveCharacters(Gary,'Gary');
+  if Gary in Amici_enter then SaveVariable(6,'GaryLoc')
+                         else SaveVariable(7,'GaryLoc');
+
+  SaveCharacters(Cornel,'Cornell');
+  if Cornel in Amici_enter then SaveVariable(6,'CornellLoc')
+                           else SaveVariable(7,'CornellLoc');
+
+  SaveCharacters(Frank,'Frank');
+  if Frank in Amici_enter then SaveVariable(6,'FrankLoc')
+                          else SaveVariable(7,'FrankLoc');
+
+  SaveCharacters(Bobby,'Bobby');
+  if Bobby in Amici_enter then SaveVariable(6,'BobbyLoc')
+                          else SaveVariable(7,'BobbyLoc');
+
+  SaveCharacters(Yamoko,'Yamoko');
+  if Yamoko in Amici_enter then SaveVariable(6,'YamokoLoc')
+                           else SaveVariable(7,'YamokoLoc');
+
+  SaveCharacters(Don,'Donaldson');
+  if Don in Amici_enter then SaveVariable(6,'DonaldsonLoc')
+                        else SaveVariable(7,'DonaldsonLoc');
+
+  SaveCharacters(Brown,'Brown');
+  if Brown in Amici_enter then SaveVariable(6,'BrownLoc')
+                          else SaveVariable(7,'BrownLoc');
+
+  SaveCharacters(Lisa,'Lisa');
+  if Lisa in Amici_enter then SaveVariable(6,'LisaLoc')
+                         else SaveVariable(7,'LiasLoc');
+
+
+  pom1=lidi_other diff Amici_enter;
+  pom2=all_units_1 diff VIPka;
+
+
+  DeleteCharacters('other_survivors');
+  DeleteCharacters('otherGamma2');
+
+  SaveCharacters(pom1,'otherNotJMM');
+  SaveCharacters(pom2,'otherWithJMM');
+  YouWin;
+  EnableExclamations;
+  exit;
+end;
+
+//*******************************************************
+//*********  LOADENI POSTAV A PROMENNYCH  ***************
+//*******************************************************
+function load_postavy;
+VAR pom;
+begin
+  JMM=nacti_osobu('JMM');
+
+  Powell=NewCharacter('Powell');
+  Gary=nacti_osobu('Gary');
+  Lisa=nacti_osobu('Lisa');
+  Yamoko=nacti_osobu('Yamoko');
+  Frank=nacti_osobu('Frank');
+  Cornel=nacti_osobu('Cornell');
+  Bobby=nacti_osobu('Bobby');
+  Cyrus=nacti_osobu('Cyrus');
+  Don=nacti_osobu('Donaldson');
+  Brown=nacti_osobu('Brown');
+
+  //nacteni location
+  GARYL=LoadVariable('GaryLoc',6);
+  LISAL=LoadVariable('LisaLoc',6);
+  YAML=LoadVariable('YamokoLoc',6);
+  FRANKL=LoadVariable('FrankLoc',6);
+  CORNELL=LoadVariable('CornellLoc',6);
+  BOBL=LoadVariable('BobbyLoc',6);
+  CYRL=LoadVariable('CyrusLoc',6);
+  DONL=LoadVariable('DonaldsonLoc',6);
+  BROWNL=LoadVariable('BrownLoc',6);
+
+  if CheckCharacterSet('otherWithJMM') then lidi_other=CreateCharacterSet('otherWithJMM')
+                                       else lidi_other=[];
+
+  if CheckCharacterSet('other_survivors') then pom=CreateCharacterSet('other_survivors')
+                                          else pom=[];
+
+  lidi_other=lidi_other^pom;
+
+  if CheckCharacterSet('otherNotJMM') then pom=CreateCharacterSet('otherNotJMM')
+                                      else pom=[];
+
+  lidi_other=lidi_other^pom;
+
+  if CheckCharacterSet('otherGamma2') then pom=CreateCharacterSet('otherGamma2')
+                                      else pom=[];
+
+  lidi_other=lidi_other^pom;
+end;

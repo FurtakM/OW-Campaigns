@@ -1,0 +1,23 @@
+// Dialogue
+// kecy 
+export function starting_scene;
+begin
+  InGameOn;
+  CenterOnUnits([bur]);
+  ComMoveUnit(bur,pop);
+  ComMoveUnit(pop,yash);
+  ComMoveUnit(yash,bur);
+
+  AddComTurnUnit(pop,bur);
+  AddComTurnUnit(yash,bur);
+
+  wait(0$2);
+
+  Say(pop,'DStart-Pop-1');
+  Say(yash,'DStart-Yas-1');
+  Say(pop,'DStart-Pop-2');
+  Say(bur,'DStart-Bur-2');
+  Say(pop,'DStart-Pop-3');
+  Say(yash,'DStart-Yas-3');
+  Say(bur,'DStart-Bur-3');
+end;

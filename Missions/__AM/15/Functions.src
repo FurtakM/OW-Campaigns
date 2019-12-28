@@ -1,0 +1,487 @@
+var taken;
+
+EXPORT Function ComMoveXYR(Un, x, y, r, b);
+var Hex;
+ begin
+   Hex= RandHexXYR(x, y, r, b);
+   ComMoveXY(Un, Hex[1], Hex[2])
+ end;
+
+
+// Waits until no of units from list_of_units has a task
+EXPORT Function WaitTask(list_of_units, reaction);
+var i, busy;
+ begin
+  wait(2);
+  repeat
+   busy= false;
+   for i in list_of_units do
+    if IsOk(i) then
+     if HasTask(i) then
+       begin
+         busy= true;
+//         debug_strings= [['Has task'], [GetTaskList(i)]];
+       end;
+   if busy then wait(0$1*reaction);
+  until not(busy);
+//  debug_strings= [['Free'], GetTaskList(i)];
+ end;
+
+
+EXPORT Function WaitPos(x_pos, y_pos, dist, list_of_units, reaction);
+var i, are_at_position;
+ begin
+  wait(2);
+  repeat
+   are_at_position= true;
+   for i in list_of_units do
+    if IsOk(i) then
+     if GetDistUnitXY(i, x_pos, y_pos) > dist then are_at_position= false;
+   if not(are_at_position) then wait(0$1*reaction);
+  until are_at_position;
+ end;
+
+
+EXPORT Function FindMaxSumSkill(Uns, sex);
+var Skill_Sum, Selected_unit, New_Skill_Sum, i;
+ begin
+   // Select a person with max skills
+   Skill_Sum= -1;
+   Selected_unit=0;
+   for i=1 to Uns do
+     begin
+       New_Skill_Sum= GetSkill(Uns[i], skill_combat)+
+                  GetSkill(Uns[i], skill_engineering)+
+                  GetSkill(Uns[i], skill_mechanical)+
+                  GetSkill(Uns[i], skill_scientistic);
+       if New_Skill_Sum > Skill_Sum and ((sex = 0) or (sex = GetSex(Uns[i]))) then
+         begin
+           Skill_Sum= New_Skill_Sum;
+           Selected_unit= Uns[i];
+         end;
+     end;
+   result= Selected_unit;
+ end;
+
+
+EXPORT Function FindMinSumSkill(Uns, sex);
+var Skill_Sum, Selected_unit, New_Skill_Sum, i;
+ begin
+   // Select a person with max skills
+   Skill_Sum= 100;
+   Selected_unit=0;
+   for i=1 to Uns do
+     begin
+       New_Skill_Sum= GetSkill(Uns[i], skill_combat)+
+                  GetSkill(Uns[i], skill_engineering)+
+                  GetSkill(Uns[i], skill_mechanical)+
+                  GetSkill(Uns[i], skill_scientistic);
+       if New_Skill_Sum < Skill_Sum and ((sex = 0) or (sex = GetSex(Uns[i]))) then
+         begin
+           Skill_Sum= New_Skill_Sum;
+           Selected_unit= Uns[i];
+         end;
+     end;
+   result= Selected_unit;
+ end;
+
+
+EXPORT Function RSiberiteAttack(Rocket);
+var American_units, Selected_unit, Factories, Teleport1, Teleport2, Un;
+ begin
+   // We select the place for attack
+   Selected_unit= 0;
+   American_units= FilterAllUnits([[f_side, americans], [f_type, unit_building]]);
+   Factories= UnitFilter(American_units, [f_btype, b_factory]);
+   if Factories then
+     begin
+       Selected_unit= Factories[1];
+       for Un in Factories do
+         if UnitsInside(Un) > UnitsInside(Selected_unit) then
+           Selected_unit= Un;
+     end
+   else if American_units then
+     begin
+       Selected_unit= American_units[Rand(1, American_units)];
+     end;
+
+   if Rand(1,2)= 1 then
+     begin
+       Teleport1= GetUnitNumber(165, 60);
+       Teleport2= GetUnitNumber(182, 87);
+
+       if Rand(1,2) = 1 then
+         begin
+           if IsOk(Teleport1) then
+             ComEnterUnit(Rocket, Teleport1)
+           else if IsOk(Teleport2) then
+             ComEnterUnit(Rocket, Teleport2)
+         end
+       else // Attack through the second teleport
+         begin
+           if IsOk(Teleport2) then
+             ComEnterUnit(Rocket, Teleport2)
+           else if IsOk(Teleport1) then
+             ComEnterUnit(Rocket, Teleport1)
+         end;
+     end;
+
+   AddComAttackPlace(Rocket, GetX(Selected_unit), GetY(Selected_unit));
+ end;
+
+//////////////////////////////////////////////////
+/////////             Events           ///////////
+//////////////////////////////////////////////////
+
+
+
+ON SailEvent(Event) DO
+ begin
+   case Event of
+     Map_am_base: begin
+                    Wait(0$1);
+                    RevealFogArea(americans, Map_am);
+                    CenterOnXY(60, 88);
+                    Wait(0$4);
+                    CenterJMM = true;
+                  end;
+
+     Map_rus_attack: begin
+                       Wait(0$4);
+                       CenterOnXY(118, 180);
+                       Wait(0$4);
+                       CenterOnXY(76, 133);
+                       Wait(0$3);
+                       if IsInUnit(JMM) <> 0 then CenterOnUnits(JMM_veh)
+                       else CenterOnUnits(JMM);
+                       if not(End_of_journey) then CenterJMM= true;
+                     end;
+
+     Send_Helpers: SendHelpers;  // In Americans1
+
+     Start_Am1_Base: StartAm1Base;  //In Americans1
+
+     Send_Material: SendMaterial;  // In Americans1
+
+     Capture_JMM_Vehicles: CaptureJMMVehicles;  // In Americans1
+
+     First_Powells_Attack: FirstPowellsAttack;  // In Americans1
+
+     Second_Powells_Attack: SecondPowellsAttack;  // In Americans1
+
+     Run_JMM_Vehicles: RunJMMVehicles;  // In Americans1
+
+     Rus1_Attack: Rus1Attack;  // In Russians1
+
+     Rus_Attack: RusAttack;    // In Russians
+
+     Retreat_Report: RetreatReport;
+
+     JMM_Talk: JMMTalk;
+
+     Send_Arabian_Back: SendArabianBack(Arabian_Outside);
+
+     Link_Bombs: LinkBombs;
+
+     JMM_Is_Ready: JMMIsReady;
+   end;
+ end;
+
+
+ON DialogueSkipped(i) DO
+ begin
+   Skip= True;
+ end;
+
+ON VehicleConstructed(veh, fact) DO
+ begin
+   case GetSide(veh) of
+     americans1: Am1VehicleConstructed(veh);  // In Americans1
+     arabians: ArVehicleConstructed(veh);     // In Arabians
+     russians: BuildGroups(veh);              // In Russians
+   end;
+ end;
+
+
+ON VehicleCaptured(VehNew, VehOld, OrigSide, Hum) DO
+ begin
+   if VehOld= JMM_veh then
+     Captured_vehicles= Captured_vehicles ^ VehNew;
+
+   if VehOld= Woman_veh then
+     Captured_vehicles= Captured_vehicles ^ VehNew;
+ end;
+
+ON BuildingCaptured(build, origside, eng) DO
+ begin
+   case origside of
+     americans1: begin         // When JMM try to capture a Powell's building
+                   Say(Powell, 'DBack3-Pow-1');
+                   enable(out_of_base);
+                 end;
+     alliance:   begin
+                   AllianceBuildingInRed;
+                 end;
+   end;
+ end;
+
+
+ON ResearchComplete(tech, lab) DO
+var Uns;
+  begin
+     // Set a researched technology for bouth russians
+    if lab in [RusLab1, RusLab2] then
+      SetTech(tech, Russians1, state_researched);
+
+    /////////////////   Russians   /////////////////
+
+    if (tech = tech_ST3) and (lab = RusLab1) then
+      begin
+        // Lead scientists to armoury or make them doctors
+        Uns= UnitsInside(RusLab1);
+        ChangeScientists(Uns);  // In Russians
+      end;
+
+    if (tech = tech_Sib3) and (lab = RusLab2) then
+      begin
+        // Lead scientists to armoury or make them doctors
+        Uns= UnitsInside(RusLab2);
+        ChangeScientists(Uns);  // In Russians
+      end;
+
+    ////////////////    Alliance   /////////////////
+
+    if (tech = tech_ST3) and (lab = AllLabR1) then
+      begin
+        ComEnterUnit(UnitsInside(AllLabR1), AllLabR2);
+      end;
+
+    if (tech = tech_Weap3) and (lab = AllLabR2) then
+      begin
+      end;
+
+    if (tech = tech_Sib3) and (lab = AllLabA) then
+      begin
+      end;
+  end;
+
+
+ON UnitGoesToRed(Un) DO
+var i;
+ begin
+   case GetSide(Un) of
+     Americans:  begin
+                 end;
+
+     Americans1: begin
+                 end;
+
+     Russians:   begin
+                 end;
+
+     Russians1:  begin
+                   // Destroy human controlled Rocket or Timelapser
+                   if (GetType(Un)= unit_vehicle) then
+                     if (GetControl(Un) = control_manual) and
+                     ((GetWeapon(Un) = ru_rocket) or (GetWeapon(Un) = ru_time_lapser)) then
+                       begin
+                         PriorityAttack(Russians1, Un);
+                       end;
+                 end;
+
+     Arabians:   begin
+                   // Destroy the Siberite fact
+                   if Un= ArDep1 then
+                     begin
+                       SetLives([ArRuFact, ArRuSibExt], 0);
+                     end;
+
+                   // Turret goes to red
+                   if GetBType(Un) = b_turret then  // Add monkies to McDefend
+                     begin
+                       i= UnitsInside(Un);
+                       if (i^[])=1 then
+                         if GetNation(Un) = nation_nature then  // monkie
+                           begin
+                             ComMoveXYR(Un, 48, 4, 3, false);
+                             AddComHold(Un);
+                             While (R1_Attack_Continues = false) or
+                                   not(ExistMc(Arabian_def_id)) do
+                               Wait(0$1);
+                             ComMoveXYR(Un, 63, 16, 3, true);
+                             AddMcUnits(Arabian_def_id, Un);
+                             All_arabians= Arabian_soldiers ^ Un;
+                           end;
+                     end;
+
+                   // Try to save the New_ArRu_Fact
+                   if (Un= New_ArRu_Fact) and IsOk(Kozlov) then
+                     begin
+                       if GetClass(Kozlov) <> class_engineer then
+                         begin
+                           ComEnterUnit(Kozlov, ArDep1);
+                           AddComChangeProfession(Kozlov, class_engineer);
+                           AddComExitBuilding(Kozlov);
+                         end;
+                       AddComRepairBuilding(Kozlov, New_ArRu_Fact);
+                       AddComEnterUnit(Kozlov, New_ArRu_Fact);
+                       AddComChangeProfession(Kozlov, class_mechanic);
+                     end;
+                 end;
+
+     Arabians1:  begin
+                 end;
+
+     Alliance:   begin
+                   if (GetType(Un)= unit_building) then
+                     AllianceBuildingInRed;
+                 end;
+   end;
+ end;
+
+ON HumanDestroyed(un,side,nation,x,y,direction,sex,class) DO
+var i;
+ begin
+   Wait(1);
+   case side of
+     americans:begin
+                 if nation <> nation_nature then  //ignore apemen
+                      No_Looses= false;
+               end;
+
+     arabians: begin
+                   ArabianPersonIsDead;
+               end;
+
+     arabians1: begin
+                   HeikeLastWords;
+                   TestForEndOfMission;
+                end;
+
+     alliance: begin
+                   if (un = Roth) then
+                     ChangeMissionObjectives('M3b')
+                   else AlliancePersonIsDead;
+               end;
+
+     russians: begin
+                 if Un in Behemot_Engineers then
+                   begin
+                     Behemot_Engineers= Behemot_Engineers diff Un;
+
+                     // if all Behemoth_Engineers are death
+                     if Behemot_Engineers = [] then
+                       begin
+                         // if no behemot was constructed
+                         if Russian_project_canceled then
+                           ChangeMissionObjectives('M4a');
+
+                         Number_of_complete_Behemots= 0;
+                         BehemotsAttack;
+                       end;
+
+                     Wait(1);
+
+                     // We chack if an engineer has task
+                     for i in Behemot_Engineers do
+                       if HasTask(i) then exit;
+
+                     // When no engineer has task then attack
+                     Number_of_complete_Behemots= 0;
+                     BehemotsAttack;
+                   end;
+               end;
+   end;
+ end;
+
+
+
+ON SiberiteRocketExploded(Un, x, y) DO
+ begin
+   SA_OnSiberiteRocketExploded(Un);
+
+   if InArea(x, y, Rus_Base) then
+     begin
+     // MatherLodContamined;
+     if GetSide(Un) = arabians then
+       enable(Matherlod_Contamined1)
+     else if GetSide(Un) = americans then
+       enable(Matherlod_Contamined2);
+     end;
+
+   if GetSide(Un) = russians then
+     begin
+       Wait(0$5);
+       Say(Platonov, 'D18-Pla-1');
+     end;
+ end;
+
+
+ON BuildingStarted(build, hum) DO
+ begin
+   if GetBType(build) = b_behemoth then
+     Russian_Behemots= Russian_Behemots ^ build;
+ end;
+
+
+ON BehemothConstructed(behemot) DO
+var i;
+ begin
+   if GetSide(behemot) = 1 then
+     exit;
+   Russian_Behemots= UnitFilter((Russian_Behemots ^ behemot) diff [0], [f_alive]);
+   New_Behemots= New_Behemots ^ behemot;
+   if Russian_project_canceled = true then
+     begin
+       Russian_project_canceled= false;
+       ChangeMissionObjectives('M4b');
+     end;
+   Wait(1);
+
+   // We chack if an engineer has task
+   for i in Behemot_Engineers do
+     if HasTask(i) then exit;
+
+   Number_of_complete_Behemots= 0;
+   BehemotsAttack;
+ end;
+
+ON SibDepositContaminated(Un, X, Y) DO
+ begin
+   if InArea(X, Y, R_base) then
+     begin
+       if GetSide(Un) = arabians1 then
+         begin
+           CenterOnXY(X, Y);
+           placeseeing(X, Y, americans,-12);
+           enable(Matherlod_Contamined3);
+         end;
+     end;
+ end;
+
+
+
+var reg_res;
+
+on McRegistryResultChanges(mcid, count, strength) do
+  begin
+    case mcid of
+      Alliance_wood_reg_id: GuardAllianceWood;
+    end;
+
+    reg_res=count&'  '&strength;
+//    debug_strings:=[reg_res];
+  end;
+
+
+on McDefendTakesUnit(mcid, un) do
+  begin
+    taken:=taken^[un];
+//    debug_strings:=[reg_res,taken];
+  end;
+
+on McDefendReturnsUnit(mcid, un) do
+  begin
+    taken:=taken diff [un];
+//    debug_strings:=[reg_res,taken];
+  end;

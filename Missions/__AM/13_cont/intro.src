@@ -1,0 +1,46 @@
+//intro
+export americani;
+
+export function intro;
+var tmp,tmp1,tmp2;
+begin
+  vc_control=control_manual;
+  vc_engine=engine_siberite;
+  vc_chassis=us_medium_tracked;
+  vc_weapon=us_double_gun;
+  tmp=createvehicle;
+  setdir(tmp,1);
+  placeunitxy(tmp,42,66,false);
+  placehumaninunit(john,tmp);
+  tmp=createvehicle;
+  setdir(tmp,2);
+  placeunitxy(tmp,44,70,false);
+  placehumaninunit(huck,tmp);
+  tmp2=0;
+  vc_weapon=us_cargo_bay;
+  for tmp in americani do begin
+    if tmp2=2 then
+      if prob(60) then vc_weapon=us_double_gun
+      else vc_weapon=us_gatling_gun;
+    tmp1=createvehicle;
+    if tmp2<2 then begin
+      setcargo(tmp1,mat_cans,100);
+      tmp2=tmp2+1;
+    end;
+    setdir(tmp1,1);
+    placeunitxyr(tmp1,34,62,7,false);
+    placehumaninunit(tmp,tmp1);
+  end;
+
+  centernowonxy(39,66);
+  dialogueon;
+  say(john,'D2-JMM-1');
+//  comexitvehicle(isinunit(huck));   //je to pitomost
+//  comhold(huck);
+  say(huck,'D2-Huck-1');
+  say(john,'D2-JMM-2');
+  dialogueoff;
+  wait(0$0.33);
+  saveforquickrestart;
+  changemissionobjectives('M1');
+end;

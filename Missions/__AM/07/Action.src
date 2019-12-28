@@ -1,0 +1,142 @@
+// Waits until no of units from list_of_units is busy
+EXPORT Function WaitJob(list_of_units, reaction);
+var i, busy;
+ begin
+  wait(2);
+  repeat
+   busy= false;
+   for i in list_of_units do
+    if IsOk(i) then
+     if HasTask(i) then
+       begin
+         busy= true;
+//         debug_strings= [['Has task'], [GetTaskList(i)]];
+       end;
+   if busy then wait(0$1*reaction);
+  until not(busy);
+//  debug_strings= [['Free'], GetTaskList(i)];
+ end;
+
+
+Function Prepare_base;
+var Un, Dep, Laboratory, Factory, Guard1, Guard2, Guards, All_in_base, i;
+ begin
+  PlaceUnitXY(JMM, 52, 15, false);
+  for Un in Blds do
+    begin
+      if (GetBType(Un) = b_depot) then Dep= Un;
+      if (GetBType(Un) = b_factory) then Factory= Un;
+      if (GetBType(Un) = b_lab or GetBType(Un) = b_lab_half or GetBType(Un) = b_lab_full) then Laboratory= Un;
+    end;
+  ComEnterUnit(JMM, Dep);
+
+  All_in_base= OtherGamma2 ^ New_americans;
+
+  Guard1= 0; Guard2= 0;
+  if All_in_base > 1 then
+    begin
+      Guard2= All_in_base[1];
+      i= 1;
+      repeat
+        i=i+1;
+        Guard1= All_in_base[i];
+      until (i > All_in_base) or (GetSex(Guard1) = sex_male);
+      SetClass([Guard1, Guard2], class_soldier);
+    end
+  else if OtherGamma2 = 1 then
+    Guard1= All_in_base[1];
+
+  Guards= [];
+  if Guard1 then
+    begin
+      PlaceUnitXY(Guard1, 50, 17, false);
+      ComTurnXY(Guard1, 53, 24);
+      Guards= Guards ^ Guard1;
+    end;
+
+  if Guard2 then
+    begin
+      PlaceUnitXY(Guard2, 54, 18, false);
+      ComTurnXY(Guard2, 57, 25);
+      Guards= Guards ^ Guard2;
+    end;
+
+
+  for Un in All_in_base do
+     if (Un <> Guard1) and (Un <> Guard2) then
+      begin
+        if GetClass(Un) = class_scientistic then
+          begin
+            PlaceUnitArea(Un, Lab, False);
+//            if Laboratory then ComEnterUnit(Un, Laboratory);
+          end
+
+        else if GetClass(Un) = class_mechanic then
+          begin
+            PlaceUnitArea(Un, Fact, False);
+//            if Factory then ComEnterUnit(Un, Factory);
+          end
+
+        else PlaceUnitArea(Un, Base, False);
+      end;
+
+    PlaceHumanInUnit(Harrison, har_veh);
+    PlaceUnitXY(har_veh, 37, 29, false);
+    AddComMoveXY(har_veh, 42, 28);
+    AddComMoveXY(har_veh, 42, 26);
+    WaitJob(har_veh, 0.5);
+    ComTurnUnit(Guards, Harrison);
+    AddComMoveXY(har_veh, 52, 26);
+    AddComMoveXY(har_veh, 52, 18);
+    AddComMoveXY(har_veh, 49, 13);
+
+    WaitJob(har_veh, 0.5);
+    ComExitVehicle(Harrison);
+    Wait(1);
+    ComMoveXY(Harrison, 49, 15);
+    AddComTurnUnit(Harrison, Guard1);
+
+    Say(Guard1, 'D1-Sol1-1');
+    Say(Harrison, 'D1-Har-1');
+    ComExitBuilding(JMM);
+    Wait(1);
+    ComTurnUnit(Harrison, JMM);
+    AddComMoveXY(JMM, 51, 15);
+    AddComTurnUnit(JMM, Harrison);
+    Say(JMM, 'D1-JMM-1');
+    Say(Harrison, 'D1-Har-2');
+    Say(JMM, 'D1-JMM-2');
+    Say(Harrison, 'D1-Har-3');
+    Say(JMM, 'D1-JMM-3');
+    Say(Harrison, 'D1-Har-4');
+    Say(JMM, 'D1-JMM-4');
+    Say(Harrison, 'D1-Har-5');
+    Say(JMM, 'D1-JMM-5');
+    Say(Harrison, 'D1-Har-6');
+    Say(JMM, 'D1-JMM-6');
+ end;
+
+
+Function SelectAmericans;
+ begin
+   // Select your attack group of 10 persons
+   Selected_americans= CharacterSelection('', 9, 9,
+                                          [sel_hired, sel_not_changeable, sel_change_class, JMM,
+                                           sel_not_hired, sel_changeable, sel_dont_ignore_class_nation,
+                                           sel_change_class] ^ All_americans ^ New_americans,
+                                          [[class_mechanic, 3, 5], class_soldier, class_scientistic]);
+   Selected_americans= Selected_americans ^ [JMM];
+
+   all_americans= all_americans ^ [JMM] ^ new_americans;
+ end;
+
+
+
+EXPORT Function Action;
+ begin
+   IngameON;
+   CenterNowOnXY(48, 22);
+   Prepare_base;
+   SelectAmericans;
+   IngameOFF;
+ end;

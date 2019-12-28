@@ -1,0 +1,123 @@
+export survivors3,
+       old_chars;
+
+export function LoadAllMen;
+var list;
+begin
+  uc_side=3;
+  uc_nation=nation_russian;
+  list:=[];
+  old_chars:=[];
+  survivors3:=[];
+
+  // loading group
+  if TestCharacters('survivors3') then
+    survivors3:=CreateCharacterSet('survivors3');
+
+
+  // loading present units
+  if TestCharacters('Belkov') and CheckCharacterSet('Belkov') then
+     begin
+      Belkov:=CreateCharacter('Belkov');
+      list:=list ^ Belkov;
+    end;
+
+  if TestCharacters('Gnyevko') and CheckCharacterSet('Gnyevko') then
+     begin
+      Gnyevko:=CreateCharacter('Gnyevko');
+      list:=list ^ Gnyevko;
+    end;
+
+  if TestCharacters('Kirilenkova') and CheckCharacterSet('Kirilenkova') then
+    begin
+      Kirilenkova:=CreateCharacter('Kirilenkova');
+      list:=list ^ Kirilenkova;
+    end;
+
+  if TestCharacters('Kovalyuk') and CheckCharacterSet('Kovalyuk') then
+    begin
+      Kovalyuk:=CreateCharacter('Kovalyuk');
+      list:=list ^ Kovalyuk;
+    end;
+
+  if TestCharacters('Scholtze') and CheckCharacterSet('Scholtze') then
+    begin
+      Scholtze:=CreateCharacter('Scholtze');
+      list:=list ^ Scholtze;
+    end;
+
+  if TestCharacters('Kuzmov') and CheckCharacterSet('Kuzmov') then
+    begin
+      Kuzmov:=CreateCharacter('Kuzmov');
+      list:=list ^ Kuzmov;
+    end;
+
+  if TestCharacters('Karamazov') and CheckCharacterSet('Karamazov') then
+    begin
+      Karamazov:=CreateCharacter('Karamazov');
+      list:=list ^ Karamazov;
+    end;
+
+  if TestCharacters('Petrovova') and CheckCharacterSet('Petrovova') then
+    begin
+      Petrovova:=CreateCharacter('Petrovova');
+      list:=list ^ Petrovova;
+    end;
+
+  if TestCharacters('Gleb') and CheckCharacterSet('Gleb') then
+    begin
+      Gleb:=CreateCharacter('Gleb');
+      list:=list ^ Gleb;
+    end;
+
+  if TestCharacters('Petrosyan') and CheckCharacterSet('Petrosyan') then
+    begin
+      Petrosyan:=CreateCharacter('Petrosyan');
+      list:=list ^ Petrosyan;
+    end;
+
+  if TestCharacters('Lipshchin') and CheckCharacterSet('Lipshchin') then
+    begin
+      Lipshchin:=CreateCharacter('Lipshchin');
+      list:=list ^ Lipshchin;
+    end;
+
+  if TestCharacters('Titov') and CheckCharacterSet('Titov') then
+    begin
+      Titov:=CreateCharacter('Titov');
+      list:=list ^ Titov;
+    end;
+
+  if TestCharacters('Dolgov') and CheckCharacterSet('Dolgov') then
+    begin
+      Dolgov:=CreateCharacter('Dolgov');
+      list:=list ^ Dolgov;
+    end;
+
+  if TestCharacters('Xavier') and CheckCharacterSet('Xavier') then
+    begin
+      Xavier:=CreateCharacter('Xavier');
+      list:=list ^ Xavier;
+    end;
+
+  if TestCharacters('Oblukov') and CheckCharacterSet('Oblukov') then
+    begin
+      Oblukov:=CreateCharacter('Oblukov');
+      list:=list ^ Oblukov;
+    end;
+
+  if TestCharacters('Kozlov') and CheckCharacterSet('Kozlov') then
+    begin
+      Kozlov:=CreateCharacter('Kozlov');
+      list:=list ^ Kozlov;
+    end;
+
+  if TestCharacters('Kapitsova') and CheckCharacterSet('Kapitsova') then
+    begin
+      Kapitsova:=CreateCharacter('Kapitsova');
+      list:=list ^ Kapitsova;
+    end;
+
+  old_chars:=list;
+  result:=old_chars ^ (survivors3 diff list);
+end;

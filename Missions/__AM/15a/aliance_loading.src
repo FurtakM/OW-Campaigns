@@ -1,0 +1,246 @@
+export function load_all_aliance;
+begin
+  if TestCharacters('Belkov') and CheckCharacterSet('Belkov') then
+    begin
+      Belkov:=CreateCharacter('Belkov');
+      aliance_forces:=aliance_forces ^ Belkov;
+    end;
+
+  if TestCharacters('Petrosyan') and CheckCharacterSet('Petrosyan') then
+    begin
+      Petrosyan:=CreateCharacter('Petrosyan');
+      aliance_forces:=aliance_forces ^ Petrosyan;
+    end;
+
+  if TestCharacters('Kirilenkova') and CheckCharacterSet('Kirilenkova') then
+    begin
+      Kirilenkova:=CreateCharacter('Kirilenkova');
+      aliance_forces:=aliance_forces ^ Kirilenkova;
+    end;
+
+  if TestCharacters('Gnyevko') and CheckCharacterSet('Gnyevko') then
+    begin
+      Gnyevko:=CreateCharacter('Gnyevko');
+      aliance_forces:=aliance_forces ^ Gnyevko;
+    end;
+
+  if TestCharacters('Gladkov') and CheckCharacterSet('Gladkov') then
+    begin
+      Gladkov:=CreateCharacter('Gladkov');
+      aliance_forces:=aliance_forces ^ Gladkov;
+    end;
+
+  if TestCharacters('Dolgov') and CheckCharacterSet('Dolgov') then
+    begin
+      Dolgov:=CreateCharacter('Dolgov');
+      aliance_forces:=aliance_forces ^ Dolgov;
+    end;
+
+  if TestCharacters('Gleb') and CheckCharacterSet('Gleb') then
+    begin
+      Gleb:=CreateCharacter('Gleb');
+      aliance_forces:=aliance_forces ^ Gleb;
+    end;
+
+  if TestCharacters('Kapitsova') and CheckCharacterSet('Kapitsova') then
+    begin
+      Kapitsova:=CreateCharacter('Kapitsova');
+      aliance_forces:=aliance_forces ^ Kapitsova;
+    end;
+
+  if TestCharacters('Kuzmov') and CheckCharacterSet('Kuzmov') then
+    begin
+      Kuzmov:=CreateCharacter('Kuzmov');
+      aliance_forces:=aliance_forces ^ Kuzmov;
+    end;
+
+  if TestCharacters('Kovalyuk') and CheckCharacterSet('Kovalyuk') then
+    begin
+      Kovalyuk:=CreateCharacter('Kovalyuk');
+      aliance_forces:=aliance_forces ^ Kovalyuk;
+    end;
+
+  if TestCharacters('Scholtze') and CheckCharacterSet('Scholtze') then
+    begin
+      Scholtze:=CreateCharacter('Scholtze');
+      aliance_forces:=aliance_forces ^ Scholtze;
+    end;
+
+  if TestCharacters('Karamazov') and CheckCharacterSet('Karamazov') then
+    begin
+      Karamazov:=CreateCharacter('Karamazov');
+      aliance_forces:=aliance_forces ^ Karamazov;
+    end;
+
+  if TestCharacters('Titov') and CheckCharacterSet('Titov') then
+    begin
+      Titov:=CreateCharacter('Titov');
+      aliance_forces:=aliance_forces ^ Titov;
+    end;
+
+  if TestCharacters('Oblukov') and CheckCharacterSet('Oblukov') then
+    begin
+      Oblukov:=CreateCharacter('Oblukov');
+      aliance_forces:=aliance_forces ^ Oblukov;
+    end;
+
+  if TestCharacters('Kozlov') and CheckCharacterSet('Kozlov') then
+    begin
+      Kozlov:=CreateCharacter('Kozlov');
+      aliance_forces:=aliance_forces ^ Kozlov;
+    end;
+
+  if TestCharacters('Petrovova') and CheckCharacterSet('Petrovova') then
+    begin
+      Petrovova:=CreateCharacter('Petrovova');
+      aliance_forces:=aliance_forces ^ Petrovova;
+    end;
+
+  if TestCharacters('Bystrov') and CheckCharacterSet('Bystrov') then
+    begin
+      Bystrov:=CreateCharacter('Bystrov');
+      aliance_forces:=aliance_forces ^ Bystrov;
+    end;
+
+  if TestCharacters('Lipshchin') and CheckCharacterSet('Lipshchin') then
+    begin
+      Lipshchin:=CreateCharacter('Lipshchin');
+      aliance_forces:=aliance_forces ^ Lipshchin;
+    end;
+
+  if TestCharacters('Fadeev') and CheckCharacterSet('Fadeev') then
+    begin
+      Fadeev:=CreateCharacter('Fadeev');
+      aliance_forces:=aliance_forces ^ Fadeev;
+    end;
+
+  if TestCharacters('Bobby') and CheckCharacterSet('Bobby') then
+    begin
+      Bobby:=CreateCharacter('Bobby');
+      aliance_forces:=aliance_forces ^ Bobby;
+    end;
+
+  if TestCharacters('Brown') and CheckCharacterSet('Brown') then
+    begin
+      Brown:=CreateCharacter('Brown');
+      aliance_forces:=aliance_forces ^ Brown;
+    end;
+
+  if TestCharacters('Cornell') and CheckCharacterSet('Cornell') then
+    begin
+      Cornell:=CreateCharacter('Cornell');
+      aliance_forces:=aliance_forces ^ Cornell;
+    end;
+
+  if TestCharacters('Coonie') and CheckCharacterSet('Coonie') then
+    begin
+      Connie:=CreateCharacter('Coonie');
+      aliance_forces:=aliance_forces ^ Connie;
+    end;
+
+  if TestCharacters('Cyrus') and CheckCharacterSet('Cyrus') then
+    begin
+      Cyrus:=CreateCharacter('Cyrus');
+      aliance_forces:=aliance_forces ^ Cyrus;
+    end;
+
+  if TestCharacters('Denis') and CheckCharacterSet('Denis') then
+    begin
+      Denis:=CreateCharacter('Denis');
+      aliance_forces:=aliance_forces ^ Denis;
+    end;
+
+  if TestCharacters('Donaldson') and CheckCharacterSet('Donaldson') then
+    begin
+      Donaldson:=CreateCharacter('Donaldson');
+      aliance_forces:=aliance_forces ^ Donaldson;
+    end;
+
+  if TestCharacters('Frank') and CheckCharacterSet('Frank') then
+    begin
+      Frank:=CreateCharacter('Frank');
+      aliance_forces:=aliance_forces ^ Frank;
+    end;
+
+  if TestCharacters('Gary') and CheckCharacterSet('Gary') then
+    begin
+      Gary:=CreateCharacter('Gary');
+      aliance_forces:=aliance_forces ^ Gary;
+    end;
+
+  if TestCharacters('Gladstone') and CheckCharacterSet('Gladstone') then
+    begin
+      Gladstone:=CreateCharacter('Gladstone');
+      aliance_forces:=aliance_forces ^ Gladstone;
+    end;
+
+  if TestCharacters('Joan') and CheckCharacterSet('Joan') and camp = 4 then  //Joan is killed in Ru09
+    begin
+      Joan:=CreateCharacter('Joan');
+      aliance_forces:=aliance_forces ^ Joan;
+    end;
+
+  if TestCharacters('Lisa') and CheckCharacterSet('Lisa') then
+    begin
+      Lisa:=CreateCharacter('Lisa');
+      aliance_forces:=aliance_forces ^ Lisa;
+    end;
+
+  if TestCharacters('Peterson') and CheckCharacterSet('Peterson') then
+    begin
+      Peterson:=CreateCharacter('Peterson');
+      aliance_forces:=aliance_forces ^ Peterson;
+    end;
+
+  if TestCharacters('Simms') and CheckCharacterSet('Simms') then
+    begin
+      Simms:=CreateCharacter('Simms');
+      aliance_forces:=aliance_forces ^ Simms;
+    end;
+
+  if TestCharacters('VanHouten') and CheckCharacterSet('VanHouten') then
+    begin
+      VanHouten:=CreateCharacter('VanHouten');
+      aliance_forces:=aliance_forces ^ VanHouten;
+    end;
+
+  if TestCharacters('Yamoko') and CheckCharacterSet('Yamoko') then
+    begin
+      Yamoko:=CreateCharacter('Yamoko');
+      aliance_forces:=aliance_forces ^ Yamoko;
+    end;
+
+  DisableAllBazookers;
+
+  if camp=4 then
+    sort_aliance_by_the_nation;
+end;
+
+function sort_aliance_by_the_nation;
+var un,us_list,ru_list;
+begin
+  us_list:=[];
+  ru_list:=[];
+
+  for un in aliance_forces do
+    if GetNation(un)=us then
+      us_list:=us_list ^ un
+    else
+      ru_list:=ru_list ^ un;
+
+  aliance_forces:=us_list ^ ru_list;
+end;
+
+
+function DisableAllBazookers;
+var list,un;
+begin
+  list:=[];
+  for un in aliance_forces do
+    begin
+      if GetClass(un)=class_bazooker then
+        SetClass(un,class_soldier);
+      list:=list ^ un;
+    end;
+  aliance_forces:=list;
+end;

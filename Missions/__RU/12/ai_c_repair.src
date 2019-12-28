@@ -1,0 +1,124 @@
+var repair_site; //bod[5]
+export rc; //list[5]
+export bc; //list[5]
+
+export function inicializace_ai_c_repair;
+begin
+  repair_site:=[[30,29],[89,17],[72,125],[215,140],[184,85]];
+  bc:=[[],[],[],[],[]];
+  rc:=[[],[],[],[],[]];
+end;
+
+// doplnovani paliva v zakladne
+every 0$5.0 + 0$0.5 do
+var i;
+begin
+  for i:=1 to 5 do 
+    if ai_s[i] in ai then begin
+      dop_pal(vehicles[i],depots[i]);
+      wait(0$1);
+    end;
+
+  enable;
+end;
+function dop_pal(tc,tdep);
+var set_fuel, fuel;
+begin
+    for set_fuel in UnitFilter(tc, [[f_dist,tdep,40]]) do begin
+      fuel:=GetFuel(set_fuel);
+      if fuel<=80 then
+         SetFuel(set_fuel, fuel+20);
+    end;
+end;
+
+//posilani na opravu
+every 0$5 + 0$0.3 do
+var zivoty,i, rem_t, add_t,k;
+begin
+  for k:=1 to 5 do
+    if ai_s[k] in ai then begin
+      rem_t:=[];
+      add_t:=[];
+      for i in UnitFilter(vehicles[k], [[f_not,[f_side,you]]]) do begin
+          if GetLives(i)<500 then begin
+            rem_t:=rem_t ^ i;
+          end
+          else if GetLives(i)>=950 then begin
+            add_t:=add_t ^ i;
+          end;
+      end;
+      bc:=replace(bc,k,bc[k] union rem_t);
+      bc:=replace(bc,k,bc[k] diff add_t);
+      remove_from_vehicles(rem_t);
+      add_to_vehicles(add_t);
+
+      ComMoveXY(bc[k], repair_site[k][1],repair_site[k][2]);
+      wait(0$0.9);
+    end
+    else
+      bc:=replace(bc,k,[]);
+  enable;
+end;
+
+
+//hledani aut na opravu
+every 0$5 + 0$0.1 do
+var zivoty,i,rc_t,k;
+begin
+  for k:=1 to 5 do 
+    if ai_s[k] in ai then begin
+      rc_t:=[];
+      for i in bc[k] do begin
+         if GetLives(i)<950 then begin
+            rc_t:=rc_t ^ i;
+            zivoty:=zivoty ^ GetLives(i);
+         end;
+      end;
+      SortListByListAsc(rc_t, zivoty);
+      rc:=replace(rc,k,rc_t);
+    end
+    else
+      rc:=replace(rc,k,[]);
+
+  enable;
+end;
+
+//opravy aut
+every 0$5 + 0$0.9 do
+var i;
+begin
+  for i:=1 to 5 do 
+    if ai_s[i] in ai then begin
+      rep(ai_s[i],rc[i]);
+      wait(0$0.8);
+    end;
+
+  enable;
+end;
+function rep(side,rep_cars);
+var a;
+begin
+    if (side in ai) and rep_cars then begin
+       if rep_cars[1]<400 then begin
+          a:=get_x_best(UnitFilter(mec, [[f_side,side],[f_dist, rep_cars[1], 20]]), 2, skill_mechanical, 0, false);
+          ComExitBuilding(a);
+          AddComRepairVehicle(a, rep_cars[1]);
+       end
+       else if rep_cars[1]<700 or rep_cars>=2 then begin
+          a:=get_x_best(UnitFilter(mec, [[f_side,side],[f_dist, rep_cars[1], 20]]), 1, skill_mechanical, 0, false);
+          ComExitBuilding(a);
+          AddComRepairVehicle(a, rep_cars[1]);
+          a:=get_x_best(UnitFilter(mec, [[f_side,side],[f_dist, rep_cars[2], 20]]), 1, skill_mechanical, 0, true);
+          ComExitBuilding(a);
+          AddComRepairVehicle(a, rep_cars[2]);
+       end
+       else if rep_cars>=3 then begin
+          a:=get_x_best(UnitFilter(mec, [[f_side,side],[f_dist, rep_cars[1], 20]]), 2, skill_mechanical, 0, false);
+          ComExitBuilding(a);
+          AddComRepairVehicle(a, rep_cars[1]);
+          a:=get_x_best(UnitFilter(mec, [[f_side,side],[f_dist, rep_cars[2], 20]]), 2, skill_mechanical, 0, true);
+          ComExitBuilding(a);
+          AddComRepairVehicle(a, rep_cars[2]);
+       end;
+    end;
+end;

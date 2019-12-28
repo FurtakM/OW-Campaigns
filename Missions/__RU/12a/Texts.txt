@@ -1,0 +1,146 @@
+@ Cat and Mouse
+% Burlak made the decision to join the Alliance. Now they must plan their escape in total secrecy. If they are discovered there will be no mercy.
+
+// Dialogue  
+
+// Dialogue Start (in Bluekher)
+$ DStart-Gos-1
+- I'm so glad you're with us, Burlak. Not many soldiers would understand our goals.
+$ DStart-Bur-1
+- Maybe more than you think. I shall try to bring more with me.
+$ DStart-Gos-2
+- You must hurry then. We plan to leave in the morning.
+$ DStart-Bur-2
+- Thanks for the warning!
+$ DStart-Gos-3
+- We will need time to get away. Bringing the Artefact is going to slow us down.
+$ DStart-Bur-3
+- Maybe I can lure the guards away. Which way will be heading?
+$ DStart-Gos-4
+- Straight to the North, where we are meeting Peter Roth, the American scientist.
+$ DStart-Bur-4
+- OK. There are marshes like a maze to the North, which could be useful. I'll get some men I can trust to build a small encampment to the north-east. I'll lure the pursuers there and this should give you time to make the escape.
+$ DStart-Gos-5
+- Thank you Burlak. Until tomorrow.
+
+// Dialogue Platonov (start - Burlak is within base, Masha is nearby)
+$ DPlatonov-Rsol1-1
+- Comrade Major Gorky. Please come with us.
+$ DPlatonov-Bur-1
+- What the hell for?
+$ DPlatonov-Rsol1-2
+- We just need to ask a few questions. You'll be back soon.
+$ DPlatonov-Bur-2
+- No problem. I just have to do something first. (enters Masha)
+$ DPlatonov-Rsol1-3
+- What is it you need to do comrade?
+$ DPlatonov-Bur-3
+- Blow your ass away! (Burlak shoots)
+$ DPlatonov-Rsol1-4
+- Aaargh!
+$ DPlatonov-Pla-4
+- I knew it Gorky! You are imperialist agent! You will not live!
+$ DPlatonov-Pla-4a
+- Marshal Platonov calling all units! All units! Zionistic agent Yuri Gorky is escaping! Stop him! Whatever it takes. He must not escape!
+
+# MRun (+Run)
+Add main Run
+-Reach the encampment in North East corner.
+#
+
+// Dialogue GosStart (when Burlak reaches encamp. - only characters present can speak)
+$ DGosStart-Bel-1
+- Glad to see you alive!
+$ DGosStart-Gny-1
+- Thank God you made it.
+$ DGosStart-Glb-1
+- Screw Marx. Screw Lenin! Screw communism!
+$ DGosStart-Pet-1
+- Welcome, comrade major.
+$ DGosStart-Tit-1
+- Holy Trofim, Burlak, you got through!
+$ DGosStart-Kir-1
+- Glad to see you again, Burlak.
+$ DGosStart-Sol1-1
+- Welcome, Burlak.
+$ DGosStart-FSol1-1
+- Welcome, Burlak.
+$ DGosStart-Bur-1
+- I'm pretty pleased to be here myself!
+$ DGosStart-Bur-1a
+- (into radio) This is vulture calling robins. The vulture has landed.
+$ DGosStart-Gos-1
+- (over radio) Robins to vulture. We are ready to fly the nest.
+$ DGosStart-Bur-2
+- (into radio) Stand by for signal. Over and out.
+
+// Dialogue Situation (after GosStart)
+$ DSituation-Bur-1
+- This is a good base you are building, but where we're going will require all the resources we've got.
+$ DSituation-Rsol1-1
+- We will economise, commander.
+$ DSituation-RFSol1-1
+- We will economise, commander.
+
+# MHold (-Run,+Hold)
+Out Run
+Add main Hold
+-Hold against pursuers, signal to professor Gossudarov that he can leave the base.
+Add secondary Economy
+-Try to spend as little of your resources as possible.
+#
+
+! Signal
+Signal
+
+There will be hint...
+!
+
+// Query GO (when Burlak enters lab)
+? QGO
+Do you want to send a signal to professor Gossudarov to leave? If he does so you will have to guide him to the exit area in North.
+-1 Yes
+-2 No
+?
+
+// Dialogue GO#1 
+$ DGO#1-Bur-1
+- Vulture calling robins. Fly the nest. I repeat, fly now.
+
+# MGuide (-Run, ?Hold, +Guide)
+Out Run
+Chg main Hold
+-Hold against pursuers.
+Add main Guide
+-Guide scientists to exit area, protect Artefact.
+#
+
+// Dialogue SeeYou (when scientists leave the exit area)
+$ DSeeYou-Gos-1
+- Thank God, we made it. And my thanks to you Burlak. I hope we'll see each other soon.
+$ DSeeYou-Bur-1
+- So do I, professor.
+
+^ Main
+Scientists escaped
+
+| Burlak
+Burlak is dying.
+
+| Artefact
+Artefact was lost.
+
+* Science
++ All scientists escaped
+- Not all scientists made it through.
+*
+
+* Effectivity
++ Resources saved
+- You used most of your resources
+*
+
+* LittleLosses
++ Few casualties
+- You lost more than one man.
+*
