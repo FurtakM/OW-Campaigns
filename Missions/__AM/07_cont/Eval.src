@@ -46,13 +46,13 @@ var Remaining_russians_buildings;
 
    if Remaining_russians_buildings < 15 then
      begin
-       AddMedal('Destroy1',1);
-       AddMedal('Destroy2',1);
+       AddMedal('Destroy3',1);
+       AddMedal('Destroy3',1);
        AddMedal('Destroy3',1);
      end
    else if Remaining_russians_buildings < 25 then
      begin
-       AddMedal('Destroy1',2);
+       AddMedal('Destroy2',2);
        AddMedal('Destroy2',2);
        AddMedal('Destroy3',-1);
      end

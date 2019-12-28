@@ -7808,14 +7808,14 @@
 13271: LD_INT 15
 13273: LESS
 13274: IFFALSE 13308
-// begin AddMedal ( Destroy1 , 1 ) ;
-13276: LD_STRING Destroy1
+// begin AddMedal ( Destroy3 , 1 ) ;
+13276: LD_STRING Destroy3
 13278: PPUSH
 13279: LD_INT 1
 13281: PPUSH
 13282: CALL_OW 101
-// AddMedal ( Destroy2 , 1 ) ;
-13286: LD_STRING Destroy2
+// AddMedal ( Destroy3 , 1 ) ;
+13286: LD_STRING Destroy3
 13288: PPUSH
 13289: LD_INT 1
 13291: PPUSH
@@ -7834,8 +7834,8 @@
 13313: LD_INT 25
 13315: LESS
 13316: IFFALSE 13351
-// begin AddMedal ( Destroy1 , 2 ) ;
-13318: LD_STRING Destroy1
+// begin AddMedal ( Destroy2 , 2 ) ;
+13318: LD_STRING Destroy2
 13320: PPUSH
 13321: LD_INT 2
 13323: PPUSH
