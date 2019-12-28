@@ -2,6 +2,8 @@ EXPORT You,You2,Arabi,Arabi2;
 EXPORT mregistry1,MD1;
 EXPORT mregistry2,MD2;
 
+Export mission_ended; // added 28.12.2019
+
 starting
 begin
   RandomizeAll;
@@ -11,6 +13,8 @@ begin
   InitUc;
   InitHc;
   InitVc;
+
+  mission_ended := false;
 
   // pridelovani stran
   You:=1;
@@ -110,21 +114,21 @@ end;
 // ukonceni mise + udelovani madaili
 
 // Added by Nefarem 14.12.2019
-{Every 0$1 do
-var i, pomauta, art;
+Every 0$2 trigger not mission_ended and FilterAllUnits([[f_side, 2], [f_or, [f_btype, b_depot], [f_btype, b_warehouse]]]) = 0 do
+var i, cargos;
 begin
 enable;
 
-  pomauta=FilterAllUnits([[f_side,You],[f_or,[f_weapon,us_cargo_bay],[f_weapon,ar_cargo_bay]]]);
-  art=false;
-  for i in pomauta do if GetCargo(i,mat_artefact)>0 then art=true;
+  cargos := FilterAllUnits([[f_side, You], [f_or, [f_weapon, us_cargo_bay], [f_weapon, ar_cargo_bay]]]);
 
-  If IsDead(A2_dep) and IsDead(A3_dep) and art then
-  begin
-   konec_mise;
-  end;
-
-end;}
+  for i in cargos do
+      if GetCargo(i, mat_artefact) then
+         begin
+         konec_mise;
+         disable;
+         break;
+         end;
+End;
 // CHECK Amici.src -> 139
 
 EXPORT function konec_mise;
@@ -135,6 +139,12 @@ VAR art;
 VAR VIPka;
 VAR all_units_1;
 begin
+
+  if mission_ended then // 28.12.2019
+     exit;
+
+  mission_ended := true;
+
   DisableExclamations;
   gained_medals:=[];
   missing_medals:=[];
