@@ -1,3 +1,4 @@
+
 export function konec_mise;
 var saved_units,survivors3;
 begin
@@ -22,10 +23,12 @@ begin
 {
   Je potreba pod spravnym identifikatorem sejvnout:
 }
-  survivors3:=saved_units diff [Burlak, Gossudarov, Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov, Karamazov,
+
+  survivors3:= survivors3 ^ saved_units diff [Burlak, Gossudarov, Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov, Karamazov,
                                 Petrovova, Gleb, Petrosyan, Lipshchin, Titov, Dolgov, Xavier, Oblukov, Kozlov, Kapitsova];
 
-
+  if CheckCharacterSet('survivors3') then
+     survivors3 = survivors3 ^ CreateCharacterSet('survivors3');
 
 // tohle jsem semka pridal, ok?
   SaveCharacters(Burlak,'Burlak');

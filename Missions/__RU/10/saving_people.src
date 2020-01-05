@@ -6,7 +6,7 @@ begin
   if Belkov in list then
     begin
       SaveCharacters(Belkov,'Belkov');
-      SaveVariable(1,'BelkovRu10');
+      SaveVariable(1,'BelkovRu10');                   
     end;
 
   if Gnyevko in list then
@@ -40,7 +40,7 @@ begin
     end;
 
   if Karamazov in list then
-    begin
+    begin                                                
       SaveCharacters(Karamazov,'Karamazov');
       SaveVariable(1,'KaramazovRu10');
     end;
@@ -65,7 +65,7 @@ begin
 
   if Lipshchin in list then
     begin
-      SaveCharacters(Lipshchin,'Lipshchin');
+      SaveCharacters(Lipshchin,'Lipshchin');                       
       SaveVariable(1,'LipshchinRu10');
     end;
 
@@ -87,7 +87,7 @@ begin
       SaveVariable(1,'OblukovRu10');
     end;
 
-  if Xavier in list then
+  if Xavier in list then                                  
     begin
       SaveCharacters(Xavier,'Xavier');
       SaveVariable(1,'XavierRu10');
@@ -108,6 +108,9 @@ begin
   list:=list diff old_chars;
 
   SaveCharacters(list,'Ru10trans');
+
+  SaveCharacters(people diff list ^ [Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov, Karamazov, Petrovova, Gleb, Petrosyan, Lipshchin, Titov, Dolgov, Oblukov, Xavier, Kozlov, Kapitsova], 'survivors3');
+
   SaveBaseTrotskij;
 
   ChangeMap('%_cont','%_cont');

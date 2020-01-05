@@ -212,8 +212,8 @@ begin
   uc_side=you;
   uc_nation:=nation_russian;
 
-  other:=nacti_osobu('survivors1');
-  other:=other union nacti_osobu('survivors2');
+  other:=CreateCharacterSet('survivors1');     //the other function loads only one person
+  other:=other union CreateCharacterSet('survivors2');
   other:=other diff 0;
 //*********************************************
   if not testing then
@@ -276,8 +276,12 @@ begin
   ASoldier1:=CreateHuman;
 //*********************************************
 
-  player_units:=([Burlak,Belkov,Kirilenkova,Gnyevko,Kapitsova,Gleb,Kuzmov,Kovalyuk,Scholtze,Karamazov,Titov,Oblukov,Kozlov,Petrovova,Lipshchin,Petrosyan,Dolgov,Xavier] union other) diff [0];
-  other:=other diff player_units;
+  player_units:=([Burlak,Belkov,Kirilenkova,Gnyevko,Kapitsova,Gleb,Kuzmov,Kovalyuk,Scholtze,Karamazov,Titov,Oblukov,Kozlov,Petrovova,Lipshchin,Petrosyan,Dolgov,Xavier]) diff [0];
+
+  //by default there were always 2 randoms
+  for i = 1 to 2 do
+      if other >= i and other[i] > 0 then
+         player_units = player_units ^ other[i];
 
 //******* Doplneni pri nedostatku lidi ********
   uc_side=you;
@@ -568,11 +572,6 @@ begin
         else
           trotskij:=trotskij^[[GetBType(un),GetX(un),GetY(un),GetDir(un),GetBLevel(un),GetNation(un)]];
     end;
-
-    // if masha not exist!
-    if not Masha or not IsLive(Masha) then
-       DeleteVariable('Masha');
-
     SaveVariable(trotskij,'Trotskij');
     SaveVariable(ListEnvironmentArea(WholeMapArea),'Environment');
 

@@ -21,6 +21,8 @@ Kapitsova,
 Platonov,
 RSoldier,
 
+survivors3,
+
 you,
 rus,
 ally,
@@ -163,7 +165,14 @@ begin
 
   all_possible:=[Gnyevko,Belkov,Kirilenkova,Gleb,Petrosyan,Titov,Kovalyuk,Scholtze,Kuzmov,Karamazov,Petrovova,Lipshchin,Dolgov,Xavier,Oblukov,Kozlov,Kapitsova] diff 0;
 
-  scientists:=UnitFilter(all_possible,[f_class,class_scientistic]);
+  survivors3 = [];
+
+  if CheckCharacterSet('survivors3') then
+     survivors3 = CreateCharacterSet('survivors3');
+
+  scientists:=UnitFilter(all_possible^survivors3,[f_class,class_scientistic]);
+
+  survivors3 = survivors3 diff scientists;
 
   if scientists>5 then
     for i:=6 to scientists do
@@ -238,7 +247,7 @@ begin
  player_units = CharacterSelection('', 5, 5, //CharacterSelection(ident:string min:integer max:integer units:plist classes:plist)
                                          [sel_hired,sel_not_changeable,sel_dont_change_class] ^ Burlak ^
                                          [sel_not_hired,sel_not_changeable,sel_dont_change_class]^ Platonov ^
-                                         [sel_not_hired,sel_change_class, sel_changeable]^possible^new,
+                                         [sel_not_hired,sel_change_class, sel_changeable]^possible^survivors3^new,
                                          [class_soldier,class_mechanic,class_engineer,class_scientistic, [class_bazooker, 0, 2]]);
 
   SetSide((player_units diff Burlak),neutral);
@@ -463,7 +472,7 @@ begin
 
   RewardPeople(reward_units);
 
-  SaveCharacters(scientists diff (all_possible^Gossudarov),'scientists');
+  SaveCharacters(scientists diff (possible^Gossudarov),'scientists');
 
   survivors5:=player_units diff all_possible^scientists^Burlak^Gossudarov;
 

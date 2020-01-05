@@ -41,9 +41,11 @@ begin
   else result=true;
 end;
 
+Export surv3;
+
 var vsevol_v,popov_v,gaydar_v,yashin_v,vehikly,vehiklyo,vehiklys;
 export function prepare_russians;
-var tmp,tmp2,tmp3,na,na2,surv3,veh;
+var tmp,tmp2,tmp3,na,na2,veh;
 begin
   centernowonxy(99,102);
   na=0;
@@ -930,7 +932,7 @@ begin
   savecharacters(oblukov,'Oblukov');
 
   tmp=filterallunits([[f_alive],[f_side,ru],[f_type,unit_human]]);
-  savecharacters(tmp diff [burlak,vsevol,popov,gaydar,yashin,titov,belkov,kuzmov,gnyevko,kozlov,furmanov,kiril,kapitsova,petrosyan,scholtze,dolgov,kovalyuk,karamazov,petrovova,oblukov],'survivors3');
+  savecharacters(tmp ^ surv3 diff [burlak,vsevol,popov,gaydar,yashin,titov,belkov,kuzmov,gnyevko,kozlov,furmanov,kiril,kapitsova,petrosyan,scholtze,dolgov,kovalyuk,karamazov,petrovova,oblukov],'survivors3');
 
 end;
 
