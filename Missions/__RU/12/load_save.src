@@ -142,4 +142,9 @@ begin
     end;
     SaveVariable(Bluekher, 'Bluekher');
 
+    if CheckCharacterSet('survivors3') then
+    begin
+         tmp = CreateCharacterSet('survivors3');
+         SaveCharacters(tmp, 'survivors4');
+    end;
 end;

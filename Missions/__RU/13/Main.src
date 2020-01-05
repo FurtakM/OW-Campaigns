@@ -207,9 +207,13 @@ Begin
   If Kozlov then SaveCharacters ([Kozlov], 'Kozlov');
   If Kapitsova in Vybrano then SaveVariable (13, 'KapitsovaLoc');
   If Kapitsova then SaveCharacters ([Kapitsova], 'Kapitsova');
-  Vedlejsi = Vybrano diff Hlavni;
+
+  Vedlejsi = Vybrano diff [Burlak,Bystrov,Belkov, Gnyevko, Kirilenkova, Kovalyuk, Scholtze, Kuzmov,
+    Karamazov, Petrovova, Gleb, Petrosyan, Lipshchin, Titov, Dolgov,
+    Xavier, Oblukov, Kozlov, Kapitsova];
+
   If Vedlejsi then SaveCharacters (Vedlejsi, 'Others_Ru13');
-  Survivors4 = Survivors4 diff Vybrano;
+  Survivors4 = Survivors4 diff Vybrano;       
   SaveCharacters (Survivors4, 'Survivors4');
   // Konec.
   Wait (0$2);
