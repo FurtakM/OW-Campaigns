@@ -155,7 +155,7 @@ begin
 
   pom:=[];
   for i in everybody do
-    if IsLive(i) then
+    if GetLives(i) > 0 then  //changed because IsLive is true only for placed units
       pom:=pom ^ i;
   pom:=pom diff [bur,dol,kapisto,petro,pop,bel,gny,kiri,koval,schol,kuzmov,karam,petrov,gleb,lipsch,tito,xavier,obluk,kozlov,0];
   SaveCharacters(pom,'survivors3');
