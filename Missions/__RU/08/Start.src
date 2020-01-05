@@ -212,7 +212,7 @@ begin
   uc_side=you;
   uc_nation:=nation_russian;
 
-  other:=CreateCharacterSet('survivors1');               //nacti_osobu will load only one person from the set
+  other:=CreateCharacterSet('survivors1');     //the other function loads only one person
   other:=other union CreateCharacterSet('survivors2');
   other:=other diff 0;
 //*********************************************
@@ -278,7 +278,7 @@ begin
 
   player_units:=([Burlak,Belkov,Kirilenkova,Gnyevko,Kapitsova,Gleb,Kuzmov,Kovalyuk,Scholtze,Karamazov,Titov,Oblukov,Kozlov,Petrovova,Lipshchin,Petrosyan,Dolgov,Xavier]) diff [0];
 
-  //two randoms were always added to player units before
+  //by default there were always 2 randoms
   for i = 1 to 2 do
       if other >= i and other[i] > 0 then
          player_units = player_units ^ other[i];
@@ -286,13 +286,13 @@ begin
 //******* Doplneni pri nedostatku lidi ********
   uc_side=you;
   uc_nation:=nation_russian;
-  
+
   if 0+player_units<15 then // pridat lidi ze survivors
     for i:=1 to 0+other do
       if 0+player_units<15 then player_units:=player_units^other[i];
-  
-  if 0+player_units<20 then // pridat novy lidi
-     for i:=1 to 20-player_units do
+
+  if 0+player_units<15 then // pridat novy lidi
+     for i:=1 to 15-player_units do
      begin
        PrepareHuman(0,0,4);
        hc_name:='';
@@ -492,12 +492,20 @@ begin
   disable(601); // trigger s Kurtem a Mercenary1, aby nedelali nic, co nemaji
   disable(999); // The End
 
-  PlaceTreesToArea(TreeArea1,[2,10,11,27,35],40,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea1,[2,10,11,27,35],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea2,[9,10,27,35,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea3,[2,9,10,11,27],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea4,[9,10,27,35,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea5,[2,9,10,11,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  PlaceTreesToArea(TreeArea6,[2,11,27,35,48],20,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+  {
+   PlaceTreesToArea(TreeArea1,[2,10,11,27,35],40,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   PlaceTreesToArea(TreeArea2,[9,10,27,35,48],30,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   PlaceTreesToArea(TreeArea3,[2,9,10,11,27],60,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   PlaceTreesToArea(TreeArea4,[9,10,27,35,48],90,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   PlaceTreesToArea(TreeArea5,[2,9,10,11,48],120,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
   PlaceTreesToArea(TreeArea6,[2,11,27,35,48],45,10,4); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+}
 
   read_parameters;
   set_difficulty;
@@ -569,10 +577,10 @@ begin
 
     SaveVariable(HeikeKilled,'HeikeKilled');
     SaveVariable(MercPaid,'MercPaid');
-    SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha');
     SaveVariable(MercHandedOver,'MercHandedOver');
     SaveVariable(MercAccepted,'MercAccepted');
     SaveVariable(GenscherBetrayed,'GenscherBetrayed');
+    SaveVariable([GetChassis(Masha),GetEngine(Masha),GetControl(Masha),GetWeapon(Masha)],'Masha'); 
 
     SaveCharacters(Heike,'Heike');
     SaveCharacters(Petrosyan,'Petrosyan');
