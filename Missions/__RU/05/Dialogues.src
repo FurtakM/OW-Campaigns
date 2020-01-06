@@ -50,6 +50,16 @@ begin
      mt:=tick+0$2;
      while FilterAllUnits([[f_side,you],[f_placed]]) do begin
         wait(0$0.2);
+
+        for i in auta do
+            begin
+            if GetLives(i) < 500 then
+               SetLives(i, 500);
+
+            if not HasTask(i) then
+               ComMoveToArea(i, ru_exit);
+            end;
+
         for i in FilterUnitsInArea(ru_exit, []) do
           RemoveUnit(i);
         if tick>mt then begin
