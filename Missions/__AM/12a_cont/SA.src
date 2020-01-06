@@ -1,18 +1,28 @@
-//Steam achievements
-
+// Steam achievements
 Every 0$2+0$0.1 do
-     begin
-          if FilterAllUnits([[f_side,7],[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_soldier],[f_class,class_apeman_kamikaze]]]) >
-             FilterAllUnits([[f_side,7],[f_type,unit_human],[f_not,[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_soldier],[f_class,class_apeman_kamikaze]]]]) then
-               begin
-                    SetAchievement('ACH_POTA');
-                    exit;
-               end;
+begin
+if FilterAllUnits([[f_side,7],[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_soldier],[f_class,class_apeman_kamikaze]]]) >
+   FilterAllUnits([[f_side,7],[f_type,unit_human],[f_not,[f_or,[f_class,class_apeman],[f_class,class_apeman_engineer],[f_class,class_apeman_soldier],[f_class,class_apeman_kamikaze]]]]) then
+   begin
+   SetAchievement('ACH_POTA');
+   exit;
+   end;
 
-          enable;
-     end;
+enable;
+End;
 
-Export Function SA_OnJoanAndLisaJoinedAlliance;
-     begin
-          SetAchievement('ACH_MED');
-     end;
+Export Function SA_OnJoanAndLisaJoinedAlliance(l,j);
+var n;
+begin
+n = 0;
+
+if j then
+   n = n + 1;
+if l then
+   n = n + 1;
+
+SetAchievementEX('ACH_MED', n);
+
+if j and l then
+   SetAchievement('ACH_MED');
+End;

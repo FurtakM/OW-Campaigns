@@ -155,8 +155,8 @@ begin
         else addmedal('All',-2);}
         if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
 
-        if lisa in zachraneni and joan in zachraneni then
-           SA_OnJoanAndLisaJoinedAlliance;
+        // Lisa (or) Joan joined Alliance SA | 06.01.2020
+        SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
 
         addmedal('Save',-1);
         if zabil then addmedal('Friendship',-1)
@@ -182,8 +182,9 @@ begin
       else addmedal('All',1);}
       if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
 
-      if lisa in zachraneni and joan in zachraneni then
-           SA_OnJoanAndLisaJoinedAlliance;
+        // Lisa (or) Joan joined Alliance SA | 06.01.2020
+        SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
+
 
       if tmp2<(0+moji_backup) then addmedal('Save',-1)
       else addmedal('Save',1);
@@ -216,8 +217,9 @@ begin
       else addmedal('All',1);}
       if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
 
-      if lisa in zachraneni and joan in zachraneni then
-           SA_OnJoanAndLisaJoinedAlliance;
+      // Lisa (or) Joan joined Alliance SA | 06.01.2020
+      SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
+
 
       if tmp2<(0+moji_backup) then addmedal('Save',-1)
       else addmedal('Save',1);

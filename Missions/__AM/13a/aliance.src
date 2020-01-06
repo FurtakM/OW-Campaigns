@@ -226,6 +226,16 @@ begin
 //  debug_strings=[result];
 end;
 
+// 06.01.2020 Serpent
+Every 0$1 trigger UnitFilter(arusove, [[f_side, 6], [f_not, [f_lives, 500]]]) do
+var i;
+begin
+enable;
+
+for i in UnitFilter(arusove, [[f_side, 6], [f_not, [f_lives, 500]]]) do
+    SetLives(i, 500);
+End;
+
 every 0$1+1$30 trigger side_sees_side(al,rus) do
 var tmp,tmp2,tmp1,utoci;
 begin
