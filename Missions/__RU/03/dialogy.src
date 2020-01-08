@@ -518,8 +518,8 @@ EVERY 1 TRIGGER stav_omikron in [4,5,6] DO
 VAR pom,pom1,pom2,i,AreaNotCleared, firstDialog;
 begin
 enable;
-  pom=FilterUnitsInArea(Om_ven,[[f_type, unit_human],[f_or,[f_side,3],[f_side,You3]]]);
-  pom2=pom2=FilterUnitsInArea(Om_ven,[[f_type, unit_vehicle],[f_or,[f_side,3],[f_side,You3]]]);
+  pom=FilterUnitsInArea(Om_ven,[[f_type, unit_human],{[f_or,}[f_side,3]{,[f_side,You3]]}]);
+  pom2=FilterUnitsInArea(Om_ven,[[f_type, unit_vehicle],{[f_or,}[f_side,3]{,[f_side,You3]]}]);
  { for i in pom2 do
    if UnitsInside(i) <> 0 then pom= pom^i;
   if pom>0 then

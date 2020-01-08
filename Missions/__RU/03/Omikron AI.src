@@ -433,22 +433,17 @@ end;
 //end of test
 }
 
-Every 0$1 trigger setkani_om do
+Every 0$1 trigger setkani_om and stav_omikron < 7 do
 begin
-
-     RepairVehicles(6, Om_repair, 61, 9);
-     enable;
-
+RepairVehicles(6, Om_repair, 61, 9);
+enable;
 end;
 
-Every 0$1 trigger setkani_om do
+Every 0$1 trigger setkani_om and stav_omikron < 7 do
 begin
-
-
-     AttackVehicles(6);
-     enable;
-
-end;
+AttackVehicles(6);
+enable;
+End;
 
 // ********************* Function to Kirov Base AI Repair - Attack by Nefarem ********************* \\
 // ********************* 02.12.2017 ********************* \\
@@ -501,3 +496,14 @@ begin
     end;
 
 end;
+
+// unlimited oil
+Every 0$1 trigger FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]) do
+var i;
+begin
+enable;
+
+for i in FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]) do
+    if GetFuel(i) < 3 then
+       SetFuel(i, 3);
+End;
