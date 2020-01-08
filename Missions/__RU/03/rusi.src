@@ -284,12 +284,12 @@ end;
 // poslani ruskych posil pred omicron
 function posli_ruske_posily;
 begin
-  McMove(1,RUSKE_POSILY_NA_OMICRON_LIST,[[109,54],[102,38],[90,22],[54,10]],[mc_move_dontcapture]);
+  McMove(1, FilterAllUnits([[f_side, 6], [f_type, unit_vehicle]]){RUSKE_POSILY_NA_OMICRON_LIST},[[109,54],[102,38],[90,22],[54,10]],[mc_move_dontcapture]);
 end;
 
 // poslani ridicu pro auta navic
 every 0$7 Marked 2 DO
-VAR pom;
+VAR i, k, pom;
 begin
 //  wait(1$30);
   ComExitBuilding(RUSKE_POSILY_RIDICI_LIST);
@@ -300,8 +300,20 @@ begin
       wait(0$1);
     end;
 
-  pom=FilterUnitsInArea(RU2_base,[[f_side,You],[f_type,unit_vehicle], f_not, [f_occupied]]);
+  pom = FilterUnitsInArea(RU2_base,[[f_side,You],[f_type,unit_vehicle], [f_not, [f_occupied]]]);
+
   if not pom then konec_mise_lhani;
+
+  if pom < RUSKE_POSILY_RIDICI_LIST then
+     k := pom
+  else
+     k := RUSKE_POSILY_RIDICI_LIST;
+
+  for i = 1 to k do
+      begin
+      ComEnterUnit(RUSKE_POSILY_RIDICI_LIST[i], pom[i]);
+      AddComMoveXY(RUSKE_POSILY_RIDICI_LIST[i], 60, 13);
+      end;
 end;
 
 // hlaseni pred omicronem
@@ -562,10 +574,14 @@ VAR i;
 VAR ridici;
 VAR mcm;
 begin
+  if FilterUnitsInArea(cargoSpawnSave, [f_side, 1]) then
+     for i in FilterUnitsInArea(cargoSpawnSave, [f_side, 1]) do
+         RemoveUnit(i);
+
   ridici=[];                             
   for i in RUSI_CERPACI_AUTA_LIST do
     begin
-      PlaceUnitArea(i,Enterposil,false);
+      PlaceUnitArea(i,cargoSpawn,false);
       ridici=ridici^IsDrivenBy(i);
     end;
   mcm=McMove(10,RUSI_CERPACI_AUTA_LIST,[[130,75],[112,59],[106,32],[91,21],[62,9]],[mc_move_waitwp]);

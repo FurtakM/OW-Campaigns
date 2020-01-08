@@ -14,10 +14,53 @@ begin
   for i in [101,102,103] do enable(i)
 end;
 
+// added by Serpent 07.01.2020
+Export Function PrepareOmicron;
+var i, skill;
+begin
+uc_side := 1;
+uc_nation := 1;
+
+skill := [3, 4, 5][Difficulty];
+
+for i = 1 to Difficulty do
+    begin
+    PrepareHuman(false, 2, skill);
+    PlaceUnitXYR(CreateHuman, 20, 13, 6, false);
+    end;
+
+// medium and hard
+if Difficulty > 1 then
+   begin
+   PlaceWeaponTurret(Am_bu1, us_gatling_gun);
+   end;
+End;
+
+// Repair barracks
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_class, 2]]) do
+var i, engs, buildings;
+begin
+enable;
+
+buildings := FilterAllUnits([[f_side, 1], [f_btype, b_armoury], [f_not, [f_lives, 1000]]]);
+engs := FilterAllUnits([[f_side, 1], [f_class, 2]]);
+
+for i in engs do
+    if not HasTask(i) and not IsInUnit(i) and not buildings then
+       ComEnterUnit(i, Am_dep)
+    else if buildings then
+      if IsInUnit(i) then
+         ComExitBuilding(i)
+      else
+         ComRepairBuilding(i, buildings[1]);
+End;
+
 // uklid amiku do budov apod.
 EVERY 0$1 DO
 VAR budovy;
 begin
+  PrepareOmicron;
+
   // pruzkumnici
   ComEnterUnit(Am_pru1,Am_bar2);
   ComEnterUnit(Am_pru2,Am_bar2);
