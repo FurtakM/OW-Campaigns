@@ -155,16 +155,6 @@ begin
   chmo_6;
   InGameOff;
   stav_omikron=8;
-
-  wait(5$00);
-
-  repeat
-   wait(0$2);
-
-   for i in FilterAllUnits([f_side, 2]) do
-       if not HasTask(i) then
-          ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 2]), i));
-  until not FilterAllUnits([f_enemy, 2]);
 end;
 
 // dobijeni budov
