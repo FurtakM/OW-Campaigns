@@ -200,7 +200,7 @@ begin
   pom=NewCharacter('Scholtze');
   SetSide(pom,You2);
   SetClass(pom,class_scientistic);
-  PlaceUnitXY(pom,49,5,true);
+  PlaceUnitXYR(pom,49,5,8,true);
 
   result=pom;
 end;
