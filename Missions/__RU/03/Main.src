@@ -215,7 +215,7 @@ begin
                begin
                     temp = GetTaskList(i)[j][4];
 
-                    if temp = RU1_dep or (GetSide(temp) = 6 and GetType(temp) = unit_vehicle) then
+                    if temp = RU1_dep or (GetSide(temp) = 6 and GetTaskList(i)[j][1] = 'e' and GetType(temp) = unit_vehicle) then
                        SetTaskList(i, []);
                end;
 end;

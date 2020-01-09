@@ -337,8 +337,6 @@ begin
   if RUSKE_POSILY_RIDICI_LIST<>0 then enable;
 end;
 
-     
-
 {//test only
 EXPORT You,You2,You3,Amici,Arabi;
 
@@ -442,7 +440,6 @@ end;
 Every 0$1 trigger setkani_om and stav_omikron < 7 do
 begin
 AttackVehicles(6);
-enable;
 End;
 
 // ********************* Function to Kirov Base AI Repair - Attack by Nefarem ********************* \\
@@ -471,7 +468,7 @@ begin
                 end;
 
 
-        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000]]) = 0;
+        until FilterAllUnits([[f_side, side], [f_type, unit_vehicle], [f_lives, 1000]]) = 0 or stav_omikron >= 7;
 end;
 
 Export function RepairVehicles(side, area, repX, repY);

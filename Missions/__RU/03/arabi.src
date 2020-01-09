@@ -28,12 +28,18 @@ begin
   ComMoveXY(ARABI_KAMIKADZE_LIST[1],134,62);
   AddComMoveXY(ARABI_KAMIKADZE_LIST[1],133,69);
   AddComAttackUnit(ARABI_KAMIKADZE_LIST[1],RU1_bu1);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[1],RU1_fac);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[1],RU1_dep);
   ComMoveXY(ARABI_KAMIKADZE_LIST[2],142,94);
   AddComMoveXY(ARABI_KAMIKADZE_LIST[2],140,90);
   AddComAttackUnit(ARABI_KAMIKADZE_LIST[2],RU1_el1);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[2],RU1_fac);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[2],RU1_dep);
   ComMoveXY(ARABI_KAMIKADZE_LIST[3],143,94);
   AddComMoveXY(ARABI_KAMIKADZE_LIST[3],141,90);
-  AddComAttackUnit(ARABI_KAMIKADZE_LIST[3],RU1_el1);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[3],RU1_bar1);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[3],RU1_fac);
+  AddComAttackUnit(ARABI_KAMIKADZE_LIST[3],RU1_dep);
 
   music_nat=nation_arabian;
 
@@ -41,8 +47,8 @@ begin
   // self vybuchujici auto na baraky 1
   for i in ARABI_SELF_AUTA do PlaceUnitArea(i,Arabi2,false);
   ComAttackUnit(ARABI_SELF_AUTA[1],RU1_bar2);
-  ComWait(ARABI_SELF_AUTA[2],0$3);
-  AddComAttackUnit(ARABI_SELF_AUTA[2],RU1_bar2);
+  ComWait(ARABI_SELF_AUTA[2],0$1);
+  AddComAttackUnit(ARABI_SELF_AUTA[2],RU1_dep);
 
   CenterOnXY(142,80);
   // prvni vlna
@@ -140,6 +146,7 @@ end;
 // konec ingame videa
 //EVERY 0$5 TRIGGER FilterUnitsInArea(RU1_base,[[f_side,You2],[f_type,unit_human],[f_ok]])=0 DO
 EVERY 0$5 TRIGGER FilterUnitsInArea(RU1_base,[[f_side,You2],[f_ok]])<=3 DO
+var i;
 begin
   ArDontAttackPlayer(false);
   arabi_kirov_posily_posli;
@@ -148,6 +155,16 @@ begin
   chmo_6;
   InGameOff;
   stav_omikron=8;
+
+  wait(3$00);
+
+  repeat
+   wait(0$2);
+
+   for i in FilterAllUnits([f_side, 2]) do
+       if not HasTask(i) then
+          ComAttackUnit(i, NearestUnitToUnit(FilterAllUnits([f_enemy, 2]), i));
+  until not FilterAllUnits([f_enemy, 2]);
 end;
 
 // dobijeni budov
@@ -184,3 +201,13 @@ begin
   for i in ARABI_KIROV_POSILY do PlaceUnitArea(i,Arabi3,false);
   ComAgressiveMove(ARABI_KIROV_POSILY,142,84);
 end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 2], [f_not, [f_lives, 1000]]]) > 4 do
+var i;
+begin
+enable;
+
+for i in FilterAllUnits([[f_side, 2], [f_not, [f_lives, 1000]]]) do
+    if GetLives(i) > 500 then
+       SetLives(i, 1000);
+End;
