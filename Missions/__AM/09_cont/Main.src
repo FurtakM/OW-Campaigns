@@ -324,8 +324,13 @@ begin
        SaveVariable(0, 'GaryLoc');
 
     sibu:=GetResourceType(GetBase(depot1), mat_siberit);
-    if sibu>300 then
-      sibu:=300;
+
+    if sibu >= 300 then
+       begin
+       sibu := 300;
+       SA_CollectedSibInTerminal;
+       end;
+
     SaveVariable(sibu, 'stoupa9_siberit');
     SaveVariable((PoskytnouInformace>0), 'stoupa9_informace');
 
@@ -346,7 +351,7 @@ begin
 end;
 
 export function SetMedals;
-var d, sib_dep1, sib_celkem, i;
+var d, sib_dep1, sib_celkem, i, medal1, medal2, medal3;
 begin
   d:=difficulty-1;
   sib_dep1:=GetResourceType(GetBase(depot1), mat_siberit);
@@ -354,16 +359,26 @@ begin
   for i in FilterAllUnits([[f_side,you],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]) do
     sib_celkem:=sib_celkem+GetResourceType(GetBase(i), mat_siberit);
 
+  medal1 := false;
+
   if sib_dep1 >= EndSiberit then
-    AddMedal('MuchSiberite', 1)
+     begin
+     medal1 := true;
+     AddMedal('MuchSiberite', 1);
+     end
   else
     if sib_celkem<EndSiberit then
       AddMedal('MuchSiberite', -1 -2*d)
     else
       AddMedal('MuchSiberite', -2 -2*d);
 
+  medal2 := not NastvalPowella;
   AddMedal('EarlySiberite', not NastvalPowella);
+
+  medal3 := PoskytnouInformace > 0;
   AddMedal('Information', PoskytnouInformace>0);
+
+  SA_EndMission(1, 9, medal1, medal2, medal3);
 end;
 
 export Vyhrano;

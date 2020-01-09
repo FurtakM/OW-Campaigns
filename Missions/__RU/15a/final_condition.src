@@ -9,13 +9,18 @@ end;
 function Konec_Mise;
 var campaign_loading,
     campaign_lost,
-    another_campaign;
+    another_campaign,
+    medal1, medal2, medal3;
 begin
   lets_talking;
 
   another_campaign:=true;
   gained_medals:=[];
   missing_medals:=[];
+
+  medal1 := true;
+  medal2 := (camp = 4 and IsOk(Burlak)) or (camp = 6 and IsOk(MacMillan));
+  medal3 := GetTag(81) and GetTag(181) and GetTag(281);
 
   AddMedal('Hero',another_campaign);
   AddMedal('Artefact',GetTag(81) and GetTag(181) and GetTag(281));
@@ -25,6 +30,8 @@ begin
     end;
 
   SA_OnMissionComplete;
+  SA_EndMission(4, 4, medal1, medal2, medal3);
+
   GiveMedals('Main');
 
 //  RewardPeople

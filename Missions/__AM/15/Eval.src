@@ -68,7 +68,12 @@ EVERY 0$5 MARKED 15 DO
 
 // MARKED 23 - End_of_m
 EVERY 0$1 MARKED 23 DO
- begin
+var medal1, medal2, medal3;
+begin
+   medal1 := false;
+   medal2 := false;
+   medal3 := false;
+
    DialogueON;
    Say(JMM, 'D20-JMM-1');
    if IsOk(Joan) and GetSide(Joan) = americans then
@@ -104,7 +109,10 @@ EVERY 0$1 MARKED 23 DO
    DialogueOFF;
 
    if Roth_Captured then
-     AddMedal('Roth', 1)
+      begin
+      medal1 := true;
+      AddMedal('Roth', 1);
+      end
    else
      begin
        If IsOk(Roth) then AddMedal('Roth', -2)
@@ -112,7 +120,16 @@ EVERY 0$1 MARKED 23 DO
      end;
 
    AddMedal('Project', Russian_project_canceled);
+
+   if Russian_project_canceled then
+      medal2 := true;
+
    AddMedal('NoLosses', No_Looses);
+
+   if No_Looses then
+      medal3 := true;
+
+   SA_EndMission(1, 15, medal1, medal2, medal3);
 
    SA_OnMissionComplete;
     GiveMedals('MAIN');

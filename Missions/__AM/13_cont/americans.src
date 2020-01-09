@@ -361,7 +361,7 @@ begin
 end;
 
 every 0$0.6 trigger vedecmeri marked 07 do
-var tmp,tmp1,tmp2{,ok};
+var tmp,tmp1,tmp2{,ok}, medal1, medal2, medal3;
 begin
 //  vedecmeri_=vedecmeri_[1];
   wait(0$1);
@@ -381,6 +381,11 @@ begin
     wait(0$1);
   until ok;
 }
+
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   dialogueon;
   say(john,'D9b-JMM-1');
   sayradio(powell,'D9b-Pow-1');
@@ -389,12 +394,30 @@ begin
   say(john,'D9b-JMM-3');
   sayradio(powell,'D9b-Pow-3');
   dialogueoff;
+
   if burlakutekl then addmedal('Burlak',-1)
-  else addmedal('Burlak',1);
+  else
+   begin
+   medal1 := true;
+   addmedal('Burlak', 1);
+   end;
+
   if isdead(huck) then addmedal('Stevens',-1)
-  else addmedal('Stevens',1);
-  if observed then addmedal('Observation',1)
+  else
+   begin
+   medal2 := true;
+   addmedal('Stevens', 1);
+   end;
+
+  if observed then
+     begin
+     medal3 := true;
+     addmedal('Observation', 1);
+     end
   else addmedal('Observation',-1);
+
+  SA_EndMission(1, 13, medal1, medal2, medal3);
+
   givemedals('MAIN');
   rewardpeople(filterallunits([[f_alive],[f_side,am],[f_type,unit_human],[f_not,[f_nation,nation_nature]]]) diff seznamposil);
   saveitall;

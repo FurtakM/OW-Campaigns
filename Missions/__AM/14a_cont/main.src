@@ -167,11 +167,20 @@ end;
 export function konec_mise;
 var un,
     JMM_car,
-    Bur_car;
+    Bur_car,
+    medal1,
+    medal2,
+    medal3;
 begin
+  medal1 := blast_was_seen > 0;
+  medal2 := entered_contaminated_area > 0;
+  medal3 := (TICK-blast_time) < time_to_complete;
+
   AddMedal('Explosion',blast_was_seen);
   AddMedal('BioHazard',entered_contaminated_area);
   AddMedal('Speed',(TICK-blast_time)<time_to_complete);
+
+  SA_EndMission(4, 3, medal1, medal2, medal3);
 
   GiveMedals('Main');
   RewardPeople([Burlak,MacMillan]);

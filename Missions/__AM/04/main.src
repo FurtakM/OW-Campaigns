@@ -313,6 +313,9 @@ export mpora; //Maximal Power for One Russian Attack (== no. of vehicles)
 export mpard; //Maximal Power of Additional Russian Defence (== no. of vehicles)
 export prebytek,debug;
 var revealed,hint_capt;
+
+Export brownIsDead, donaldsonIsDead;
+
 starting
 begin
 //  disable(13);
@@ -324,6 +327,10 @@ begin
   rus=3;
   setresourcevisibility(42,54,rus);
   revealfogarea(amer,odrkfog);
+
+  brownIsDead := true;
+  donaldsonIsDead := true;
+
   rubbunk1=0;
   rubbrwr2=0;
   ruboilp1=0;
@@ -946,13 +953,21 @@ every 0$1+4 trigger seearea(amer,sees_ru_5) do revealed=revealed+1;
 
 // ending conditions
 every 0$1+1$0 trigger {(revealed=5) and} (not filterallunits([[f_side,rus],[f_ok],[f_type,unit_human]])) do
-var tmp,tmp2;
+var tmp,tmp2, medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   if debug then msg('koncime!');
   wait(0$1);
   chciplo=chciplo-filterallunits([[f_alive],[f_side,amer],[f_type,unit_human]]);
   if chciplo>3 then addmedal('deaths',-1)
-  else addmedal('deaths',1);
+  else
+   begin
+   AddMedal('deaths', 1);
+   medal1 := true;
+   end;
 
 {     tmp2=filterallunits([[f_btype,b_oil_power],[f_side,amer],[f_nation,nation_american]]);
      tmp=filterallunits([[f_btype,b_oil_mine],[f_side,amer],[f_nation,nation_american]]) diff filterunitsinarea(pramen,[[f_btype,b_oil_mine]]);
@@ -962,14 +977,24 @@ begin
      else //if researched(amer,tech_oilpow) then
        addmedal('oil',1); //ten sasek tu oil power postavil
 }
-  if oilpowpldone and scndoildrill then addmedal('oil',1)
+  if oilpowpldone and scndoildrill then
+     begin
+     AddMedal('oil', 1);
+     medal2 := true;
+     end
   else if not oilpowpldone and not scndoildrill then addmedal('oil',-3)
   else if not oilpowpldone then addmedal('oil',-1)
   else if not scndoildrill then addmedal('oil',-2);
 
 //     if not flaka_se then addmedal('honour',1);
   if zbaven_veleni then addmedal('honour',-1)
-  else addmedal('honour',1);
+  else
+   begin
+   AddMedal('honour', 1);
+   medal3 := true;
+   end;
+
+  SA_EndMission(1, 4, medal1, medal2, medal3);
 
   givemedals('Main');
   rewardpeople(filterallunits([[f_alive],[f_side,amer],[f_type,unit_human]]));// diff [amhsold8,amhsold9,amhsolda,amhsoldb,amhsoldc]);
@@ -984,12 +1009,21 @@ begin
   youlost('JMM');
 end;}
 
-on unitdestroyed(un) do
-  if un=john then begin
-//    saveitall;                        //!!!DEBUG!!!
-//    savecampaignfile('CharsAm04out');  //!!!DEBUG!!!
-    youlost('JMM');
-  end;
+On UnitDestroyed(un) do
+begin
+if un = John then
+   YouLost('JMM');
+
+if amhsold1 then
+   brownIsDead := true;
+
+if lucyd then
+   donaldsonIsDead := true;
+End;
+
+// SA
+Every 0$1 trigger brownIsDead and donaldsonIsDead do
+SA_BrownAndDonaldsonDead;
 
 
 every 0$1 trigger not filterallunits([[f_or,[f_side,amer],[f_side,amer2]],[f_type,unit_building]]) do

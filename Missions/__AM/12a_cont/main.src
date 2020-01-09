@@ -125,8 +125,12 @@ end;
 
 var zustalo_malo,zachraneni;
 every 0$0.51 marked 02 do
-var tmp,tmp2,chybi,chybiex;
+var tmp,tmp2,chybi,chybiex, medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   if isinarea(john,vychod) and (not john_vychod) then begin
     john_vychod=true;
     repeat
@@ -153,14 +157,21 @@ begin
 
         {if (contacted<(0+moji_backup)) and (tmp2=contacted) then addmedal('All',-1)
         else addmedal('All',-2);}
-        if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
+        if contacted<(0+moji_backup) then
+           addmedal('All',-1)
+        else
+           addmedal('All',1); //new 03-01-2001
 
         // Lisa (or) Joan joined Alliance SA | 06.01.2020
         SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
 
         addmedal('Save',-1);
-        if zabil then addmedal('Friendship',-1)
-        else addmedal('Friendship',1);
+
+        if zabil then
+           addmedal('Friendship',-1)
+        else
+           addmedal('Friendship',1);
+
         givemedals('MAIN');
 //        rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]));
         rewardpeople(zachraneni^[john]);
@@ -180,16 +191,34 @@ begin
       {if contacted>tmp2 then addmedal('All',-2)
       else if contacted<(0+moji_backup) then addmedal('All',-1)
       else addmedal('All',1);}
-      if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
+      if contacted<(0+moji_backup) then
+         addmedal('All',-1)
+      else
+         begin
+         medal1 := true;
+         addmedal('All',1); //new 03-01-2001
+         end;
 
-        // Lisa (or) Joan joined Alliance SA | 06.01.2020
-        SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
+      // Lisa (or) Joan joined Alliance SA | 06.01.2020
+      SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
 
 
       if tmp2<(0+moji_backup) then addmedal('Save',-1)
-      else addmedal('Save',1);
+      else
+       begin
+       medal2 := true;
+       addmedal('Save',1);
+       end;
+
       if zabil then addmedal('Friendship',-1)
-      else addmedal('Friendship',1);
+      else
+       begin
+       medal3 := true;
+       addmedal('Friendship',1);
+       end;
+
+      SA_EndMission(4, 1, medal1, medal2, medal3);
+
       givemedals('MAIN');
 //      rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]));
       rewardpeople(zachraneni^[john]);
@@ -215,16 +244,33 @@ begin
       {if contacted>tmp2 then addmedal('All',-2)
       else if contacted<(0+moji_backup) then addmedal('All',-1)
       else addmedal('All',1);}
-      if contacted<(0+moji_backup) then addmedal('All',-1) else addmedal('All',1); //new 03-01-2001
+      if contacted<(0+moji_backup) then addmedal('All',-1)
+      else
+       begin
+       medal1 := true;
+       addmedal('All',1); //new 03-01-2001
+       end;
 
       // Lisa (or) Joan joined Alliance SA | 06.01.2020
       SA_OnJoanAndLisaJoinedAlliance((lisa in zachraneni and IsLive(lisa)), (joan in zachraneni and IsLive(joan)));
 
 
       if tmp2<(0+moji_backup) then addmedal('Save',-1)
-      else addmedal('Save',1);
+      else
+       begin
+       addmedal('Save',1);
+       medal2 := true;
+       end;
+
       if zabil then addmedal('Friendship',-1)
-      else addmedal('Friendship',1);
+      else
+       begin
+       medal3 := true;
+       addmedal('Friendship',1);
+       end;
+
+      SA_EndMission(4, 1, medal1, medal2, medal3);
+
       givemedals('MAIN');
 //      rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human]]));
       rewardpeople(zachraneni^[john]);

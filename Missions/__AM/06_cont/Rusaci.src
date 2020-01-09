@@ -500,6 +500,12 @@ begin
        YouLost('JMM');
      end;
 
+     if un = Kurt then
+        begin
+        SA_OnKurtKilled;
+        exit;
+        end;
+
      sol:=sol diff un;
      eng:=eng diff un;
      mec:=mec diff un;

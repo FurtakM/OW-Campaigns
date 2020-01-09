@@ -451,7 +451,12 @@ on artifactloaded(un,size) marked 15 do
 
 every 0$1 trigger koncime or base_out or artef_out do
 var un;
+var medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   //Abdul attemps to escape
   wait([0$10,0$5,0$0][difficulty]);
   if IsPlaced(Abdul) and IsLive(Abdul) then
@@ -483,12 +488,27 @@ begin
   while IsPlaced(abduluv) and IsLive(abduluv) do
        wait(0$1);
 
-  if (getside(masha)=al) or (getside(masha)=oth) then addmedal('Masha',1)
+  if (getside(masha)=al) or (getside(masha)=oth) then
+     begin
+     medal1 := true;
+     addmedal('Masha',1);
+     end
   else addmedal('Masha',-1);
-  if isdead(abdul) then addmedal('Abdul',1)
+  if isdead(abdul) then
+     begin
+     medal2 := true;
+     addmedal('Abdul',1);
+     end
   else addmedal('Abdul',-1);
-  if isdead(abduluv) then addmedal('Mast',1)
+  if isdead(abduluv) then
+     begin
+     medal3 := true;
+     addmedal('Mast',1);
+     end
   else addmedal('Mast',-1);
+
+  SA_EndMission(4, 2, medal1, medal2, medal3);
+
   givemedals('Main');
   rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human],f_not,[f_nation,nation_nature]]));
   saveitall;

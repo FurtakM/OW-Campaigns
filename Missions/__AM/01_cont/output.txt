@@ -4767,212 +4767,346 @@
 8174: ENABLE
 // end ; end ;
 8175: END
-// function vitezstvi ; begin
+// function vitezstvi ; var medal1 , medal2 , medal3 ; begin
 8176: LD_INT 0
 8178: PPUSH
-// wait ( 0 0$1 ) ;
-8179: LD_INT 35
+8179: PPUSH
+8180: PPUSH
 8181: PPUSH
-8182: CALL_OW 67
+// wait ( 0 0$1 ) ;
+8182: LD_INT 35
+8184: PPUSH
+8185: CALL_OW 67
 // AddMedal ( JMM , 1 ) ;
-8186: LD_STRING JMM
-8188: PPUSH
-8189: LD_INT 1
+8189: LD_STRING JMM
 8191: PPUSH
-8192: CALL_OW 101
+8192: LD_INT 1
+8194: PPUSH
+8195: CALL_OW 101
+// medal1 := true ;
+8199: LD_ADDR_VAR 0 2
+8203: PUSH
+8204: LD_INT 1
+8206: ST_TO_ADDR
+// medal2 := false ;
+8207: LD_ADDR_VAR 0 3
+8211: PUSH
+8212: LD_INT 0
+8214: ST_TO_ADDR
+// medal3 := false ;
+8215: LD_ADDR_VAR 0 4
+8219: PUSH
+8220: LD_INT 0
+8222: ST_TO_ADDR
 // if Bobby in saved then
-8196: LD_EXP 10
-8200: PUSH
-8201: LD_EXP 27
-8205: IN
-8206: IFFALSE 8220
-// AddMedal ( Bobby , 1 ) else
-8208: LD_STRING Bobby
-8210: PPUSH
-8211: LD_INT 1
-8213: PPUSH
-8214: CALL_OW 101
-8218: GO 8256
+8223: LD_EXP 10
+8227: PUSH
+8228: LD_EXP 27
+8232: IN
+8233: IFFALSE 8255
+// begin AddMedal ( Bobby , 1 ) ;
+8235: LD_STRING Bobby
+8237: PPUSH
+8238: LD_INT 1
+8240: PPUSH
+8241: CALL_OW 101
+// medal2 := true ;
+8245: LD_ADDR_VAR 0 3
+8249: PUSH
+8250: LD_INT 1
+8252: ST_TO_ADDR
+// end else
+8253: GO 8291
 // if Bobby in found then
-8220: LD_EXP 10
-8224: PUSH
-8225: LD_EXP 28
-8229: IN
-8230: IFFALSE 8245
+8255: LD_EXP 10
+8259: PUSH
+8260: LD_EXP 28
+8264: IN
+8265: IFFALSE 8280
 // AddMedal ( Bobby , - 2 ) else
-8232: LD_STRING Bobby
-8234: PPUSH
-8235: LD_INT 2
-8237: NEG
-8238: PPUSH
-8239: CALL_OW 101
-8243: GO 8256
-// AddMedal ( Bobby , - 1 ) ;
-8245: LD_STRING Bobby
-8247: PPUSH
-8248: LD_INT 1
-8250: NEG
-8251: PPUSH
-8252: CALL_OW 101
-// if Cyrus in saved then
-8256: LD_EXP 9
-8260: PUSH
-8261: LD_EXP 27
-8265: IN
-8266: IFFALSE 8280
-// AddMedal ( Cyrus , 1 ) else
-8268: LD_STRING Cyrus
-8270: PPUSH
-8271: LD_INT 1
+8267: LD_STRING Bobby
+8269: PPUSH
+8270: LD_INT 2
+8272: NEG
 8273: PPUSH
 8274: CALL_OW 101
-8278: GO 8316
+8278: GO 8291
+// AddMedal ( Bobby , - 1 ) ;
+8280: LD_STRING Bobby
+8282: PPUSH
+8283: LD_INT 1
+8285: NEG
+8286: PPUSH
+8287: CALL_OW 101
+// if Cyrus in saved then
+8291: LD_EXP 9
+8295: PUSH
+8296: LD_EXP 27
+8300: IN
+8301: IFFALSE 8323
+// begin AddMedal ( Cyrus , 1 ) ;
+8303: LD_STRING Cyrus
+8305: PPUSH
+8306: LD_INT 1
+8308: PPUSH
+8309: CALL_OW 101
+// medal3 := true ;
+8313: LD_ADDR_VAR 0 4
+8317: PUSH
+8318: LD_INT 1
+8320: ST_TO_ADDR
+// end else
+8321: GO 8359
 // if Cyrus in found then
-8280: LD_EXP 9
-8284: PUSH
-8285: LD_EXP 28
-8289: IN
-8290: IFFALSE 8305
+8323: LD_EXP 9
+8327: PUSH
+8328: LD_EXP 28
+8332: IN
+8333: IFFALSE 8348
 // AddMedal ( Cyrus , - 2 ) else
-8292: LD_STRING Cyrus
-8294: PPUSH
-8295: LD_INT 2
-8297: NEG
-8298: PPUSH
-8299: CALL_OW 101
-8303: GO 8316
+8335: LD_STRING Cyrus
+8337: PPUSH
+8338: LD_INT 2
+8340: NEG
+8341: PPUSH
+8342: CALL_OW 101
+8346: GO 8359
 // AddMedal ( Cyrus , - 1 ) ;
-8305: LD_STRING Cyrus
-8307: PPUSH
-8308: LD_INT 1
-8310: NEG
-8311: PPUSH
-8312: CALL_OW 101
+8348: LD_STRING Cyrus
+8350: PPUSH
+8351: LD_INT 1
+8353: NEG
+8354: PPUSH
+8355: CALL_OW 101
 // if not Bobby in saved then
-8316: LD_EXP 10
-8320: PUSH
-8321: LD_EXP 27
-8325: IN
-8326: NOT
-8327: IFFALSE 8341
+8359: LD_EXP 10
+8363: PUSH
+8364: LD_EXP 27
+8368: IN
+8369: NOT
+8370: IFFALSE 8384
 // SetLives ( Bobby , 0 ) ;
-8329: LD_EXP 10
-8333: PPUSH
-8334: LD_INT 0
-8336: PPUSH
-8337: CALL_OW 234
+8372: LD_EXP 10
+8376: PPUSH
+8377: LD_INT 0
+8379: PPUSH
+8380: CALL_OW 234
 // if not Cyrus in saved then
-8341: LD_EXP 9
-8345: PUSH
-8346: LD_EXP 27
-8350: IN
-8351: NOT
-8352: IFFALSE 8366
+8384: LD_EXP 9
+8388: PUSH
+8389: LD_EXP 27
+8393: IN
+8394: NOT
+8395: IFFALSE 8409
 // SetLives ( Cyrus , 0 ) ;
-8354: LD_EXP 9
-8358: PPUSH
-8359: LD_INT 0
-8361: PPUSH
-8362: CALL_OW 234
-// GiveMedals ( MAIN ) ;
-8366: LD_STRING MAIN
-8368: PPUSH
-8369: CALL_OW 102
-// RewardPeople ( JMM union saved ) ;
-8373: LD_EXP 8
-8377: PUSH
-8378: LD_EXP 27
-8382: UNION
-8383: PPUSH
-8384: CALL_OW 43
-// SaveCharacters ( JMM , JMM ) ;
-8388: LD_EXP 8
-8392: PPUSH
-8393: LD_STRING JMM
-8395: PPUSH
-8396: CALL_OW 38
-// SaveCharacters ( Bobby , Bobby ) ;
-8400: LD_EXP 10
+8397: LD_EXP 9
+8401: PPUSH
+8402: LD_INT 0
 8404: PPUSH
-8405: LD_STRING Bobby
-8407: PPUSH
-8408: CALL_OW 38
-// SaveCharacters ( Cyrus , Cyrus ) ;
-8412: LD_EXP 9
-8416: PPUSH
-8417: LD_STRING Cyrus
-8419: PPUSH
-8420: CALL_OW 38
-// savevariable ( getlives ( bobby ) , lives_bobby ) ;
-8424: LD_EXP 10
-8428: PPUSH
-8429: CALL_OW 256
-8433: PPUSH
-8434: LD_STRING lives_bobby
-8436: PPUSH
-8437: CALL_OW 39
-// savevariable ( getlives ( cyrus ) , lives_cyrus ) ;
-8441: LD_EXP 9
-8445: PPUSH
-8446: CALL_OW 256
-8450: PPUSH
-8451: LD_STRING lives_cyrus
-8453: PPUSH
-8454: CALL_OW 39
-// savevariable ( getlives ( jmm ) , lives_jmm ) ;
-8458: LD_EXP 8
-8462: PPUSH
-8463: CALL_OW 256
-8467: PPUSH
-8468: LD_STRING lives_jmm
-8470: PPUSH
-8471: CALL_OW 39
-// if not demo then
-8475: LD_EXP 4
-8479: NOT
-8480: IFFALSE 8488
-// YouWin else
-8482: CALL_OW 103
-8486: GO 8498
-// ChangeMap ( 1 , __Am\04demo ) ;
-8488: LD_INT 1
+8405: CALL_OW 234
+// if not medal2 and not medal3 then
+8409: LD_VAR 0 3
+8413: NOT
+8414: PUSH
+8415: LD_VAR 0 4
+8419: NOT
+8420: AND
+8421: IFFALSE 8427
+// SA_NoOneSave ;
+8423: CALL 8645 0 0
+// SA_EndMission ( 1 , 1 , medal1 , medal2 , medal3 ) ;
+8427: LD_INT 1
+8429: PPUSH
+8430: LD_INT 1
+8432: PPUSH
+8433: LD_VAR 0 2
+8437: PPUSH
+8438: LD_VAR 0 3
+8442: PPUSH
+8443: LD_VAR 0 4
+8447: PPUSH
+8448: CALL 8660 0 5
+// GiveMedals ( MAIN ) ;
+8452: LD_STRING MAIN
+8454: PPUSH
+8455: CALL_OW 102
+// RewardPeople ( JMM union saved ) ;
+8459: LD_EXP 8
+8463: PUSH
+8464: LD_EXP 27
+8468: UNION
+8469: PPUSH
+8470: CALL_OW 43
+// SaveCharacters ( JMM , JMM ) ;
+8474: LD_EXP 8
+8478: PPUSH
+8479: LD_STRING JMM
+8481: PPUSH
+8482: CALL_OW 38
+// SaveCharacters ( Bobby , Bobby ) ;
+8486: LD_EXP 10
 8490: PPUSH
-8491: LD_STRING __Am\04demo
+8491: LD_STRING Bobby
 8493: PPUSH
-8494: CALL_OW 340
-// end ;
-8498: LD_VAR 0 1
-8502: RET
-// on UnitGoesToRed ( un ) do begin if un = JMM then
-8503: LD_VAR 0 1
-8507: PUSH
-8508: LD_EXP 8
-8512: EQUAL
-8513: IFFALSE 8543
-// begin if JMM in saved then
-8515: LD_EXP 8
-8519: PUSH
-8520: LD_EXP 27
-8524: IN
-8525: IFFALSE 8529
-// exit ;
-8527: GO 8543
-// wait ( 0 0$3 ) ;
-8529: LD_INT 105
+8494: CALL_OW 38
+// SaveCharacters ( Cyrus , Cyrus ) ;
+8498: LD_EXP 9
+8502: PPUSH
+8503: LD_STRING Cyrus
+8505: PPUSH
+8506: CALL_OW 38
+// savevariable ( getlives ( bobby ) , lives_bobby ) ;
+8510: LD_EXP 10
+8514: PPUSH
+8515: CALL_OW 256
+8519: PPUSH
+8520: LD_STRING lives_bobby
+8522: PPUSH
+8523: CALL_OW 39
+// savevariable ( getlives ( cyrus ) , lives_cyrus ) ;
+8527: LD_EXP 9
 8531: PPUSH
-8532: CALL_OW 67
-// YouLost ( JMM ) ;
-8536: LD_STRING JMM
-8538: PPUSH
-8539: CALL_OW 104
-// end ; end ;
-8543: PPOPN 1
-8545: END
-// on UnitDestroyed ( un ) do begin un := un ;
-8546: LD_ADDR_VAR 0 1
-8550: PUSH
-8551: LD_VAR 0 1
-8555: ST_TO_ADDR
+8532: CALL_OW 256
+8536: PPUSH
+8537: LD_STRING lives_cyrus
+8539: PPUSH
+8540: CALL_OW 39
+// savevariable ( getlives ( jmm ) , lives_jmm ) ;
+8544: LD_EXP 8
+8548: PPUSH
+8549: CALL_OW 256
+8553: PPUSH
+8554: LD_STRING lives_jmm
+8556: PPUSH
+8557: CALL_OW 39
+// if not demo then
+8561: LD_EXP 4
+8565: NOT
+8566: IFFALSE 8574
+// YouWin else
+8568: CALL_OW 103
+8572: GO 8584
+// ChangeMap ( 1 , __Am\04demo ) ;
+8574: LD_INT 1
+8576: PPUSH
+8577: LD_STRING __Am\04demo
+8579: PPUSH
+8580: CALL_OW 340
 // end ;
-8556: PPOPN 1
-8558: END
+8584: LD_VAR 0 1
+8588: RET
+// on UnitGoesToRed ( un ) do begin if un = JMM then
+8589: LD_VAR 0 1
+8593: PUSH
+8594: LD_EXP 8
+8598: EQUAL
+8599: IFFALSE 8629
+// begin if JMM in saved then
+8601: LD_EXP 8
+8605: PUSH
+8606: LD_EXP 27
+8610: IN
+8611: IFFALSE 8615
+// exit ;
+8613: GO 8629
+// wait ( 0 0$3 ) ;
+8615: LD_INT 105
+8617: PPUSH
+8618: CALL_OW 67
+// YouLost ( JMM ) ;
+8622: LD_STRING JMM
+8624: PPUSH
+8625: CALL_OW 104
+// end ; end ;
+8629: PPOPN 1
+8631: END
+// on UnitDestroyed ( un ) do begin un := un ;
+8632: LD_ADDR_VAR 0 1
+8636: PUSH
+8637: LD_VAR 0 1
+8641: ST_TO_ADDR
+// end ; end_of_file
+8642: PPOPN 1
+8644: END
+// export function SA_NoOneSave ; begin
+8645: LD_INT 0
+8647: PPUSH
+// SetAchievement ( ACH_EMH ) ;
+8648: LD_STRING ACH_EMH
+8650: PPUSH
+8651: CALL_OW 543
+// end ; end_of_file
+8655: LD_VAR 0 1
+8659: RET
+// export function SA_EndMission ( campaignNumber , missionNumber , medal1 , medal2 , medal3 ) ; var achiv ; begin
+8660: LD_INT 0
+8662: PPUSH
+8663: PPUSH
+// if not missionNumber then
+8664: LD_VAR 0 2
+8668: NOT
+8669: IFFALSE 8673
+// exit ;
+8671: GO 8774
+// achiv := false ;
+8673: LD_ADDR_VAR 0 7
+8677: PUSH
+8678: LD_INT 0
+8680: ST_TO_ADDR
+// case campaignNumber of 1 :
+8681: LD_VAR 0 1
+8685: PUSH
+8686: LD_INT 1
+8688: DOUBLE
+8689: EQUAL
+8690: IFTRUE 8694
+8692: GO 8705
+8694: POP
+// achiv := ACH_GOTA ; 2 :
+8695: LD_ADDR_VAR 0 7
+8699: PUSH
+8700: LD_STRING ACH_GOTA
+8702: ST_TO_ADDR
+8703: GO 8736
+8705: LD_INT 2
+8707: DOUBLE
+8708: EQUAL
+8709: IFTRUE 8713
+8711: GO 8716
+8713: POP
+// ; 3 :
+8714: GO 8736
+8716: LD_INT 3
+8718: DOUBLE
+8719: EQUAL
+8720: IFTRUE 8724
+8722: GO 8735
+8724: POP
+// achiv := ACH_MOTRF ; end ;
+8725: LD_ADDR_VAR 0 7
+8729: PUSH
+8730: LD_STRING ACH_MOTRF
+8732: ST_TO_ADDR
+8733: GO 8736
+8735: POP
+// if achiv and medal1 and medal2 and medal3 then
+8736: LD_VAR 0 7
+8740: PUSH
+8741: LD_VAR 0 3
+8745: AND
+8746: PUSH
+8747: LD_VAR 0 4
+8751: AND
+8752: PUSH
+8753: LD_VAR 0 5
+8757: AND
+8758: IFFALSE 8774
+// SetAchievementEX ( achiv , missionNumber ) ;
+8760: LD_VAR 0 7
+8764: PPUSH
+8765: LD_VAR 0 2
+8769: PPUSH
+8770: CALL_OW 564
+// end ;
+8774: LD_VAR 0 6
+8778: RET

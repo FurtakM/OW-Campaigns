@@ -1759,22 +1759,42 @@ EVERY 0$2 TRIGGER GetSide(dep1)= russians MARKED 17 do
 ////////// Mission succeeds ///////////
 
 EVERY 0$1 TRIGGER end_of_m do
-  var m;
- begin
+var m, medal1, medal2, medal3;
+begin
+
+   medal1 := false;
+   medal2 := false;
+   medal3 := false;
 
    if GetSide(Mikhail) = americans then SetSide(Mikhail, russians1);
 
-   if lost_units<3 then m=1
+   if lost_units<3 then
+      begin
+      m = 1;
+      medal1 := true;
+      end
    else m:=-1;
+
+   if Mikhails_outcome then
+      medal2 := true;
 
    if Mikhails_outcome= 1 and GetLives(Mikhail) = 0 then
      Mikhails_outcome= -1;
 
-   AddMedal('Cans', GetResourceType(dep1, mat_cans) >=150);
+   if GetResourceType(dep1, mat_cans) >= 150 then
+      begin
+      AddMedal('Cans', 1);
+      medal3 := true;
+      end
+    else
+     AddMedal('Cans', -1);
+
    AddMedal('Deaths', m);
 //   if IsDead(Mikhail) and Mikhails_outcome = -2 then
 //     Mikhails_outcome= 1;
    AddMedal('Prisoner', Mikhails_outcome);
+
+   SA_EndMission(1, 2, medal1, medal2, medal3);
 
    GiveMedals('MAIN');
 

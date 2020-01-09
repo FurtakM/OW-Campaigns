@@ -13,11 +13,22 @@ Every 0$2+0$0.1 do
      end;
 
 Export Function SA_OnKurtSpared;
-     begin
-          SetAchievement('ACH_MER');
-     end;
+begin
+SetAchievement('ACH_MER');
+End;
+
+Export Function SA_OnKurtKilled;
+begin
+SetAchievement('ACH_MEL');
+End;
 
 Export Function SA_On1000CratesGathered;
-     begin
-          SetAchievement('ACH_CAP');
-     end;
+begin
+SetAchievement('ACH_CAP');
+end;
+
+
+Export function SA_CratesGathered(count_crates);
+begin
+SetAchievementEX('ACH_CAP', count_crates);
+End;

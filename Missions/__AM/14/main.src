@@ -157,8 +157,12 @@ end;
 
 //-----  FINAL CONDITION  -----//
 export function konec_mise;
-var saved,un;
+var saved,un, medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   if IsOK(MacMillan) and not russians_eliminated then
     begin
       un:=IsInUnit(MacMillan);
@@ -178,7 +182,10 @@ begin
 
   // Joan (Lisa, other) survive (or not)
   if (GetLives(survivor)>250) and visit_base then
-    AddMedal('protect',who_survive)
+    begin
+    medal1 := true;
+    AddMedal('protect',who_survive);
+    end
   else
       case who_survive of
     1: AddMedal('protect',-1);
@@ -201,7 +208,11 @@ begin
           case double_laser of
         0: AddMedal('double',-2);
         1: AddMedal('double',-3);
-      else Addmedal('double',1);
+      else
+       begin
+       medal2 := true;
+       Addmedal('double',1);
+       end;
           end;
     end
   else
@@ -210,6 +221,10 @@ begin
   if russians_eliminated then
     begin
       AddMedal('base',1);
+      medal3 := true;
+
+      SA_EndMission(1, 14, medal1, medal2, medal3);
+
       GiveMedals('Eliminate');
       RewardPeople(saved);
     end
