@@ -10,7 +10,7 @@ end;
 
 // uvodni pokec
 EXPORT function uvodni_pokec;
-VAR vyber;
+VAR vyber, eng;
 begin
   wait(0$2);
 
@@ -60,6 +60,20 @@ begin
   Hint('Oil');
   Hint('Upgrading');
   InGameOff;
+
+  wait(1$00);
+
+  eng := FilterAllUnits([[f_side, 6], [f_class, 2]]);
+
+  if not eng then
+     exit;
+
+  ComExitBuilding(eng);
+  AddComBuild(eng, b_oil_power, 140, 69, 0);
+
+  wait(2$30);
+
+  ComEnterUnit(eng, RU1_dep);
 end;              
 
 // oil source nalezeno
@@ -74,6 +88,10 @@ begin
   interface_hidden:=false;
   Hint('OilSpoted');
   DialogueOff;
+
+  wait(0$45);
+
+  ComConstruct(Ru1_fac, ru_medium_wheeled, engine_combustion, control_manual, ru_heavy_machine_gun);
 end;
 
 // pryc mission objectives stavba 3. zakladny
@@ -378,12 +396,18 @@ end;
 
 // kecy pred znicenim kirova
 EXPORT function kecy_behem_utoku_arabu;
+var i;
 begin
   stav_omikron=7;
   SayRadio(kur,'D9a-Kur-1');
   Say(bur,'D9a-Bur-1');
   SayRadio(kur,'D9a-Kur-2');
   posilani_arabskych_hlidek=true;
+
+  // Burlak stop!
+  for i in FilterAllUnits([[f_side, 3], [f_not, [f_type, unit_building]]]) do
+      ComMoveXY(i, 59, 12);
+
   manage_ruske_computery_zpet;
 end;
 

@@ -625,8 +625,11 @@ end;
 // pocitani ruskych aut, ktere hrac postavil
 on VehicleConstructed(v,fact) do
 begin
-  postavenych_aut=postavenych_aut+1;
-  enable;
+if GetSide(fact) = 3 then
+   postavenych_aut=postavenych_aut+1;
+
+if GetSide(fact) = 6 then
+   ComMoveXY(v, 125, 70);
 end;
 
 // counter na prijeti k omicronu

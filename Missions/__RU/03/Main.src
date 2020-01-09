@@ -200,7 +200,7 @@ begin
   pom=NewCharacter('Scholtze');
   SetSide(pom,You2);
   SetClass(pom,class_scientistic);
-  PlaceUnitXY(pom,49,5,true);
+  PlaceUnitXYR(pom,49,5,8,true);
 
   result=pom;
 end;
@@ -215,7 +215,7 @@ begin
                begin
                     temp = GetTaskList(i)[j][4];
 
-                    if temp = RU1_dep or (GetSide(temp) = 6 and GetType(temp) = unit_vehicle) then
+                    if temp = RU1_dep or (GetSide(temp) = 6 and GetTaskList(i)[j][1] = 'e' and GetType(temp) = unit_vehicle) then
                        SetTaskList(i, []);
                end;
 end;
