@@ -1,7 +1,7 @@
 // SIDES
 export you,you2,russians,arabians, neutral;
 // skupiny
-export apemans;
+export apemans, apemans_amount_on_start;
 export oma; // on map arabs (ti co utoci)
 export om;
 export arabs_cars;
@@ -73,6 +73,7 @@ begin
     SetDifficulty;
 
     apemans:=FilterAllUnits( [[f_nation, nation_nature]] );
+    apemans_amount_on_start := (apemans+0);
 
 // some variables of game progress
     was_first_attack:=false;
@@ -355,11 +356,18 @@ begin
 end;
 
 export function SetMedals;
+var medal1, medal2, medal3;
 begin
     AddMedal('Tame', cil_mit_5_ape_eng_splnen);
 
+    if cil_mit_5_ape_eng_splnen then
+       medal1 := true;
+
     case GetTech(tech_Radar, you) of
-         state_researched: AddMedal('Radar', 1);
+         state_researched: begin
+                           AddMedal('Radar', 1);
+                           medal2 := true;
+                           end;
            state_disabled: AddMedal('Radar', -1);
             state_enabled: AddMedal('Radar', -2);
     end;
@@ -369,10 +377,15 @@ begin
     end
     else begin
        if RadarBuild then
-          AddMedal('buildRadar', 1)
+          begin
+          AddMedal('buildRadar', 1);
+          medal3 := true;
+          end
        else
           AddMedal('buildRadar', -2);
     end;
+
+SA_EndMission(1, 5, medal1, medal2, medal3);
 end;
 
 function KolikCrates;

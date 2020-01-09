@@ -1597,6 +1597,7 @@ begin
     addmedal('nothing1',1);
     addmedal('nothing2',1);
     addmedal('perfect',1);
+    SA_EndMission(1, 8, true, true, true);
     givemedals('Main');
     rewardpeople(filterallunits([[f_alive],[f_side,amer],[f_type,unit_human],[f_not,[f_nation,nation_nature]]]));
     saveitall;

@@ -119,9 +119,12 @@ end;
 
 on UnitDestroyed(un) DO
 begin
-  if un=JMM then YouLost('JMM');
-  enable;
-end;
+if un = JMM then
+   YouLost('JMM');
+
+if un = Khattam and GetSide(Khattam) = 1 then
+   SA_KhattamKilledBeforeBetray;
+End;
 
 EVERY 0$1 TRIGGER END_ATTACK DO
 begin
@@ -151,22 +154,41 @@ end;
 // ukonceni mise + udelovani madaili
 EXPORT function Mission_end(tst);
 VAR all_people;
-VAR pom1,pom2,i;
+VAR pom1,pom2,i, medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   msg(tst);
   DisableExclamations;
   gained_medals:=[];
   missing_medals:=[];
-  if GetTech(tech_LasSight,You)=state_researched
-    then AddMedal('sights',1)
+  if GetTech(tech_LasSight,You)=state_researched then
+    begin
+    AddMedal('sights', 1);
+    medal1 := true;
+    end
     else AddMedal('sights',-1);
-  if GetTech(tech_AI,You)=state_researched
-    then AddMedal('computers',1)
+  if GetTech(tech_AI,You)=state_researched then
+     begin
+     AddMedal('computers', 1);
+     medal2 := true;
+     end
     else AddMedal('computers',-1);
-  if UTEKLI_ARABI=0 then if Arabi_Utoci then AddMedal('renegades',2)
-                                        else AddMedal('renegades',1)
-                    else if UTEKLI_ARABI<=2 then AddMedal('renegades',-1)
-                                            else AddMedal('renegades',-2);
+  if UTEKLI_ARABI=0 then
+     begin
+     medal3 := true;
+
+     if Arabi_Utoci then
+        AddMedal('renegades', 2)
+     else
+        AddMedal('renegades', 1);
+     end
+      else if UTEKLI_ARABI<=2 then AddMedal('renegades',-1)
+                              else AddMedal('renegades',-2);
+
+  SA_EndMission(1, 10, medal1, medal2, medal3);
 
   GiveMedals('Main');
 

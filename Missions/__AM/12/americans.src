@@ -917,8 +917,12 @@ begin
 end;
 
 every 0$0.4 trigger lab_destroyed do
-var tmp,tmq;
+var tmp,tmq, medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   while isplacedex(ru_scies) do wait(0$1);
   tmq=0;
   for tmp in ru_scies do if getlives(tmp) then tmq=tmq+1;
@@ -939,6 +943,7 @@ begin
     0:begin
       say(john,'D7c-JMM-1');
       say(powell,'D7c-Pow-1');
+      medal1 := true;
       addmedal('Scientists',1);
     end;
   end;                       
@@ -950,14 +955,21 @@ begin
     if pr_loz then say(john,'D7d-JMM-2a')
     else say(powell,'D7d-Pow-2');
     say(powell,'D7d-Pow-2a');
+    medal2 := true;
     addmedal('Materials',1);
   end;
   dialogueoff;
   case telepmed of
     0:addmedal('Teleport',-1);
     1:addmedal('Teleport',-2);
-    2:addmedal('Teleport',1);
+    2: begin
+       medal3 := true;
+       addmedal('Teleport', 1);
+       end;
   end;
+
+  SA_EndMission(1, 12, medal1, medal2, medal3);
+
   givemedals('MAIN');
   rewardpeople(filterallunits([[f_alive],[f_side,am],[f_type,unit_human]]));
   saveitall;

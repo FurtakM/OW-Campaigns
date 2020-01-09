@@ -11,3 +11,7 @@ Every 0$2+0$0.1 do
 
           enable;
      end;
+
+// Destroy all russians buildings
+Every 0$2 trigger FilterAllUnits([[f_side, 3], [f_type, unit_building]]) = 0 do
+SetAchievement('ACH_CPA');

@@ -503,11 +503,19 @@ begin
 end;
 
 export function SetMedals;
+var medal1, medal2, medal3;
 begin
+medal1 := false;
+medal2 := false;
+medal3 := false;
+
 {* cans
 + Spousta materiálu.
 - Nezískal jsi navíc ani M materiálu.
 *}    AddMedal('cans', count_crates>=(MaterialNavic+100));
+      medal1 := count_crates >= (MaterialNavic + 100);
+
+      SA_CratesGathered(count_crates);
 
       //It is theoretically possible to gather up to about 3000 crates but 1500 is more realistic.
       if count_crates >= 1000 then
@@ -518,6 +526,7 @@ begin
 - Nezachránil jsi ani tøi z lidí, kteøí se objevili.
 *}    NavicLidi:=UnitFilter(NavicLidi, [f_ok]);
       AddMedal('people', NavicLidi>=3);
+      medal2 := NavicLidi >= 3;
 
 {* remote
 + Dálkové ovládání.
@@ -525,13 +534,18 @@ begin
 - Nevyzkoušel jsi novou technologii - øízení více vozidel najednou dálkovì.
 *}
   if remote_tried then
-     AddMedal('remote', 1)
+     begin
+     AddMedal('remote', 1);
+     medal3 := true;
+     end
   else begin
      if GetTech(tech_RemCont, you)=state_researched then
         AddMedal('remote', -2)
      else
         AddMedal('remote', -1);
   end;
+
+SA_EndMission(1, 6, medal1, medal2, medal3);
 end;
 
 // for future use

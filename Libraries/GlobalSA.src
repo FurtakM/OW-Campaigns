@@ -1,0 +1,32 @@
+// Global SA module by Serpent
+// Place for global Steam Achievements
+
+// Called always when missions end
+{
+   campaignNumber - 1 for Am, 2 for Ar, 3 for Ru, 4 for Alliance
+   missionNumber - from 1 to 15
+   medal1 - boolean
+   medal2 - boolean
+   medal3 - boolean
+}
+Export Function SA_EndMission(campaignNumber, missionNumber, medal1, medal2, medal3);
+var achiv;
+begin
+// Complete all Am/Ru missions with all medals on hard difficulty;
+// ACH_GOTA/ACH_MOTSU/ACH_LOP
+
+if not missionNumber then
+   exit;
+
+achiv := false;
+
+case campaignNumber of
+     1: achiv := 'ACH_GOTA';
+     2: ; // todo
+     3: achiv := 'ACH_MOTSU';
+     4: achiv := 'ACH_LOP';
+end;
+
+if achiv and medal1 and medal2 and medal3 then
+   SetAchievementEX(achiv, missionNumber);
+End;

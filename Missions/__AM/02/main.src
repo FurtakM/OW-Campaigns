@@ -463,3 +463,9 @@ STARTING
   InitNorthBase;
   Init;
  end;
+
+On UnitDestroyed(un) do
+begin
+if un = Mikhail then
+   SA_MikhailKilled;
+End;

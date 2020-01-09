@@ -137,11 +137,15 @@ VAR pomauta;
 VAR i,pom,pom1,pom2;
 VAR art;
 VAR VIPka;
-VAR all_units_1;
+VAR all_units_1, medal1, medal2, medal3;
 begin
 
   if mission_ended then // 28.12.2019
      exit;
+
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
 
   mission_ended := true;
 
@@ -149,22 +153,33 @@ begin
   gained_medals:=[];
   missing_medals:=[];
   if Timecounter<=medaile1[difficulty] then begin
-                                              AddMedal('Time1',1);
+                                              AddMedal('Time1', 1);
                                               pommedaile=true;
+                                              medal1 := true;
                                             end
                                        else begin
                                               AddMedal('Time1',-1);
                                               pommedaile=false;
                                             end;
-  if Timecounter<=medaile2[difficulty] then AddMedal('Time2',1)
+  if Timecounter<=medaile2[difficulty] then begin
+                                            AddMedal('Time2', 1);
+                                            medal2 := true;
+                                            end
                                        else if pommedaile then AddMedal('Time2',-1)
                                                           else AddMedal('Time2',-2);
   pomauta=FilterAllUnits([[f_side,You],[f_or,[f_weapon,us_cargo_bay],[f_weapon,ar_cargo_bay]]]);
   art=false;
   for i in pomauta do if GetCargo(i,mat_artefact)>0 then art=true;
 
-  if art then AddMedal('Artefact',1)
-         else AddMedal('Artefact',-1);
+  if art then
+     begin
+     medal3 := true;
+     AddMedal('Artefact', 1);
+     end
+    else
+     AddMedal('Artefact', -1);
+
+  SA_EndMission(1, 11, medal1, medal2, medal3);
 
   GiveMedals('Main');
 

@@ -185,18 +185,30 @@ every 0$0.7 trigger IsInArea(JMM,escape) and IsOk(JMM) marked 42 do
   end;
  
 function vitezstvi;
+var medal1, medal2, medal3;
   begin
     wait(0$1);
     AddMedal('JMM',1);
+
+    medal1 := true;
+    medal2 := false;
+    medal3 := false;
+
     if Bobby in saved then
-      AddMedal('Bobby',1)
+       begin
+       AddMedal('Bobby', 1);
+       medal2 := true;
+       end
     else
       if Bobby in found then
         AddMedal('Bobby',-2)
       else
         AddMedal('Bobby',-1);
     if Cyrus in saved then
-      AddMedal('Cyrus',1)
+       begin
+       AddMedal('Cyrus', 1);
+       medal3 := true;
+       end
     else
       if Cyrus in found then
         AddMedal('Cyrus',-2)
@@ -208,6 +220,11 @@ function vitezstvi;
       SetLives(Bobby,0);
     if not Cyrus in saved then
       SetLives(Cyrus,0);
+
+    if not medal2 and not medal3 then
+       SA_NoOneSave;
+
+    SA_EndMission(1, 1, medal1, medal2, medal3);
 
 //    PlayMusicNoLoop('musicdemo3.wav');
     GiveMedals('MAIN');
