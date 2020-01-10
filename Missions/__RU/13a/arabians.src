@@ -418,6 +418,9 @@ begin
   else addmedal('Mast',-1);
   if gettech(tech_laser,al)=state_researched then addmedal('Laser',1)
   else addmedal('Laser',-1);
+
+  SA_EndMission(4, 2, isdead(abdul), isdead(abduluv), gettech(tech_laser,al) = state_researched);
+
   givemedals('Main');
   rewardpeople(filterallunits([[f_alive],[f_side,al],[f_type,unit_human],f_not,[f_nation,nation_nature]]));
   saveitall;

@@ -521,23 +521,38 @@ begin
 end;
 
 every 0$10 marked 999 do // The End
-var filter,prumer,un,un1,un2,distance,pole,budova1,budova2,i,trotskij;
+var filter,prumer,un,un1,un2,distance,pole,budova1,budova2,i,trotskij, medal1, medal2, medal3;
 begin
   if BuildingsDone AND WeaponsDone AND TechnoDone AND CompVehConstructed AND LimitTeleportTested AND Masha AND AmAttackDone then
   begin
+    medal1 := false;
+    medal2 := false;
+    medal3 := false;
+
     disable;
 
     gained_medals:=[];
     missing_medals:=[];
 
     if HeikeCaptured then
-      if MortarDone then AddMedal('ArabBarracks',1) // Arabian Barracks
+      if MortarDone then
+         begin
+         medal1 := true;
+         AddMedal('ArabBarracks', 1); // Arabian Barracks
+         end
       else AddMedal('ArabBarracks',-1)
     else
-      if tick < speed then AddMedal('Speed',1) // Speed
+      if tick < speed then
+         begin
+         medal2 := true;
+         AddMedal('Speed', 1); // Speed
+         end
       else AddMedal('Speed',-1);
 
     AddMedal('ArtisticImpression',1); //BeautifulBase
+    medal3 := true;
+
+    SA_EndMission(3, 8, medal1, medal2, medal3);
 
     if (0+player_units)<=11 then  // Favourite Commander
       {Lost Some Man} AddMedal('FavouriteCommander',-1)

@@ -403,11 +403,6 @@ begin
   Say(bur,'D9a-Bur-1');
   SayRadio(kur,'D9a-Kur-2');
   posilani_arabskych_hlidek=true;
-
-  // Burlak stop!
-  for i in FilterAllUnits([[f_side, 3], [f_not, [f_type, unit_building]]]) do
-      ComMoveXY(i, 59, 12);
-
   manage_ruske_computery_zpet;
 end;
 

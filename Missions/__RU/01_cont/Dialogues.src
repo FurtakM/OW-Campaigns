@@ -116,6 +116,8 @@ every 0$0.5 trigger SeeXY(you,134,83) do
           Say(Burlak,'D3-Bur-2d')
         else
           begin
+            if GetSide(kirilenkova) = 3 then
+               SA_SaveGnievkoAfterAll;
             if un=Burlak then
               Say(Burlak,'D3-Bur-2e')
             else if GetSex(un)=sex_male then
@@ -607,6 +609,9 @@ every 0$3.1 trigger returning and not kirilenkova_appears do
 every 0$2.1 trigger kirilenkova_appears do
   var un;
   begin
+    if FilterUnitsInArea(Lake, [[f_side, 0], [f_class, class_apeman]]) = 0 then
+       SA_KillApeBeforeKirilenkova;
+
     ChangeSideFog(russians,russians);
     PlaceUnitXYR(kirilenkova,74,110,2,true);
     wait(0$3);

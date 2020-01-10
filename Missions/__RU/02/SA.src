@@ -1,0 +1,9 @@
+// Recapture Bielkov Tank
+Export Function SA_RecaptureBielkovsTank;
+begin
+SetAchievement('ACH_PRE');
+End;
+
+// Destroy all US bunkers
+Every 0$2 trigger FilterAllUnits([[f_side, 1], [f_btype, b_breastwork]]) = 0 do
+SetAchievement('ACH_SEC');

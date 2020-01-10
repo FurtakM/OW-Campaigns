@@ -292,6 +292,7 @@ begin
 
     case Query('QHeike') of
   1: begin
+       SA_MakeDealWithHeike;
        Say(Burlak,'DQrHeike#1-Bur-1');
        show_mines;
        interface_hidden:=false;

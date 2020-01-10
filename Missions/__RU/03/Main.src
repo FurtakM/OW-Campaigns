@@ -77,8 +77,11 @@ end;
 // konec !!
 on UnitDestroyed(un) DO
 begin
-  if un=bur then YouLost('Burlak');
-  enable;
+if un = schol2 and GetSide(un) = 6 then
+   SA_DontSaveScholtze;
+
+if un = bur then
+   YouLost('Burlak');
 end;
 
 // ukonceni mise, protoze lhal oo poctu aut
@@ -110,26 +113,48 @@ VAR zivi;
 VAR drv;
 VAR mrtvi;
 VAR all_people;
+var medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   DisableExclamations;
   gained_medals:=[];
   missing_medals:=[];
 
+  if FilterAllUnits([[f_side, 3], [f_btype, b_depot]]) = 1 then
+     SA_OneDepotWin;
+
   if Prezite_posily>=muze_projit_posil[difficulty]
     then AddMedal('PreventReinforcements',-1)
-    else AddMedal('PreventReinforcements',1);
+    else
+     begin
+     medal1 := true;
+     AddMedal('PreventReinforcements',1);
+     end;
 
-  if scholtze_saved and IsOk(schol) and GetSide(schol) = 3 then AddMedal('Scholtze',1)
-                    else AddMedal('Scholtze',-1);
+  if scholtze_saved and IsOk(schol) and GetSide(schol) = 3 then
+     begin
+     AddMedal('Scholtze', 1);
+     medal2 := true;
+     end
+  else
+     AddMedal('Scholtze',-1);
 
   case stav_aut_new of
-   1:AddMedal('Surplus',1);
+   1: begin
+      AddMedal('Surplus', 1);
+      medal3 := true;
+      end;
    2:AddMedal('Surplus',-1);
    3:AddMedal('Surplus',-2);
   end;
 
   if not stav_aut_new then
      AddMedal('Surplus',-1);
+
+  SA_EndMission(3, 3, medal1, medal2, medal3);
 
   GiveMedals('Main');
 

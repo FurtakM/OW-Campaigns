@@ -196,6 +196,8 @@ End;
 // Pøidání medailí.
 Function dej_medaile;
 Begin
+SA_EndMission(3, 14, not RusMaOtraveno, BehemothBuilt > 0, MenLost <= 2);
+
   If not RusMaOtraveno then AddMedal ('Siberite', 1)
   else If RusMaSiberit then AddMedal ('Siberite', -1)
   else AddMedal ('Siberite', -2);

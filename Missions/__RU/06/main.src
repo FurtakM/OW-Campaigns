@@ -106,6 +106,8 @@ end;
 export function set_medals;
 begin
 
+  SA_EndMission(3, 6, VsevolodSaved, OvsyenkoTaken and not OvsyenkoCaptured, GetTech(tech_MatPred, you) = state_researched);
+
   AddMedal('Vsevolod', VsevolodSaved);
 
   AddMedal('Ovsyenko', OvsyenkoTaken and not OvsyenkoCaptured);

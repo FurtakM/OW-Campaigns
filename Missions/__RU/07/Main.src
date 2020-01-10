@@ -264,20 +264,41 @@ End;
 
 
 Function dej_medaile;
+var medal1, medal2, medal3;
 Begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   // Xavier.
-  If Xavier and IsLive (Xavier) then AddMedal ('Xavier', 1)
-  else AddMedal ('Xavier', -1);
+  if Xavier and IsLive (Xavier) then
+     begin
+     medal1 := true;
+     AddMedal ('Xavier', 1);
+     end
+  else
+     AddMedal ('Xavier', -1);
+
   // Time.
   If VsevSaved then
     If PropaslQuickly then AddMedal ('TimeVS', -1)
-    else AddMedal ('TimeVS', 1)
+    else
+     begin
+     medal2 := true;
+     AddMedal ('TimeVS', 1);
+     end
   else
     If ContactIn5Min then AddMedal ('TimeNV', 1)
     else AddMedal ('TimeNV', -1);
   // Heike.
-  If IsOK (Heike) then AddMedal ('Heike', 1)
+  If IsOK (Heike) then
+     begin
+     medal3 := true;
+     AddMedal ('Heike', 1);
+     end
   else AddMedal ('Heike', -1);
+
+SA_EndMission(3, 7, medal1, medal2, medal3);
 End;
 
 

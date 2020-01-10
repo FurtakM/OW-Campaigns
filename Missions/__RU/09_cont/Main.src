@@ -2,6 +2,8 @@ EXPORT You,Amici,Amici2,Arabi;
 
 export everybody;
 
+Export macmilanUnitsDeadCounter; // for SA
+
 starting
 begin
   // nasteveni konstant pro strany
@@ -16,6 +18,8 @@ begin
   InitHc;
   InitUc;
   InitVc;
+
+  macmilanUnitsDeadCounter := 0;
 
   // priprava promennych pro nastaveni obtiznosti
   SET_DIFFICULTY;
@@ -60,8 +64,14 @@ end;
 // prohra chcipnutim burlaka
 on UnitDestroyed(un) DO
 begin
-  if un=bur then YouLost('Burlak');
-  enable;
+if un = bur then
+   YouLost('Burlak');
+
+if GetSide(un) = 4 then
+   begin
+   macmilanUnitsDeadCounter := macmilanUnitsDeadCounter + 1;
+   SA_MeatGrinder(macmilanUnitsDeadCounter);
+   end;
 end;
 
 // prohra, kdyz utecou vedci
@@ -86,23 +96,41 @@ VAR i,pom,pom1;
 VAR drv;
 VAR all_people;
 VAR plab;
+var medal1, medal2, medal3;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   DisableExclamations;
   gained_medals:=[];
   missing_medals:=[];
 
-  if IsOK(masha) and GetSide(masha)=You then AddMedal('Masha',1)
-                                        else AddMedal('Masha',-1);
+  if IsOK(masha) and GetSide(masha)=You then
+     begin
+     AddMedal('Masha', 1);
+     medal1 := true;
+     end
+  else AddMedal('Masha',-1);
 
   plab=0;
   for i in [Am_lab1,Am_lab2,Am_lab3] do
     if GetSide(i)=You then plab=plab+1;
-  if plab>=3 then AddMedal('Capture',1)
-             else AddMedal('Capture',-1);
+  if plab>=3 then
+     begin
+     AddMedal('Capture', 1);
+     medal2 := true;
+     end
+  else AddMedal('Capture',-1);
    
-  if GetTech(tech_TauRad,You)=state_researched or GetTech(tech_SpacAnom,You)=state_researched
-    then AddMedal('Invention',1)
-    else AddMedal('Invention',-1);
+  if GetTech(tech_TauRad,You)=state_researched or GetTech(tech_SpacAnom,You)=state_researched then
+     begin
+     AddMedal('Invention', 1);
+     medal3 := true;
+     end
+  else AddMedal('Invention',-1);
+
+  SA_EndMission(3, 9, medal1, medal2, medal3);
 
   GiveMedals('Main');
 

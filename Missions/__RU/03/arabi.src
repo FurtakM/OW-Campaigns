@@ -15,6 +15,11 @@ begin
   ArDontAttackPlayer(true);
   InGameOn;
   ComStop(pom);
+
+  // Burlak stop!
+  for i in FilterAllUnits([[f_side, 3], [f_not, [f_type, unit_building]]]) do
+      ComMoveXY(i, 59, 12);
+
   EnableVideoExclamations;
   CenterNowOnXY(142,80);
   arabsky_utok_zacal=true;

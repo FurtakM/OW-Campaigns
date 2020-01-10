@@ -64,7 +64,8 @@ End;
 
 On BehemothConstructed (Un) do
 Begin
-  rusove_BehemothConstructed (Un);
+SA_BehemothConstructed;
+rusove_BehemothConstructed (Un);
 End;
 
 

@@ -27,6 +27,12 @@ case campaignNumber of
      4: achiv := 'ACH_LOP';
 end;
 
-if achiv and medal1 and medal2 and medal3 then
+if Difficulty = 3 and achiv and medal1 and medal2 and medal3 then
    SetAchievementEX(achiv, missionNumber);
+End;
+
+// Behemoth constructed ACH_SMC - place into event BehemothConstructed
+Export Function SA_BehemothConstructed;
+begin
+SetAchievement('ACH_SMC');
 End;

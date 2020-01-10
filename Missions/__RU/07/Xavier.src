@@ -57,6 +57,7 @@ Begin
     zkopiruj_xaviera_jako_rus;
   End else Begin
     // Vodím ho za nos, a tak jde do Arabské základny.
+    SA_LieXavier;
     dialog_QrXavier2;
     // Xavier musí dojít do Arabské základny.
     ComWait (Xavier, Rand (0$1, 0$10));

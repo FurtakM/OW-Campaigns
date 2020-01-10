@@ -24,14 +24,20 @@ begin
      YouLost('Burlak');
    if un=Gleb and utok_na_gleba then
      YouLost('Gleb');
-   if un=Vsevolod then begin
-     mrtvi_vsevolodaci:=mrtvi_vsevolodaci ^ ['Vsevolod'];
-     SetSide(Vsevolod2, GetSide(Vsevolod));
-     if kecali then
-       DDieVsev2
-     else
-       DDieVsev1;
-   end;
+   if un=Vsevolod then
+      begin
+
+      if GetSide(un) = 6 then
+         SA_NotSaveVsevolod;
+
+      mrtvi_vsevolodaci:=mrtvi_vsevolodaci ^ ['Vsevolod'];
+      SetSide(Vsevolod2, GetSide(Vsevolod));
+
+      if kecali then
+        DDieVsev2
+      else
+        DDieVsev1;
+      end;
    if un in Vsevolod_uderna_group then begin
      Vsevolod_uderna_group:=Vsevolod_uderna_group diff un;
      mrtvi_vsevolodaci:=mrtvi_vsevolodaci ^ ['vsev_g_'&(mrtvi_vsevolodaci+1)];

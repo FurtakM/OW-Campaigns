@@ -192,6 +192,8 @@ begin
   AddMedal('BioHazard',entered_contaminated_area);
   AddMedal('Speed',(TICK-blast_time)<time_to_complete);
 
+  SA_EndMission(4, 3, blast_was_seen > 0, entered_contaminated_area > 0, (TICK-blast_time) < time_to_complete);
+
   GiveMedals('Main');
   RewardPeople([Burlak,MacMillan]);
 

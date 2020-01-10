@@ -76,7 +76,15 @@ begin
 end;
 
 export function set_medals;
+var medal1, medal2, medal3;
 begin
+
+     medal1 := action_was_fast > 0;
+     medal2 := first_apeman_tamed > 0;
+     medal3 := IsDead(Omar);
+
+     SA_EndMission(3, 5, medal1, medal2, medal3);
+
      AddMedal('Time', action_was_fast);
      if first_apeman_tamed then
        AddMedal('Apemen', 1)

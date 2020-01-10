@@ -728,6 +728,8 @@ begin
   if (0+tmp)=20 then addmedal('NoLosses',1) else addmedal('NoLosses',-1);
   if legionmed then addmedal('Legion',1) else addmedal('Legion',-1);
 
+  SA_EndMission(3, 15, true, (0+tmp) = 20, legionmed > 0);
+
   SA_OnMissionComplete;
   givemedals('Main');
 //  rewardpeople(filterallunits([[f_alive],[f_side,ru],[f_type,unit_human]])); //?
