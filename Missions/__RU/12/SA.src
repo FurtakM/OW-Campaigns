@@ -17,7 +17,10 @@ Export Function SA_OnMissionStart;
           SetAchievement('ACH_RPAT');
      end;
 
-Export Function SA_OnTsaritsynQuizPerfectCleared;
-     begin
-          SetAchievement('ACH_CAD');
-     end;
+Export Function SA_OnTsaritsynQuizPerfectCleared(qg);
+begin
+SetAchievementEX('ACH_CAD', qg);
+
+if qg = 6 then
+   SetAchievement('ACH_CAD');
+End;

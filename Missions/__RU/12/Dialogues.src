@@ -430,8 +430,7 @@ begin
      end;
    end;
 
-   if qg = 6 then
-        SA_OnTsaritsynQuizPerfectCleared;
+   SA_OnTsaritsynQuizPerfectCleared(qg);
 
    if [(qb<=2),(qb<=1),(qb<=0)][difficulty] then
      result:=true
