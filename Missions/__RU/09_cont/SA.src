@@ -11,3 +11,14 @@ Every 0$2+0$0.1 do
 
           enable;
      end;
+
+
+Export Function SA_NoThanksGensher;
+begin
+SetAchievement('ACH_NOT');
+End;
+
+Export Function SA_MeatGrinder(n);
+begin
+SetAchievementEx('ACH_MTG', n);
+End;

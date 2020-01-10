@@ -190,6 +190,8 @@ Begin
   else AddMedal ('Precision', -1);
   If TimeLapser then AddMedal ('TimeLapser', 1)
   else AddMedal ('TimeLapser', -1);
+
+SA_EndMission(3, 13, JMM and IsDead(JMM), (OK_North = 2) and (OK_East = 2), TimeLapser > 0);
 End;
 
 

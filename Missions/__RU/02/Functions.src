@@ -17,6 +17,8 @@ end;
 // meneni identifikatoru auta, ktere dostane belkov
 on VehicleCaptured(vehicle,ab,side,human) do
 begin
+  if side = 1 then
+     SA_RecaptureBielkovsTank;
   if ab=auto_belkov then auto_belkov=vehicle;
   debug_strings=[auto_belkov,GetSide(auto_belkov),bel,IsDrivenBy(auto_belkov)];
   enable;

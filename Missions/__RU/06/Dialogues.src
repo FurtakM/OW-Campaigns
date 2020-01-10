@@ -497,6 +497,7 @@ begin
      DMeetVsev6;
      kecali:=true;
      VsevolodSaved:=true;
+     SA_SaveVsevolod;
      ChangeMissionObjectives('MVsevolodOut');
    end
    else begin
@@ -508,6 +509,7 @@ begin
         DOtherMeetVsev;
         ComExitBuilding(vseva1);
         VsevolodSaved:=true;
+        SA_SaveVsevolod;
         otherkecali:=true;
         ChangeMissionObjectives('MVsevolodOut');
      end;

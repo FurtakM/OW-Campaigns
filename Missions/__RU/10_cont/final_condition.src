@@ -10,6 +10,8 @@ begin
   AddMedal('Masha',not lost_masha);
   AddMedal('LittleLosses',(lost_russians<4));
 
+  SA_EndMission(3, 10, TICK < 20$0, not lost_masha, lost_russians < 4);
+
   GiveMedals('Main');                                       // Gossudarov saved, Artefact captured
 
   if heike_killed then

@@ -92,9 +92,14 @@ VAR budovy;
 VAR material;
 VAR bw;
 VAR all_lidi;
+var medal1, medal2, medal3;
 var
   lidi;
 begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   DisableExclamations;
   gained_medals:=[];
   missing_medals:=[];
@@ -108,23 +113,43 @@ begin
                  else AddMedal('NoLosses',-1);}
 
   if NoLosses then
-    AddMedal('NoLosses',1)
+     begin
+     medal1 := true;
+     AddMedal('NoLosses', 1);
+     end
   else
-    AddMedal('NoLosses',-1);
+     AddMedal('NoLosses',-1);
 
   if BelkovFreed then
-    if IsOK(bel) then AddMedal('Belkov',1)   //saved Belkov
-                 else if UnitFilter(BelkovComp,[f_OK]) + 0 > 0
-                        then AddMedal('Belkov',2)   //saved some Belkovs men
-                        else AddMedal('Belkov',-3)  //saved Belkov but allowed him to die
-                 else if objBelkov and belkovSave = false then AddMedal('Belkov',-2)  //failed to save
-                                   else AddMedal('Belkov',-1); //let him die
+    if IsOK(bel) then
+       begin
+       medal2 := true;
+       AddMedal('Belkov', 1);   //saved Belkov
+       end
+    else if UnitFilter(BelkovComp,[f_OK]) + 0 > 0 then
+       begin
+       medal2 := true;
+       AddMedal('Belkov', 2);   //saved some Belkovs men
+       end
+    else AddMedal('Belkov',-3)  //saved Belkov but allowed him to die
+    else if objBelkov and belkovSave = false then AddMedal('Belkov',-2)  //failed to save
+    else AddMedal('Belkov',-1); //let him die
+
   case stav_utoku of
-   1:AddMedal('Initiative',1);      // OK
+   1: begin
+      medal3 := true;
+      AddMedal('Initiative',1);      // OK
+      end;
    2:AddMedal('Initiative',-2);     // pozadal o posily
    3:AddMedal('Initiative',-1);     // reckless attack
-   else AddMedal('Initiative',1);
+  else
+      begin
+      medal3 := true;
+      AddMedal('Initiative',1);
+      end;
   end;
+
+  SA_EndMission(3, 2, medal1, medal2, medal3);
 
   GiveMedals('Main');
 

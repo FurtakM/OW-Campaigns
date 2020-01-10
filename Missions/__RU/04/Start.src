@@ -427,8 +427,12 @@ begin
 end;
 
 export function konec_mise;
-VAR pom,pom1,i,all_people,drv,filter;
-begin                                        
+VAR pom,pom1,i,all_people,drv,filter, medal1, medal2, medal3;
+begin
+  medal1 := false;
+  medal2 := false;
+  medal3 := false;
+
   Wait(0$1);
   gained_medals:=[];
   missing_medals:=[];
@@ -436,18 +440,29 @@ begin
   saved_player_units:=UnitFilter(saved_player_units,[f_not,[f_or,[f_class,class_apeman_engineer],[f_class,class_apeman_soldier]]]);
 
   if (0+saved_player_units) >= 9 then
-    AddMedal('LittleLosses',1)
+     begin
+     medal1 := true;
+     AddMedal('LittleLosses', 1);
+     end
   else AddMedal('LittleLosses',-1);
 
   if ar_killed >= waypointsEND-3 then
-    AddMedal('EnemyLosses',1)                  
+     begin
+     medal2 := true;
+     AddMedal('EnemyLosses', 1);
+     end
   else AddMedal('EnemyLosses',-1);
 
   filter:=FilterAllUnits([[f_type,unit_building],[f_not,[f_or,[f_btype,b_oil_power],[f_btype,b_oil_mine],[f_btype,b_bunker]]]]);
 
   if filter=0 then
-    AddMedal('Dismantle',1)
+     begin
+     medal3 := true;
+     AddMedal('Dismantle', 1);
+     end
   else AddMedal('Dismantle',-1);
+
+  SA_EndMission(3, 4, medal1, medal2, medal3);
 
   GiveMedals('Main');
 

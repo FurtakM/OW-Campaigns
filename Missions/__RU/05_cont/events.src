@@ -1,5 +1,7 @@
 on UnitDestroyed(un) do
 begin
+   if un = Stevens then
+      SA_KillStevens;
    if un in rulive then
       rulive:=rulive diff un;
    if un in apemans then
