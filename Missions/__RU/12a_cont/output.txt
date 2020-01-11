@@ -2048,10 +2048,10 @@
 3437: LD_INT 1
 3439: PPUSH
 3440: CALL_OW 101
-// SA_EndMission ( 4 , 1 , scientists_dead = 0 , matros > 100 , killed_russians >= 5 or rus_building_destroyed >= 2 ) ;
+// SA_EndMission ( 4 , 5 , scientists_dead = 0 , matros > 100 , killed_russians >= 5 or rus_building_destroyed >= 2 ) ;
 3444: LD_INT 4
 3446: PPUSH
-3447: LD_INT 1
+3447: LD_INT 5
 3449: PPUSH
 3450: LD_EXP 49
 3454: PUSH
