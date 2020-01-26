@@ -10824,3 +10824,13 @@
 // end ;
 18232: LD_VAR 0 6
 18236: RET
+// export function SA_BehemothConstructed ; begin
+18237: LD_INT 0
+18239: PPUSH
+// SetAchievement ( ACH_SMC ) ;
+18240: LD_STRING ACH_SMC
+18242: PPUSH
+18243: CALL_OW 543
+// end ;
+18247: LD_VAR 0 1
+18251: RET

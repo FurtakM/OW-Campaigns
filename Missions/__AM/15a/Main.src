@@ -28,7 +28,8 @@ export Petrosyan, Belkov, Kirilenkova,       // spravni rusti rekove a nastenky
 export Bobby, Brown, Cornell, Connie,        // spravni americti hosi a holky
        Cyrus, Denis, Donaldson, Frank,
        Gary, Gladstone, Joan, Lisa,
-       Peterson, Simms, VanHouten, Yamoko;
+       Peterson, Simms, VanHouten, Yamoko,
+       others;
 
 export Omar,                                 // tajemny sejk omar prochazejici casem a nekterymi misemi
        OmarKilled,
@@ -145,10 +146,11 @@ begin
       aliance:=aliance ^ Gossudarov;
     end;
 
-  if aliance<20 then
-    for i=aliance to 20 do
+  if aliance_forces<20 then
+    for i=aliance_forces to 20 do
       begin
         PrepareHuman(0,0,6);
+        uc_nation = [nation_american, nation_russian][Rand(1,2)];
         hc_last_mission:=15;
         aliance_forces:=aliance_forces ^ CreateHuman;
       end;

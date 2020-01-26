@@ -201,7 +201,7 @@ Function zjisti_ridice (Seznam, Pocet);
 Var I, Ted;
 Begin
   Result = [];
-  While (Result < Pocet) and Seznam do
+  While (Result < Pocet+0) and Seznam do
   Begin
     Ted = Seznam [1]; Seznam = Delete (Seznam, 1);
     If Ted then Result = Result union [Ted];

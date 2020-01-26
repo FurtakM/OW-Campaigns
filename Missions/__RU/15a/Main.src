@@ -22,7 +22,8 @@ export Petrosyan, Belkov, Kirilenkova,       // spravni rusti rekove a nastenky
        Kapitsova, Kuzmov, Kovalyuk,
        Scholtze, Karamazov, Titov,
        Oblukov, Kozlov, Petrovova,
-       Bystrov, Lipshchin, Fadeev;
+       Bystrov, Lipshchin, Fadeev, Xavier,
+       survivors5;
 
 
 export Bobby, Brown, Cornell, Connie,        // spravni americti hosi a holky
@@ -145,11 +146,12 @@ begin
       aliance:=aliance ^ Gossudarov;
     end;
 
-  if aliance<20 then
-    for i=aliance to 20 do
+  if aliance_forces<20 then
+    for i=aliance_forces to 20 do
       begin
         PrepareHuman(0,0,6);
         hc_last_mission:=15;
+        uc_nation = [nation_american,nation_russian][Rand(1,2)];
         aliance_forces:=aliance_forces ^ CreateHuman;
       end;
 
@@ -162,6 +164,9 @@ begin
   // Load vozidel MacMillana a Burlaka z minule mise
   JMM_car:=LoadVariable('JMM_car',[us_medium_tracked,engine_combustion,control_manual,us_cargo_bay]);
   Bur_car:=LoadVariable('Bur_car',[ru_medium_tracked,engine_siberite,control_manual,ru_rocket_launcher]);
+
+  if TestVariable('Masha') then
+     Bur_car = LoadVariable('Masha', [ru_medium_tracked,engine_siberite,control_manual,ru_rocket_launcher]);
 
   if (JMM_car[1] = 0) then
     JMM_car:=[us_medium_tracked,engine_combustion,control_manual,us_cargo_bay];
@@ -205,6 +210,9 @@ begin
   vc_control:=Bur_car[3];
   vc_weapon:=Bur_car[4];
   un:=CreateVehicle;
+
+  if TestVariable('Masha') then
+     SetMark(un, 1);
 
   PlaceHumanInUnit(Burlak,un);
   PlaceUnitArea(un,burlak_starting,false);

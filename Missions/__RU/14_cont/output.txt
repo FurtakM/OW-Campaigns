@@ -1069,10 +1069,10 @@
 1903: LD_VAR 0 5
 1907: DIFF
 1908: ST_TO_ADDR
-// SaveCharacters ( Survivors4 union O , Survivors4 ) ;
-1909: LD_VAR 0 3
+// SaveCharacters ( O union Survivors4 , Survivors4 ) ;
+1909: LD_VAR 0 4
 1913: PUSH
-1914: LD_VAR 0 4
+1914: LD_VAR 0 3
 1918: UNION
 1919: PPUSH
 1920: LD_STRING Survivors4

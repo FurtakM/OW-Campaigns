@@ -171,5 +171,7 @@ function mission_ends;
     SaveCharacters(Pokryshkin,'Pokryshkin');
     SaveCharacters(your_units diff [Burlak,Gnyevko,Kirilenkova,Belkov,Pokryshkin,0],'survivors1');
 
+    SaveCharacters(Gladstone,'Gladstone'); //this will erase him if he died
+
     YouWin;
   end;

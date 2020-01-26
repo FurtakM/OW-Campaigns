@@ -45,7 +45,7 @@ Export surv3;
 
 var vsevol_v,popov_v,gaydar_v,yashin_v,vehikly,vehiklyo,vehiklys;
 export function prepare_russians;
-var tmp,tmp2,tmp3,na,na2,veh;
+var tmp,tmp2,tmp3,na,na2,veh,cannon_fodder;
 begin
   centernowonxy(99,102);
   na=0;
@@ -170,9 +170,19 @@ begin
     ostatni=ostatni^[createhuman];
   end;
 
+
+  cannon_fodder = [];
+
+  for tmp = 1 to 3 do
+  begin
+       PrepareSoldier(false, 7);
+       cannon_fodder = cannon_fodder ^ CreateHuman;
+  end;
+
+
   obeti=[vsevol,popov,gaydar,yashin];   //vsichni tidle ziji
-  survivors=[belkov,petrovova,titov,oblukov,kuzmov,gnyevko,kozlov] diff [0];
-  obeti2=[dolgov,kovalyuk,karamazov] diff [0];  //necham je chcipnout
+  survivors=[belkov,petrovova,titov,oblukov,kuzmov,gnyevko,kozlov,dolgov,kovalyuk,karamazov] diff [0];
+  obeti2=cannon_fodder;  //necham je chcipnout
   nedoboje=[kiril,kapitsova,petrosyan,scholtze,furmanov] diff [0];
   tmp2=7-survivors;
   for tmp=1 to tmp2 do
@@ -400,7 +410,7 @@ var tmp;
 begin
   result=true;
   for tmp in survivors do
-    if not isinarea(tmp,uketar) and not isdead(tmp) then begin result=false;exit;end;
+    if IsPlaced(tmp) and not isinarea(tmp,uketar) and not isdead(tmp) then begin result=false;exit;end;
 end;
 
 var nenicit,poskoz;

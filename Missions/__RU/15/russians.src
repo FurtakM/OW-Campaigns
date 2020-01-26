@@ -5,7 +5,7 @@ var titov,belkov,kuzmov,gnyevko,kozlov,kiril,kapitsova,petrosyan,scholtze,dolgov
 export legdestr;
 
 export function prepare_russians;
-var tmp,tmp2,tmp3,na,veh;
+var tmp,tmp2,tmp3,na,veh,survivors4;
 begin
   centernowonxy(99,102);
   na=0;
@@ -155,11 +155,17 @@ begin
   end
   else masha=0;
 
+  survivors4 = CreateCharacterSet('survivors4');
+
   ostatni=[];
-  for tmp=1 to na do begin
-    preparehuman(rand(1,2),rand(1,4),ru_def_skill);    //sex,cl,lev
-    ostatni=ostatni^[createhuman];
-  end;
+  for tmp=1 to na do
+      if survivors4 >= tmp then
+         ostatni = ostatni ^ survivors4[tmp]
+      else
+      begin
+           preparehuman(rand(1,2),rand(1,4),ru_def_skill);    //sex,cl,lev
+           ostatni=ostatni^[createhuman];
+      end;
 
   lidi=[titov,belkov,kuzmov,gnyevko,kozlov,kiril,kapitsova,petrosyan,scholtze,dolgov,
     kovalyuk,karamazov,petrovova,gleb,lipshchin,xavier,fadeev,gladkov,bystrov,oblukov] diff [0];

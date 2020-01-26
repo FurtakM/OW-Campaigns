@@ -27,6 +27,7 @@ begin
       vc_control:=veh[3];
       vc_weapon:=veh[4];
       Masha:=CreateVehicle;
+      PlaceUnitArea(Masha, central, false);
       SetMark(Masha,1);
     end
   else

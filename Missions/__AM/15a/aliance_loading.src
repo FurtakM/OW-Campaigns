@@ -24,11 +24,13 @@ begin
       aliance_forces:=aliance_forces ^ Gnyevko;
     end;
 
+  {
   if TestCharacters('Gladkov') and CheckCharacterSet('Gladkov') then
     begin
       Gladkov:=CreateCharacter('Gladkov');
       aliance_forces:=aliance_forces ^ Gladkov;
     end;
+  }
 
   if TestCharacters('Dolgov') and CheckCharacterSet('Dolgov') then
     begin
@@ -96,11 +98,13 @@ begin
       aliance_forces:=aliance_forces ^ Petrovova;
     end;
 
+  {
   if TestCharacters('Bystrov') and CheckCharacterSet('Bystrov') then
     begin
       Bystrov:=CreateCharacter('Bystrov');
       aliance_forces:=aliance_forces ^ Bystrov;
     end;
+  }
 
   if TestCharacters('Lipshchin') and CheckCharacterSet('Lipshchin') then
     begin
@@ -108,79 +112,83 @@ begin
       aliance_forces:=aliance_forces ^ Lipshchin;
     end;
 
+  {
   if TestCharacters('Fadeev') and CheckCharacterSet('Fadeev') then
     begin
       Fadeev:=CreateCharacter('Fadeev');
       aliance_forces:=aliance_forces ^ Fadeev;
     end;
+  }
 
-  if TestCharacters('Bobby') and CheckCharacterSet('Bobby') then
+  if TestCharacters('Bobby') and CheckCharacterSet('Bobby') and LoadVariable('bobby_side', 0) = 7 then
     begin
       Bobby:=CreateCharacter('Bobby');
       aliance_forces:=aliance_forces ^ Bobby;
     end;
 
-  if TestCharacters('Brown') and CheckCharacterSet('Brown') then
+  if TestCharacters('Brown') and CheckCharacterSet('Brown') and LoadVariable('brown_side', 0) = 7 then
     begin
       Brown:=CreateCharacter('Brown');
       aliance_forces:=aliance_forces ^ Brown;
     end;
 
-  if TestCharacters('Cornell') and CheckCharacterSet('Cornell') then
+  if TestCharacters('Cornell') and CheckCharacterSet('Cornell') and LoadVariable('markc_side', 0) = 7 then
     begin
       Cornell:=CreateCharacter('Cornell');
       aliance_forces:=aliance_forces ^ Cornell;
     end;
 
+  {
   if TestCharacters('Coonie') and CheckCharacterSet('Coonie') then
     begin
       Connie:=CreateCharacter('Coonie');
       aliance_forces:=aliance_forces ^ Connie;
     end;
+  }
 
-  if TestCharacters('Cyrus') and CheckCharacterSet('Cyrus') then
+  if TestCharacters('Cyrus') and CheckCharacterSet('Cyrus') and LoadVariable('cyrus_side', 0) = 7 then
     begin
       Cyrus:=CreateCharacter('Cyrus');
       aliance_forces:=aliance_forces ^ Cyrus;
     end;
 
-  if TestCharacters('Denis') and CheckCharacterSet('Denis') then
+  if TestCharacters('Denis') and CheckCharacterSet('Denis') and LoadVariable('denis_side', 0) = 7 then
     begin
       Denis:=CreateCharacter('Denis');
       aliance_forces:=aliance_forces ^ Denis;
     end;
 
-  if TestCharacters('Donaldson') and CheckCharacterSet('Donaldson') then
+  if TestCharacters('Donaldson') and CheckCharacterSet('Donaldson') and LoadVariable('lucy_side', 0) = 7 then
     begin
       Donaldson:=CreateCharacter('Donaldson');
       aliance_forces:=aliance_forces ^ Donaldson;
     end;
 
-  if TestCharacters('Frank') and CheckCharacterSet('Frank') then
+  if TestCharacters('Frank') and CheckCharacterSet('Frank') and LoadVariable('frank_side', 0) = 7 then
     begin
       Frank:=CreateCharacter('Frank');
       aliance_forces:=aliance_forces ^ Frank;
     end;
 
-  if TestCharacters('Gary') and CheckCharacterSet('Gary') then
+  if TestCharacters('Gary') and CheckCharacterSet('Gary') and LoadVariable('gary_side', 0) = 7 then
     begin
       Gary:=CreateCharacter('Gary');
       aliance_forces:=aliance_forces ^ Gary;
     end;
 
-  if TestCharacters('Gladstone') and CheckCharacterSet('Gladstone') then
+  if TestCharacters('Gladstone') and CheckCharacterSet('Gladstone') and LoadVariable('tim_side', 0) = 7 then
     begin
       Gladstone:=CreateCharacter('Gladstone');
       aliance_forces:=aliance_forces ^ Gladstone;
     end;
 
-  if TestCharacters('Joan') and CheckCharacterSet('Joan') and camp = 4 then  //Joan is killed in Ru09
+  if TestCharacters('Joan') and CheckCharacterSet('Joan') and LoadVariable('joan_side', 0) = 7 and camp = 4 then  //Joan is killed in Ru09
     begin
       Joan:=CreateCharacter('Joan');
       aliance_forces:=aliance_forces ^ Joan;
     end;
 
-  if TestCharacters('Lisa') and CheckCharacterSet('Lisa') then
+  if TestCharacters('Lisa') and CheckCharacterSet('Lisa') and LoadVariable('lisa_side', 0) = 7 then
     begin
       Lisa:=CreateCharacter('Lisa');
       aliance_forces:=aliance_forces ^ Lisa;
@@ -192,23 +200,31 @@ begin
       aliance_forces:=aliance_forces ^ Peterson;
     end;
 
-  if TestCharacters('Simms') and CheckCharacterSet('Simms') then
+  if TestCharacters('Simms') and CheckCharacterSet('Simms') and LoadVariable('simms_side', 0) = 7 then
     begin
       Simms:=CreateCharacter('Simms');
       aliance_forces:=aliance_forces ^ Simms;
     end;
 
+  {
   if TestCharacters('VanHouten') and CheckCharacterSet('VanHouten') then
     begin
       VanHouten:=CreateCharacter('VanHouten');
       aliance_forces:=aliance_forces ^ VanHouten;
     end;
+  }
 
-  if TestCharacters('Yamoko') and CheckCharacterSet('Yamoko') then
+  if TestCharacters('Yamoko') and CheckCharacterSet('Yamoko') and LoadVariable('yamoko_side', 0) = 7 then
     begin
       Yamoko:=CreateCharacter('Yamoko');
       aliance_forces:=aliance_forces ^ Yamoko;
     end;
+
+  if CheckCharacterSet('otherWithJMM') then
+  begin
+       others = CreateCharacterSet('otherWithJMM');
+       aliance_forces:=aliance_forces ^ others;
+  end;
 
   DisableAllBazookers;
 
