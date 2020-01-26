@@ -1,7 +1,7 @@
 export vyjednavalo_se;
 export burlak,belkov,gnyevko,kiril,kovalyuk,scholtze,kuzmov,karam,petrov,gleb,petros,lipshchin,titov,dolgov,xavier,oblukov,kozlov,kapitsova,gossud;
-export vip;
-var vedci,zbytekze12,vedciost,jahoda,jahodatyp,plidi;
+export vip, jahoda;
+var vedci,zbytekze12,vedciost,jahodatyp,plidi;
 
 export function prepare_russians;
 var old_al,old_al2,tmp,tmp1;
@@ -13,7 +13,26 @@ begin
   burlak=0;
   if checkcharacterset('Burlak') then burlak=createcharacterwithclass('Burlak',class_engineer)
   else buildquery('neny Burlak',['OK']);
-  placeunitxyr(burlak,61,77,3,false);//51,6
+
+  tmp = LoadVariable('Masha',0);
+
+  if tmp then
+  begin
+       uc_nation = nation_russian;
+       vc_chassis = tmp[1];
+       vc_engine = tmp[2];
+       vc_control = tmp[3];
+       vc_weapon = tmp[4];
+
+       Masha = CreateVehicle;
+       SetMark(Masha, 1);
+
+       PlaceHumanInUnit(burlak, Masha);
+       PlaceUnitXYR(Masha, 61, 77, 3, false);
+  end
+  else
+      placeunitxyr(burlak,61,77,3,false);//51,6
+
   vedci=[];
   jahoda=0;
   jahodatyp=0;
@@ -406,11 +425,25 @@ begin
 
   vip=[burlak,belkov,gnyevko,kiril,kovalyuk,scholtze,kuzmov,karam,petrov,gleb,petros,lipshchin,titov,dolgov,xavier,oblukov,kozlov,kapitsova,gossud] diff [0];
   ingameon;
-  centernowonunits(burlak);
+
+  if Masha then
+     CenterNowOnUnits(Masha)
+  else
+      centernowonunits(burlak);
+
   commovexy(zbytekze12^vip,61,49);
   plidi=0+(zbytekze12^vip);
 
-  while getdistunitxy(burlak,61,49)>5 do begin wait(1);centeronunits(burlak);end;
+  while getdistunitxy(burlak,61,49)>5 do
+  begin
+       wait(1);
+
+       if Masha then
+          CenterNowOnUnits(Masha)
+       else
+           centeronunits(burlak);
+  end;
+
   ingameoff;
 
   dialogueon;
@@ -478,7 +511,7 @@ begin
   if not lisa then msg('neny Lisa');
   simms=newcharacter('Simms');
   if not simms then msg('neny Simms');
-  yamoko=0;
+  yamoko=newcharacter('Yamoko');
 
   amer=[simms,glad,bobby,brown,connie,cornel,cyrus,lucy,frank,gary,lisa,yamoko] diff [0];
   amervyb=[jmm,roth,denis] diff [0];
@@ -492,7 +525,6 @@ begin
   end;
 
   commovexy(amervyb,62,47);
-
 
   SetAttitude(rus2,oth,att_friend,true);  //Don't attack each other guys
 end;
@@ -634,6 +666,11 @@ every 0$1+4$33 trigger filterallunits([[f_side,al],[f_dist,jahoda,6]]) do
 begin
 //  msg('jahoda v dostrelu');
   setside(jahoda,al);
+
+  case jahodatyp of
+       1: SaveVariable(1, 'belkov_side');
+       2: SaveVariable(1, 'gnyevko_side');
+  end;
 end;
 
 

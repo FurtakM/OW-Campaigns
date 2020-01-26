@@ -201,7 +201,7 @@ begin
   SaveCharacters(Burlak,'Burlak');
 
   un:=IsInUnit(MacMillan);
-  if un then
+  if un and not un = masha then
     begin
       JMM_car:=[GetChassis(un), GetEngine(un), GetControl(un), GetWeapon(un)];
       SaveVariable(JMM_car,'JMM_car');

@@ -475,7 +475,7 @@ begin
   if gossud then savecharacters(gossud,'Gossudarov');
 
   bz=filterallunits([[f_alive],[f_side,al],[f_type,unit_human],f_not,[f_nation,nation_nature]]);
-  savecharacters(bz diff smejdi,'survivors5');
+  savecharacters(bz diff smejdi ^ jahoda,'survivors5');
 
   tmz=filterunitsinarea(stred,[[f_side,al],f_not,[f_nation,nation_arabian],[f_btype,b_factory]]);
   tmz=tmz^filterunitsinarea(stred,[[f_side,al],f_not,[f_nation,nation_arabian],[f_type,unit_building],f_not,[f_btype,b_factory]]);
@@ -488,6 +488,9 @@ begin
       else tmzo=tmzo^[[getx(bz),gety(bz),getdir(bz),getbtype(bz),getblevel(bz),getnation(bz)]];
     end;
   savevariable(tmzo,'Freedom');
+
+  if GetLives(Masha) = 0 then
+     DeleteVariable('Masha');
 
 end;
 

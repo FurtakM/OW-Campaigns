@@ -131,7 +131,7 @@ begin
 end;
 
 function create_people;
-var un;
+var un, i, j, skill;
 begin
 // ********************** RusAlly *************************************
   uc_side=ally;
@@ -170,13 +170,27 @@ begin
   if CheckCharacterSet('survivors3') then
      survivors3 = CreateCharacterSet('survivors3');
 
-  scientists:=UnitFilter(all_possible^survivors3,[f_class,class_scientistic]);
 
-  survivors3 = survivors3 diff scientists;
+   //0dd1: changing the classes to assign scientists properly
+   for i in all_possible ^ survivors3 do
+   begin
+        skill = 0;
+
+        for j = 1 to 4 do
+            if GetSkill(i, [skill_combat,skill_engineering,skill_mechanical,skill_scientistic][j]) >= skill then
+            begin
+                 skill = GetSkill(i, [skill_combat,skill_engineering,skill_mechanical,skill_scientistic][j]);
+                 SetClass(i, [class_soldier,class_engineer,class_mechanic,class_scientistic][j]);
+            end;
+  end;
+
+  scientists:=UnitFilter(all_possible^survivors3,[f_class,class_scientistic]);
 
   if scientists>5 then
     for i:=6 to scientists do
       scientists:=scientists diff scientists[i];
+
+  survivors3 = survivors3 diff scientists;
 
   if scientists<5 then
     for i:=1 to 5-scientists do
@@ -474,7 +488,7 @@ begin
 
   RewardPeople(reward_units);
 
-  SaveCharacters(scientists diff (possible^Gossudarov),'scientists');
+  SaveCharacters(scientists diff (all_possible^Gossudarov),'scientists');
 
   survivors5:=player_units diff all_possible^scientists^Burlak^Gossudarov;
 

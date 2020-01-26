@@ -1,118 +1,130 @@
 export function load_all_aliance;
 begin
-  if TestCharacters('Belkov') and CheckCharacterSet('Belkov') then
+  if TestCharacters('Belkov') and CheckCharacterSet('Belkov') and LoadVariable('belkov_side', 0) > 0 then
     begin
       Belkov:=CreateCharacter('Belkov');
       aliance_forces:=aliance_forces ^ Belkov;
     end;
 
-  if TestCharacters('Petrosyan') and CheckCharacterSet('Petrosyan') then
+  if TestCharacters('Petrosyan') and CheckCharacterSet('Petrosyan') and LoadVariable('petros_side', 0) > 0 then
     begin
       Petrosyan:=CreateCharacter('Petrosyan');
       aliance_forces:=aliance_forces ^ Petrosyan;
     end;
 
-  if TestCharacters('Kirilenkova') and CheckCharacterSet('Kirilenkova') then
+  if TestCharacters('Kirilenkova') and CheckCharacterSet('Kirilenkova') and LoadVariable('kiril_side', 0) > 0 then
     begin
       Kirilenkova:=CreateCharacter('Kirilenkova');
       aliance_forces:=aliance_forces ^ Kirilenkova;
     end;
 
-  if TestCharacters('Gnyevko') and CheckCharacterSet('Gnyevko') then
+  if TestCharacters('Gnyevko') and CheckCharacterSet('Gnyevko') and LoadVariable('gnyevko_side', 0) > 0 then
     begin
       Gnyevko:=CreateCharacter('Gnyevko');
       aliance_forces:=aliance_forces ^ Gnyevko;
     end;
 
+  {
   if TestCharacters('Gladkov') and CheckCharacterSet('Gladkov') then
     begin
       Gladkov:=CreateCharacter('Gladkov');
       aliance_forces:=aliance_forces ^ Gladkov;
     end;
+  }
 
-  if TestCharacters('Dolgov') and CheckCharacterSet('Dolgov') then
+  if TestCharacters('Dolgov') and CheckCharacterSet('Dolgov') and LoadVariable('dolgov_side', 0) > 0 then
     begin
       Dolgov:=CreateCharacter('Dolgov');
       aliance_forces:=aliance_forces ^ Dolgov;
     end;
 
-  if TestCharacters('Gleb') and CheckCharacterSet('Gleb') then
+  if TestCharacters('Gleb') and CheckCharacterSet('Gleb') and LoadVariable('gleb_side', 0) > 0 then
     begin
       Gleb:=CreateCharacter('Gleb');
       aliance_forces:=aliance_forces ^ Gleb;
     end;
 
-  if TestCharacters('Kapitsova') and CheckCharacterSet('Kapitsova') then
+  if TestCharacters('Kapitsova') and CheckCharacterSet('Kapitsova') and LoadVariable('kapitsova_side', 0) > 0 then
     begin
       Kapitsova:=CreateCharacter('Kapitsova');
-      aliance_forces:=aliance_forces ^ Kapitsova;
+      aliance_forces:=aliance_forces ^ Kapitsova;                          
     end;
 
-  if TestCharacters('Kuzmov') and CheckCharacterSet('Kuzmov') then
+  if TestCharacters('Kuzmov') and CheckCharacterSet('Kuzmov') and LoadVariable('kuzmov_side', 0) > 0 then
     begin
       Kuzmov:=CreateCharacter('Kuzmov');
       aliance_forces:=aliance_forces ^ Kuzmov;
     end;
 
-  if TestCharacters('Kovalyuk') and CheckCharacterSet('Kovalyuk') then
+  if TestCharacters('Kovalyuk') and CheckCharacterSet('Kovalyuk') and LoadVariable('kovalyuk_side', 0) > 0 then
     begin
       Kovalyuk:=CreateCharacter('Kovalyuk');
       aliance_forces:=aliance_forces ^ Kovalyuk;
     end;
 
-  if TestCharacters('Scholtze') and CheckCharacterSet('Scholtze') then
+  if TestCharacters('Scholtze') and CheckCharacterSet('Scholtze') and LoadVariable('scholtze_side', 0) > 0 then
     begin
       Scholtze:=CreateCharacter('Scholtze');
       aliance_forces:=aliance_forces ^ Scholtze;
     end;
 
-  if TestCharacters('Karamazov') and CheckCharacterSet('Karamazov') then
+  if TestCharacters('Karamazov') and CheckCharacterSet('Karamazov') and LoadVariable('karam_side', 0) > 0 then
     begin
       Karamazov:=CreateCharacter('Karamazov');
       aliance_forces:=aliance_forces ^ Karamazov;
     end;
 
-  if TestCharacters('Titov') and CheckCharacterSet('Titov') then
+  if TestCharacters('Titov') and CheckCharacterSet('Titov') and LoadVariable('titov_side', 0) > 0 then
     begin
       Titov:=CreateCharacter('Titov');
       aliance_forces:=aliance_forces ^ Titov;
     end;
 
-  if TestCharacters('Oblukov') and CheckCharacterSet('Oblukov') then
+  if TestCharacters('Oblukov') and CheckCharacterSet('Oblukov') and LoadVariable('oblukov_side', 0) > 0 then
     begin
       Oblukov:=CreateCharacter('Oblukov');
       aliance_forces:=aliance_forces ^ Oblukov;
     end;
 
-  if TestCharacters('Kozlov') and CheckCharacterSet('Kozlov') then
+  if TestCharacters('Kozlov') and CheckCharacterSet('Kozlov') and LoadVariable('kozlov_side', 0) > 0 then
     begin
       Kozlov:=CreateCharacter('Kozlov');
       aliance_forces:=aliance_forces ^ Kozlov;
     end;
 
-  if TestCharacters('Petrovova') and CheckCharacterSet('Petrovova') then
+  if TestCharacters('Petrovova') and CheckCharacterSet('Petrovova') and LoadVariable('petrov_side', 0) > 0 then
     begin
       Petrovova:=CreateCharacter('Petrovova');
       aliance_forces:=aliance_forces ^ Petrovova;
     end;
 
+  if TestCharacters('Xavier') and CheckCharacterSet('Xavier') and LoadVariable('xavier_side', 0) > 0 then
+    begin
+      Xavier:=CreateCharacter('Xavier');
+      aliance_forces:=aliance_forces ^ Xavier;
+    end;
+
+  {
   if TestCharacters('Bystrov') and CheckCharacterSet('Bystrov') then
     begin
       Bystrov:=CreateCharacter('Bystrov');
       aliance_forces:=aliance_forces ^ Bystrov;
     end;
+  }
 
-  if TestCharacters('Lipshchin') and CheckCharacterSet('Lipshchin') then
+  if TestCharacters('Lipshchin') and CheckCharacterSet('Lipshchin') and LoadVariable('lipshchin_side', 0) > 0 then
     begin
       Lipshchin:=CreateCharacter('Lipshchin');
       aliance_forces:=aliance_forces ^ Lipshchin;
     end;
 
+  {
   if TestCharacters('Fadeev') and CheckCharacterSet('Fadeev') then
     begin
       Fadeev:=CreateCharacter('Fadeev');
       aliance_forces:=aliance_forces ^ Fadeev;
     end;
+  }
 
   if TestCharacters('Bobby') and CheckCharacterSet('Bobby') then
     begin
@@ -209,6 +221,12 @@ begin
       Yamoko:=CreateCharacter('Yamoko');
       aliance_forces:=aliance_forces ^ Yamoko;
     end;
+
+  if CheckCharacterSet('survivors5') then
+  begin
+       survivors5 = CreateCharacterSet('survivors5');
+       aliance_forces:=aliance_forces ^ survivors5;
+  end;
 
   DisableAllBazookers;
 

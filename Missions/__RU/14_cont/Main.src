@@ -189,7 +189,7 @@ Begin
     Gleb, Petrosyan, Lipshchin, Titov, Dolgov, Xavier, Oblukov, Kozlov, Kapitsova];
   Opice = UnitFilter (Rusove, [[F_OR, [F_CLASS, CLASS_APEMAN], [F_CLASS, CLASS_APEMAN_SOLDIER], [F_CLASS, CLASS_APEMAN_ENGINEER], [F_CLASS, CLASS_APEMAN_KAMIKAZE]]]);
   O = O diff Opice;
-  SaveCharacters (Survivors4 union O, 'Survivors4');
+  SaveCharacters (O union Survivors4, 'Survivors4');
 End;
 
 

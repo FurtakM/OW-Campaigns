@@ -380,7 +380,7 @@ var i, un;
 begin
   if human=Burlak then YouLost('Burlak');
   if human=Gossudarov then YouLost('Gossudarov');
-  if un=Masha then lost_masha:=true;
+  if human=Masha then lost_masha:=true;
   if human in straz then
   begin
     straz:=straz diff human;
