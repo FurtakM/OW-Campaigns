@@ -129,7 +129,7 @@ Function ResolveQuery(question, list_of_q);
    end;
  end;
 
-Function SecondTalk;
+Export Function SecondTalk;
  begin
    Joan_semafor= true;
    if Woman_saved > 0 then
@@ -175,15 +175,15 @@ var hlp;
    CenterOnXY(64, 99);
    WaitTask([JMM, JMM_woman], 0.5);
 
-   ChangeMissionObjectives('M1');  //
-   ingame_video= false;
-   interface_hidden= false;
-   SaveForQuickRestart;
+   //ChangeMissionObjectives('M1');  //
+   //ingame_video= false;
+   //interface_hidden= false;
+   //SaveForQuickRestart;
 
-   Wait(0$2);
+   //Wait(0$2);
 
-   RandomizeAll;
-   SecondTalk;
+   //RandomizeAll;
+   //SecondTalk;
    // Continue in end of SendHelpers in Americans1
  end;
 
