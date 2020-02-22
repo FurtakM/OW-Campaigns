@@ -830,6 +830,10 @@ var i, Un, hlp, Gamma2Comander, Alpha, New_person, Drivers, Other, Number_of_all
     begin
       Selected_unit= FindMaxSumSkill(OtherNotJMM, 0);
       OtherNotJMM= OtherNotJMM diff Selected_unit;
+
+      if GetNation(Selected_unit) <> 1 then
+         continue;
+
       All_Americans= All_americans ^ Selected_unit;
       PlaceUnitArea(Selected_unit, Center_am_b, false);
     end;
@@ -915,9 +919,11 @@ var i, Un, hlp, Gamma2Comander, Alpha, New_person, Drivers, Other, Number_of_all
       hc_attr= [10,10];
 
       hc_name= 'Kovaljuk';
+      hc_gallery := 'ru';
+      hc_face_number := 6;
       Kovaljuk= CreateHuman;
-      hc_name= '';
 
+      hc_name= '';
       hc_gallery= '';
     end;
 
@@ -1407,13 +1413,10 @@ Function Init;
  end;
 
 STARTING
-
- begin
-   Debug_Constant= false;
-   Init;
-   CenterNowOnXY(135, 194);
-   Wait(0$2);
-//   TheLastArabianAttack;
-//   Wait(5$0);
-   CenterJMM= True;
- end;
+begin
+CenterNowOnXY(123,190);
+Debug_Constant= false;
+InGameOn;
+Init;
+CenterJMM= True;
+end;
