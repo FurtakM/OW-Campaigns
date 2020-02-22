@@ -32,17 +32,11 @@ EVERY 0$1 MARKED 2 DO
  end;
 
 // EOM - JMM is death
-EVERY 0$5 TRIGGER IsDead(JMM) do
+EVERY 0$5 TRIGGER IsDead(JMM) or not IsPlaced(JMM) do
  begin
   YouLost('JMM');
   ExitGame;
  end;
-
-On UnitKamikazed(un) do
-begin
-if un = JMM then
-   YouLost('JMM');
-End;
 
 // MARKED 13 - Matherlod_Contamined1;
 EVERY 0$5 MARKED 13 DO

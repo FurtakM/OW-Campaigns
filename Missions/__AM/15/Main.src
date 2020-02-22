@@ -226,9 +226,13 @@ EXPORT Alliance_reg_id;
 EXPORT Alliance_def_id;
 EXPORT Alliance_wood_reg_id;
 
+EXPORT Powell_angry_counter, Powell_angry_time;
+
 
 Function Set_variables;
  begin
+  Powell_angry_counter := 0;
+  Powell_angry_time := 0$00;
   CenterJMM= false;
   End_of_journey= false;
   Skip= false;
