@@ -190,6 +190,8 @@ var Named_without_woman, Un, Uns, i,
 
    SaveForQuickRestart;
 
+   enable(First_JMM_Task);   // We have to chack if the JMM stay on its hill
+
    Skip := true;
    CenterJMM = false;
 
@@ -204,8 +206,6 @@ var Named_without_woman, Un, Uns, i,
 
    R1_Attack_Continues= true;
    enable(R1_attack);        // Start Russian1 attacks   //
-   enable(First_JMM_Task);   // We have to chack if the JMM stay on its hill
-
 
   // Report
   Possible_Units= 0;
@@ -1145,7 +1145,7 @@ enable;
 for i in FilterUnitsExceptArea(JMM_Hill, [[f_side, 1], [f_type, unit_human]]) do
     ComMoveXY(i, 68, 107);
 
-if (Powell_angry_time + 0$15) < tick then
+if (Powell_angry_time + 0$06) < tick then
    begin
    Powell_angry_counter := Powell_angry_counter + 1;
    Powell_angry_time := tick;
