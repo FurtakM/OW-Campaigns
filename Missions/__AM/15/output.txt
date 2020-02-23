@@ -13612,40 +13612,40 @@
 22603: CALL_OW 86
 // SaveForQuickRestart ;
 22607: CALL_OW 22
-// Skip := true ;
-22611: LD_ADDR_EXP 186
-22615: PUSH
-22616: LD_INT 1
-22618: ST_TO_ADDR
-// CenterJMM = false ;
-22619: LD_ADDR_EXP 68
-22623: PUSH
-22624: LD_INT 0
-22626: ST_TO_ADDR
-// Wait ( 0 0$2 ) ;
-22627: LD_INT 70
-22629: PPUSH
-22630: CALL_OW 67
-// RandomizeAll ;
-22634: CALL_OW 11
-// SecondTalk ;
-22638: CALL 12639 0 0
-// StartRussianBase ;
-22642: CALL 41756 0 0
-// StartAllianceBase ;
-22646: CALL 50157 0 0
-// StartArabianBase ;
-22650: CALL 31188 0 0
-// R1_Attack_Continues = true ;
-22654: LD_ADDR_EXP 196
-22658: PUSH
-22659: LD_INT 1
-22661: ST_TO_ADDR
-// enable ( R1_attack ) ;
-22662: LD_EXP 140
-22666: ENABLE_MARKED
 // enable ( First_JMM_Task ) ;
-22667: LD_EXP 137
+22611: LD_EXP 137
+22615: ENABLE_MARKED
+// Skip := true ;
+22616: LD_ADDR_EXP 186
+22620: PUSH
+22621: LD_INT 1
+22623: ST_TO_ADDR
+// CenterJMM = false ;
+22624: LD_ADDR_EXP 68
+22628: PUSH
+22629: LD_INT 0
+22631: ST_TO_ADDR
+// Wait ( 0 0$2 ) ;
+22632: LD_INT 70
+22634: PPUSH
+22635: CALL_OW 67
+// RandomizeAll ;
+22639: CALL_OW 11
+// SecondTalk ;
+22643: CALL 12639 0 0
+// StartRussianBase ;
+22647: CALL 41756 0 0
+// StartAllianceBase ;
+22651: CALL 50157 0 0
+// StartArabianBase ;
+22655: CALL 31188 0 0
+// R1_Attack_Continues = true ;
+22659: LD_ADDR_EXP 196
+22663: PUSH
+22664: LD_INT 1
+22666: ST_TO_ADDR
+// enable ( R1_attack ) ;
+22667: LD_EXP 140
 22671: ENABLE_MARKED
 // Possible_Units = 0 ;
 22672: LD_ADDR_VAR 0 6
@@ -18204,10 +18204,10 @@
 30807: GO 30789
 30809: POP
 30810: POP
-// if ( Powell_angry_time + 0 0$15 ) < tick then
+// if ( Powell_angry_time + 0 0$06 ) < tick then
 30811: LD_EXP 251
 30815: PUSH
-30816: LD_INT 525
+30816: LD_INT 210
 30818: PLUS
 30819: PUSH
 30820: LD_OWVAR 1
