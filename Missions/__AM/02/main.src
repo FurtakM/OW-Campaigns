@@ -196,6 +196,15 @@ FUNCTION Init;
     Lives_Bobby= LoadVariable('lives_bobby', 1000);
     Lives_Cyrus= LoadVariable('lives_cyrus', 1000);
 
+    if Lives_JMM < 250 then
+       Lives_JMM := 250;
+
+    if Lives_Bobby < 250 then
+       Lives_Bobby := 250;
+
+    if Lives_Cyrus < 250 then
+       Lives_Cyrus := 250;
+
     // John Macmillan
     if testing then
          begin
