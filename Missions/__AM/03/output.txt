@@ -1101,11 +1101,11 @@
 1856: NEG
 1857: PPUSH
 1858: CALL_OW 101
-// if TICK > time_to_attack then
+// if TICK < time_to_attack then
 1862: LD_OWVAR 1
 1866: PUSH
 1867: LD_EXP 41
-1871: GREATER
+1871: LESS
 1872: IFFALSE 1878
 // SA_OneStepAhead ;
 1874: CALL 14989 0 0
