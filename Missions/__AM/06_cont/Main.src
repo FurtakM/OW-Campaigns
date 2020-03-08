@@ -57,6 +57,8 @@ export Gamma2Commander;
 export NavicLidi;
 export KurtTryToEscape;
 
+Export noBodyLeft;
+
 
 //------------------------------------------------------------------------------------------------------
 //-------- Main Starting Block -------------------------------------------------------------------------
@@ -69,6 +71,8 @@ begin
 
     map_size_x:=100;
     map_size_y:=100;
+
+    noBodyLeft := true;
 
     prepare_sides;
     load_characters;
@@ -527,6 +531,9 @@ medal3 := false;
 *}    NavicLidi:=UnitFilter(NavicLidi, [f_ok]);
       AddMedal('people', NavicLidi>=3);
       medal2 := NavicLidi >= 3;
+
+      if noBodyLeft then
+         SA_NoBodyLeft;
 
 {* remote
 + Dálkové ovládání.

@@ -1027,12 +1027,12 @@
 1624: LD_INT 1
 1626: PPUSH
 1627: CALL_OW 101
-// end ; if scholtze_saved and IsOk ( schol ) and GetSide ( schol ) = 3 then
+// end ; if scholtze_saved and IsLive ( schol ) and GetSide ( schol ) = 3 then
 1631: LD_EXP 37
 1635: PUSH
 1636: LD_EXP 33
 1640: PPUSH
-1641: CALL_OW 302
+1641: CALL_OW 300
 1645: AND
 1646: PUSH
 1647: LD_EXP 33

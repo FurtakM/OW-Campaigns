@@ -1,0 +1,20 @@
+Export Function SA_Rambo;
+begin
+SetAchievement('ACH_RAM');
+End;
+
+Export Function SA_MotDiv;
+begin
+SetAchievement('ACH_DIV');
+End;
+
+Export Function SA_OneStepAhead;
+begin
+SetAchievement('ACH_OSA');
+End;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 3], [f_btype, b_warehouse]]) = 0 do
+SA_Rambo;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_type, unit_vehicle], [f_nation, nation_american]]) >= 6 do
+SA_MotDiv;

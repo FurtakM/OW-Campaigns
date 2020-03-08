@@ -455,6 +455,9 @@ var Uns, Un;
        Wait(0$2);
        Say(AmR1, 'DFb-Sol1-1a');
      end;
+
+   if IsDead(AmR1) then
+      SA_Negligence;
  end;
 
 
@@ -919,6 +922,7 @@ EVERY 0$1 TRIGGER escape_flag do
         escape_flag=false;
         Time_of_attack=Time_of_attack+1$0;
         Attack_canceled= true;
+        SA_NothingHere;
        end;
 
   if escape_flag=false and IsOk(AmME1) then

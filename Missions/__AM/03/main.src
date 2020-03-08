@@ -289,6 +289,9 @@ begin
   else
     AddMedal('Solar2',-1);
 
+  if TICK > time_to_attack then
+     SA_OneStepAhead;
+
   SA_EndMission(1, 3, medal1, medal2, medal3);
 
   GiveMedals('Main');
