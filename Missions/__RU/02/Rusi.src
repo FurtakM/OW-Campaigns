@@ -376,7 +376,7 @@ EXPORT function posli_rusi_zpet_out_base;
 VAR pom;
 begin
   pom=FilterUnitsInArea(Out_base,[[f_side,You]]);
-  ComMoveToArea(pom,RU2_base);
+  ComMoveXY(pom, 66, 91);
 {  pom=FilterUnitsInArea(OB1,[[f_side,You]]);
   if pom>0 then ComMoveXY(pom,54,87);
   pom=FilterUnitsInArea(OB2,[[f_side,You]]);

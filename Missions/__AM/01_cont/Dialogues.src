@@ -199,6 +199,7 @@ every 0$1 trigger IsInArea(JMM,rmessage) do
         ComRemember([rveh2,rveh3,rveh4,rveh5]);
         ComAgressiveMove([rveh2,rveh3,rveh4,rveh5],spotx,spoty);
         DialogueOff;
+        SA_ChatAndRun;
         ChangeMissionObjectives('M3b');
         SetAreaMapShow(Shw1,1);
         repeat

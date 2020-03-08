@@ -194,7 +194,10 @@ begin
   visit_base:=true;
   InGameOn;
   if IsOK(Joan) then
-    dist:=1
+     begin
+     dist := 1;
+     SA_HelpJoan;
+     end
   else
     dist:=3;
 

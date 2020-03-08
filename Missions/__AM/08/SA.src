@@ -11,3 +11,13 @@ Every 0$2+0$0.1 do
 
           enable;
      end;
+
+Export Function SA_WithoutHelp;
+begin
+SetAchievement('ACH_IGT');
+End;
+
+Export Function SA_Rush;
+begin
+SetAchievement('ACH_RUS');
+End;

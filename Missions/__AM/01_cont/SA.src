@@ -2,3 +2,18 @@ Export Function SA_NoOneSave;
 begin
 SetAchievement('ACH_EMH');
 End;
+
+Export Function SA_CaptureTank;
+begin
+SetAchievement('ACH_CMD');
+End;
+
+Export Function SA_ChatAndRun;
+begin
+SetAchievement('ACH_CAR');
+End;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 1], [f_type, unit_vehicle]]) do
+begin
+SA_CaptureTank;
+End;

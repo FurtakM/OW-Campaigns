@@ -134,7 +134,7 @@ begin
      AddMedal('PreventReinforcements',1);
      end;
 
-  if scholtze_saved and IsOk(schol) and GetSide(schol) = 3 then
+  if scholtze_saved and IsLive(schol) and GetSide(schol) = 3 then
      begin
      AddMedal('Scholtze', 1);
      medal2 := true;

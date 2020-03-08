@@ -404,6 +404,9 @@ begin
 end;
 export function Vyhra;
 begin
+    if tick <= 15$00 then
+       SA_LikeAWind;
+
     Disable(0);
     SetMedals;
     GiveMedals('Main');

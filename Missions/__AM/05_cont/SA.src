@@ -17,5 +17,12 @@ begin
 SetAchievement('ACH_FDA');
 End;
 
+Export Function SA_LikeAWind;
+begin
+SetAchievement('ACH_WND');
+End;
+
+
 Every 0$2 trigger FilterAllUnits([[f_side, 1],[f_or, [f_class,class_apeman],[f_class,class_apeman_engineer]]]) >= apemans_amount_on_start do
 SetAchievement('ACH_FDA');
+

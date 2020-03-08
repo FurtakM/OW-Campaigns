@@ -27,8 +27,18 @@ begin
 SetAchievement('ACH_CAP');
 end;
 
-
 Export function SA_CratesGathered(count_crates);
 begin
 SetAchievementEX('ACH_CAP', count_crates);
 End;
+
+Export function SA_NobodyLeft;
+begin
+SetAchievement('ACH_NLB');
+End;
+
+Export function SA_JoanDead;
+begin
+SetAchievement('ACH_IFL');
+End;
+

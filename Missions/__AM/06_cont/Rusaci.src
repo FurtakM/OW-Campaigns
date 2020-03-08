@@ -506,6 +506,12 @@ begin
         exit;
         end;
 
+     if un = Joan then
+        SA_JoanDead;
+
+     if un in NavicLidi then
+        noBodyLeft := false;
+
      sol:=sol diff un;
      eng:=eng diff un;
      mec:=mec diff un;

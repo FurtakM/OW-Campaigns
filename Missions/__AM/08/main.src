@@ -1594,6 +1594,13 @@ begin
   wait(0$0.5);
   if (totalatt*5)<countdist then youlost('Dismissed')
   else begin
+
+    if tick < 12$00 then
+       SA_Rush;
+
+    if FilterAllUnits([f_side, 4]) = 0 then
+       SA_WithoutHelp;
+
     addmedal('nothing1',1);
     addmedal('nothing2',1);
     addmedal('perfect',1);
