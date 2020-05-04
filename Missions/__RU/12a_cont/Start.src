@@ -106,14 +106,14 @@ end;
 
 function set_difficulty;
 begin
-  pursuers:=[2,3,4][difficulty];
+  pursuers:=[2,3,3][difficulty];
   pursuers_base:=[4,3,2][difficulty];
   pursuers_skill:=[3,4,5][difficulty];
 
-  pausa:=[0$50,0$40,0$30][difficulty];
+  pausa:=[0$50,0$45,0$40][difficulty];
   time:=[12$0,10$0,8$0][difficulty];
   maxaut:=[4,6,9][difficulty];
-  straz_start:=[7$0,4$0,1$0][difficulty];
+  straz_start:=[7$0,4$0,2$0][difficulty];
 
   tick_tech_sib3:=[60$0,50$0,40$0][difficulty];
   tick_tech_st3:=[55$0,45$0,35$0][difficulty];
@@ -208,8 +208,13 @@ begin
 
   possible:=all_possible diff scientists;
 
+  // Serpent fix
+  if scientists > 5 then
+     for i = scientists downto 5 do
+         scientists := Delete(scientists, i);
+
   for un in scientists do
-    PlaceHumanInUnit(un,2); // 2 => number of placed lab in UnitList
+    PlaceHumanInUnit(un, 2); // 2 => number of placed lab in UnitList
 
 // ***************************** New **********************************
   new:=[];
@@ -294,7 +299,6 @@ begin
       vc_weapon:=veh[4];
       RealMasha:=true;
       Masha:=CreateVehicle;
-      SetMark(Masha,1);
     end
     else
     begin
@@ -323,6 +327,8 @@ begin
     RealMasha:=false;
     Masha:=CreateVehicle;
   end;
+
+  SetMark(Masha,1);
 
   if GetEngine(Masha)<>engine_siberite then
     SetFuel(Masha,Rand(70,95));
@@ -376,6 +382,9 @@ begin
   SaveForQuickRestart;
 
   ChangeMissionObjectives('MRun');
+
+  ComMoveXY(Burlak, 39, 67);
+
   ChangeSideFog(you,you);
   SetSide(Burlak,you);
   SetSide(Masha,you);
@@ -413,8 +422,8 @@ begin
       end;
   end;
 
-  ComMoveXY(Masha,40,69);
-  Wait(1$0);
+  Wait(1$20);
+
   for i:=1 to pursuers_base do
   begin
     if NOT PlaceUnitArea(pursuer[i],EnterArea,false) then

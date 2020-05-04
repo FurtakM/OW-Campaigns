@@ -52,7 +52,7 @@ begin
     begin
       uc_side:=rus;
       uc_nation:=nation_russian;
-      PrepareHuman(sex_male,class_bazooker,7+difficulty);
+      PrepareHuman(sex_male,class_bazooker, 4+difficulty);
       hc_name:='';
       bazukr:=CreateHuman;
       AddMcUnitsSpec(rus_mcrep_id,bazukr,1);
