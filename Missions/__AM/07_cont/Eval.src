@@ -39,32 +39,26 @@ EVERY 0$1 MARKED 7 DO
 // MARKED 5 - End_of_m
 // Number of all buildings is 56
 EVERY 0$1 MARKED 5 Do
-var Remaining_russians_buildings, medal1, medal2, medal3;
+var Remaining_russians_buildings;
  begin
-   medal1 := false;
-   medal2 := false;
-   medal3 := false;
-
    Remaining_russians_buildings= FilterAllUnits([[f_side, russians],
                                  [f_type,unit_building], [f_ok]]);
 
    if Remaining_russians_buildings < 15 then
      begin
-       medal1 := true;
+       SA_EndMission(1, 7, true, true, true);
        AddMedal('Destroy3',1);
        AddMedal('Destroy3',1);
        AddMedal('Destroy3',1);
      end
    else if Remaining_russians_buildings < 25 then
      begin
-       medal2 := true;
        AddMedal('Destroy2',2);
        AddMedal('Destroy2',2);
        AddMedal('Destroy3',-1);
      end
    else if Remaining_russians_buildings < 35 then
      begin
-       medal3 := true;
        AddMedal('Destroy1',3);
        AddMedal('Destroy2',-1);
        AddMedal('Destroy3',-1);
@@ -75,8 +69,6 @@ var Remaining_russians_buildings, medal1, medal2, medal3;
        AddMedal('Destroy2', -1);
        AddMedal('Destroy3', -1);
      end;
-
-   SA_EndMission(1, 7, medal1, medal2, medal3);
 
    GiveMedals('MAIN');
    RewardPeople(FilterAllUnits([[f_ok],[f_side,americans],[f_type,unit_human]]));
