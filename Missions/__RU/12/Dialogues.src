@@ -228,11 +228,18 @@ begin
      repeat
        h:=RandHexArea(kam_telp,false);
      until HexInfo(h[1],h[2])=0;
-     TeleportExit(telp1,h[1],h[2]);
+
+     if IsOk(telp1) then
+        TeleportExit(telp1,h[1],h[2]);
 
      ComExitVehicle(Platonov);
      AddComExitBuilding(Platonov);
-     AddComEnterUnit(Platonov, telp1);
+
+     if IsOk(telp1) then
+        AddComEnterUnit(Platonov, telp1)
+     else
+        AddComMoveXY(Platonov, 134, 97);
+
      for i:=1 to 5 do
        if ai_s[i]=kam_zdrha then 
          kam_zdrha_i:=i;

@@ -74,11 +74,11 @@ begin
       if GetLives(i)<hranice_umirani then
         SetLives(i, hranice_umirani+50);
     InGameOn;
-    while UnitFilter(theirs, [[f_inside]]) diff hlavouni do begin
+    // while UnitFilter(theirs, [[f_inside]]) diff hlavouni do begin
       ComExitBuilding(theirs);
       AddComExitVehicle(theirs);
       wait(0$2);
-    end;
+    // end;
     InGameOff;
     if first then begin
        SetTech(tech_SibLoc, you, state_researched);
