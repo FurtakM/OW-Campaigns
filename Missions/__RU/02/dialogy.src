@@ -315,6 +315,7 @@ end;
 EVERY 0$2 TRIGGER stav=4 and test_is_auto_in_area DO
 VAR auto;
 VAR ridic;
+var mechs, i;
 begin
   disable(991);         // dialog bez vozidla uz nemuze probehnout
   InGameOn;
@@ -323,10 +324,15 @@ begin
   ridic=IsDrivenBy(auto);
   ComMoveXY(ridic,117,101);
   CenterOnUnits([auto]);
-  SetFuel([auto], 100);
   Say(kurin,'D10-Kur-1');
   Say(bel,'D10-Bel-1');
-  ComExitVehicle(ridic);
+
+  repeat
+   ComExitVehicle(ridic);
+   wait(0$1);
+  until not IsInUnit(ridic);
+
+  SetFuel(auto, 100);
   AddComHold(ridic);
   wait(0$1);
   if BELKOV_MRTVY then
@@ -339,7 +345,7 @@ begin
   if BELKOV_MRTVY then Say(kurin,'D10-Kur-2a')
                   else Say(kurin,'D10-Kur-2');
   ComExitBuilding(bel);
-  while IsInUnit(ridic)<>0 do
+  while IsInUnit(ridic) do
     begin
       wait(0$1);
       ComExitVehicle(ridic);
@@ -356,9 +362,32 @@ begin
   Say(kurin,'D10-Kur-2b');
   ridic_1_auta=ridic;
   ChangeMissionObjectives('M4');
+  ComMoveXY(ridic_1_auta, 68, 92);
+
+  wait(0$2);
+
   objReturn:=True;
   stav=5;
   InGameOff;
+
+  // serpent fix
+  // repair vehicle if hp < 1000
+  if FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]], [f_type, unit_vehicle]]) then
+     begin
+     mechs := FilterAllUnits([[f_side, 6], [f_class, 3]]);
+
+     ComExitBuilding(mechs);
+
+     for i in FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]], [f_type, unit_vehicle]]) do
+         AddComRepairVehicle(mechs, i);
+
+     repeat
+      wait(0$1);
+     until FilterAllUnits([[f_side, 6], [f_not, [f_lives, 1000]], [f_type, unit_vehicle]]) = 0;
+
+     AddComEnterUnit(mechs, RU1_tov);
+     end;
+
   rusi_cesta_na_sever;
   enable(992);
 end;
@@ -945,6 +974,11 @@ EVERY 0$1 TRIGGER konstanta_utoceni>=10 DO
 begin
   konec_mise_utok;
 end;
+
+// serpent fix
+// Attack with oil barrels bug
+Every 0$1 trigger FilterAllUnits([[f_side, 6], [f_type, unit_building], [f_not, [f_lives, 999]]]) or GetLives(kurin) < 999 do
+konec_mise_utok;
 
 {
 // query shora o utoku
