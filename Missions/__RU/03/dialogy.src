@@ -614,7 +614,7 @@ end;
 
 // serpent fix
 // attack with oil barrels
-Every 0$1 trigger stav_omikron < 6 and not FilterAllUnits([f_side, 2]) and (FilterAllUnits([[f_side, 6], [f_type, unit_building], [f_not, [f_lives, 999]]]) or GetLives(kur) < 999) do
+Every 0$1 trigger stav_omikron < 6 and not FilterAllUnits([f_side, 2]) and (FilterAllUnits([[f_side, 6], [f_type, unit_building], [f_not, [f_constructed]], [f_not, [f_lives, 999]]]) or GetLives(kur) < 999) do
 konec_mise_utok; 
 
 // dialog chcipnuti schotlzeho
