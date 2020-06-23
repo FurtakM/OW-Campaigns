@@ -7050,7 +7050,7 @@
 12106: CALL_OW 94
 // dialogueoff ;
 12110: CALL_OW 7
-// SA_EndMission ( 3 , 11 , chcipli > 4 , rychlik > 0 , telepused > 0 ) ;
+// SA_EndMission ( 3 , 11 , chcipli <= 4 , rychlik > 0 , telepused > 0 ) ;
 12114: LD_INT 3
 12116: PPUSH
 12117: LD_INT 11
@@ -7058,7 +7058,7 @@
 12120: LD_EXP 95
 12124: PUSH
 12125: LD_INT 4
-12127: GREATER
+12127: LESSEQUAL
 12128: PPUSH
 12129: LD_EXP 98
 12133: PUSH

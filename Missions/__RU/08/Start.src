@@ -544,21 +544,24 @@ begin
     else
       if tick < speed then
          begin
-         medal2 := true;
+         medal1 := true;
          AddMedal('Speed', 1); // Speed
          end
       else AddMedal('Speed',-1);
 
     AddMedal('ArtisticImpression',1); //BeautifulBase
-    medal3 := true;
+    medal2 := true;
 
-    SA_EndMission(3, 8, medal1, medal2, medal3);
+    
 
     if (0+player_units)<=11 then  // Favourite Commander
       {Lost Some Man} AddMedal('FavouriteCommander',-1)
     else
       if FreeTimeGranted AND HuntingAccepted AND GalleryBuild then
-          {Lucky People} AddMedal('FavouriteCommander',1)
+         begin
+         medal3 := true;
+          {Lucky People} AddMedal('FavouriteCommander',1);
+         end
       else
         if FreeTimeGranted OR HuntingAccepted OR GalleryBuild then
           {Favouritism} AddMedal('FavouriteCommander',-3)
@@ -566,6 +569,8 @@ begin
 
     if MortarDone and not HeikeDismissed then
          SA_OnMissionCompleteAndArBarracksBuildAndNotHeikeHandover;
+
+    SA_EndMission(3, 8, medal1, medal2, medal3);
 
     GiveMedals('Main');
        
