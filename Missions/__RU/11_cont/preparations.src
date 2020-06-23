@@ -900,7 +900,7 @@ begin
   sayradio(platonov,'DReturn-Pla-2');
   dialogueoff;
 
-  SA_EndMission(3, 11, chcipli > 4, rychlik > 0, telepused > 0);
+  SA_EndMission(3, 11, chcipli <= 4, rychlik > 0, telepused > 0);
                               
   if chcipli>4 then addmedal('LittleLosses',-1)
   else addmedal('LittleLosses',1);
