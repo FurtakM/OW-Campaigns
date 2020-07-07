@@ -487,7 +487,7 @@ begin
   else
     AddMedal('LittleLosses',1);
 
-  SA_EndMission(4, 5, scientists_dead = 0, matros > 100, killed_russians >= 5 or rus_building_destroyed >= 2);
+  SA_EndMission(4, 5, scientists_dead = 0, matros > 100, not (killed_russians >= 5 or rus_building_destroyed >= 2));
 
   GiveMedals('Main');
 
