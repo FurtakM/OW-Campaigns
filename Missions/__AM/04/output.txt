@@ -1864,15 +1864,15 @@
 3125: LD_INT 14
 3127: PPUSH
 3128: CALL_OW 332
-// brownIsDead := true ;
+// brownIsDead := false ;
 3132: LD_ADDR_EXP 43
 3136: PUSH
-3137: LD_INT 1
+3137: LD_INT 0
 3139: ST_TO_ADDR
-// donaldsonIsDead := true ;
+// donaldsonIsDead := false ;
 3140: LD_ADDR_EXP 44
 3144: PUSH
-3145: LD_INT 1
+3145: LD_INT 0
 3147: ST_TO_ADDR
 // rubbunk1 = 0 ;
 3148: LD_ADDR_EXP 15
