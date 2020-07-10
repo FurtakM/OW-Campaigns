@@ -1014,10 +1014,10 @@ begin
 if un = John then
    YouLost('JMM');
 
-if amhsold1 then
+if un = amhsold1 then
    brownIsDead := true;
 
-if lucyd then
+if un = lucyd then
    donaldsonIsDead := true;
 End;
 
