@@ -1,5 +1,5 @@
 every 0$1 marked 301 do // Asking about Freetime
-var filter,x,y,d,lidi;
+var filter,x,y,d,lidi, i, tmp;
 begin
   FreetimeAsked:=true;
   if NOT FreeTimeGranted AND (IsOK(Petrovova) OR IsOK(Kirilenkova) OR IsOK(Kapitsova)) AND (IsOK(Kuzmov) OR IsOK(Gnyevko) OR IsOK(Titov) OR IsOK(Oblukov)) then
@@ -10,9 +10,26 @@ begin
       begin
         FreeTimeGranted:=true;
         D_QrFreeTime1;
-        ComExitVehicle([FreeMan,FreeWoman]);
+
+        for i in [FreeMan, FreeWoman] do
+            begin
+            tmp := IsInUnit(i);
+
+            if not tmp then
+               continue;
+
+            case GetType(tmp) of
+                 unit_vehicle: ComExitVehicle(i);
+                 unit_building: ComExitBuilding(i);
+            end;
+            end;
+
         SetSide([FreeMan,FreeWoman],ally);
-        ComMoveXY([FreeMan,FreeWoman],115,32);
+
+        wait(0$2);
+
+        AddComMoveXY([FreeMan,FreeWoman],115,32);
+
         repeat
           Wait(0$1);
           lidi:=FilterUnitsInArea(HandOverEnterArea,[f_side,ally]);
