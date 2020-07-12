@@ -331,6 +331,7 @@ end;
 
 // Dialogue Stevens (when somebody goes North to tame Apemen; American scientist materialises)
 every 0$5 + 0$4 trigger dialogy and not byl_stevens and depot and (FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian]]) diff [Burlak,Petrovova,Gleb]) do
+var tmp;
 begin
   if IsDead(Pty) then
    Pty:=Dol;
@@ -340,7 +341,15 @@ begin
   if Pty in FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian]]) then
     DStevens(Pty)
   else
-    DStevens(FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian]])[1]);
+    begin
+    tmp := FilterUnitsInArea(apemans_site, [[f_side,you],[f_nation,nation_russian], [f_sex, sex_male]]) diff Burlak;
+
+    if not tmp then
+       tmp := FilterAllUnits([[f_side,you], [f_nation,nation_russian], [f_sex, sex_male]]) diff Burlak;
+
+    if tmp then
+       DStevens(tmp[1]);
+    end;
 end;
 every 0$5 + 0$4 trigger dialogy and not byl_stevens and (FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_type,unit_vehicle]])>3) do
 begin
@@ -353,7 +362,7 @@ begin
   if Pty in FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_nation,nation_russian]]) then
     DStevens(Pty)
   else
-    DStevens(FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_nation,nation_russian]])[1]);
+    DStevens(FilterUnitsInArea(uz_jedou_dolem, [[f_side,you],[f_nation,nation_russian],[f_sex, sex_male]])[1]);
 end;
 export vespod, vespod2, byl_stevens;
 function DStevens(who);
@@ -424,7 +433,8 @@ var stv_depot;
 // Block change Stevens class
 Every 1 trigger GetSide(Huck) = 3 or GetSide(Huck) = 6 do
 begin
-     if not GetClass(Huck) = 4 then SetClass(Huck, 4);
+if not GetClass(Huck) = 4 then
+   SetClass(Huck, 4);
 enable;
 end;
 
@@ -573,8 +583,12 @@ begin
   end;
 
 end;
+
+Every 1 trigger IsInUnit(Huck) do
+StevensInDepot := true;
+
 // Dialogue Release (If the player sends Stevens out)
-every 0$3 trigger dialogy and byl_stevens and IsOK(Huck) and StevensStayInBase = 1 and not IsInUnit(Huck) do
+every 0$3 trigger dialogy and byl_stevens and StevensInDepot and IsOK(Huck) and GetSide(Huck) = 3 and StevensStayInBase = 1 and not IsInUnit(Huck) do
 var qr;           
 begin
    DialogueOn;

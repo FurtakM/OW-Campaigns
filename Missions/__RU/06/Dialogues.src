@@ -438,25 +438,49 @@ $ DPartyAttacked-Glb-1
 $ DPartyAttacked-Som1-1
 - [otherwise] I don't know if it was a good idea to split, comrade commander.
 }
-every 0$2 trigger false do
-var a;
+every 0$2 trigger FilterUnitsInArea(to_north, [[f_side, you], [f_nation, 3], [f_or, [f_distxy, 67, 37, 10], [f_distxy, 83, 38, 10]]]) do
 begin
-   a:=FilterHumansInArea(to_north, [f_side,you]);
-   if UnitFilter(a, [f_or,[f_distxy, 67,37, 10],[f_distxy, 83,38, 10]]) then
-      DPartyAttacked
-   else
-      enable;
+DPartyAttacked;
 end;
+
 export function DPartyAttacked;
-var who, who2;
+var who, un, i, attc;
 begin
+   uc_side := 1;
+   uc_nation := 1;
+
+   attc := [];
+
+   for i = 1 to [2, 3, 3][Difficulty] do
+       begin
+       PrepareSoldier(false, [3, 4, 5][Difficulty]);
+       un := CreateHuman;
+       PlaceUnitXYR(un, 84, 35, 3, false);
+       attc := Insert(attc, 1, un);
+       end;
+
+   ComAgressiveMove(attc, 80, 46);
+
+   wait(0$2);
+
    DialogueOn;
-   who:=WhoSayAny(donttalk, you, sex_male, 0, 1);///////////////////ma byt prepaden///////////////////////
-   who2:=WhoSayAny(donttalk, you, sex_male, 0, 2);
-          Say(who, 'DPartyAttacked-RSol1-1');
-   if not Say(Glb, 'DPartyAttacked-Glb-1') then
-          Say(who2, 'DPartyAttacked-RSol2-1');
+   PlaceSeeing(75, 37, you, -10);
+   CenterNowOnXY(75, 37);
+
+   who := FilterAllUnits([[f_side, you], [f_sex, sex_male], [f_nation, nation_russian]]) diff [Burlak, Gleb];
+
+   if who then
+      Say(who[1], 'DPartyAttacked-RSol1-1');
+
+   if IsOk(Glb) then
+      Say(Glb, 'DPartyAttacked-Glb-1');
+
+   if who > 1 and GetSide(RuDepot) = 3 then
+     Say(who[2], 'DPartyAttacked-RSol2-1');
+
    DialogueOff;
+
+   RemoveSeeing(75, 37, you);
 end;
 
 

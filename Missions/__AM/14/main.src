@@ -239,38 +239,36 @@ begin
     end;
 
   kappa_saved:=false;
-  //if IsOK(us_depot) then
- //   kappa_saved:=true;
 
   SaveCharacters(MacMillan,'JMM');
 
   if not visit_base then
     KillUnit(survivor);
+
     case who_survive of
-  1: SaveCharacters(Joan,'Joan');
-  2: SaveCharacters(Lisa,'Lisa');
-  3: SaveCharacters(Anezka,'Coonie');
+    1: SaveCharacters(Joan,'Joan');
+    2: SaveCharacters(Lisa,'Lisa');
+    3: SaveCharacters(Anezka,'Coonie');
     end;
+
   if GetLives(survivor)>250 and fastEscape = 0 then
     SaveVariable(IsLive(survivor),'woman_saved');
 
-
-  if [GetSide(survivor) = 4 or IsDead(survivor)] and FilterAllUnits([[f_side, 3], [f_type, unit_human], [f_ok]]) > 0 and FilterAllUnits([[f_side, 1], [f_type, unit_human]]) = 1 then
-      kappa_saved = false;
-
-  if GetDistUnits(IsInUnit(survivor), IsInUnit(Macmillan)) < 15 then kappa_saved = true;
+  kappa_saved = russians_eliminated and FilterAllUnits([[f_side, 1], [f_type, unit_building]]);
 
   SaveVariable(kappa_saved,'kappa_saved');
   SaveVariable(visit_base,'kappa_delayed');
 
-  if GetLives(survivor)>250 and fastEscape = 0 then SaveVariable((visit_base and IsOK(survivor)),'woman_alive');
-  SaveVariable(who_survive,'woman_in_am14');
+  if GetLives(survivor) > 250 and fastEscape = 0 then
+     SaveVariable((visit_base and IsOK(survivor)),'woman_alive');
+
+  SaveVariable(who_survive, 'woman_in_am14');
 
   if not russians_eliminated then
-    begin
-      SaveVariable(veh_jmm,'veh_jmm');
-      SaveVariable(veh_surv,'veh_surv');
-    end;
+     begin
+     SaveVariable(veh_jmm,'veh_jmm');
+     SaveVariable(veh_surv,'veh_surv');
+     end;
 
   YouWin;
 end;
@@ -439,11 +437,6 @@ begin
       ComMoveXY(survivor,147,16);
       wait(0$1);
     until IsInArea(survivor,exit_area) or IsInArea(un, exit_area);
-
-    SaveVariable(IsLive(survivor),'woman_saved');
-    SaveVariable(IsLive(survivor),'woman_alive');
-    SaveVariable(who_survive,'woman_in_am14');
-    kappa_saved = 1;
 
     un:=IsInUnit(survivor);
     //RemoveUnit(survivor);
