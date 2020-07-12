@@ -1,7 +1,12 @@
 on UnitDestroyed(un) do
 begin
    if un = Stevens then
+      begin
       SA_KillStevens;
+
+      if not Stevens_killed then
+         Stevens_killed := true;
+      end;
    if un in rulive then
       rulive:=rulive diff un;
    if un in apemans then

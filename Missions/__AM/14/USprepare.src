@@ -5,6 +5,8 @@ export heavy_trucks,medium_trucks,light_trucks;
 export function prepare_us_base;
 var un,i;
 begin
+  SetBName(us_depot, 'deltakappa');
+
   number_us_trucks:=4;
   light_trucks:=Rand(1,(number_us_trucks div 2));
   heavy_trucks:=Rand(0,(number_us_trucks div 2));
