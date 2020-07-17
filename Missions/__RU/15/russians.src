@@ -729,12 +729,21 @@ begin
   if isok(fadeev) then say(fadeev,'DEnd-Fad-1');
   dialogueoff;
   
-  addmedal('Hero',1);
-  tmp=unitfilter(lidi^ostatni,[[f_side,ru],[f_alive]]);
-  if (0+tmp)=20 then addmedal('NoLosses',1) else addmedal('NoLosses',-1);
-  if legionmed then addmedal('Legion',1) else addmedal('Legion',-1);
+  Addmedal('Hero', 1);
 
-  SA_EndMission(3, 15, true, (0+tmp) = 20, legionmed > 0);
+  tmp := UnitFilter(lidi^ostatni, [[f_side,ru], [f_alive]]);
+
+  if tmp >= 20 then
+     Addmedal('NoLosses', 1)
+  else
+     Addmedal('NoLosses', -1);
+
+  if legionmed then
+     AddMedal('Legion', 1)
+  else
+     AddMedal('Legion', -1);
+
+  SA_EndMission(3, 15, true, tmp >= 20, legionmed > 0);
 
   SA_OnMissionComplete;
   givemedals('Main');

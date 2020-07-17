@@ -22,12 +22,13 @@ begin
   medal2 := (camp = 4 and IsOk(Burlak)) or (camp = 6 and IsOk(MacMillan));
   medal3 := GetTag(81) and GetTag(181) and GetTag(281);
 
-  AddMedal('Hero',another_campaign);
-  AddMedal('Artefact',GetTag(81) and GetTag(181) and GetTag(281));
-    case camp of
-  4: AddMedal('ReconcileBurlak',IsOK(Burlak));
-  6: AddMedal('ReconcileJMM',IsOK(MacMillan));
-    end;
+  AddMedal('Hero', another_campaign);
+  AddMedal('Artefact', GetTag(81) and GetTag(181) and GetTag(281));
+
+  case camp of
+       4: AddMedal('ReconcileBurlak', IsOK(Burlak));
+       6: AddMedal('ReconcileJMM', IsOK(MacMillan));
+  end;
 
   SA_OnMissionComplete;
   SA_EndMission(4, 4, medal1, medal2, medal3);
