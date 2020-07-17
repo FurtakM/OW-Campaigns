@@ -592,9 +592,24 @@ begin
 end;
 
 
-on buildingcomplete(b) do
-  if (getbtype(b)=b_lab)and(getnation(b)<>nation_american)and not lb1 then begin lb1=true;enable(01);end
-  else if (getbtype(b)=b_lab)and(getnation(b)=nation_american) then begin disable;enable(02);lab_build=true;end;
+On BuildingComplete(b) do
+begin
+  if (getbtype(b)=b_lab) and (getnation(b)<>nation_american) and not lb1 then
+     begin
+     lb1=true;
+     enable(01);
+     end
+  else
+   if (getbtype(b)=b_lab) and(getnation(b)=nation_american) then
+      begin
+      disable;
+      enable(02);
+      lab_build=true;
+      end;
+
+  if GetBType(b) = b_depot and GetSide(b) = 7 then
+     SetBName(b, 'freedom');
+End;
 
 every 0$1+1$45 marked 01 do
 var tmp;
@@ -732,3 +747,5 @@ begin
   say(burlak,'DQrBase#3-Bur-1');
   dialogueoff;
 end;
+
+
