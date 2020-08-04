@@ -148,10 +148,16 @@ function mission_ends;
     SA_EndMission(3, 1, medal1, medal2, medal3);
 
     AddMedal('NoEscape',1-(gladstone_escaped or soldier_escaped)-soldier_escaped*2-gladstone_escaped);
-    if GetSide(Gnyevko)<>you then
-      SetLives(Gnyevko,0);
-    if GetSide(Kirilenkova)<>you then
-      SetLives(Kirilenkova,0);
+
+    if GetSide(Gnyevko) <> you then
+       SetLives(Gnyevko, 0);
+
+    if GetSide(Kirilenkova) <> you then
+       begin
+       SA_FeedApe;
+       SetLives(Kirilenkova, 0);
+       end;
+
     AddMedal('Gnyevko',1-3*(not IsOk(Gnyevko) or not IsOk(Kirilenkova))-(not IsOk(Gnyevko) and not IsOk(Kirilenkova)));
     AddMedal('NoLosses',not losses);
 
