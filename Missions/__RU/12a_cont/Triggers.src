@@ -135,7 +135,7 @@ begin
 end;
 
 EXPORT function QueryQGO;
-var res,filter,Goss_cargo,pocet,un;
+var res,filter,Goss_cargo,pocet,un,t;
 begin
   res:=Query('QGO');
   if res=1 then
@@ -178,6 +178,18 @@ pokud se podari cargo odvezt, hra konci Loss Artefact
 
     AddComGet(Gossudarov,FindArtifact(4)[1],FindArtifact(4)[2]);
     Wait(0$5);
+
+    t := 0$50;
+
+    repeat
+     wait(0$1);
+     t := t - 0$1;
+
+     if not HasTask(Gossudarov) then
+        ComMoveXY(Gossudarov, 50, 58);
+
+    until not FilterUnitsInArea(BluekherArea, [f_weapon, ru_cargo_bay]) or not t;
+
     ComExitBuilding(scientists);
     AddComMoveXY(scientists^Gossudarov,50,58);
 
