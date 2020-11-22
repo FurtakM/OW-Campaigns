@@ -184,16 +184,14 @@ pokud se podari cargo odvezt, hra konci Loss Artefact
     repeat
      wait(0$1);
      t := t - 0$1;
+     AddComMoveXY(Gossudarov, 27, 47);
 
-     if not HasTask(Gossudarov) then
-        ComMoveXY(Gossudarov, 50, 58);
-
-    until not FilterUnitsInArea(BluekherArea, [f_weapon, ru_cargo_bay]) or not t;
+    until not FilterUnitsInArea(BluekherArea, [[f_side, 6], [f_weapon, ru_cargo_bay]]) or not t;
 
     ComExitBuilding(scientists);
-    AddComMoveXY(scientists^Gossudarov,50,58);
+    AddComMoveXY(scientists, 27, 47);
 
-    for un in scientists^Gossudarov do
+    for un in scientists do
       AddComSailEvent(un,un);
 
     player_units:=player_units union scientists union Gossudarov;
@@ -410,15 +408,19 @@ end;
 
 on SailEvent(num) do
 begin
-  if num=Gossudarov then
-    SetSide(IsInUnit(Gossudarov),you);
-  SetSide(num,you);
+SetSide(num,you);
 end;
 
 on ArtifactLoaded(un,size) do
 begin
   if GetSide(un)<>rus then Artifact_cargo:=un;
 end;
+
+Every 0$1 trigger FilterAllUnits([[f_side, 6], [f_type, unit_vehicle], [f_distxy, 27, 47, 6]]) do
+begin
+SetSide(Gossudarov, 7);
+SetSide(IsInUnit(Gossudarov), 7);
+End;
 
 
 
