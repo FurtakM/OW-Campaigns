@@ -68,6 +68,12 @@ begin
   enable;
 end;
 
+On UnitGoesToRed(un) do
+begin
+     if un = plat then
+        konec_mise_utok;
+end;
+
 on HumanDestroyed(un,side,nat,x,y,dir,sex,cl) DO
 begin
   if (side = You) then NoLosses:=False;

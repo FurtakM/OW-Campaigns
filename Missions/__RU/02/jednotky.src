@@ -150,9 +150,3 @@ begin
   PlaceUnitXYR(ah,72,28,3,false);
   result:=ah;
 end;
-
-Every 0$1 trigger GetLives(plat) < 1000 do
-begin
-enable;
-SetLives(plat, 1000);
-end;
