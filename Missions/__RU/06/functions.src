@@ -226,25 +226,51 @@ begin
 
 END;
 
-Export function AttackVehicles(side, vehicles);
-var i, j, vehiclesOK, target1, target2, seeEnemy;
+Export Function BulldozerScript;
+var bulldozer, i, path;
 begin
+if bulldozer_used then
+   exit;
 
-    if vehicles > 0 then
-        repeat
-            wait(0$1);
+bulldozer := FilterAllUnits([[f_side, 1], [f_weapon, us_bulldozer], [f_lives, 1000]]);
 
-            vehiclesOK = UnitFilter(vehicles, [f_lives, 600]);
+if not bulldozer then
+   exit;
 
-                for j in vehiclesOK do
-                begin
-                    target1 := NearestUnitToUnit(FilterAllUnits([[f_side, side]]), j);
-                    target2 := NearestUnitToUnit(FilterAllUnits([[[f_side, side], [f_or,[f_occupied], [f_type, unit_human], [f_type, unit_vehicle]]]]), j);
+if not IsDrivenBy(bulldozer[1]) then
+   exit;
 
-                    If GetDistUnits(j, target1)+8 < GetDistUnits(j, target2) then ComAttackUnit(j, target1)
-                    else ComAttackUnit(j, target2);
-                end;
+path := [ [75,55], [81,67], [79,67], [83,76], [87,80], [90,80], [42,49] ];
 
-        until vehiclesOK  = 0;
+for i in path do
+    AddComMoveXY(bulldozer[1], i[1], i[2]);
+
+bulldozer_used := true;
+End;
+
+
+Export Function AttackEvent(side, vehicles);
+var i, j, target;
+begin
+if vehicles then
+   repeat
+    wait(0$1);
+
+    vehicles := UnitFilter(vehicles, [f_lives, 600]);
+
+    if not vehicles then
+       exit;
+
+    for j in vehicles do
+        begin
+        if HasTask(j) then
+           continue;
+
+        target := NearestUnitToUnit(FilterAllUnits([[f_side, side]]), j);
+
+        if GetDistUnits(j, target) < 12 then
+           ComAttackUnit(j, target);
+        end;
+    until vehicles = 0;
 end;
 

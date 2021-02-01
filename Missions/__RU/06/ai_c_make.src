@@ -1,7 +1,7 @@
 
 var d1, d2, d3, d4, d5, d6, d7, d8, d9, d10;
 
-every 0$2 do
+every 0$1 do
 begin
    d1:=[us_heavy_tracked,engine_combustion,control_manual,us_gatling_gun];
    d2:=[us_heavy_tracked,engine_combustion,control_manual,us_double_gun];
@@ -26,7 +26,7 @@ begin
   if fact2 then fact2:=fact2[1];
   enable;
 end;
-every 0$5 trigger IsOk(fact1) and fact1 in fact and IsIdle(fact1) do
+every 0$20 trigger IsOk(fact1) and fact1 in fact and IsIdle(fact1) do
 var a, fact_attack;
 begin
    fact_attack:=FilterAllUnits([[f_side,ai],[f_control,control_remote]]);
@@ -66,7 +66,7 @@ begin
    enable;//-----------
 end;
 
-every 0$5 trigger IsOk(fact2) and fact2 in fact and IsIdle(fact2) do
+every 0$20 trigger IsOk(fact2) and fact2 in fact and IsIdle(fact2) do
 var a, fact_attack;
 begin
    fact_attack:=FilterAllUnits([[f_side,ai],[f_control,control_remote]]);

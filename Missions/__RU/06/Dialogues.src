@@ -438,8 +438,10 @@ $ DPartyAttacked-Glb-1
 $ DPartyAttacked-Som1-1
 - [otherwise] I don't know if it was a good idea to split, comrade commander.
 }
-every 0$2 trigger FilterUnitsInArea(to_north, [[f_side, you], [f_nation, 3], [f_or, [f_distxy, 67, 37, 10], [f_distxy, 83, 38, 10]]]) do
+every 0$4 trigger FilterUnitsInArea(to_north, [[f_side, you], [f_nation, 3], [f_or, [f_distxy, 67, 37, 10], [f_distxy, 83, 38, 10]]]) do
 begin
+wait(0$3);
+
 DPartyAttacked;
 end;
 
@@ -451,9 +453,9 @@ begin
 
    attc := [];
 
-   for i = 1 to [2, 3, 3][Difficulty] do
+   for i = 1 to [2, 2, 3][Difficulty] do
        begin
-       PrepareSoldier(false, [3, 4, 5][Difficulty]);
+       PrepareSoldier(false, [3, 4, 4][Difficulty]);
        un := CreateHuman;
        PlaceUnitXYR(un, 84, 35, 3, false);
        attc := Insert(attc, 1, un);
@@ -461,11 +463,11 @@ begin
 
    ComAgressiveMove(attc, 80, 46);
 
-   wait(0$2);
+   wait(0$3);
 
    DialogueOn;
-   PlaceSeeing(75, 37, you, -10);
-   CenterNowOnXY(75, 37);
+   PlaceSeeing(81, 40, you, -10);
+   CenterNowOnXY(81, 40);
 
    who := FilterAllUnits([[f_side, you], [f_sex, sex_male], [f_nation, nation_russian]]) diff [Burlak, Gleb];
 
@@ -480,7 +482,7 @@ begin
 
    DialogueOff;
 
-   RemoveSeeing(75, 37, you);
+   RemoveSeeing(81, 40, you);
 end;
 
 
