@@ -146,6 +146,12 @@ begin
       vsevolod_final_attack: begin
          f_vsevolod_final_utok;
       end;
+      300: begin
+           if tick >= [20$00, 15$00, 12$00][Difficulty] then
+              BulldozerScript;
+
+           AttackEvent(3, UnitFilter(zbytek, [f_lives, 1000]));
+           end;
    end;
 end;
 

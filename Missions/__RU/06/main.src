@@ -15,6 +15,7 @@ export b1_levels,b2_levels,b3_levels,b4_levels,b5_levels;
 export normal1_utok, normal2_utok, normal3_utok, normal4_utok, vsevolod_attack, vsevolod_final_attack;
 
 export mine_obj_completed;
+export bulldozer_used;
 
 //difficulty
 export cas_mezi_utoky;
@@ -76,11 +77,11 @@ begin
    YouLost('NoDepotNoEngineerNoLab');
 end;
 
-Every 1 trigger OvsyenkoTaken = 0 do
+{Every 1 trigger OvsyenkoTaken = 0 do
 begin
     BlockMarchNorth;
     enable;
-end;
+end;}
 
 export function VyhraResearch;
 begin
@@ -143,7 +144,7 @@ begin
    b4_levels:=[[5,7,10][d],[7,8,10][d]];
    b5_levels:=[[3,6,9][d],[3,6,9][d]];
    mcatt_difficulty:=[200,250,300][d];
-   mcdef_difficulty:=[270,350,450][d];
+   mcdef_difficulty:=[270,350,380][d];
    na_kopci_mcdef_difficulty:=[200,230,260][d];
    kolik_ma_vsevolod_casu:=[46$0, 39$0, 32$0][d];
    kolik_ma_vsevolod_mezi_utoky:=[10$0, 8$0, 5$0][d];
@@ -176,6 +177,7 @@ begin
   normal4_utok:=7004;
   vsevolod_attack:=7005;
   vsevolod_final_attack:=7006;
+  bulldozer_used := false;
 
   SetBName(RuDepot,'ovsyenko');
 

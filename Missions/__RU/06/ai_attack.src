@@ -38,7 +38,7 @@ end;
 
 //amici attacking
 export zbytek;
-every 0$10 trigger ovsyenkotaken and tick>(ovsyenkotaken+cas_prvniho_utoku) and ((tick>20$0 and attack>=3) or attack>=4) do
+every 3$00 trigger ovsyenkotaken and tick>(ovsyenkotaken+cas_prvniho_utoku) and ((tick>20$0 and attack>=3) or attack>=4) do
 var i, max;
 begin
   zbytek:=[];
@@ -54,7 +54,7 @@ begin
       3: RaiseSailEvent(normal3_utok);
       4: RaiseSailEvent(normal4_utok);
     end;
-  wait(cas_mezi_utoky);
+
   enable;
 end;
 
@@ -78,17 +78,18 @@ end;
 export function f_normal1_utok;
 var path, i;
 begin
-   path:=[[66,86],[91,95]];
-
+   path:=[[66,86],[91,95]];  
 
    find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
    find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
    wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
    wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
    ComStop(zbytek);
-   AttackVehicles(3, zbytek);
-  // for i in path do
-   //   AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   for i in path do
+       AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   RaiseSailEvent(300);
 
    if not byl_hint_PA then begin
      while not ContactTime([ai]) do
@@ -110,9 +111,11 @@ begin
    wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
    wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
    ComStop(zbytek);
-   AttackVehicles(3, zbytek);
-  // for i in path do
-     // AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   for i in path do
+       AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   RaiseSailEvent(300);
 
    if not byl_hint_PA then begin
      while not ContactTime([ai]) do
@@ -132,9 +135,11 @@ begin
    wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
    wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
    ComStop(zbytek);
-   AttackVehicles(3, zbytek);
-  // for i in path do
-    //  AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   for i in path do
+      AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   RaiseSailEvent(300);
 
    if not byl_hint_PA then begin
      while not ContactTime([ai]) do
@@ -146,17 +151,18 @@ end;
 export function f_normal4_utok;
 var path, i;
 begin
-   path:=[[38,16],[75,36],[91,95]];
-
+   path:=[[38,16],[75,36],[91,95]]; 
 
    find_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_soldier]]), false);
    find_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_side,ai],[f_class,class_mechanic]]), FilterAllUnits([[f_weapon,ar_radar]]));
    wait_for_drivers(UnitFilter(zbytek, [f_not,[f_control,control_remote]]), 0$30);
    wait_for_remotes(UnitFilter(zbytek, [[f_control,control_remote]]), FilterAllUnits([[f_weapon,ar_radar]]), 0$30);
    ComStop(zbytek);
-   AttackVehicles(3, zbytek);
-  // for i in path do
-   //   AddComAgressiveMove(zbytek, i[1],i[2]);
+   
+   for i in path do
+      AddComAgressiveMove(zbytek, i[1],i[2]);
+
+   RaiseSailEvent(300);
 
    if not byl_hint_PA then begin
      while not ContactTime([ai]) do
