@@ -317,7 +317,7 @@ end;
 
 // dobyti druhe base
 EVERY 0$3 TRIGGER GetSide(A2_dep)=You or IsDead(A2_dep) DO
-VAR sci1;
+VAR sci;
 begin
   wait(0$1);
   CreateResourcesArea(mat_artefact,5,Art_zone,false);
@@ -325,15 +325,24 @@ begin
   wait(0$1);
   DialogueOn;
   CenterOnXY(17,10);
-  pom=GetPeople(sex_male,class_scientistic,[JMM]);
-  if pom>0 then sci1=pom[1]
-           else exit;
-  Say(sci1,'D6-Sci1-1');
-  Say(JMM,'D6-JMM-1');
-  Say(sci1,'D6-Sci1-2');
-  Say(JMM,'D6-JMM-2');
+  pom = GetPeople(sex_male,class_scientistic, [JMM]);
+
+  if pom then
+     sci = pom
+  else
+     sci := FilterAllUnits([[f_side, 1], [f_sex, sex_male], [f_nation, 1]]) diff JMM;
+
+  if sci then
+     begin
+     Say(sci[1], 'D6-Sci1-1');
+     Say(JMM, 'D6-JMM-1');
+     Say(sci[1], 'D6-Sci1-2');
+     Say(JMM, 'D6-JMM-2');
+     end;
+
   DialogueOff;
   ChangeMissionObjectives('M3');
+
   RemoveSeeing(16,9,You);
   A2_dobyta=true;
 end;
