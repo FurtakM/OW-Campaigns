@@ -385,7 +385,8 @@ begin
             ComMoveToArea(Kurt, border);
             wait(0$1);
           end;
-          RemoveUnit(Kurt);
+          if IsPlaced(Kurt) and IsLive(kurt) then
+             RemoveUnit(Kurt);
        end
        else begin
           SA_OnKurtSpared;
