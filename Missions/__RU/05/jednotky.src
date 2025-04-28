@@ -1,0 +1,746 @@
+EXPORT CREATOVANI_RUSKEHO_KONVOJE_LIST;             
+EXPORT CREATE_RUSKY_ATTACK1_LIST;
+EXPORT CREATE_VOJACI_LIST;
+EXPORT CREATE_2_NEW_ATTACK_LIST;
+EXPORT RUSKY_UTOK_0_LIST;
+EXPORT RUSSIAN_AFTER_END_ATTACK_LIST1;
+EXPORT RUSSIAN_AFTER_END_ATTACK_LIST2;
+
+// locationy
+EXPORT CYRL;
+
+EXPORT Amici_na_zacatku;
+
+VAR ah,av;
+VAR zo;
+
+VAR pom;
+VAR Missing;
+VAR odebrano;
+VAR osur;
+
+EXPORT lidi_other;
+
+EXPORT function prepare_human(sex,clas,level,name);
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+end;
+
+EXPORT function nacti_osobu(ident);
+begin
+  if CheckCharacterSet(ident) then result:=CreateCharacter(ident)
+                              else result:=0;
+end;
+
+// vytvoreni arabskych jednotek na zacatku hry
+EXPORT function create_arabi;
+begin
+  InitUc;
+  InitHc;
+  InitVc;
+  
+  uc_side:=Arabi;
+  uc_nation:=nation_arabian;
+  uc_direction:=4;
+  
+  prepare_human(sex_male,class_soldier,5,'Dietrich Schwarz');
+  ah=CreateHuman;
+  PlaceUnitXY(ah,69,7,false);
+  DIetrich=ah;
+
+  prepare_human(sex_female,class_engineer,6,'Lucie Sebel');
+  hc_skills=[2,3,1,5];
+  ah=CreateHuman;
+  LS=ah;
+
+  vc_chassis:=ar_medium_trike;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=ar_cargo_bay;
+
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitXY(av,63,4,false);
+  SetCargo(av,mat_siberit,50);
+  AddCargo(av,mat_oil,20);
+  AddCargo(av,mat_cans,30);
+
+
+  prepare_human(sex_male,class_engineer,5,'Majdat Halabi');
+  hc_skills=[2,3,1,4];
+  ah=CreateHuman;
+  PlaceUnitXY(ah,67,3,false);
+
+  prepare_human(sex_male,class_engineer,5,'Bassam Hamshu');
+  hc_skills=[2,3,0,4];
+  ah=CreateHuman;
+
+  av:=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitXY(av,65,10,false);
+  AddCargo(av,mat_cans,70);
+  AddCargo(av,mat_oil,30);
+end;
+
+// vytvoreni vedcu na zacatku
+EXPORT function create_am_vedci;
+VAR vojaci;
+VAR i;
+VAR lidi_na_vyber_1;
+VAR lidi_na_vyber_2;
+begin
+  Missing:=0;
+  uc_side:=You2;
+  uc_nation:=nation_american;
+  uc_direction:=4;
+  Amici_na_zacatku=[];
+
+//  Cyrus=nacti_osobu('Cyrus');
+  if Cyrus=0 or CYRL<>6 then Missing:=Missing+10
+                        else begin
+                               PlaceUnitArea(Cyrus,EArabi,false);
+                               SetClass(Cyrus,class_soldier);
+                               SetSide(Cyrus,You2);
+                               Amici_na_zacatku=Amici_na_zacatku^Cyrus;
+                             end;
+
+//  Khattam=nacti_osobu('Khatam');
+  if Khattam=0 then Missing:=Missing+10
+               else begin
+                      PlaceUnitArea(Khattam,EArabi,false);
+                      SetClass(Khattam,class_soldier);
+                      SetSide(Khattam,You2);
+                      Amici_na_zacatku=Amici_na_zacatku^Khattam;
+                    end;
+
+//  Simms=NewCharacter('Simms');
+  PlaceUnitArea(Simms,EArabi,false);
+  SetSide(Simms,You2);
+  Amici_na_zacatku=Amici_na_zacatku^Simms;
+
+//  Joan_F=nacti_osobu('Joan');
+  if Joan_F=0 then Missing:=Missing+1
+              else begin
+                     PlaceUnitArea(Joan_F,EArabi,false);
+                     SetClass(Joan_F,class_scientistic);
+                     SetSide(Joan_F,You2);
+                     Amici_na_zacatku=Amici_na_zacatku^Joan_F;
+                   end;
+
+// tady bude Denis ... mozna ... treba ... mi je to jedno
+  if Denis=0 then Missing=Missing+1
+             else begin
+                    SetClass(Denis,class_scientistic);
+                    SetSide(Denis,You2);
+                    PlaceUnitArea(Denis,EArabi,false);
+                    Amici_na_zacatku=Amici_na_zacatku^Denis;
+                  end;
+
+  vojaci=[];
+  for i in lidi_with_JMM do if GetSkill(i,skill_combat)>=4 then vojaci=vojaci^i;
+  if vojaci<2 then
+    for i in lidi_other_surv do if GetSkill(i,skill_combat)>=4 then vojaci=vojaci^i;
+
+  odebrano=[];
+// chybejici vojaci
+  while Missing>=10 do
+    begin
+      if vojaci=0 then begin
+                         prepare_human(sex_male,class_soldier,5,'');
+                         ah=CreateHuman;
+                       end
+                  else begin
+                         ah=vojaci[1];
+                         vojaci=vojaci diff ah;
+                         odebrano=odebrano^ah;
+                         SetClass(ah,class_soldier);
+                         SetSide(ah,You2);
+                       end;
+      PlaceUnitArea(ah,EArabi,false);
+      Missing:=Missing-10;
+    end;
+  Amici_na_zacatku=Amici_na_zacatku^odebrano;
+
+  lidi_na_vyber_1=lidi_with_JMM diff odebrano;
+  lidi_na_vyber_2=lidi_other_surv diff odebrano;
+
+  vojaci=[];
+  for i in lidi_na_vyber_1 do if GetSkill(i,skill_scientistic)>=4 then vojaci=vojaci^i;
+  if vojaci=0 then
+    for i in lidi_na_vyber_2 do if GetSkill(i,skill_scientistic)>=4 then vojaci=vojaci^i;
+
+// chybejici vedci
+  while Missing>=1 do
+    begin
+      if vojaci=0 then begin
+                         prepare_human(sex_male,class_scientistic,5,'');
+                         ah=CreateHuman;
+                       end
+                  else begin
+                         ah=vojaci[1];
+                         vojaci=vojaci diff ah;
+                         odebrano=odebrano^ah;
+                         SetClass(ah,class_scientistic);
+                         SetSide(ah,You2);
+                       end;
+      PlaceUnitArea(ah,EArabi,false);
+      Missing:=Missing-1;
+    end;
+  Amici_na_zacatku=Amici_na_zacatku^odebrano;
+  Amici_ar=Amici_na_zacatku;
+end;
+
+// vytvoreni americkych jednotek na zacatku hry - prvni vlna
+EXPORT function create_amici1;
+VAR lidi_vyber;
+VAR i;
+begin
+  uc_side:=You;
+  uc_nation:=nation_american;
+  uc_direction:=1;
+
+  vc_chassis:=us_medium_tracked;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=us_cargo_bay;
+
+  // MAcmillan
+//  JMM:=CreateCharacter('JMM');
+
+  // 1. auto s matrosem
+  av=CreateVehicle;
+  SetClass(JMM,class_soldier);
+  SetSide(JMM,You);
+  PlaceHumanInUnit(JMM,av);
+  PlaceUnitArea(av,EnterAM,false);
+  AddCargo(av,mat_oil,20);
+  AddCargo(av,mat_cans,80);
+  Amici_na_zacatku=Amici_na_zacatku^JMM;
+
+  // 2. auto s matrosem
+  av=CreateVehicle;
+  SetClass(Gary,class_soldier);
+  SetSide(Gary,You);
+  PlaceHumanInUnit(Gary,av);
+  PlaceUnitArea(av,EnterAM,false);
+  AddCargo(av,mat_oil,10);
+  AddCargo(av,mat_cans,90);
+
+  lidi_vyber=[];
+  for i in lidi_with_JMM diff Amici_na_zacatku do
+    if GetSkill(i,skill_engineering)>3 then lidi_vyber=lidi_vyber^i;
+  if lidi_vyber=0 then
+    for i in lidi_other_surv diff Amici_na_zacatku do
+      if GetSkill(i,skill_engineering)>3 then lidi_vyber=lidi_vyber^i;
+
+//  posledni hovado
+  if lidi_vyber=0
+    then begin
+           prepare_human(sex_male,class_engineer,5,'Johny Muscle');
+           pom=CreateHuman;
+         end
+    else begin
+           ah=lidi_vyber[1];
+           lidi_vyber=lidi_vyber diff ah;
+           odebrano=odebrano^ah;
+           SetClass(ah,class_engineer);
+           pom=ah;
+         end;
+
+  // 3. auto - 1. se siberitem
+  av=CreateVehicle;
+  PlaceHumanInUnit(pom,av);
+  Amici_na_zacatku=Amici_na_zacatku^pom;
+  PlaceUnitArea(av,EnterAM,false);
+  if MNOZSTVI_SIBERITU>=200 then AddCargo(av,mat_siberit,100)
+                            else if MNOZSTVI_SIBERITU<=100
+                                   then AddCargo(av,mat_cans,30)
+                                   else AddCargo(av,mat_siberit,MNOZSTVI_SIBERITU-100);
+
+  lidi_vyber=[];
+  for i in lidi_with_JMM diff odebrano do
+    if GetSkill(i,skill_mechanical)>3 then lidi_vyber=lidi_vyber^i;
+  if lidi_vyber<2 then
+  for i in lidi_other_surv diff odebrano do
+    if GetSkill(i,skill_mechanical)>3 then lidi_vyber=lidi_vyber^i;
+
+
+  // 1 ridic a 1 auto s matrosem - NEPOJMENOVANY
+  if lidi_vyber=0 then begin
+                         prepare_human(sex_male,class_mechanic,5,'Thomas Ezendam');
+                         ah=CreateHuman;
+                       end
+                  else begin
+                         ah=lidi_vyber[1];
+                         lidi_vyber=lidi_vyber diff ah;
+                         odebrano=odebrano^ah;
+                         SetClass(ah,class_mechanic);
+                       end;
+  Amici_na_zacatku=Amici_na_zacatku^ah;
+
+
+// auto s matrosem + 2 se siberitem
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  PlaceUnitArea(av,EnterAM,false);
+  if MNOZSTVI_SIBERITU>=100 then AddCargo(av,mat_siberit,100)
+                            else AddCargo(av,mat_siberit,MNOZSTVI_SIBERITU);
+
+
+  // auto pridane kvuli Stoupovi
+    // 1 ridic a 1 auto s matrosem - NEPOJMENOVANY
+  if MNOZSTVI_SIBERITU>200 then
+    begin
+      if lidi_vyber=0 then begin
+                             prepare_human(sex_male,class_mechanic,5,'');
+                             ah=CreateHuman;
+                           end
+                      else begin
+                             ah=lidi_vyber[1];
+                             lidi_vyber=lidi_vyber diff ah;
+                             odebrano=odebrano^ah;
+                             SetClass(ah,class_mechanic);
+                           end;
+      av=CreateVehicle;
+      PlaceHumanInUnit(ah,av);
+      PlaceUnitArea(av,EnterAM,false);
+      AddCargo(av,mat_siberit,MNOZSTVI_SIBERITU-200);
+    end;
+  Amici_na_zacatku=Amici_na_zacatku^ah;
+  if MNOZSTVI_SIBERITU>350 then Msg('ERROR: STOUPA JE IDIOT');
+end;
+
+// creatovani ruskeho konvoje
+EXPORT function create_konvoj_ru(nah);
+begin
+  uc_side:=Rusi;
+  uc_nation:=nation_russian;
+  uc_direction:=4;
+
+  prepare_human(sex_male,class_engineer,levelrusi[difficulty],'Boris Gavrilov');
+  ah=CreateHuman;
+  pom=[ah];
+
+  prepare_human(sex_male,class_mechanic,levelrusi[difficulty],'Boris Glavacenko');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  prepare_human(sex_male,class_soldier,levelrusi[difficulty],'Vladimir P. Scbakov');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  prepare_human(sex_male,class_soldier,levelrusi[difficulty],'Nikolaj Sutjagin');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  prepare_human(sex_male,class_bazooker,levelrusi[difficulty]-1,'Jevgenij Pepeljajev');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  prepare_human(sex_male,class_soldier,levelrusi[difficulty],'Dimitrij Oskin');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  prepare_human(sex_male,class_scientistic,levelrusi[difficulty],'Sergej Kramarenko');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  prepare_human(sex_male,class_engineer,levelrusi[difficulty],'Alexandr Smorchov');
+  ah=CreateHuman;
+
+  vc_chassis:=ru_medium_tracked;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=ru_cargo_bay;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+  AddCargo(av,mat_cans,70);
+  AddCargo(av,mat_oil,30);
+
+  prepare_human(sex_male,class_engineer,levelrusi[difficulty],'Jan Safarik');
+  ah=CreateHuman;
+
+  vc_chassis:=ru_heavy_tracked;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+  AddCargo(av,mat_cans,70);
+  AddCargo(av,mat_oil,30);
+
+  prepare_human(sex_male,class_mechanic,levelrusi[difficulty]+1,'Michail Ponomarev');
+  ah=CreateHuman;
+
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=ru_heavy_machine_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+  AddCargo(av,mat_cans,70);
+  AddCargo(av,mat_oil,30);
+
+  prepare_human(sex_male,class_mechanic,levelrusi[difficulty]-1,'Voloda Kromin');
+  ah=CreateHuman;
+
+  vc_chassis:=chassisrusi[difficulty];
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_weapon:=zbranrusi[difficulty];
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  if difficulty>1 then
+    begin
+      prepare_human(sex_male,class_bazooker,levelrusi[difficulty],'Jan Kuklajs');
+      ah=CreateHuman;
+      pom=pom^ah;
+
+      prepare_human(sex_female,class_engineer,levelrusi[difficulty],'Tatiana Petrova');
+      ah=CreateHuman;
+      pom=pom^ah;
+
+      prepare_human(sex_male,class_mechanic,levelrusi[difficulty]+2,'Ivan Kasatonov');
+      ah=CreateHuman;
+
+      vc_chassis:=chassisrusi[difficulty];
+      vc_control:=control_manual;
+      vc_engine:=engine_combustion;
+      vc_weapon:=zbranrusi[difficulty];
+      av=CreateVehicle;
+      PlaceHumanInUnit(ah,av);
+      pom=pom^av;
+    end;
+
+  if difficulty>2 then
+    begin
+      prepare_human(sex_male,class_bazooker,levelrusi[difficulty]+1,'Sergej Pakonin');
+      ah=CreateHuman;
+      pom=pom^ah;
+
+      prepare_human(sex_female,class_engineer,levelrusi[difficulty],'Natasa Gryznova');
+      ah=CreateHuman;
+      pom=pom^ah;
+
+      prepare_human(sex_male,class_mechanic,levelrusi[difficulty],'Sergej Supin');
+      ah=CreateHuman;
+
+      vc_chassis:=ru_heavy_tracked;
+      vc_control:=control_manual;
+      vc_engine:=engine_siberite;
+      vc_weapon:=ru_heavy_machine_gun;
+      av=CreateVehicle;
+      PlaceHumanInUnit(ah,av);
+      pom=pom^ah;
+    end;
+
+  CREATOVANI_RUSKEHO_KONVOJE_LIST:=pom;
+end;
+
+// vytvoreni Cornella
+EXPORT function create_Cornel;
+begin
+  uc_side:=You2;
+  uc_nation:=nation_american;
+  uc_direction:=4;
+
+//  Cornel=nacti_osobu('Cornell');
+  if Cornel<>0 then PlaceUnitArea(Cornel,Corenter,false);
+end;
+
+
+// prvni rusky utok 1
+EXPORT function create_rusky_attack1;
+VAR i;
+begin
+  uc_side:=Rusi;
+  uc_nation:=nation_russian;
+  uc_direction:=4;
+
+  vc_chassis:=chassisrusi[difficulty];
+  vc_control:=control_computer;
+  vc_engine:=engine_siberite;
+  vc_weapon:=zbranrusi[difficulty];
+  av=CreateVehicle;
+  pom=[av];
+
+  if difficulty>1 then
+    begin
+      av=CreateVehicle;
+      pom=pom^av;
+    end;
+
+  if difficulty>2 then
+    begin
+      vc_chassis:=ru_heavy_tracked;
+      vc_control:=control_computer;
+      vc_engine:=engine_siberite;
+      vc_weapon:=ru_heavy_gun;
+      av=CreateVehicle;
+      pom=pom^av;
+      av=CreateVehicle;
+      pom=pom^av;
+    end;
+  for i in pom do SetLives(i,rusi_zivoty[difficulty]);
+  CREATE_RUSKY_ATTACK1_LIST=pom;
+end;
+
+// vojaci pro ruske utoky
+EXPORT function create_vojaci;
+begin
+  uc_side:=Rusi;
+  uc_nation:=nation_russian;
+  uc_direction:=4;
+
+  prepare_human(sex_male,class_bazooker,levelrusi[difficulty]+1,'');
+  ah=CreateHuman;
+  pom=[ah];
+
+  prepare_human(sex_male,class_bazooker,levelrusi[difficulty],'');
+  ah=CreateHuman;
+  pom=pom^ah;
+
+  if difficulty>1 then
+    begin
+      prepare_human(sex_male,class_bazooker,levelrusi[difficulty]+1,'');
+      ah=CreateHuman;
+      pom=pom^ah;
+
+      prepare_human(sex_male,class_soldier,levelrusi[difficulty],'');
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+
+  if difficulty>2 then
+    begin
+      prepare_human(sex_male,class_bazooker,levelrusi[difficulty]+1,'');
+      ah=CreateHuman;
+      pom=pom^ah;
+
+      prepare_human(sex_male,class_soldier,levelrusi[difficulty],'');
+      ah=CreateHuman;
+      pom=pom^ah;
+    end;
+  CREATE_VOJACI_LIST=pom;
+end;
+
+{
+// creatovani powella na konci
+EXPORT function create_powell;
+begin
+  uc_side:=You;
+  uc_nation:=nation_american;
+  uc_direction:=4;
+
+//  Powell=NewCharacter('Powell');
+end;
+}
+
+// jednotky pro arabsky utok po zrade
+EXPORT function create_ar_zradu;
+begin
+  uc_side:=Arabi2;
+  uc_nation:=nation_arabian;
+  uc_direction:=4;
+
+  prepare_human(sex_male,class_desert_warior,5,'Azib Alim');
+  ah=CreateHuman;
+  SetSide(mas1,Arabi2);
+  PlaceHumanInUnit(ah,mas1);
+  PlaceUnitArea(mas1,AUenter,false);
+  ComCarabine(ah);
+  
+  prepare_human(sex_male,class_desert_warior,5,'Gmamal El Aziz');
+  ah=CreateHuman;
+  SetSide(mas2,Arabi2);
+  PlaceHumanInUnit(ah,mas2);
+  PlaceUnitArea(mas2,AUenter,false);
+  ComCarabine(ah);
+
+  prepare_human(sex_male,class_soldier,5,'Suman Oles');
+  ah=CreateHuman;
+  PlaceUnitArea(ah,AUenter,false);
+
+  prepare_human(sex_male,class_soldier,3,'Oman Hajalib');
+  ah=CreateHuman;
+  PlaceUnitArea(ah,AUenter,false);
+
+  prepare_human(sex_male,class_soldier,5,'Ed Sobaletzki');
+  ah=CreateHuman;
+  PlaceUnitArea(ah,AUenter,false);
+end;
+
+// uprava mastodontu na zacatku pro boj
+EXPORT function uprav_mastodonty;
+begin
+  RemoveUnit(mas1);
+  RemoveUnit(mas2);
+end;
+
+// vytvareni engineeru
+EXPORT function create_engineer;
+begin
+  uc_side:=Rusi;
+  uc_nation:=nation_Russian;
+
+  prepare_human(sex_male,class_engineer,levelrusi[difficulty],'');
+  ah=CreateHuman;
+  PlaceUnitArea(ah,RE3,false);
+end;
+
+// vytvareni noveho 2. ruskeho utoku
+EXPORT function create_2_new_attack;
+VAR i;
+begin
+  uc_side:=Rusi;
+  uc_nation:=nation_russian;
+  uc_direction:=4;
+
+  prepare_human(sex_male,class_bazooker,levelrusi[difficulty]+1,'Sergej Petrenko');
+  ah=CreateHuman;
+  pom=[ah];
+
+  prepare_human(sex_male,class_mechanic,levelrusi[difficulty]-2,'Voloda Groznyj');
+  ah=CreateHuman;
+
+  vc_chassis:=ru_heavy_tracked;
+  vc_control:=control_manual;
+  vc_engine:=engine_siberite;
+  vc_weapon:=ru_heavy_gun;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  if difficulty>1 then
+    begin
+      vc_control=control_manual;
+      vc_chassis:=ru_medium_tracked;
+      vc_weapon:=zbranrusi[difficulty];
+      av=CreateVehicle;
+      pom=pom^av;
+
+      pom=pom^get_human(get_sex,class_soldier,levelrusi[difficulty],'');
+    end;
+
+  if difficulty>2 then
+    begin
+      vc_control=control_manual;
+      vc_chassis:=chassisrusi[difficulty];
+      vc_weapon:=zbranrusi[difficulty];
+      av=CreateVehicle;
+      pom=pom^av;
+
+      pom=pom^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+    end;
+  for i in pom do SetLives(i,rusi_zivoty[difficulty]);
+  CREATE_2_NEW_ATTACK_LIST=pom;
+end;
+
+// vraci cislo creatnuteho humana
+function get_human(sex,clas,level,name);
+var pom;
+begin
+  PrepareHuman(sex,clas,level);
+  hc_name:=name;
+  pom=CreateHuman;
+  result:=pom;
+end;
+
+// vraci sex daneho vojaka - sance na zenskou 1/5
+function get_sex;
+begin
+  if Prob(20) then result=sex_female
+              else result=sex_male;
+end;
+
+// predpripraveni ruskeho utoku cislo 0 - jenom vojaci
+EXPORT function create_rusky_utok_0;
+VAR pom;
+begin
+  pom=[];
+  pom=get_human(get_sex,class_soldier,levelrusi[difficulty],'');
+  if pom>1 then pom=pom^get_human(get_sex,class_soldier,levelrusi[difficulty]-2,'');
+  if pom>2 then   pom=pom^get_human(get_sex,class_soldier,levelrusi[difficulty]-1,'');
+  RUSKY_UTOK_0_LIST=pom;
+end;
+
+// ruske utoky na utoku
+EXPORT function create_attack_after_end;
+begin
+  uc_side:=Rusi;
+  uc_nation:=nation_russian;
+
+  pom=[];
+  pom=pom^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  pom=pom^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,levelrusi[difficulty],'');
+
+  vc_control=control_computer;
+  vc_chassis:=chassisrusi[difficulty];
+  vc_weapon:=zbranrusi[difficulty];
+  av=CreateVehicle;
+  pom=pom^av;
+  av=CreateVehicle;
+  pom=pom^av;
+  av=CreateVehicle;
+  pom=pom^av;
+
+  RUSSIAN_AFTER_END_ATTACK_LIST1=pom;
+
+  pom=[];
+  pom=pom^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  pom=pom^get_human(get_sex,class_soldier,levelrusi[difficulty],'');
+
+  vc_control=control_computer;
+  vc_chassis:=ru_heavy_tracked;
+  vc_weapon:=zbranrusi[difficulty];
+  av=CreateVehicle;
+  pom=pom^av;
+
+  ah=get_human(get_sex,class_mechanic,levelrusi[difficulty],'');
+  vc_control=control_manual;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  ah=get_human(get_sex,class_mechanic,levelrusi[difficulty],'');
+  vc_control=control_manual;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  ah=get_human(get_sex,class_mechanic,levelrusi[difficulty],'');
+  vc_control=control_manual;
+  av=CreateVehicle;
+  PlaceHumanInUnit(ah,av);
+  pom=pom^av;
+
+  RUSSIAN_AFTER_END_ATTACK_LIST1=pom;
+end;
+
+// vojak, ktery hlasi presun rusaku !! - konvoj
+EXPORT function create_kecal;
+begin
+  uc_side:=You;
+  uc_nation:=nation_american;
+
+ 
+  ah=get_human(sex_female,class_soldier,5,'Linda Violet');
+  result:=ah;
+end;
+
+// vytvoreni ruskych bazukeru do akce
+EXPORT function create_ruske_bazukery;
+VAR pomp;
+begin
+  uc_side:=Rusi2;
+  uc_nation:=nation_russian;
+
+  pomp=get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  pomp=pomp^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  if difficulty>1 then pomp=pomp^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  if difficulty>2 then pomp=pomp^get_human(get_sex,class_bazooker,levelrusi[difficulty],'');
+  result:=pomp;
+end;

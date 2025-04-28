@@ -35,7 +35,7 @@ begin
       pom=Rand(1,100);
       case vysl of
        1:begin i=[50,30,20]; Pruzkumnik=true; end;
-       21:begin i=[80,15,5]; Pruzkumnik=true; end;
+       2:begin i=[80,15,5]; Pruzkumnik=true; end;
        else uspech=0;
       end;
       if Pruzkumnik then
@@ -65,7 +65,7 @@ begin
       pom=Rand(1,100);
       case vysl of
        1:begin i=[50,20,30]; Pruzkumnik=true; end;
-       21:begin i=[70,25,5]; Pruzkumnik=true; end;
+       2:begin i=[70,25,5]; Pruzkumnik=true; end;
       end;
       if Pruzkumnik then
         begin

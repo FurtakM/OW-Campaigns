@@ -1,0 +1,156 @@
+
+export am_ridic,am_ridic2,am_ridic3,am_ridic4,am_ridic5,am_ridic6,am_ridic7,am_ridic8,am_ridic9,am_ridic10,am_ridic11,am_ridic12;
+export am_car,am_car2,am_car3,am_car4,am_car5,am_car6,am_car7,am_car8,am_car9,am_car10,am_car11,am_car12;
+export am,ridici,utok_na_budovy,ridici_jedouci_na_bw3,nove_niceni,spinac;
+var i;
+
+every 0$3 do
+begin
+
+  wait(2$0);
+  am:=1;
+  uc_side:=am;
+  uc_nation:=nation_american;
+
+  preparemechanic(sex_male,2);
+  am_ridic=createhuman;
+  setclass(am_ridic,class_mechanic);
+
+  vc_chassis:=us_medium_wheeled;
+  vc_weapon:=us_gatling_gun ;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+  
+  am_Car:=CreateVehicle;
+  PlaceUnitXYR(am_Car,13,28,5, false);
+  PlaceHumanInUnit(am_ridic,am_Car);
+
+//**********************************************************1
+  preparemechanic(sex_male,2);
+  am_ridic3=createhuman;
+  setclass(am_ridic3,class_mechanic);
+
+  am_Car3:=CreateVehicle;
+  PlaceUnitXYR(am_Car3,19,28,5, false);
+  PlaceHumanInUnit(am_ridic3,am_Car3);
+//**********************************************************3
+  preparemechanic(sex_male,2);
+  am_ridic6=createhuman;
+  setclass(am_ridic6,class_mechanic);
+
+  am_Car6:=CreateVehicle;
+  PlaceUnitXYR(am_Car6,14,20,5, false);
+  PlaceHumanInUnit(am_ridic6,am_Car6);
+//**********************************************************6
+
+  preparemechanic(sex_male,2);
+  am_ridic2=createhuman;
+  setclass(am_ridic2,class_mechanic);
+
+  vc_chassis:=us_medium_wheeled;
+  vc_weapon:=us_double_gun;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  am_Car2:=CreateVehicle;
+  PlaceUnitXYR(am_Car2,18,26,5, false);
+  PlaceHumanInUnit(am_ridic2,am_Car2);
+//**********************************************************2
+  preparemechanic(sex_male,2);
+  am_ridic4=createhuman;
+  setclass(am_ridic4,class_mechanic);
+
+  am_Car4:=CreateVehicle;
+  PlaceUnitXYR(am_Car4,21,40,5, false);
+  PlaceHumanInUnit(am_ridic4,am_Car4);
+//**********************************************************4
+  vc_chassis:=us_medium_wheeled;
+  vc_weapon:=us_double_gun;
+  vc_control:=control_manual;
+  vc_engine:=engine_solar;
+  vc_fuel_battery:=100;
+
+  preparemechanic(sex_male,4);
+  am_ridic5=createhuman;
+  setclass(am_ridic5,class_mechanic);
+
+  am_Car5:=CreateVehicle;
+  PlaceUnitXYR(am_Car5,19,33,5, false);
+  PlaceHumanInUnit(am_ridic5,am_Car5);
+//**********************************************************5
+
+  preparemechanic(sex_female,3);
+  am_ridic7=createhuman;
+  setclass(am_ridic7,class_mechanic);
+
+  am_Car7:=CreateVehicle;
+  PlaceUnitXYR(am_Car7,15,30,5, false);
+  PlaceHumanInUnit(am_ridic7,am_Car7);
+//**********************************************************7
+
+
+
+  ridici:=[am_ridic,am_ridic2,am_ridic3,am_ridic4,am_ridic5,am_ridic6,am_ridic7];
+  ridici_jedouci_na_bw3:=[am_ridic6,am_ridic7];
+  AddComAgressiveMove(ridici_jedouci_na_bw3,113,45);
+  AddComAgressiveMove(ridici,92,13);
+  
+end;   
+
+EVERY 0$9 TRIGGER FilterUnitsInArea(konec_obrany,[[f_side,am],[f_type,unit_vehicle]])>0 do
+begin
+ utok_na_ar;
+ enable;
+end;
+
+export function utok_na_ar;
+begin                                
+ // ridici:=[am_ridic,am_ridic2,am_ridic3,am_ridic4];
+  utok_na_budovy:=FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building]]);
+
+
+  AddComAttackUnit(ridici,utok_na_budovy[1]);
+
+//*****************komplikovane a neprehledne************************
+//*****************predelano 4.4.2003 v 16:00************************
+ {AddComAttackUnit(ridici,utok_na_budovy[4]);
+  AddComAttackUnit(ridici,utok_na_budovy[3]);
+  AddComAttackUnit(ridici,utok_na_budovy[4]);
+  AddComAttackUnit(ridici,utok_na_budovy[5]);
+  AddComAttackUnit(ridici,utok_na_budovy[6]);
+  AddComAttackUnit(ridici,utok_na_budovy[7]);                                
+  AddComAttackUnit(ridici,utok_na_budovy[8]);
+  AddComAttackUnit(ridici,utok_na_budovy[9]);
+  AddComAttackUnit(ridici,utok_na_budovy[10]);}
+
+  spinac=true;
+end;                                                                                
+
+//EVERY 0$7 TRIGGER IsDying(utok_na_budovy[1]) do
+every 0$1 trigger FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building],[f_lives,250]])>0 and spinac do
+begin
+  AddComAttackUnit(ridici,utok_na_budovy[1]);
+  nove_niceni=true;
+  spinac=false;
+  enable;
+end;
+
+EVERY 0$1 TRIGGER FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building]])>0 and nove_niceni do
+begin
+  utok_na_ar;
+  nove_niceni=false;
+  enable;
+end;
+
+
+
+EVERY 0$5 TRIGGER FilterUnitsInArea(All_area,[[f_nation,nation_arabian],[f_side,ar],[f_type,unit_building]])=0 and
+                  zacatek_konce do
+begin
+  YouLost('konec');
+  ExitGame;
+end;   
+
+      

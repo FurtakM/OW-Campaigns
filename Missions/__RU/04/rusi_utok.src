@@ -1,0 +1,183 @@
+export ru_vojak4,volne_auto,pocet_volnych_aut,cislo_auta,zbran,volne_auto_pro_utok,zbrane,mechanik_zpet_do_tovarny;
+export vojaci_do_aut,utok_na_budovy_ru,pocet_vojaku,misto_x,misto_y,spinac_ru,nove_niceni_ru;
+                 
+
+every 0$20 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]])>2 do
+var podvozek;
+begin
+
+//   AddComAgressiveMove(ridici_pro_kryti_zakladny,94,21);                                    
+
+
+    zbran=rand(1,6);                                                        
+    if (zbran=1) then vc_weapon:=ru_heavy_machine_gun;
+    if (zbran=2) then vc_weapon:=ru_gatling_gun;
+    if (zbran=3) then vc_weapon:=ru_gatling_gun;             
+    if (zbran=4) then vc_weapon:=ru_gun;
+    if (zbran=5) then vc_weapon:=ru_gun;      
+    if (zbran=6) then vc_weapon:=ru_gun;
+                                                          
+    podvozek=rand(1,4);
+    if (podvozek=1) then vc_chassis:=ru_medium_wheeled;
+    if (podvozek=2) then vc_chassis:=ru_heavy_wheeled;
+    if (podvozek=3) then vc_chassis:=ru_heavy_wheeled;
+    if (podvozek=4) then vc_chassis:=ru_heavy_wheeled;
+
+    AddComConstruct(ru_tovarna,vc_chassis,engine_combustion,control_manual,vc_weapon);
+   // wait(0$30);
+   // AddComExitVehicle(seznam_mechanicu);
+   // AddComEnterUnit(seznam_mechanicu,ru_tovarna);
+//   dobiti_ar;
+   wait(0$40);
+   odjezd_ru_jednotek=true;
+   
+  // dobiti_ar
+   enable;
+end; 
+
+//--------------------------------vymena ridicu ve vyrobenych autech ------------------------------------
+//********************************prepsano do trigeru v rusi u posledni veze*******************************
+//every 0$10 do
+//begin
+//  pocet_volnych_aut:=0;
+//  cislo_auta:=1;
+
+//********************************hovado tohle ti nemuze  preci fungovat************************************
+//  zbrane:=ru_heavy_machine_gun;
+//  zbrane:=ru_gatling_gun;
+//  zbrane:=ru_gun;
+//  zbrane:=ru_gun and ru_gatling_gun and ru_heavy_machine_gun;
+//end;
+
+//export function dobiti_ar;
+every 0$7  trigger FilterUnitsInArea(ru_area,[[f_side,ru],[f_type,unit_vehicle], f_not,[f_weapon,ru_cargo_bay]])>pocet_volnych_aut and
+                   odjezd_ru_jednotek do
+begin
+  wait(0$5);
+  volne_auto:=false;
+  volne_auto:=FilterUnitsInArea(vyjezd,[[f_side,ru],[f_type,unit_vehicle], f_not,[f_weapon,ru_cargo_bay]]);
+  mechanik_zpet_do_tovarny:=FilterUnitsInArea(ru_area,[[f_side,ru],[f_type,unit_human],[f_class,class_mechanic]]);
+
+  AddComExitVehicle(volne_auto[1]);
+  wait(0$5);
+  AddComEnterUnit(seznam_mechanicu,ru_tovarna[1]);
+
+  preparesoldier(sex_male,4);
+  ru_vojak4=createhuman;
+  setclass(ru_vojak4,class_soldier);
+  placeunitxy(ru_vojak4,103,121,false);
+
+  vojaci_do_aut:=FilterUnitsInArea(cesta_k_ru,[[f_side,ru],[f_type,unit_human],[f_class,class_soldier]]);
+
+  AddComEnterUnit(vojaci_do_aut[1],volne_auto[1]);
+
+  pocet_volnych_aut:=1+pocet_volnych_aut;               
+//  cislo_auta:=1+cislo_auta;
+ // wait(0$10);
+  if (pocet_volnych_aut=6) then ru_utok_na_ar;
+
+  wait(0$20);
+
+//  odjezd_ru_jednotek=false;
+
+  enable;
+
+//  pocet_volnych_aut:=1+pocet_volnych_aut;
+//  cislo_auta:=1+cislo_auta;
+
+end; 
+
+export function ru_utok_na_ar;
+begin
+   wait(0$20);
+
+  pocet_volnych_aut:=0;
+  cislo_auta:=1;
+
+  volne_auto_pro_utok:=FilterUnitsInArea(ru_area,[[f_side,ru],[f_type,unit_vehicle],[f_not,[f_weapon,ru_cargo_bay]]]);
+
+  AddComAgressiveMove(volne_auto_pro_utok[1],94,21);
+  AddComAgressiveMove(volne_auto_pro_utok[2],94,23);
+  AddComAgressiveMove(volne_auto_pro_utok[3],96,21);
+  AddComAgressiveMove(volne_auto_pro_utok[4],96,23);
+  AddComAgressiveMove(volne_auto_pro_utok[5],91,21);
+  AddComAgressiveMove(volne_auto_pro_utok[6],91,23);
+
+end;
+
+
+export function niceni_budov;
+begin
+  utok_na_budovy_ru:=FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building]]);
+
+  AddComAttackUnit(ridici_pro_kryti_zakladny,utok_na_budovy_ru[1]);
+
+  AddComAttackUnit(volne_auto_pro_utok[1],utok_na_budovy_ru[1]);
+  AddComAttackUnit(volne_auto_pro_utok[2],utok_na_budovy_ru[1]);
+  AddComAttackUnit(volne_auto_pro_utok[3],utok_na_budovy_ru[1]);
+  AddComAttackUnit(volne_auto_pro_utok[4],utok_na_budovy_ru[1]);
+  AddComAttackUnit(volne_auto_pro_utok[5],utok_na_budovy_ru[1]);
+  AddComAttackUnit(volne_auto_pro_utok[6],utok_na_budovy_ru[1]);  
+
+//  odjezd_ru_jednotek=true;
+  spinac_ru=true;
+  //enable;
+end;
+
+every 0$15 trigger FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building],[f_lives,250]])>0 and spinac_ru do
+begin
+  AddComAttackUnit(ridici_pro_kryti_zakladny,utok_na_budovy_ru[1]);
+  AddComAttackUnit(volne_auto_pro_utok,utok_na_budovy_ru[1]);
+  nove_niceni_ru=true;
+  spinac_ru=false;
+  enable;
+end; 
+
+//EVERY 0$2 TRIGGER  FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building]])<utok_na_budovy_ru do
+//begin
+//  niceni_budov;
+//  enable;
+//end;
+
+EVERY 0$1 TRIGGER FilterUnitsInArea(All_area,[[f_side,ar],[f_type,unit_building]])>0 and nove_niceni_ru do
+begin
+  niceni_budov;
+  nove_niceni_ru=false;
+  enable;
+end;     
+
+//------exportovana funkce je o par radek vejs a resi ukoly rusu pri utoku na arabi-----------
+EVERY 0$1 TRIGGER FilterUnitsInArea(konec_obrany,[[f_side,ru],[f_type,unit_vehicle]])>0 do
+begin
+ niceni_budov;
+ enable;
+end;   
+
+EVERY 0$1 do
+begin
+   pocet_vojaku:=1;
+   misto_x:=107;
+   misto_y:=121;
+end;
+
+{EVERY 0$1 trigger FilterUnitsInArea(all_area,[[f_side,am],[f_type,unit_vehicle]])>0 do
+begin
+//  wait(2$0);
+
+
+
+
+//  PlaceUnitArea(vojaci_ar2[1],konec_obrany,false);
+   placeunitxy(vojaci_ar2[pocet_vojaku],misto_x,misto_y,false);
+
+   SetSide(vojaci_ar2[pocet_vojaku],ar);
+
+   pocet_vojaku:=1+pocet_vojaku;
+   misto_x:=3+misto_x;
+   misto_y:=3+misto_y;
+
+   
+  enable;
+end;}
+
+

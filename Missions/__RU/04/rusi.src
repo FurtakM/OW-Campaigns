@@ -1,0 +1,420 @@
+export ru_ridic,ru_ridic2,ru_ridic3,ru_ridic4,ru_ridic5,ru_ridic6,ru_ridic7,ru_bunker;
+export ru_car,ru_car2,ru_car3,ru_car4,ru_car5,ru_car6,ru_car7,ru_ridic_zasobovani,ru_Car_zasobovani;
+export ru,ridici_pro_kryti_zakladny,ru_stavar,ru_stavar2,seznam_mechanicu,ru_sklad,zasobovani;
+export ru_mechanic,ru_mechanic2,ru_mechanic3,ru_mechanic4,ru_mechanic5,ru_mechanic6,ru_dilna,ru_tovarna;
+export ru_vojak1,ru_vojak2,ru_vojak3,odjezd_ru_jednotek,jednotky_ru;
+
+every 0$4  do
+begin
+  wait(3$0);
+  utok_ru;
+  wait(0$6);
+  staveni_zakladny;
+  jednotky_ru=true;
+//  zabiti_kurta;
+end;
+
+
+export function utok_ru;
+begin
+
+  ru:=3;
+  uc_side:=ru;
+  uc_nation:=nation_russian;                                 
+
+  preparemechanic(sex_male,2);
+  ru_ridic=createhuman;
+  setclass(ru_ridic,class_soldier);
+
+  vc_chassis:= ru_heavy_wheeled;
+  vc_weapon:=ru_gatling_gun ;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;  
+  vc_fuel_battery:=100;
+
+  ru_Car:=CreateVehicle;
+  PlaceUnitXYR(ru_Car,111,116,5, false);
+  PlaceHumanInUnit(ru_ridic,ru_Car);
+
+//**********************************************************1
+  preparemechanic(sex_male,2);
+  ru_ridic3=createhuman;
+  setclass(ru_ridic3,class_soldier);
+
+  ru_Car3:=CreateVehicle;
+  PlaceUnitXYR(ru_Car3,104,116,5, false);
+  PlaceHumanInUnit(ru_ridic3,ru_Car3);
+//**********************************************************3
+  preparemechanic(sex_male,2);
+  ru_ridic6=createhuman;
+  setclass(ru_ridic6,class_soldier);
+
+  ru_Car6:=CreateVehicle;
+  PlaceUnitXYR(ru_Car6,112,118,5, false);
+  PlaceHumanInUnit(ru_ridic6,ru_Car6);
+//**********************************************************6
+
+  preparemechanic(sex_male,2);
+  ru_ridic2=createhuman;
+  setclass(ru_ridic2,class_soldier);
+
+  vc_chassis:= ru_heavy_wheeled;
+  vc_weapon:=ru_gun;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  ru_Car2:=CreateVehicle;
+  PlaceUnitXYR(ru_Car2,118,120,5, false);
+  PlaceHumanInUnit(ru_ridic2,ru_Car2);
+//**********************************************************2
+  preparemechanic(sex_male,2);
+  ru_ridic4=createhuman;
+  setclass(ru_ridic4,class_soldier);
+
+  ru_Car4:=CreateVehicle;
+  PlaceUnitXYR(ru_Car4,99,114,5, false);
+  PlaceHumanInUnit(ru_ridic4,ru_Car4);
+//**********************************************************4
+  vc_chassis:= ru_heavy_wheeled;
+  vc_weapon:=ru_gun;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  preparemechanic(sex_male,4);
+  ru_ridic5=createhuman;
+  setclass(ru_ridic5,class_soldier);
+
+  ru_Car5:=CreateVehicle;
+  PlaceUnitXYR(ru_Car5,94,114,5, false);
+  PlaceHumanInUnit(ru_ridic5,ru_Car5);
+//**********************************************************5
+
+  preparemechanic(sex_female,3);
+  ru_ridic7=createhuman;
+  setclass(ru_ridic7,class_soldier);
+
+  ru_Car7:=CreateVehicle;
+  PlaceUnitXYR(ru_Car7,121,118,5, false);
+  PlaceHumanInUnit(ru_ridic7,ru_Car7);
+//**********************************************************7
+
+  ridici_pro_kryti_zakladny:=[ru_ridic,ru_ridic2,ru_ridic3,ru_ridic4,ru_ridic5,ru_ridic6,ru_ridic7];
+  AddComAgressiveMove(ridici_pro_kryti_zakladny,101,99);
+
+end;
+
+export function staveni_zakladny;
+begin
+  prepareengineer(sex_male,4);
+  ru_stavar=createhuman;
+  setclass(ru_stavar,class_engineer);
+  placeunitxy(ru_stavar,109,119,false);
+//*********************************************************1
+  prepareengineer(sex_male,4);
+  ru_stavar2=createhuman;
+  setclass(ru_stavar2,class_engineer);
+  placeunitxy(ru_stavar2,107,119,false);
+////////////////////////////////////////////////////////
+/////////seznam mechanicu.//////////////////////////////
+//*************************************************
+  prepareengineer(sex_male,4);
+  ru_mechanic=createhuman;
+  setclass(ru_mechanic,class_mechanic);
+  placeunitxy(ru_mechanic,110,119,false);
+//**************************************************1
+  prepareengineer(sex_male,4);
+  ru_mechanic2=createhuman;
+  setclass(ru_mechanic2,class_mechanic);
+  placeunitxy(ru_mechanic2,113,119,false);
+//**************************************************2
+  prepareengineer(sex_male,3);
+  ru_mechanic3=createhuman;
+  setclass(ru_mechanic3,class_mechanic);
+  placeunitxy(ru_mechanic3,115,119,false);
+//**************************************************3
+  preparemechanic(sex_male,5);
+  ru_mechanic4=createhuman;
+  setclass(ru_mechanic4,class_mechanic);
+  placeunitxy(ru_mechanic4,117,119,false);
+//**************************************************4
+  preparemechanic(sex_male,4);
+  ru_mechanic5=createhuman;
+  setclass(ru_mechanic5,class_mechanic);
+  placeunitxy(ru_mechanic5,119,119,false);
+//**************************************************5
+  preparemechanic(sex_male,4);
+  ru_mechanic6=createhuman;
+  setclass(ru_mechanic6,class_mechanic);
+  placeunitxy(ru_mechanic6,121,119,false);
+//**************************************************6
+
+
+  seznam_mechanicu:=[ru_mechanic,ru_mechanic2,ru_mechanic3,ru_mechanic4,ru_mechanic5,ru_mechanic6];
+  AddComMoveXY(seznam_mechanicu,110,117);
+
+
+
+
+  AddComBuild(ru_stavar,b_depot,105,116,0);
+
+end;
+
+//dokonceni budovani skladu a privezeni materialu zacatek staveni dilny a benzinove pumpy
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot],[f_lives,1000]])>0 do
+begin
+  
+
+  ru:=3;
+  uc_side:=ru;
+  uc_nation:=nation_russian;
+
+  CreateDepositXY(120,121, mat_oil);
+  SetResourceVisibility(120,121,ru);
+
+//--------------------------------- zapsano v jinem triggeru-----------------------------------------------------------
+ { ru_sklad:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot]]);
+  zasobovani:=[ru_ridic_zasobovani,ru_Car_zasobovani];
+
+  vc_chassis:= ru_medium_wheeled;
+  vc_weapon:=ru_cargo_bay;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  preparemechanic(sex_male,4);
+  ru_ridic_zasobovani=createhuman;
+  setclass(ru_ridic_zasobovani,class_mechanic);
+
+  ru_Car_zasobovani:=CreateVehicle;
+  PlaceUnitXYR(ru_Car_zasobovani,97,122,5, false);
+  PlaceHumanInUnit(ru_ridic_zasobovani,ru_Car_zasobovani);
+
+  SetCargo(ru_Car_zasobovani,mat_cans,100); } 
+
+  
+  wait(0$15);
+  AddComCollect(ru_ridic_zasobovani,104,109);//musi byt zapsano jako kdyz chces sbirat krabice
+  AddComMoveXY(ru_ridic_zasobovani,104,122);
+
+
+  AddComMoveXY(seznam_mechanicu,111,111);
+
+  AddComBuild(ru_stavar2,b_workshop,90,106,1);
+//  AddComMoveXY(seznam_mechanicu,100,111);
+  AddComBuild(ru_stavar,b_oil_mine,120,121,0);
+end;
+
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_workshop],[f_lives,1000]])>0 do
+begin
+
+  ru_dilna:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_workshop]]);
+
+  AddComUpgrade(ru_dilna);
+  
+end;
+
+every 0$1 trigger FilterUnitsInArea(cesta_k_ru,[[f_side,ru],[f_type,unit_vehicle],[f_chassis,ru_medium_wheeled]])>0 marked 100 do
+var pitomci_ktery_nemizej_kdyz_maj;
+begin
+
+  //*******************************nektere vozidla nemizi tohle to opravuje*************************
+//  pitomci_ktery_nemizej_kdyz_maj:=FilterUnitsInArea(cesta_k_ru,[[f_side,ru],[f_type,unit_vehicle],[f_chassis,ru_medium_wheeled]]);
+//  removeunit(pitomci_ktery_nemizej_kdyz_maj);
+  //************************************************************************************************
+
+  removeunit(ru_ridic_zasobovani);
+  removeunit(ru_car_zasobovani);
+  enable;
+end;
+
+//-------------------pocita bedny ve skladu----------------------------------------
+export function count_crates;
+var deps, i;
+begin
+   deps:=FilterAllUnits([[f_side,ru],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+   for i in deps do
+      result:=result+GetResourceType(GetBase(i), mat_cans);
+   
+end;
+
+
+
+//------------------------------------zasobuje ru_zakladnu matriálem------------------------
+every 0$12 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot],[f_lives,1000]])>0 and count_crates<=(200) do
+begin
+  
+  ru:=3;
+  uc_side:=ru;
+  uc_nation:=nation_russian;
+
+//  ru_sklad:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot]]);
+//  zasobovani:=[ru_ridic_zasobovani,ru_Car_zasobovani];
+
+  vc_chassis:= ru_medium_wheeled;
+  vc_weapon:=ru_cargo_bay;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  preparemechanic(sex_male,4);
+  ru_ridic_zasobovani=createhuman;
+  setclass(ru_ridic_zasobovani,class_engineer);
+
+  ru_Car_zasobovani:=CreateVehicle;
+  PlaceUnitXYR(ru_Car_zasobovani,97,122,5, false);
+  PlaceHumanInUnit(ru_ridic_zasobovani,ru_Car_zasobovani);
+
+  SetCargo(ru_Car_zasobovani,mat_cans,100);
+
+
+
+  AddComCollect(ru_ridic_zasobovani,104,109);//musi byt zapsano jako kdyz chces sbirat krabice
+  AddComMoveXY(ru_ridic_zasobovani,107,121);
+  wait(0$20);
+  enable;
+end;
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_workshop],[f_lives,1]])>0 do
+begin
+   AddComMoveXY(seznam_mechanicu,100,111);
+
+end;
+
+//++++++++++++++++++++++++++++++++++vystavba dalsich objektu++++++++++++++++++++++++++++++++++++++++++
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_oil_mine],[f_lives,1000]])>0 do
+begin
+  AddComBuild(ru_stavar, b_oil_power,124,121,0);
+end;
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_oil_power],[f_lives,1000]])>0 do
+begin
+  AddComBuild(ru_stavar, b_oil_power,114,114,0);
+end;
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_oil_power],[f_lives,1000]])>1 do
+begin
+  AddComBuild(ru_stavar, b_oil_power,116,121,0);
+  AddComBuild(ru_stavar, b_oil_power,113,121,0);
+  AddComBuild(ru_stavar,b_bunker,112,103,3);
+end;
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_factory],[f_lives,1000]])>0 do
+begin
+  wait(0$10);
+  AddComBuild(ru_stavar2,b_ext_gun,90,109,0);
+end;
+
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_ext_gun],[f_lives,1000]])>0 do
+begin
+  AddComBuild(ru_stavar2,b_bunker,90,97,2);
+
+  AddComBuild(ru_stavar2,b_bunker,102,99,2);
+//------------nalezeni mechnicu do tovarny-------------------
+//  wait(0$10);
+  ru_tovarna:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_factory]]);
+  AddComEnterUnit(seznam_mechanicu,ru_tovarna[1]);
+end;
+
+//***************************************prepsano do jineho triggeru********************
+{every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]])>0 do
+begin
+  AddComBuild(ru_stavar,b_bunker,112,103,3);
+
+end;}
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////// umistovani zbrani a vojaku //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+
+
+//------------------------------bunker 1---------------------------------------------
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]])>0 do
+var zbrane_na_bunker;
+begin
+  ru_bunker:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]]);
+  zbrane_na_bunker=rand(1,6);
+  if (zbrane_na_bunker=1) then AddComPlaceWeapon(ru_bunker,ru_gatling_gun);
+  if (zbrane_na_bunker=2) then AddComPlaceWeapon(ru_bunker,ru_gatling_gun);
+  if (zbrane_na_bunker=3) then AddComPlaceWeapon(ru_bunker,ru_heavy_machine_gun);
+  if (zbrane_na_bunker=4) then AddComPlaceWeapon(ru_bunker,ru_gun);
+  if (zbrane_na_bunker=5) then AddComPlaceWeapon(ru_bunker,ru_gun);
+  if (zbrane_na_bunker=6) then AddComPlaceWeapon(ru_bunker,ru_gun);
+
+  prepareengineer(sex_male,4);
+  ru_vojak1=createhuman;
+  setclass(ru_vojak1,class_soldier);
+  placeunitxy(ru_vojak1,103,121,false);
+
+  AddComEnterUnit(ru_vojak1,ru_bunker[1]);
+  AddComEnterUnit(seznam_mechanicu,ru_tovarna[1]);
+end;
+
+//----------------------------bunker 2---------------------------------------------
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]])>1 do
+var zbrane_na_bunker;
+begin
+  ru_bunker:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]]);
+  zbrane_na_bunker=rand(1,6);
+  if (zbrane_na_bunker=1) then AddComPlaceWeapon(ru_bunker[2],ru_gatling_gun);
+  if (zbrane_na_bunker=2) then AddComPlaceWeapon(ru_bunker[2],ru_gatling_gun);
+  if (zbrane_na_bunker=3) then AddComPlaceWeapon(ru_bunker[2],ru_heavy_machine_gun);
+  if (zbrane_na_bunker=4) then AddComPlaceWeapon(ru_bunker[2],ru_gun);
+  if (zbrane_na_bunker=5) then AddComPlaceWeapon(ru_bunker[2],ru_gun);
+  if (zbrane_na_bunker=6) then AddComPlaceWeapon(ru_bunker[2],ru_gun);
+
+  prepareengineer(sex_male,4);
+  ru_vojak2=createhuman;
+  setclass(ru_vojak2,class_soldier);
+  placeunitxy(ru_vojak2,103,121,false);
+
+  AddComEnterUnit(ru_vojak2,ru_bunker[2]);
+
+end;
+
+//--------------------------------bunker 3-------------------------------------------------
+
+every 0$1 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]])>2 do
+var zbrane_na_bunker;
+begin
+  ru_bunker:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]]);
+  zbrane_na_bunker=rand(1,6);
+  if (zbrane_na_bunker=1) then AddComPlaceWeapon(ru_bunker[3],ru_gatling_gun);
+  if (zbrane_na_bunker=2) then AddComPlaceWeapon(ru_bunker[3],ru_gatling_gun);
+  if (zbrane_na_bunker=3) then AddComPlaceWeapon(ru_bunker[3],ru_heavy_machine_gun);
+  if (zbrane_na_bunker=4) then AddComPlaceWeapon(ru_bunker[3],ru_gun);
+  if (zbrane_na_bunker=5) then AddComPlaceWeapon(ru_bunker[3],ru_gun);
+  if (zbrane_na_bunker=6) then AddComPlaceWeapon(ru_bunker[3],ru_gun);
+
+  prepareengineer(sex_male,4);
+  ru_vojak3=createhuman;
+  setclass(ru_vojak3,class_soldier);
+  placeunitxy(ru_vojak3,103,121,false);
+
+  ru_sklad:=FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot]]);
+
+  AddComEnterUnit(ru_vojak3,ru_bunker[3]);
+  AddComEnterUnit(ru_stavar,ru_sklad [1]);
+  AddComEnterUnit(ru_stavar2,ru_sklad[1]);
+
+//  odjezd_ru_jednotek=true;
+end;
+
+every 0$4 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_bunker],[f_lives,1000]])>2 do
+begin
+
+  AddComAgressiveMove(ridici_pro_kryti_zakladny,94,21);
+
+  pocet_volnych_aut:=0;
+  cislo_auta:=1;
+  msg('Zniè ruskou základnu na jihu');
+ // odjezd_ru_jednotek=true;
+
+end;
+
+                                     

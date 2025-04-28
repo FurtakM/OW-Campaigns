@@ -1,0 +1,36 @@
+VAR konvoj;
+
+EXPORT Amici_enter;
+EXPORT Amici_ar;
+
+
+EVERY 0$1 DO
+VAR pom;
+begin
+  Amici_enter:=FilterUnitsInArea(EnterAM,[[f_side,You]]);
+  pom:=FilterUnitsInArea(EArabi,[[f_side,You2]]);
+  if pom<>0 then ComMoveXY(Amici_ar,104,24)
+            else begin
+                   Amici_ar=pom;
+                   ComMoveXY(Amici_ar,104,24);
+                 end;
+end;
+
+// prebarveni vedcu amiku
+EVERY 0$2 TRIGGER FIlterUnitsInArea(Base,[[f_side,You2]])>0 DO
+begin
+  SetSide(Amici_ar,You);
+  RevealFogArea(You,RFA1);
+end;
+
+
+
+
+
+
+
+
+
+
+
+

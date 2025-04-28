@@ -377,17 +377,23 @@ begin
              end;
           end;
        DialogueOff;
-       if qr=1 then begin
-          KurtTryToEscape:=true;
-          SetAttitude(arabians,you,att_enemy,true);
+
+       // 28-04-2025 fix by Serpent
+       if qr = 1 then
+          begin
+          KurtTryToEscape := true;
+          SetAttitude(arabians, you, att_enemy, true);
           ComAttackUnit(kdo, Kurt);
-          while not IsInArea(Kurt, border) and IsLive(Kurt) do begin
-            ComMoveToArea(Kurt, border);
-            wait(0$1);
-          end;
-          if IsPlaced(Kurt) and IsLive(kurt) then
+
+          while not IsInArea(Kurt, border) and IsLive(Kurt) do
+                begin
+                ComMoveToArea(Kurt, border);
+                wait(0$1);
+                end;
+
+          if IsInArea(Kurt, border) then
              RemoveUnit(Kurt);
-       end
+          end
        else begin
           SA_OnKurtSpared;
           mytick:=tick+0$20;

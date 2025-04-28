@@ -1,0 +1,30 @@
+every 0$2 trigger FilterUnitsInArea(ar_zakladna,[[f_side,ar],[ f_class ,class_desert_warior]]) do
+begin
+  case query('sejk_v_zakladne') of
+    1:begin
+      predas_vedeni_dobrovolne;
+      veleni=false;
+    end;
+
+    2:begin
+
+       veleni=true;
+    end;
+
+    3:begin
+      sejk_prebere_veleni_nasilim;
+    end;
+  end; 
+end;
+
+export function sejk_prebere_veleni_nasilim;
+begin
+
+end;
+
+export function start5;
+begin
+  msg('Zajisti dostatek zasilek ve skaldišti');
+  msg('Vyzkoumej nové technologie a vyzkoušej je v praxi');
+  msg('Zajisti poøádek a bezpeènost v celé oblasti');
+end;

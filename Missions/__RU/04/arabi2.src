@@ -1,0 +1,184 @@
+
+export Kurt,ar_stavar,ar_stavar2,vojak,opevneni,ar2_vojak,ar2_vojak2;
+
+
+every 0$0.1do
+begin
+
+  ar2:=5;
+
+  uc_side:=ar2;
+  uc_nation:=nation_arabian;
+
+{
+  sklad_ar2=createbuilding;
+//  bc_type=b_depot;
+//  placeunitxy(sklad_ar2,87,18,3);
+  bc_type:=b_depot;
+  bc_level:=0;
+  CreateAndPlaceBuildingXYD(87,18,3);
+  AddResourceType(GetBase(sklad_ar2),mat_cans,100);
+}
+
+  Kurt=NewCharacter('Kurt');
+  placeunitxy(Kurt,93,14,false);
+
+  preparemechanic(sex_male,2);
+  ar2_vojak=createhuman;
+  setclass(ar2_vojak,class_soldier);
+  placeunitxy(ar2_vojak,89,17,false);
+
+  preparemechanic(sex_male,2);
+  ar2_vojak2=createhuman;
+  setclass(ar2_vojak2,class_soldier);
+  placeunitxy(ar2_vojak2,89,20,false);
+
+  prepareengineer(sex_male,3);
+  ar_stavar=createhuman;
+  setclass(ar_stavar,class_engineer);
+  placeunitxy(ar_stavar,83,17,false);
+
+  ComMoveXY(ar_stavar,96,31);
+
+  prepareengineer(sex_male,3);
+  ar_stavar2=createhuman;
+  setclass(ar_stavar2,class_engineer);
+  placeunitxy(ar_stavar2,85,17,false);
+
+  wait(1$0);
+  ComMoveXY(ar_stavar2,77,11);
+end;
+
+//prebarveni jednotky zpet na svou barvu po zapoceti stavby
+on BuildingStarted(b, hum) do
+begin
+
+  if b=b_breastwork then
+  hum=ar_stavar2;
+  SetSide(ar_stavar2,ar2);
+
+  if b=b_armoury then 
+  hum:=ar_stavar;
+  SetSide(ar_stavar,ar2);
+  wait(2$0);
+  ComMoveXY(ar_stavar,107,31);
+  
+{  if hum=ar_stavar2 then
+  b=b_breastwork;
+  SetSide(ar_stavar2,ar2);
+
+  if hum=ar_stavar then
+  b=b_breastwork;
+  SetSide(ar_stavar,ar2); }
+
+  if b=b_breastwork then 
+  hum=ar_stavar ;
+  SetSide(ar_stavar,ar2);
+
+  wait(2$0);
+  ComMoveXY(ar_stavar2,86,26);
+  if b=b_breastwork then
+  hum=ar_stavar2 ;
+  SetSide(ar_stavar2,ar2);
+end;
+
+//prebarveni jednotky pri zacatku vystavby
+EVERY 0$6 TRIGGER UnitFilter(ar_stavar,[[f_distxy,96,31,false]])do
+ begin
+  wait(0$0.6);
+  SetSide(ar_stavar, ar);
+  ComBuild(ar_stavar, b_armoury, 98,33, 0);
+end;
+
+EVERY 0$6 TRIGGER UnitFilter(ar_stavar2,[[f_distxy,77,11,false]])do
+ begin
+  wait(0$0.3);
+  SetSide(ar_stavar2, ar);
+  ComBuild(ar_stavar2, b_breastwork,79,13,2);
+end;
+
+EVERY 0$6 TRIGGER UnitFilter(ar_stavar2,[[f_distxy,86,26,false]])do
+ begin
+  wait(0$0.3);
+  SetSide(ar_stavar2, ar);
+  ComBuild(ar_stavar2, b_breastwork,86,26,0);
+end;
+
+EVERY 0$7 TRIGGER UnitFilter(ar_stavar,[[f_distxy,107,31,false]])do
+ begin
+  wait(0$0.3);
+  SetSide(ar_stavar, ar);
+  ComBuild(ar_stavar, b_breastwork, 107,31, 5);
+end;
+
+
+every 0$1 trigger FilterUnitsInArea(ar_zakladna,[[f_side,ar],[f_btype,b_barracks]]) do
+begin
+
+end;
+
+{every 0$8 trigger FilterUnitsInArea(bunker2,[[f_side,ar],[f_btype,b_breastwork]]) do
+begin
+   wait(2$0);
+   AddComMoveXY(Kurt,93,22);
+   opevneni=FilterUnitsInArea(bunker2,[[f_side,ar],[f_btype,b_breastwork]]);
+  // AddComEnterUnit(ar_vojak,opevneni);
+   ComEnterUnit(ar_vojak,opevneni);
+end;}
+
+// nalezeni do breastworku
+EVERY 0$5 TRIGGER FilterUnitsInArea(bunker2,[[f_side,ar],[f_btype,b_breastwork]])>0 DO
+VAR pom,i,pom1;
+begin
+  pom=FilterUnitsInArea(bunker2,[[f_side,ar],[f_btype,b_breastwork]]);
+  pom1=FilterUnitsInArea(ar_zakladna,[[f_side,ar2],[f_class,class_soldier]]);
+  SetSide(pom, ar2);
+  while IsConstructed(pom[1]) <>0 do wait(0$1);
+  ComEnterUnit(pom1,pom[1]);
+
+end;
+
+EVERY 0$5 TRIGGER FilterUnitsInArea(bunker1,[[f_side,ar],[f_btype,b_breastwork]])>0 DO
+VAR pom,i,pom1;
+begin
+  pom=FilterUnitsInArea(bunker1,[[f_side,ar],[f_btype,b_breastwork]]);
+  pom1=FilterUnitsInArea(ar_zakladna,[[f_side,ar2],[f_class,class_soldier]]);
+  SetSide(pom, ar2);
+  while IsConstructed(pom[1]) <>0 do wait(0$1);
+  ComEnterUnit(pom1,pom[1]);
+
+end;
+
+EVERY 0$5 TRIGGER FilterUnitsInArea(ar_zakladna,[[f_side,ar],[f_btype,b_armoury]])>0 DO
+VAR pom,i,pom1,pom2;
+begin
+  pom=FilterUnitsInArea(ar_zakladna,[[f_side,ar],[f_btype,b_armoury]]);
+  pom1=FilterUnitsInArea(ar_zakladna,[[f_side,ar2],[f_class,class_engineer]]);
+  SetSide(pom, ar2);
+  while IsConstructed(pom[1]) <>0 do wait(5$5);
+
+  ComEnterUnit(ar_stavar,pom2[1]);
+  ComEnterUnit(ar_stavar2,pom2[1]);
+  ComChangeProfession(ar_stavar,class_soldier);
+  ComChangeProfession(ar_stavar2,class_soldier);
+end;
+
+EVERY 0$5 TRIGGER FilterUnitsInArea(ar_zakladna,[f_btype,b_breastwork])>2 DO
+VAR pom,i,pom1,pom2,pom3;
+begin
+  pom=FilterUnitsInArea(bunker3,[[f_side,ar],[f_btype,b_breastwork]]);
+  pom1=FilterUnitsInArea(ar_zakladna,[[f_side,ar2],[f_class,class_soldier]]);
+  SetSide(pom, ar2);
+  while IsConstructed(pom[1]) <>0 do wait(0$1);
+  if ComEnterUnit(pom1,pom[1]) then
+
+
+  pom2:=FilterUnitsInArea(ar_zakladna,[[f_side,ar2],[f_btype,b_armoury]]);
+ // pom3:=FilterUnitsInArea(ar_zakladna,[[f_side,ar2],[f_class,class_engineer]]);
+  while IsConstructed(pom2[1]) <>0 do wait(0$1);
+  addComEnterUnit(ar_stavar,pom2[1]);
+  addComEnterUnit(ar_stavar2,pom2[1]);
+  addComChangeProfession(ar_stavar,class_soldier);
+  addComChangeProfession(ar_stavar2,class_soldier);
+   
+end;      

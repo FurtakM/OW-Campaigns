@@ -1,0 +1,125 @@
+export ar,freinds,Other,new,ar2;
+export Heike,Bergkamp2,Farmer2,Bergkamp,Farmer,Prvni_jenotka,ar_vojak;
+export stav,betrayed,Tested_Arabians,un,Init_Lives;
+export ar_vojak2,ar_vedec,ar_mech,Muhammad,Gojko,Richard,Alexandr,Eva;
+
+starting
+begin                               
+  ar=2;              
+  freinds=0;
+
+                                          
+  uc_side=ar;                   
+  uc_nation=nation_arabian;       
+
+  Heike=CreateCharacter('Heike');
+  placeunitxy(Heike,32,60,false);     
+
+//  Bergkamp2=CreateCharacter('Bergkamp'); //odstranen kvuli prehlednosti
+
+//  Farmer2=CreateCharacter('Farmer');  //odstranen kvuli prehlednosti
+
+  uc_side=freinds;
+  uc_nation=nation_arabian;
+
+  SetSide(Farmer,ar);
+  Farmer=NewCharacter('Farmer');
+  placeunitxy(Farmer,98,40,false);   
+  comhold(Farmer);
+  
+  SetSide(Bergkamp,ar);
+  Bergkamp=NewCharacter('Bergkamp');
+  placeunitxy(Bergkamp,62,25,false);
+  comhold(Bergkamp);
+
+  SetSide(Muhammad,ar);
+  Muhammad=NewCharacter('Muhammad');
+  placeunitxy(Muhammad,59,22,false);
+  comhold(Muhammad);
+
+  SetSide(Richard,ar);
+  Richard=NewCharacter('Richard');
+  placeunitxy(Richard,66,24,false);
+  comhold(Richard);
+
+  SetSide(Gojko,ar);
+  Gojko=NewCharacter('Gojko');
+  placeunitxy(Gojko,100,43,false);
+  comhold(Gojko);
+
+  SetSide(Alexandr,ar);
+  Alexandr=NewCharacter('Alexandr');
+  placeunitxy(Alexandr,101,46,false);
+  comhold(Alexandr);
+
+  zacatek2;
+end;
+
+every 0$5 trigger IsDead(Heike) do
+begin
+  YouLost('konec');
+  ExitGame;
+ end;
+
+
+EXPORT Bergkamp_saved,Farmer_saved;
+
+
+// nalezeni Bergkampa + prebarveni
+// musi se dodelat aby nestrilel po heike  !!!!!!!!!!!!! DODELANO
+EVERY 0$1 TRIGGER FilterUnitsInArea(Bergkamp_kopec,[[f_side,ar]])>0 marked 3 DO
+begin
+  SetSide(Bergkamp,ar);
+  SetSide(Muhammad,ar);
+  SetSide(Richard,ar);
+//  Bergkamp=Bergkamp2; //*********musi byt odstraneno kvuli savenuti characteru
+  ChangeMissionObjectives('MBergkampOut');
+  wait(0$0);
+  if Islive(Bergkamp) then Bergkamp_saved=true;
+  ar2=ar2 union [Bergkamp,Muhammad,Richard];  //Aby se nezobazoval pri ukoncenimise kdyz ho nikdo nenajde
+end;
+
+//nalezeni Farmera + prebarveni
+// musi se dodelat aby nestrilel po heike      !!!!!!!!!!!!! DODELANO
+EVERY 0$1 TRIGGER FilterUnitsInArea(Mrcha_mastodont,[[f_side,ar]])>0 marked 1 DO
+begin
+  SetSide(Farmer,ar);
+  SetSide(Gojko,ar);
+  SetSide(Alexandr,ar);
+//  Farmer=Farmer2;  //*********musi byt odstraneno kvuli savenuti characteru
+  ChangeMissionObjectives('MFarmerOut');
+  wait(0$0);                                       
+  if Islive(Farmer) then Farmer_saved=true;
+   ar2:=ar2 union [Farmer,Gojko,Alexandr];  //Aby se nezobazoval pri ukoncenimise kdyz ho nikdo nenajde
+end;
+
+{every 0$6 trigger IsDead(24) and (25) and (27) and (ru_vedec) and (ru_vedec2) not RemoveUnit(ru_vedec) and RemoveUnit(ru_vedec2)do
+  begin
+      AddMedal('mrtvi_rusove',3);
+      end;}
+
+//ukonceni mise
+EVERY 0$2 TRIGGER FilterUnitsInArea(exitarea,[[f_side,ar]])>0 marked 1 DO
+begin
+//prideleni vyznamenani
+   if IsDead(24) and IsDead(25) and IsDead(27) and IsDead(ru_vedec) and IsDead(ru_vedec2) and not RemoveUnit(ru_vedec) and not RemoveUnit(ru_vedec2) then AddMedal('mrtvi_rusove',3);
+   if IsLIve(Farmer) and IsLive(Bergkamp) then AddMedal('zivi',Farmer and Bergkamp); //za to ze jsou nazivu nalezeni vojaci
+   if Farmer_saved and Bergkamp_saved then addmedal('lives',1); //za to ze sou nalezeni vsichni vojaci
+
+    wait(0$02);
+    YouWin;               
+    GiveMedals('MAIN');
+
+    ar:=ar2 union [Heike];
+
+    RewardPeople(ar);   
+    SaveCharacters(Heike,'Heike');              
+    SaveCharacters(Bergkamp,'Bergkamp');
+    SaveCharacters(Farmer,'Farmer');
+    SaveCharacters(Muhammad,'Muhammad');
+    SaveCharacters(Richard,'Richard');
+    SaveCharacters(Gojko,'Gojko');
+    SaveCharacters(Alexandr,'Alexandr');
+                                       
+    SaveCharacters((other union new) diff [Heike,Bergkamp,Farmer,Muhammad,Richard,Alexandr,Gojko],'survivors1');
+end;

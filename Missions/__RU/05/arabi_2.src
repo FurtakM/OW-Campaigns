@@ -1,0 +1,138 @@
+export ar_ridic,ar_car,ar_ridic2,ar_car2,vyznamenani_1,pocitani_testu,
+       spousteni_triggeru,sejk,veleni,sejk_je_na_zivu_a_zlutej,konec_zasobovani,
+       Orhan;
+
+every 0$2 trigger spousteni_triggeru do
+begin
+
+  wait(3$10);
+  konec_zasobovani:=konec_zasobovani+1;
+  if count_crates>=100
+    then prijezd_arabi2
+      else test_2;
+
+ 
+  if konec_zasobovani<6 then  enable;
+end;
+
+export function prijezd_arabi2;
+begin
+
+  prebarveni_ar2;
+
+end;
+
+export function count_crates;
+var deps, i;
+begin
+   deps:=FilterAllUnits([[f_side,ar],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+   for i in deps do
+      result:=result+GetResourceType(GetBase(i), mat_cans);
+end;
+
+export function test_2;
+begin
+
+   wait(1$10);
+
+  if count_crates>=100
+    then prijezd_arabi2_za_1_min
+      else begin
+//        arabi2;
+        vyznamenani_1=false;
+      end;
+end;
+
+export function prijezd_arabi2_za_1_min;
+begin
+
+  prebarveni_ar2;
+
+  pocitani_testu:=pocitani_testu+1;
+
+  if pocitani_testu>3 then  vyznamenani_1=false;
+//  spousteni_triggeru=true;
+  if konec_zasobovani<6 then  enable;
+end;
+
+export function prebarveni_ar2;
+begin
+
+  ar2:=5;
+  uc_side:=ar2;
+  uc_nation:=nation_arabian;
+
+   
+  ChangeSideFog(ar,ar);
+  ChangeSideFog(ar2,ar);
+
+  preparemechanic(sex_male,2);
+  ar_ridic=createhuman;
+  setclass(ar_ridic,class_soldier);
+
+  vc_chassis:=  ar_medium_trike;
+  vc_weapon:=  ar_cargo_bay;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  ar_car:=CreateVehicle;
+  PlaceUnitArea(ar_car,enter_area, false);
+  PlaceHumanInUnit(ar_ridic,ar_car);
+
+  sklad:=FilterAllUnits([[f_side,ar],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+
+  AddComTransport(ar_car,sklad[1],mat_cans);
+  AddComMoveToArea(ar_car,exit_area);
+  spousteni_triggeru=true;
+  if konec_zasobovani<6 then  enable;
+end;
+
+every 0$2 trigger FilterUnitsInArea(exit_area,[f_side,ar2])>0 do
+begin
+  RemoveUnit(ar_car);
+  RemoveUnit(ar_ridic);
+  enable;
+
+end;
+//-------------prichod sejka------------------------------------
+export function obeveni_sejka;
+begin
+  wait(8$10);
+
+  ar2:=5;
+  uc_side:=ar2;
+  uc_nation:=nation_arabian;
+
+  Orhan=NewCharacter('Orhan');
+  placeunitxy(orhan,10,18,false);
+  AddComHold(orhan);
+  msg('Zachraò nového šejka');
+end;
+
+
+EVERY 0$1 TRIGGER FilterUnitsInArea(sejk_area,[[f_side,ar]])>0  DO
+begin
+  SetSide(Orhan,ar);
+
+end;
+
+EVERY 0$1 TRIGGER FilterAllUnits([[f_side,ar],[f_class,class_desert_warior]]) and IsLive(Orhan) do
+begin
+  sejk_je_na_zivu_a_zlutej=true;
+
+end;
+
+//************************zabiti sejka*******************
+export function zabiti_sejka;
+begin
+  wait(1$50);
+  AddComExitBuilding(ru_vojakb);
+  AddComExitBuilding(ru_vojak2b);
+  AddComMoveXY(ru_vojakb,12,19);
+  AddComMoveXY(ru_vojak2b,12,19);
+  wait(0$10);
+  AddComEnterUnit(ru_vojakb,99);
+  AddComEnterUnit(ru_vojak2b,99);
+
+end;

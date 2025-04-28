@@ -1,0 +1,5 @@
+every 0$10 do
+  begin
+    BuildQuery('Gamma is '&GetGraphicsGamma&', Brightness is '&GetGraphicsBrightness);
+    enable;
+  end;

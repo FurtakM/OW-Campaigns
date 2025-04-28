@@ -1,0 +1,40 @@
+export vojak,vojak2,vojak3,vojak4,Bergkamp,Farmer,Prvni_jenotka;
+var am;
+
+EVERY 0$0.1 DO
+begin
+
+  am=1;
+
+  uc_side=am;
+  uc_nation=nation_american;
+
+
+  preparesoldier(sex_male,9);
+  vojak=createhuman;
+  setclass(vojak,class_soldier);
+  placeunitxy(vojak,29,21,false);
+
+  preparesoldier(sex_male,9);
+  vojak2=createhuman;
+  setclass(vojak2,class_soldier);
+  placeunitxy(vojak2,29,23,false);
+
+  preparesoldier(sex_male,9);
+  vojak3=createhuman;
+  setclass(vojak3,class_soldier);
+  placeunitxy(vojak3,32,21,false);
+
+  preparesoldier(sex_male,9);
+  vojak4=createhuman;
+  setclass(vojak4,class_soldier);
+  placeunitxy(vojak4,29,25,false);
+
+
+  ComMoveXY([vojak,vojak2,vojak3,vojak4],80,68);
+
+
+
+
+
+end;
