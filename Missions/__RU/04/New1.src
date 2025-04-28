@@ -1,0 +1,182 @@
+ 
+export ar,ar2,Heike,Farmer,Bergkamp,ar_vojak,jednotky_na_vyber,player_units;
+export new,other,Kurt,sklad,vojaci_ar2,vojaci_ar2_na_smazani,poradi_vojaka,zacatek_konce,
+       Franz,Ferenz,Stu,Muhammad,Gojko,Richard,Alexandr,Ronald,Eva;
+
+
+starting
+var budovy,bw,pom;
+begin             
+  start4;
+ 
+  ar:=2;
+  uc_side:=ar;
+  uc_nation:=nation_arabian;
+
+  placni_budovy_z_predesle_mise;
+
+  Heike=CreateCharacter('Heike');
+  PlaceUnitArea(Heike,material_area,false);
+
+//  placni_budovy_z_predesle_mise;
+
+//  CreateDepositXY(96,4,mat_oil);
+//  SetResourceVisibility(96,4,ar);
+  wait(0$1);
+
+  ar2:=5;
+  uc_side:=ar2;
+  uc_nation:=nation_arabian;
+
+  
+
+  
+
+  Kurt=CreateCharacter('Kurt');
+  PlaceUnitArea(Kurt,material_area,false);
+   
+  Farmer=CreateCharacter('Farmer');
+  PlaceUnitArea(Farmer,material_area,false);
+
+  Bergkamp=CreateCharacter('Bergkamp');
+  PlaceUnitArea(Bergkamp,material_area,false);
+
+  Franz=CreateCharacter('Franz');
+  PlaceUnitArea(Franz,material_area,false);
+
+  Ferenz=CreateCharacter('Ferenz');
+  PlaceUnitArea(Ferenz,material_area,false);
+
+  Stu=CreateCharacter('Stu');
+  PlaceUnitArea(Stu,material_area,false);
+
+  Muhammad=CreateCharacter('Muhammad');
+  PlaceUnitArea(Muhammad,material_area,false);
+
+  Gojko=CreateCharacter('Gojko');
+  PlaceUnitArea(Gojko,material_area,false);
+
+  Richard=CreateCharacter('Richard');
+  PlaceUnitArea(Richard,material_area,false);
+
+  Alexandr=CreateCharacter('Alexandr');
+  PlaceUnitArea(Alexandr,material_area,false);
+
+  Ronald=CreateCharacter('Ronald');
+  PlaceUnitArea(Ronald,material_area,false);
+
+  Eva=CreateCharacter('Eva');
+  PlaceUnitArea(Eva,material_area,false);
+
+//  ar_vojak=CreateCharacter('');
+//  ar_vojak=createhuman;
+//  placeunitxy(ar_vojak,93,18,false);
+
+  RevealFogArea(ar,ar_zakladna);
+  ChangeSideFog(ar,ar);
+  ChangeSideFog(ar2,ar);
+
+  select_people;
+  odchod_vojaku;
+
+//  RevealFogArea(ar,ar_zakladna);
+  zacatek_konce=true;
+end;
+
+
+EVERY 0$1 TRIGGER FilterUnitsInArea(ar_zakladna,[[f_side,ar],[f_btype,b_depot]])>0 DO
+begin
+  sklad:=FilterUnitsInArea(ar_zakladna,[[f_side,ar],[f_btype,b_depot]]);
+  AddResourceType(sklad,mat_cans,700);
+end;  
+
+
+
+
+
+every 0$5 trigger IsDead(Heike) do
+begin
+  YouLost('konec');
+  ExitGame;
+end;    
+
+export function select_people;
+var units;
+begin
+  units:=[sel_hired,sel_not_changeable,sel_change_class,Heike]^
+         [sel_not_hired,sel_not_changeable,sel_dont_change_class,Kurt]^
+         [sel_not_hired,sel_changeable,sel_change_class,Bergkamp,Farmer,Franz,Ferenz,Stu,Muhammad,Gojko,Richard,Alexandr,Ronald,Eva]^new^other;
+  player_units:=[] union CharacterSelection('Lidi',1,7,units,[class_soldier, class_mechanic, [class_engineer,1], class_scientistic]);
+  wait(0$1);
+  SetSide(player_units,ar);
+end;
+
+EXPORT function placni_budovy_z_predesle_mise;
+var i, tmp, btype, budovy;
+begin
+    InitUc;
+    InitHc;
+    InitBc;
+
+    uc_side:=ar;
+    uc_nation:=nation_arabian;
+
+  //seznam budov
+  
+    budovy:=LoadVariable('budovy',[]);
+    if not budovy then msg('bad save');
+    for i in budovy do
+        btype:=btype^ i[1];
+    SortListByListAsc(budovy, btype);
+    for i in budovy do begin
+        bc_type:=i[1];
+        bc_level:=i[2];
+
+        
+        CreateDepositXY(96, 4, mat_oil);
+        SetResourceVisibility(i[3], i[4],ar);
+        case bc_type of
+             b_lab,b_lab_half,b_lab_full: begin                                                  
+                                             bc_kind1:=i[7];
+                                             bc_kind2:=i[8];
+                                          end;
+        end;
+        CreateAndPlaceBuildingXYD(i[3], i[4], i[5]);
+       
+  end;
+end; 
+
+EXPORT function odchod_vojaku;
+begin
+  vojaci_ar2:=FilterUnitsInArea(all_area,[[f_side,ar2],[f_type,unit_human]]);
+  AddComMoveToArea(vojaci_ar2,cesta_k_ru);
+  
+end;
+
+every 0$1 trigger FilterUnitsInArea(cesta_k_ru,[[f_side,ar2],[f_type,unit_human]])>0  do
+begin
+  vojaci_ar2_na_smazani:=FilterUnitsInArea(cesta_k_ru,[[f_side,ar2],[f_type,unit_human],[f_ok]]);
+//  SaveCharacters(vojaci_ar2,'vojaci_ar2');
+  removeunit(vojaci_ar2_na_smazani[1]);
+//nerozepisovat je to nepruzne a neprehledne!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ { removeunit(vojaci_ar2_na_smazani[2]);
+  removeunit(vojaci_ar2_na_smazani[3]);
+  removeunit(vojaci_ar2_na_smazani[4]);
+  removeunit(vojaci_ar2_na_smazani[5]);
+  removeunit(vojaci_ar2_na_smazani[6]);
+  removeunit(vojaci_ar2_na_smazani[7]);
+  removeunit(vojaci_ar2_na_smazani[8]);
+  removeunit(vojaci_ar2_na_smazani[9]);
+  removeunit(vojaci_ar2_na_smazani[10]);
+  removeunit(vojaci_ar2_na_smazani[11]);
+  removeunit(vojaci_ar2_na_smazani[12]);            
+  removeunit(vojaci_ar2_na_smazani[13]);  }
+//  ar:=2;
+//  uc_side:=ar;
+//  uc_nation:=nation_arabian;
+
+//  CreateCharacter('vojaci_ar2_na_smazani')=vojaci_ar2_na_smazani[1];
+  if FilterAllUnits([[f_side,ar2],[f_type,unit_human]])>0  then
+  enable;
+end;
+

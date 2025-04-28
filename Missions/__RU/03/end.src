@@ -1,0 +1,138 @@
+export other,new,ar3,Lidi,
+       ar_bunker1,ar_bunker2,clovek;
+
+export function count_crates;
+var deps, i;
+begin
+   deps:=FilterAllUnits([[f_side,ar],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+   for i in deps do
+      result:=result+GetResourceType(GetBase(i), mat_cans);
+end;
+
+export function konec_mise;
+VAR a,b,c,d,e,f,g,h,m,n;
+VAR budovy;
+VAR material;
+VAR bw;
+var pom,pom1,i;
+begin
+
+   wait(5$0);
+
+
+  budovy=[];
+  bw=0;
+  pom=FilterAllUnits([f_type,unit_building]);
+  for i in pom do
+    begin
+      a=GetBType(i);
+      b=GetBLevel(i);
+      c=GetX(i);
+      d=GetY(i);
+      e=GetDir(i);
+      f=GetNation(i);
+      g=GetLabKind(i,1);
+      h=GetLabKind(i,2);
+      m=GetResources(i);
+      n=GetResourceType(i,mat_cans);
+      pom1=[a,b,c,d,e,f,g,h,m,n];
+      budovy=budovy^[pom1];
+    end;
+  SaveVariable(budovy,'budovy');
+  SaveCharacters(pom,'pom');
+
+end;
+
+//every 0$09  do
+every 0$9 trigger FilterUnitsInArea(all_area,[f_side,am])>11 do
+VAR a,b,c,d,e,f;
+VAR budovy;
+VAR material;
+VAR bw;
+var pom,pom1,i;
+begin
+
+   wait(5$0);
+
+   konec_mise;
+
+
+//prideleni vyznamenani
+//   if banda_ridicu_pro_volna_auta then AddMedal('dostaut',1);
+   if IsDead(am_ridic) and
+      IsDead(am_ridic2) and
+      IsDead(am_ridic3) and
+      IsDead(am_ridic4) and
+      IsDead(am_ridic5) and
+      IsDead(am_ridic6) and
+      IsDead(am_ridic7) and
+      IsDead(am_ridic8) and
+      IsDead(am_ridic9) and
+      IsDead(am_ridic10) and
+      IsDead(am_ridic11) and
+      IsDead(am_ridic12) then AddMedal('mrtvy_ridici',1); 
+//    AddMedal('Cans', GetResourceType(sklad, mat_cans) >=700);
+
+//    if GetResourceType(sklad, mat_cans)>690 then AddMedal('bedny_nyvic',1);
+
+{
+  budovy=[];
+  bw=0;
+  pom=FilterAllUnits([f_type,unit_building]);
+  for i in pom do
+    begin
+      a=GetBType(i);
+      b=GetBLevel(i);
+      c=GetX(i);
+      d=GetY(i);
+      e=GetDir(i);
+      f=GetNation(i);
+      pom1=[a,b,c,d,e,f];
+      budovy=budovy^[pom1];
+    end;
+  ar_bunker1=FilterUnitsInArea(bunker1,[[f_side,ar],[f_btype,b_breastwork]]);
+  ar_bunker2=FilterUnitsInArea(bunker2,[[f_side,ar],[f_btype,b_breastwork]]);
+  SaveVariable(budovy,'budovy');
+  if isOK(bunker1) then SaveVariable(ar_bunker1,'ar_bunker1');
+  if IsOK(bunker2) then SaveVariable(ar_bunker2,'ar_bunker2');
+  SaveVariable(bw,'bw_all'); }
+
+{  pom=[];
+  if ISOK(ABW1) then pom=pom^ABW1;
+  if ISOK(ABW2) then pom=pom^ABW2;
+  SaveCharacters(pom,'amici_bw'); }
+   ar_bunker1=FilterAllUnits([[f_side,ar2],[f_type,unit_building]]);
+
+   AddMedal('cans', count_crates>=(690));
+
+    wait(0$02);
+    YouWin;
+    GiveMedals('MAIN');
+
+    ar:=ar3 union FilterallUnits([[f_side,ar],[f_type,unit_human],[f_ok]]);
+
+    RewardPeople(ar);
+    SaveCharacters(Heike,'Heike');
+    SaveCharacters(Bergkamp,'Bergkamp');
+    SaveCharacters(Alexandr,'Alexandr');
+    SaveCharacters(Ronald,'Ronald');
+    SaveCharacters(Gojko,'Gojko');
+    SaveCharacters(Muhammad,'Muhammad');
+    SaveCharacters(Richard,'Richard');
+    SaveCharacters(Kurt,'Kurt');
+    SaveCharacters(Farmer,'Farmer');
+    SaveCharacters(Eva,'Eva');
+    SaveCharacters(ferenz,'ferenz');
+    SaveCharacters(franz,'franz');
+    SaveCharacters(stu,'stu');
+
+  SaveCharacters(ar_bunker1,'ar_bunker1');
+  SaveVariable(ar_bunker1,'ar_bunker1');
+
+//    Lidi=FilterallUnits([[f_side,ar],[f_type,unit_human]]);
+
+  SaveCharacters((other union new) diff [Heike,Bergkamp,Farmer,Alexandr,Ronald,Gojko,Muhammad,Richard,Kurt,eva,ferenz,franz,stu],'survivors1');
+
+  exit;
+end;
+

@@ -1,0 +1,402 @@
+export ru_vojak,ru_vojak2,ru_vojak3,ru_vojak4,ru_vojak5,ru_vojak6,
+       ru_stavar,ru_stavar2,ru_stavar3,ru_stavar4,ru_stavar5,ru_stavar6,
+       ru_vedec,ru_vedec2,ru_vedec3,ru_vedec4,ru_vedec5,ru_vedec6,
+       ru_mechanic,ru_mechanic2,ru_mechanic3,ru_mechanic4,ru_mechanic5,ru_mechanic6,
+       ru_vojakb,ru_vojak2b,ru_vojak3b,ru_vojak4b,ru_vojak5b,ru_vojak6b;
+export ru,opravari,rozbyte_budovy,opravari_venku,i,j,znicene_budovy,spousteni_oprav,
+       obrane_veze,pocet,zapnuti_oprav_1_veze,zapnuti_oprav_2_veze,zapnuti_oprav_3_veze,
+       zapnuti_oprav_4_veze,zapnuti_oprav_5_veze,zapnuti_oprav_6_veze,vyroba_ru,tech1,
+       lab1,ru_auto;
+
+export function vytvoreni_rusu;
+begin
+
+  ru:=3;
+  uc_side:=ru;
+  uc_nation:=nation_russian;
+
+  preparesoldier(sex_male,4);
+  ru_vojak=createhuman;
+  setclass(ru_vojak,class_soldier);
+  placeunitxy(ru_vojak,55,37,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak2=createhuman;
+  setclass(ru_vojak2,class_soldier);
+  placeunitxy(ru_vojak2,59,39,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak3=createhuman;
+  setclass(ru_vojak3,class_soldier);
+  placeunitxy(ru_vojak3,65,45,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak4=createhuman;
+  setclass(ru_vojak4,class_soldier);
+  placeunitxy(ru_vojak4,95,70,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak5=createhuman;
+  setclass(ru_vojak5,class_soldier);
+  placeunitxy(ru_vojak5,99,73,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak6=createhuman;
+  setclass(ru_vojak6,class_soldier);
+  placeunitxy(ru_vojak6,103,77,false);
+
+//---------------stvari---------------
+
+  prepareengineer(sex_male,4);
+  ru_stavar=createhuman;
+  setclass(ru_stavar,class_engineer);
+  placehumaninunit(ru_stavar,82);
+  
+  prepareengineer(sex_male,4);
+  ru_stavar2=createhuman;
+  setclass(ru_stavar2,class_engineer);
+  placehumaninunit(ru_stavar2,82);
+
+  prepareengineer(sex_male,4);
+  ru_stavar3=createhuman;
+  setclass(ru_stavar3,class_engineer);
+  placehumaninunit(ru_stavar3,82);
+
+  prepareengineer(sex_male,4);
+  ru_stavar4=createhuman;
+  setclass(ru_stavar4,class_engineer);
+  placehumaninunit(ru_stavar4,82);
+
+  prepareengineer(sex_male,4);
+  ru_stavar4=createhuman;
+  setclass(ru_stavar4,class_engineer);
+  placehumaninunit(ru_stavar4,82);
+
+  prepareengineer(sex_male,4);
+  ru_stavar5=createhuman;
+  setclass(ru_stavar5,class_engineer);
+  placehumaninunit(ru_stavar5,82);
+
+  prepareengineer(sex_male,4);
+  ru_stavar6=createhuman;
+  setclass(ru_stavar6,class_engineer);
+  placehumaninunit(ru_stavar6,82);
+
+//--------------vedci-------------------
+
+  preparescientist(sex_male,4);
+  ru_vedec=createhuman;
+  setclass(ru_vedec,class_scientistic);
+  placehumaninunit(ru_vedec,95);
+  
+  preparescientist(sex_male,4);
+  ru_vedec2=createhuman;
+  setclass(ru_vedec2,class_scientistic);
+  placehumaninunit(ru_vedec2,95);
+  
+  preparescientist(sex_male,4);
+  ru_vedec3=createhuman;
+  setclass(ru_vedec3,class_scientistic);
+  placehumaninunit(ru_vedec3,95);
+  
+  preparescientist(sex_male,4);
+  ru_vedec4=createhuman;
+  setclass(ru_vedec4,class_scientistic);
+  placehumaninunit(ru_vedec4,95);
+  
+  preparescientist(sex_male,4);
+  ru_vedec5=createhuman;
+  setclass(ru_vedec5,class_scientistic);
+  placehumaninunit(ru_vedec5,95);
+  
+  preparescientist(sex_male,4);
+  ru_vedec6=createhuman;
+  setclass(ru_vedec6,class_scientistic);
+  placehumaninunit(ru_vedec6,95);
+
+//---------------mechanici--------------------
+
+  preparemechanic(sex_male,4);
+  ru_mechanic=createhuman;
+  setclass(ru_mechanic,class_mechanic);
+  placehumaninunit(ru_mechanic,96);
+  
+  preparemechanic(sex_male,4);
+  ru_mechanic2=createhuman;
+  setclass(ru_mechanic2,class_mechanic);
+  placehumaninunit(ru_mechanic2,96);
+         
+  preparemechanic(sex_male,4);
+  ru_mechanic3=createhuman;
+  setclass(ru_mechanic3,class_mechanic);
+  placehumaninunit(ru_mechanic3,96);
+        
+  preparemechanic(sex_male,4);
+  ru_mechanic4=createhuman;
+  setclass(ru_mechanic4,class_mechanic);
+  placehumaninunit(ru_mechanic4,96);
+   
+  preparemechanic(sex_male,4);
+  ru_mechanic5=createhuman;
+  setclass(ru_mechanic5,class_mechanic);
+  placehumaninunit(ru_mechanic5,96);
+    
+  preparemechanic(sex_male,4);
+  ru_mechanic6=createhuman;
+  setclass(ru_mechanic6,class_mechanic);
+  placehumaninunit(ru_mechanic6,96);
+
+//--------------vojaci do bunkru-----------------
+
+  preparesoldier(sex_male,4);
+  ru_vojakb=createhuman;
+  setclass(ru_vojakb,class_soldier);
+  placeunitxy(ru_vojakb,39,44,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak2b=createhuman;
+  setclass(ru_vojak2b,class_soldier);
+  placeunitxy(ru_vojak2b,39,48,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak3b=createhuman;
+  setclass(ru_vojak3b,class_soldier);
+  placeunitxy(ru_vojak3b,41,44,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak4b=createhuman;
+  setclass(ru_vojak4b,class_soldier);
+  placeunitxy(ru_vojak4b,41,48,false);
+
+{  preparesoldier(sex_male,4);
+  ru_vojak5b=createhuman;
+  setclass(ru_vojak5b,class_soldier);
+  placeunitxy(ru_vojak5b,43,44,false);
+
+  preparesoldier(sex_male,4);
+  ru_vojak6b=createhuman;
+  setclass(ru_vojak6b,class_soldier);
+  placeunitxy(ru_vojak6b,43,48,false);}
+
+  i:=1;
+  j:=1;
+  spousteni_oprav=true;
+  pocet:=0;
+  zapnuti_oprav_1_veze=true;
+  zapnuti_oprav_2_veze=true;
+  zapnuti_oprav_3_veze=true;
+  zapnuti_oprav_4_veze=true;
+  zapnuti_oprav_5_veze=true;
+  zapnuti_oprav_6_veze=true;
+end;
+
+export function nalezeni_rusu_do_budov;
+begin
+
+  AddComEnterUnit(ru_vojak,74);
+  AddComEnterUnit(ru_vojak2,73);
+  AddComEnterUnit(ru_vojak3,75);
+  AddComEnterUnit(ru_vojak4,77);
+  AddComEnterUnit(ru_vojak5,76);
+  AddComEnterUnit(ru_vojak6,84);
+  
+end;
+
+export function nalezeni_rusu_do_budov_b;
+begin
+
+  AddComEnterUnit(ru_vojakb,99);
+  AddComEnterUnit(ru_vojak2b,99);
+  AddComEnterUnit(ru_vojak3b,99);
+  AddComEnterUnit(ru_vojak4b,99);
+  AddComEnterUnit(ru_vojak5b,99);
+  AddComEnterUnit(ru_vojak6b,99);
+
+end;
+
+every 0$0.1 trigger FilterAllUnits([[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])>pocet do
+begin
+        
+//  znicene_budovy:=FilterUnitsInArea(all_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]]);
+   
+//  opravari:=[ru_stavar,ru_stavar2,ru_stavar3,ru_stavar4,ru_stavar5,ru_stavar6];
+  opravari:=FilterAllUnits([[f_type,unit_human],[f_side,ru],[f_class,class_engineer],[f_lives,250]]);
+  obrane_veze:=[ru_vez1,ru_vez2,ru_vez3,ru_vez4,ru_vez5,ru_vez6,];
+
+  if zapnuti_oprav_1_veze
+    then begin
+       znicene_budovy:=ru_vez1;
+       if FilterUnitsInArea(ru_vez1_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+         then begin
+           opraveni_budov;
+           zapnuti_oprav_1_veze=false;
+        end;
+       znicene_budovy:=false;
+     end;
+
+  if zapnuti_oprav_2_veze
+    then begin
+       znicene_budovy:=ru_vez2;
+       if FilterUnitsInArea(ru_vez2_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+         then begin
+           opraveni_budov;
+           zapnuti_oprav_2_veze=false;
+        end;
+       znicene_budovy:=false;
+     end;
+
+  if zapnuti_oprav_3_veze
+    then begin
+       znicene_budovy:=ru_vez3;
+       if FilterUnitsInArea(ru_vez3_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+         then begin
+           opraveni_budov;
+           zapnuti_oprav_3_veze=false;
+        end;
+       znicene_budovy:=false;
+     end;
+
+  if zapnuti_oprav_4_veze
+    then begin
+       znicene_budovy:=ru_vez4;
+       if FilterUnitsInArea(ru_vez4_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+         then begin
+           opraveni_budov;
+           zapnuti_oprav_4_veze=false;
+        end;
+       znicene_budovy:=false;
+     end;
+
+  if zapnuti_oprav_5_veze
+    then begin
+       znicene_budovy:=ru_vez5;
+       if FilterUnitsInArea(ru_vez5_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+         then begin
+           opraveni_budov;
+           zapnuti_oprav_5_veze=false;
+        end;
+       znicene_budovy:=false;
+     end;
+
+  if zapnuti_oprav_6_veze
+    then begin
+       znicene_budovy:=ru_vez6;
+       if FilterUnitsInArea(ru_vez6_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+         then begin
+           opraveni_budov;
+           zapnuti_oprav_6_veze=false;
+        end;
+       znicene_budovy:=false;
+     end;
+
+//  if obrane_veze[j]=znicene_budovy
+//    then opraveni_budov
+//      else pocitadlo;
+      
+           
+  enable;
+end;
+
+export function opraveni_budov;
+begin
+
+  ComExitBuilding(opravari[i]);
+  AddComRepairBuilding(opravari[i],znicene_budovy);
+  AddComEnterUnit(opravari[i],ru_sklad);
+
+  i:=i+1;
+  j:=j+1;
+  pocet:=pocet+1;
+  znicene_budovy=false;
+
+  if FilterAllUnits([[f_type,unit_human],[f_side,ru],[f_class,class_engineer],[f_lives,250]])<i
+    then i:=1;
+
+//  if FilterUnitsInArea(all_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])<j
+//    then j:=1;
+  exit;
+end;
+
+export function pocitadlo;
+begin
+
+
+  i:=i+1;
+  j:=j+1;
+
+end;
+ 
+
+every 0$0.1 trigger FilterAllUnits([[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])<pocet
+                    or FilterAllUnits([[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]]) do
+begin
+
+  pocet:=pocet-1;
+
+  if FilterUnitsInArea(ru_vez1_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]])
+  or FilterUnitsInArea(ru_vez1_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+    then zapnuti_oprav_1_veze=true;
+
+  if FilterUnitsInArea(ru_vez2_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]])
+  or FilterUnitsInArea(ru_vez2_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+    then zapnuti_oprav_2_veze=true;
+
+  if FilterUnitsInArea(ru_vez3_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]])
+  or FilterUnitsInArea(ru_vez3_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+    then zapnuti_oprav_3_veze=true;
+
+  if FilterUnitsInArea(ru_vez4_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]])
+  or FilterUnitsInArea(ru_vez4_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+    then zapnuti_oprav_4_veze=true;
+
+  if FilterUnitsInArea(ru_vez5_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]])
+  or FilterUnitsInArea(ru_vez5_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+    then zapnuti_oprav_5_veze=true;
+
+  if FilterUnitsInArea(ru_vez6_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,1]])
+  or FilterUnitsInArea(ru_vez6_area,[[f_type,unit_building],[f_side,ru],f_not,[f_lives,999]])
+    then zapnuti_oprav_6_veze=true;
+
+  enable;
+
+end;
+
+//--------------pohyb v zakladne---------------------
+
+export function vyzkum;
+begin
+  wait(0$20);
+  ComResearch(ru_lab,tech_Gatling); 
+  wait(0$20);
+  comResearch(ru_lab,tech_Gun);
+  wait(0$20);
+  ComResearch(ru_lab,tech_Tech1 );
+  wait(0$20);
+  ComResearch(ru_lab,tech_Tech2 );
+  wait(0$20);
+  ComResearch(ru_lab,tech_Tech3 );
+  wait(0$20);
+  ComResearch(ru_lab,tech_Weap1);
+  wait(0$20);
+  ComResearch(ru_lab,tech_Weap2);
+  wait(0$20);
+  ComResearch(ru_lab,tech_Weap3);
+  wait(0$20);
+  ComResearch(ru_lab,tech_AdvMet);
+end;
+
+
+every 0$2 trigger vyroba_ru do
+begin
+  AddComConstruct(ru_tovarna,ru_heavy_tracked,engine_combustion,control_manual,ru_heavy_gun);
+  AddComConstruct(ru_tovarna,ru_heavy_tracked,engine_combustion,control_manual,ru_heavy_gun);
+
+end;
+
+every 0$0.1 trigger FilterAllUnits([[f_type,unit_vehicle],[f_side,ru],[f_weapon, ru_heavy_gun]])>1 do
+begin
+  ru_auto:=FilterAllUnits([[f_type,unit_vehicle],[f_side,ru],[f_weapon, ru_heavy_gun]]);
+  AddComMoveXY(ru_auto[1],61,44);
+  AddComMoveXY(ru_auto[2],97,76);
+
+end;

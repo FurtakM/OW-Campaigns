@@ -1,0 +1,15 @@
+export ru_vedec,ru_vedec2,ru_vojak,ru_vojak2;
+
+starting
+begin
+  ru=3;
+
+
+
+  uc_side=ru;
+  uc_nation=nation_rusian;
+
+  preparesoldier(sex_male,2);
+  ru_vojak=createhuman;
+  setclass(ru_vojak,class_soldier);
+  placeunitxy(ru_vojak,29,25,false);

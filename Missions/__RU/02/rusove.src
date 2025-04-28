@@ -1,0 +1,71 @@
+export ru_vojak,ru_vojak2,ru_vedec,ru_vedec2,ru_stavar,ru;
+var prvnijednotka;
+
+EVERY 0$0.1 DO
+begin                          
+  prvnijednotka=true;
+
+  ru=3;
+
+  uc_side=ru;
+  uc_nation=nation_russian;
+
+  preparesoldier(sex_male,2);
+  ru_vojak=createhuman;
+  setclass(ru_vojak,class_soldier);  
+  placehumaninunit(ru_vojak,28);
+
+  preparesoldier(sex_male,1);
+  ru_vojak2=createhuman;
+  setclass(ru_vojak2,class_soldier);
+  placehumaninunit(ru_vojak2,29); 
+
+  preparescientist(sex_female,2);
+  ru_vedec=createhuman;
+  placehumaninunit(ru_vedec,25);
+
+  preparescientist(sex_male,3);
+  ru_vedec2=createhuman;
+  placehumaninunit(ru_vedec2,25);
+
+  prepareengineer(sex_female,2);
+  ru_stavar=createhuman;
+  placehumaninunit(ru_stavar,24);                           
+                                               
+end;
+
+//rusove jdou zlaborky do ukrytu a stavar jde ven ze skladu
+EVERY 0$2 TRIGGER FilterUnitsInArea(rusove,[[f_side,ar]])>0 marked 1 DO
+begin
+  ComEnterUnit([ru_vedec,ru_vedec2],ru_armoury);
+  wait(0$40);
+  ComMoveXY(ru_stavar,79,18);
+end;
+
+
+
+//uteceni ru_vedcu do exitarea
+every 0$10 trigger IsDead(27) or IsDead(28) or IsDead(29) do
+begin
+  wait(0$10);
+  if (prvnijednotka) then begin
+  ComMoveXY([ru_vedec,ru_vedec2],84,10);
+  prvnijednotka=false;
+ end;
+end;
+//vymazani rusu z exitarea
+EVERY 0$2 TRIGGER FilterUnitsInArea(ExitArea,[[f_side,ru]])>0 marked 1 DO
+begin
+  RemoveUnit(ru_vedec);
+  RemoveUnit(ru_vedec2);
+
+//vytvoreni rusu po vymazani
+  preparescientist(sex_female,2);
+  ru_vedec=createhuman;
+ 
+
+  preparescientist(sex_male,3);
+  ru_vedec2=createhuman;
+
+end;
+

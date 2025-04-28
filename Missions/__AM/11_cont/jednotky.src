@@ -610,8 +610,9 @@ begin
   if difficulty>1 then
     begin
       vc_weapon=ar_selfpropelled_bomb;
+      vc_control=control_apeman;
       av=CreateVehicle;
-      pom=-pom^av;
+      pom=pom^av;
     end;
 
   pom=pom^get_human(get_sex,class_soldier,Ar_levely[difficulty],'');

@@ -1,0 +1,162 @@
+export technologie,malo_materialu,dovezeni_beden,ar_ridic_zasobovani, ar_Car_zasobovani,ar3;
+
+export function navrat_kurta;
+begin   
+
+   SetSide(vojaci_ar2[pocet_vojaku],ar);
+
+   PlaceUnitArea(vojaci_ar2[pocet_vojaku],cesta_k_ru,false);
+
+//   SetSide(vojaci_ar2[pocet_vojaku],ar);
+//   if vojaci_ar2>=pocet_vojaku then enable;
+
+   pocet_vojaku:=1+pocet_vojaku;
+   misto_x:=misto_x-3;
+   misto_y:=misto_y-3;
+                                               
+   if vojaci_ar2>=pocet_vojaku then enable;
+
+end;
+
+every 7$20 do
+begin
+
+  wait(15$0);
+  KillUnit(vojaci_ar2[pocet_vojaku]);
+  pocet_vojaku:=1+pocet_vojaku;
+  
+  if vojaci_ar2>=pocet_vojaku then enable;
+
+end;
+
+every 0$1 trigger FilterUnitsInArea(All_area,[f_side,ru])=0  and jednotky_ru do
+begin
+
+    navrat_kurta;  //-------po 12 min je kurt mrtvej--------
+end;
+
+on ResearchComplete(tech,lab) do
+begin
+
+    lab:=FilterUnitsInArea(All_area,[[f_side,ar],[f_btype,b_lab]]);
+    tech:=tech_SolEng;
+    technologie=true;
+
+end;
+
+
+//-------------------pocita bedny ve skladu----------------------------------------
+export function count_crates_pro_ar;
+var deps, i;
+begin
+   deps:=FilterAllUnits([[f_side,ar],[f_or,[f_btype,b_depot],[f_btype,b_warehouse]]]);
+   for i in deps do
+      result:=result+GetResourceType(GetBase(i), mat_cans);
+
+end;
+
+
+
+//------------------------------------zasobuje ar_zakladnu matriálem------------------------
+every 0$12 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot]])>0 and count_crates_pro_ar<=(100) do
+begin
+  case query('malo_materialu') of
+    1:begin
+
+
+//    malo_materialu=true;
+    end;
+    2:begin
+      dovezeni_beden=true;
+      dovez_material;
+    end;
+  end;
+end;
+
+every 0$12 trigger FilterUnitsInArea(All_area,[[f_side,ru],[f_btype,b_depot]])>0 and count_crates_pro_ar<=(100) and dovezeni_beden do
+begin
+  case query('malo_materialu') of
+    1:begin
+
+
+//    malo_materialu=true;
+    end;
+    2:begin
+    
+      dovez_material;
+      malo_materialu=true;
+    end;
+  end;
+end;
+
+export function dovez_material;
+begin
+  ar2:=5;
+  uc_side:=ar2;
+  uc_nation:=nation_arabian;
+
+
+
+  vc_chassis:= ar_medium_trike;
+  vc_weapon:=ar_cargo_bay;
+  vc_control:=control_manual;
+  vc_engine:=engine_combustion;
+  vc_fuel_battery:=100;
+
+  preparemechanic(sex_male,4);
+  ar_ridic_zasobovani=createhuman;
+  setclass(ar_ridic_zasobovani,class_engineer);
+
+  ar_Car_zasobovani:=CreateVehicle;
+  PlaceUnitXYR(ar_Car_zasobovani,135,84,5, false);
+  PlaceHumanInUnit(ar_ridic_zasobovani,ar_Car_zasobovani);
+
+  SetCargo(ar_Car_zasobovani,mat_cans,100);
+
+
+  AddComMoveToArea(ar_ridic_zasobovani,material_area);
+  AddComUnload(ar_ridic_zasobovani);
+  AddComMoveXY(ar_ridic_zasobovani,140,82);
+end;
+
+every 0$5 trigger FilterUnitsInArea(All_area,[f_side,ru])=0  and jednotky_ru do
+begin
+
+    zacatek_konce=false;
+
+    if IsLive(kurt)
+      then AddMedal('navrat_kurta',1);
+
+    if technologie
+      then addmedal('technologie',2);
+
+    if not malo_materialu
+      then addmedal('material',3);
+
+
+    wait(0$20);
+    YouWin;
+    GiveMedals('MAIN');
+
+    ar:=ar3 union [Heike,Bergkamp,Farmer,Kurt,Franz,Ferenz,Stu,Muhammad,Gojko,Richard,Alexandr,Ronald,Eva];
+
+    RewardPeople(ar);
+    SaveCharacters(Heike,'Heike');
+    SaveCharacters(Bergkamp,'Bergkamp');
+    SaveCharacters(Farmer,'Farmer');
+    SaveCharacters(Kurt,'Kurt'); 
+    SaveCharacters(Franz,'Franz');
+    SaveCharacters(Ferenz,'Ferenz');
+    SaveCharacters(Stu,'Stu');
+    SaveCharacters(Muhammad,'Muhammad');
+    SaveCharacters(Gojko,'Gojko');
+    SaveCharacters(Richard,'Richard');
+    SaveCharacters(Alexandr,'Alexandr');
+    SaveCharacters(Ronald,'Ronald');
+    SaveCharacters(Eva,'Eva');
+
+
+    SaveCharacters((other union new) diff [Heike,Bergkamp,Farmer,Kurt,Franz,Ferenz,Stu,Muhammad,Gojko,Richard,Alexandr,Ronald,Eva],'survivors1');
+//  exit;
+
+end;

@@ -1,0 +1,49 @@
+export ar3,tech,lab,technologie;
+
+on ResearchComplete(tech,lab) do
+begin
+
+    if tech= tech_StimDrugs and tech_ApeAgres 
+      then begin
+        lab:=FilterAllUnits([[f_side,ar],[f_btype,b_lab_biological]]);
+        technologie=true;
+     end;
+
+    if tech=tech_AdvMet
+      then begin
+        lab:=FilterAllUnits([[f_side,ru],[f_btype,b_lab_weapon]]);
+        vyroba_ru=true;
+      end;
+
+
+end;
+
+//every 0$1 trigger technologie
+
+
+every 0$5 trigger FilterAllUnits([f_side,ru])=0 do
+begin
+    if  vyznamenani_1
+      then addmedal('bedny',1);
+
+    if technologie and FilterAllUnits([[f_side,ar],[f_or,[f_weapon,ar_flame_thrower],[f_bweapon,ar_flame_thrower]]])>0
+      then addmedal('tenologie',2);
+
+    if sejk_je_na_zivu_a_zlutej and veleni
+      then addmedal('veleni',3);
+   
+    YouWin;
+    GiveMedals('MAIN');
+
+    ar:=ar3 union FilterallUnits([[f_side,ar],[f_type,unit_human],[f_ok]]);
+    RewardPeople(ar);
+    SaveCharacters(Heike,'Heike');
+    SaveCharacters(Bergkamp,'Bergkamp');
+    SaveCharacters(Farmer,'Farmer');
+    SaveCharacters(Kurt,'Kurt');
+
+
+    SaveCharacters((other union new) diff [Heike,Bergkamp,Farmer,Kurt],'survivors1');
+
+    exit;
+end;
